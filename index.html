@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
+    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; }
     body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; }
     .logo { width:100px; height:100px; border-radius:20px; border:3px solid var(--gold); margin:20px 0; object-fit:contain; background:var(--green); padding:8px; }
     h1 { color:var(--gold); font-size:22px; margin-bottom:20px; }
@@ -18,7 +18,6 @@
     .msg { text-align:center; margin-top:10px; font-size:13px; font-weight:bold; color:var(--red); }
     .loader { display:inline-block; width:16px; height:16px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; margin-left:8px; }
     @keyframes spin { to { transform:rotate(360deg); } }
-    /* الإنفوجرافيك */
     .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:400px; }
     .stat-card { background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid rgba(201,162,39,0.2); text-align:center; }
     .stat-card .num { font-size:24px; font-weight:900; color:var(--gold); }
@@ -58,62 +57,72 @@
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
+        
         if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
         
-        btn.innerHTML = `جاري التحقق... <span class="loader"></span>`; btn.disabled = true;
+        btn.innerHTML = `جاري التحقق... <span class="loader"></span>`; 
+        btn.disabled = true;
+        msg.innerText = "";
         
         try {
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
+            
             let user = null;
             if (data.documents) {
                 for (let doc of data.documents) {
                     const obj = fromFS(doc.fields);
-                    if (obj.code && obj.code.toUpperCase() === code) { user = obj; break; }
+                    // التحقق من الكود بطريقة آمنة
+                    if (obj && obj.code && String(obj.code).toUpperCase() === code) { 
+                        user = obj; 
+                        break; 
+                    }
                 }
             }
             
-            if (!user) { msg.innerText = "❌ الكود غير صحيح"; btn.innerHTML = "🔓 دخول"; btn.disabled = false; return; }
-            
-            // حفظ الجلسة
-            const session = { name: user.name, code: user.code, role: user.type || 'supervisor' };
-            localStorage.setItem("amb_session", JSON.stringify(session));
-            
-            // التوجيه حسب الرتبة
-            if (user.type === "admin") location.href = "admin.html";
-            else if (user.type === "ops") location.href = "ops.html";
-            else location.href = "app.html";
-
-        } catch(e) { msg.innerText = "⚠️ خطأ في الشبكة"; btn.innerHTML = "🔓 دخول"; btn.disabled = false; }
-    }
-
-    // تحميل الإحصائيات
-    async function loadStats() {
-        try {
-            const resActs = await fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json());
-            const resUsers = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json());
-            
-            if (resActs.documents) {
-                let issues = 0, visits = 0;
-                resActs.documents.forEach(d => {
-                    const obj = fromFS(d.fields);
-                    if (obj.type === 'issue') issues++;
-                    if (obj.type === 'visit') visits++;
-                });
-                document.getElementById("statIssues").innerText = issues;
-                document.getElementById("statVisits").innerText = visits;
+            if (!user) { 
+                msg.innerText = "❌ الكود غير صحيح"; 
+                btn.innerHTML = "🔓 دخول"; 
+                btn.disabled = false; 
+                return; 
             }
             
+            // حفظ الجلسة بأمان
+            const session = { 
+                name: user.name || "مستخدم", 
+                code: user.code, 
+                role: user.type || 'supervisor' 
+            };
+            localStorage.setItem("amb_session", JSON.stringify(session));
+            
+            // توجيه المستخدم
+            if (session.role === "admin") window.location.href = "admin.html";
+            else if (session.role === "ops") window.location.href = "ops.html";
+            else window.location.href = "app.html";
+
+        } catch(e) { 
+            msg.innerText = "⚠️ خطأ في الشبكة أو الاتصال"; 
+            btn.innerHTML = "🔓 دخول"; 
+            btn.disabled = false; 
+        }
+    }
+
+    async function loadStats() {
+        try {
+            const resUsers = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json());
             if (resUsers.documents) {
                 document.getElementById("statUsers").innerText = resUsers.documents.length;
                 let active = 0;
-                resUsers.documents.forEach(d => { if (fromFS(d.fields).active !== false) active++; });
+                resUsers.documents.forEach(d => { 
+                    const obj = fromFS(d.fields);
+                    if (obj && obj.active !== false) active++; 
+                });
                 document.getElementById("statActive").innerText = active;
             }
-        } catch(e) { console.log("Stats error"); }
+        } catch(e) { console.log("Stats error:", e); }
     }
     
-    loadStats();
+    window.onload = function() { loadStats(); };
 </script>
 </body>
 </html>
