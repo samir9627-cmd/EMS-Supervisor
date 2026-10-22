@@ -4,444 +4,116 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#041814">
-<title>نظام الإسعاف الذكي — المتكامل</title>
+<title>نظام الإسعاف الذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
     :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
-    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; }
-    
-    /* شاشة الدخول */
-    #loginScreen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
-    .logo { width:100px; height:100px; border-radius:24px; border:3px solid var(--gold); margin-bottom:20px; object-fit:contain; background:var(--green); padding:8px; }
-    h1 { color:var(--gold); font-size:22px; margin-bottom:30px; text-align:center; }
-    .input-box { width:100%; max-width:400px; }
-    input, select, textarea { width:100%; padding:16px; background:rgba(255,255,255,0.05); border:2px solid rgba(201,162,39,0.3); border-radius:12px; color:var(--gold); font-size:16px; font-weight:900; outline:none; margin-bottom:12px; transition:0.2s; }
-    textarea { color:#fff; font-weight:normal; resize:vertical; min-height:80px; }
-    input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(201,162,39,0.3); }
-    select option { background:var(--bg); color:#fff; }
-    button { width:100%; padding:16px; border-radius:12px; border:none; font-size:16px; font-weight:900; cursor:pointer; transition:0.2s; margin-bottom:10px; }
-    button:active { transform:scale(0.98); }
-    .btn-gold { background:linear-gradient(135deg, var(--gold), #e5c158); color:var(--bg); }
-    .btn-green { background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); }
-    .btn-red { background:linear-gradient(135deg, var(--red), #ff5252); color:#fff; }
-    .btn-blue { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
-    .msg { text-align:center; font-weight:bold; font-size:13px; min-height:18px; color:var(--red); }
-
-    /* لوحة التحكم */
-    #mainApp { display:none; flex-direction:column; min-height:100vh; }
-    .topbar { background:var(--green); padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
-    .topbar h2 { font-size:14px; color:var(--gold); }
-    .btn-logout { width:auto; padding:6px 12px; background:var(--red); color:#fff; font-size:11px; border-radius:8px; margin:0; }
-    .content { padding:16px; flex:1; padding-bottom:80px; }
-    .card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:16px; margin-bottom:16px; }
-    .card h3 { color:var(--gold); margin-bottom:12px; font-size:15px; display:flex; align-items:center; gap:8px; }
-    
-    .role-badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold; margin-bottom:12px; }
-    .role-supervisor { background:rgba(41,182,246,0.2); color:#64b5f6; border:1px solid #29b6f6; }
-    .role-admin { background:rgba(229,57,53,0.2); color:#ff5252; border:1px solid #e53935; }
-    
+    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; }
+    .logo { width:100px; height:100px; border-radius:20px; border:3px solid var(--gold); margin:20px 0; object-fit:contain; background:var(--green); padding:8px; }
+    h1 { color:var(--gold); font-size:22px; margin-bottom:20px; }
+    .input-box { width:100%; max-width:400px; background:rgba(255,255,255,0.05); padding:20px; border-radius:16px; border:1px solid rgba(201,162,39,0.3); margin-bottom:20px; }
+    input { width:100%; padding:16px; background:rgba(0,0,0,0.3); border:2px solid rgba(201,162,39,0.3); border-radius:12px; color:var(--gold); font-size:20px; text-align:center; font-weight:900; outline:none; margin-bottom:12px; text-transform:uppercase; }
+    button { width:100%; padding:16px; border-radius:12px; border:none; font-size:16px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), #e5c158); color:var(--bg); }
+    .msg { text-align:center; margin-top:10px; font-size:13px; font-weight:bold; color:var(--red); }
     .loader { display:inline-block; width:16px; height:16px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; margin-left:8px; }
     @keyframes spin { to { transform:rotate(360deg); } }
-    
-    .form-group { margin-bottom:10px; }
-    .form-group label { display:block; font-size:12px; color:var(--gold); margin-bottom:4px; }
-    
-    /* القائمة */
-    .list-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; }
-    .list-item .title { font-weight:900; color:var(--gold); font-size:14px; margin-bottom:4px; display:flex; justify-content:space-between; }
-    .list-item .sub { font-size:11px; color:rgba(255,255,255,0.6); }
-
-    /* 📄 تنسيق الطباعة */
-    #printArea { display:none; }
-    @media print {
-        @page { size: A4; margin: 10mm; }
-        body { background:#fff !important; color:#000 !important; }
-        body * { visibility: hidden; }
-        #printArea, #printArea * { visibility: visible; }
-        #printArea { display:block !important; position:absolute; left:0; top:0; width:100%; }
-        .no-print { display:none !important; }
-    }
-    .print-form { background:#fff; color:#000; font-family:'Cairo'; padding:20px; border:1px solid #ccc; }
-    .print-header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px; }
-    .print-header img { width:60px; }
-    .print-header div { text-align:center; font-weight:bold; font-size:14px; }
-    .print-title { text-align:center; font-size:18px; font-weight:900; margin-bottom:20px; background:#eee; padding:8px; }
-    .print-table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; }
-    .print-table th, .print-table td { border:1px solid #000; padding:8px; text-align:right; }
-    .print-table th { background:#eee; }
-    .print-signatures { display:flex; justify-content:space-between; margin-top:50px; font-size:14px; font-weight:bold; text-align:center; }
-    .print-signatures div { width:30%; }
+    /* الإنفوجرافيك */
+    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:400px; }
+    .stat-card { background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid rgba(201,162,39,0.2); text-align:center; }
+    .stat-card .num { font-size:24px; font-weight:900; color:var(--gold); }
+    .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); }
 </style>
 </head>
 <body>
-
-<div id="loginScreen">
     <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo">
     <h1>نظام الإسعاف الذكي</h1>
+    
     <div class="input-box">
         <input type="text" id="codeInput" placeholder="أدخل كود الدخول">
-        <button class="btn-gold" id="loginBtn" onclick="loginWithCode()">🔓 دخول</button>
+        <button id="loginBtn" onclick="login()">🔓 دخول النظام</button>
         <div id="msgBox" class="msg"></div>
     </div>
-</div>
 
-<div id="mainApp">
-    <div class="topbar no-print">
-        <h2 id="welcomeName">مرحباً...</h2>
-        <button class="btn-logout" onclick="logout()">خروج</button>
+    <div class="stats-grid" style="margin-top:20px;">
+        <div class="stat-card"><div class="num" id="statIssues">0</div><div class="lbl">إشكالية مسجلة</div></div>
+        <div class="stat-card"><div class="num" id="statVisits">0</div><div class="lbl">تقرير زيارة</div></div>
+        <div class="stat-card"><div class="num" id="statUsers">0</div><div class="lbl">مستخدم مسجل</div></div>
+        <div class="stat-card"><div class="num" id="statActive">0</div><div class="lbl">مستخدم نشط</div></div>
     </div>
-    
-    <div class="content no-print" id="appContent">
-        <div id="roleBadge"></div>
-        
-        <!-- واجهة المشرف -->
-        <div id="panelSupervisor" style="display:none;">
-            <div class="card" id="supCards"></div>
-        </div>
-
-        <!-- واجهة الإدارة -->
-        <div id="panelAdmin" style="display:none;">
-            <div class="card">
-                <h3>🏛️ توليد كود جديد</h3>
-                <div class="form-group">
-                    <label>الاسم / المركز</label>
-                    <input type="text" id="newName" placeholder="مثال: مركز بوشر">
-                </div>
-                <div class="form-group">
-                    <label>نوع الحساب</label>
-                    <select id="newType" onchange="generateCode()">
-                        <option value="supervisor">مشرف ميداني</option>
-                        <option value="admin">إدارة</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>الكود التلقائي</label>
-                    <input type="text" id="newCode" readonly style="text-align:center;">
-                </div>
-                <button class="btn-green" onclick="saveNewUser()">💾 حفظ في Firebase</button>
-                <div id="adminMsg" class="msg"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- منطقة الطباعة (مخفية) -->
-<div id="printArea"></div>
 
 <script>
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
-    
-    let currentUser = null;
 
-    // دوال Firebase
     function fromFS(v) {
         if (!v) return null;
         if ("stringValue" in v) return v.stringValue;
         if ("booleanValue" in v) return v.booleanValue;
-        if ("arrayValue" in v) return (v.arrayValue.values || []).map(fromFS);
         if ("mapValue" in v) { const o = {}; for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]); return o; }
         return null;
     }
-    function docToObj(doc) {
-        const obj = {}; if (!doc.fields) return obj;
-        for (const k in doc.fields) obj[k] = fromFS(doc.fields[k]);
-        obj._id = doc.name.split("/").pop(); return obj;
-    }
 
-    // الدخول
-    async function loginWithCode() {
+    async function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
-
         if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
-        btn.innerHTML = `جاري التحقق... <span class="loader"></span>`; btn.disabled = true; msg.innerText = "";
-
+        
+        btn.innerHTML = `جاري التحقق... <span class="loader"></span>`; btn.disabled = true;
+        
         try {
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
-            
             let user = null;
             if (data.documents) {
                 for (let doc of data.documents) {
-                    const obj = docToObj(doc);
+                    const obj = fromFS(doc.fields);
                     if (obj.code && obj.code.toUpperCase() === code) { user = obj; break; }
                 }
             }
-
-            if (!user) { msg.innerText = "❌ الكود غير صحيح"; btn.innerHTML = "🔓 دخول"; btn.disabled = false; return; }
-            if (user.active === false) { msg.innerText = "⚠️ الكود معطل"; btn.innerHTML = "🔓 دخول"; btn.disabled = false; return; }
-
-            currentUser = { name: user.name, code: user.code, role: user.type, center: user.name };
-            localStorage.setItem("amb_session", JSON.stringify(currentUser));
-            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الدخول";
             
-            setTimeout(() => showDashboard(currentUser), 500);
-        } catch (error) {
-            msg.innerText = "⚠️ خطأ في الشبكة"; btn.innerHTML = "🔓 دخول"; btn.disabled = false;
-        }
+            if (!user) { msg.innerText = "❌ الكود غير صحيح"; btn.innerHTML = "🔓 دخول"; btn.disabled = false; return; }
+            
+            // حفظ الجلسة
+            const session = { name: user.name, code: user.code, role: user.type || 'supervisor' };
+            localStorage.setItem("amb_session", JSON.stringify(session));
+            
+            // التوجيه حسب الرتبة
+            if (user.type === "admin") location.href = "admin.html";
+            else if (user.type === "ops") location.href = "ops.html";
+            else location.href = "app.html";
+
+        } catch(e) { msg.innerText = "⚠️ خطأ في الشبكة"; btn.innerHTML = "🔓 دخول"; btn.disabled = false; }
     }
 
-    function showDashboard(user) {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("mainApp").style.display = "flex";
-        document.getElementById("welcomeName").innerText = user.name;
-        
-        const badge = document.getElementById("roleBadge");
-        document.getElementById("panelSupervisor").style.display = "none";
-        document.getElementById("panelAdmin").style.display = "none";
-
-        if (user.role === "admin") {
-            badge.className = "role-badge role-admin"; badge.innerText = "🏛️ إدارة";
-            document.getElementById("panelAdmin").style.display = "block";
-            generateCode();
-        } else {
-            badge.className = "role-badge role-supervisor"; badge.innerText = "👨‍💼 مشرف ميداني";
-            document.getElementById("panelSupervisor").style.display = "block";
-            renderSupervisorPanel();
-        }
-    }
-
-    // --- واجهة المشرف ---
-    function renderSupervisorPanel() {
-        const container = document.getElementById("supCards");
-        container.innerHTML = `
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button class="btn-blue" onclick="openIssueModal()">🚩 تسجيل إشكالية</button>
-                <button class="btn-gold" onclick="openVisitModal()">📋 تقرير زيارة</button>
-            </div>
-            <div id="supervisorListings">
-                <h3 style="color:var(--gold); font-size:14px; margin-bottom:10px;">📌 آخر النشاطات</h3>
-                <div class="msg" style="color:#fff;">جاري التحميل...</div>
-            </div>
-        `;
-        loadSupervisorData();
-    }
-
-    async function loadSupervisorData() {
+    // تحميل الإحصائيات
+    async function loadStats() {
         try {
-            const res = await fetch(`${FIRESTORE_URL}/activities?pageSize=100`, { cache: "no-store" });
-            const data = await res.json();
-            const listDiv = document.getElementById("supervisorListings");
-            if (!listDiv) return;
-
-            if (!data.documents || data.documents.length === 0) {
-                listDiv.innerHTML = `<h3 style="color:var(--gold); font-size:14px;">📌 آخر النشاطات</h3><div class="msg" style="color:#fff;">لا توجد نشاطات مسجلة.</div>`;
-                return;
+            const resActs = await fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json());
+            const resUsers = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json());
+            
+            if (resActs.documents) {
+                let issues = 0, visits = 0;
+                resActs.documents.forEach(d => {
+                    const obj = fromFS(d.fields);
+                    if (obj.type === 'issue') issues++;
+                    if (obj.type === 'visit') visits++;
+                });
+                document.getElementById("statIssues").innerText = issues;
+                document.getElementById("statVisits").innerText = visits;
             }
-
-            let acts = data.documents.map(docToObj).filter(a => a.supervisor === currentUser.name).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-            if (acts.length === 0) {
-                listDiv.innerHTML = `<h3 style="color:var(--gold); font-size:14px;">📌 نشاطاتي</h3><div class="msg" style="color:#fff;">لم تقم بتسجيل أي نشاط بعد.</div>`;
-                return;
+            
+            if (resUsers.documents) {
+                document.getElementById("statUsers").innerText = resUsers.documents.length;
+                let active = 0;
+                resUsers.documents.forEach(d => { if (fromFS(d.fields).active !== false) active++; });
+                document.getElementById("statActive").innerText = active;
             }
-
-            listDiv.innerHTML = `<h3 style="color:var(--gold); font-size:14px;">📌 نشاطاتي</h3>` + acts.map(a => `
-                <div class="list-item">
-                    <div class="title">
-                        <span>${a.type === 'issue' ? '🚩 إشكالية' : '📋 زيارة'}</span>
-                        <span style="font-size:10px; color:#fff;">${new Date(a.timestamp).toLocaleDateString('ar-OM')}</span>
-                    </div>
-                    <div class="sub">${a.type === 'issue' ? a.issueType : 'تقييم الزيارة: ' + a.score + '%'}</div>
-                    <button class="btn-gold" style="margin-top:8px; padding:6px; font-size:11px;" onclick="printActivity('${a._id}')">🖨️ طباعة التقرير</button>
-                </div>
-            `).join("");
-
-            window.currentActivities = acts;
-        } catch(e) {
-            console.error(e);
-        }
+        } catch(e) { console.log("Stats error"); }
     }
-
-    // --- نافذة الإشكالية ---
-    function openIssueModal() {
-        const html = `
-            <div style="padding:20px; background:var(--green); border-radius:16px; border:2px solid var(--gold); margin-bottom:20px;">
-                <h3 style="color:var(--gold); margin-bottom:15px;">🚩 تسجيل إشكالية جديدة</h3>
-                <div class="form-group">
-                    <label>نوع الإشكالية</label>
-                    <select id="issueType">
-                        <option value="تأخر استجابة">تأخر استجابة</option>
-                        <option value="توثيق ناقص">توثيق ناقص</option>
-                        <option value="تعامل غير احترافي">تعامل غير احترافي</option>
-                        <option value="نقص تجهيزات">نقص تجهيزات</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>الوصف</label>
-                    <textarea id="issueDesc" placeholder="اكتب التفاصيل..."></textarea>
-                </div>
-                <button class="btn-red" onclick="submitIssue()">💾 حفظ الإشكالية</button>
-                <button class="btn-gold" onclick="renderSupervisorPanel()" style="background:#555; color:#fff;">إلغاء</button>
-                <div id="issueMsg" class="msg"></div>
-            </div>
-        `;
-        document.getElementById("supCards").innerHTML = html;
-    }
-
-    async function submitIssue() {
-        const type = document.getElementById("issueType").value;
-        const desc = document.getElementById("issueDesc").value.trim();
-        const msg = document.getElementById("issueMsg");
-        if (!desc) { msg.innerText = "⚠️ اكتب الوصف"; return; }
-
-        msg.innerText = "⏳ جاري الحفظ...";
-        const payload = {
-            fields: {
-                supervisor: { stringValue: currentUser.name },
-                type: { stringValue: "issue" },
-                issueType: { stringValue: type },
-                description: { stringValue: desc },
-                timestamp: { stringValue: new Date().toISOString() }
-            }
-        };
-
-        try {
-            await fetch(`${FIRESTORE_URL}/activities`, { method: "POST", body: JSON.stringify(payload) });
-            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ";
-            setTimeout(() => renderSupervisorPanel(), 1000);
-        } catch(e) { msg.innerText = "❌ خطأ في الحفظ"; }
-    }
-
-    // --- نافذة الزيارة ---
-    function openVisitModal() {
-        const html = `
-            <div style="padding:20px; background:var(--green); border-radius:16px; border:2px solid var(--gold); margin-bottom:20px;">
-                <h3 style="color:var(--gold); margin-bottom:15px;">📋 تقرير زيارة مركز</h3>
-                <div class="form-group">
-                    <label>المركز</label>
-                    <input type="text" id="visitCenter" value="${currentUser.center}" readonly>
-                </div>
-                <div class="form-group">
-                    <label>التقييم (0-100)</label>
-                    <input type="number" id="visitScore" min="0" max="100" placeholder="مثال: 95">
-                </div>
-                <div class="form-group">
-                    <label>ملاحظات الزيارة</label>
-                    <textarea id="visitNotes" placeholder="اكتب ملاحظاتك..."></textarea>
-                </div>
-                <button class="btn-blue" onclick="submitVisit()">💾 حفظ الزيارة</button>
-                <button class="btn-gold" onclick="renderSupervisorPanel()" style="background:#555; color:#fff;">إلغاء</button>
-                <div id="visitMsg" class="msg"></div>
-            </div>
-        `;
-        document.getElementById("supCards").innerHTML = html;
-    }
-
-    async function submitVisit() {
-        const score = document.getElementById("visitScore").value;
-        const notes = document.getElementById("visitNotes").value.trim();
-        const msg = document.getElementById("visitMsg");
-        if (!score) { msg.innerText = "⚠️ أدخل التقييم"; return; }
-
-        msg.innerText = "⏳ جاري الحفظ...";
-        const payload = {
-            fields: {
-                supervisor: { stringValue: currentUser.name },
-                type: { stringValue: "visit" },
-                center: { stringValue: document.getElementById("visitCenter").value },
-                score: { stringValue: score },
-                notes: { stringValue: notes },
-                timestamp: { stringValue: new Date().toISOString() }
-            }
-        };
-
-        try {
-            await fetch(`${FIRESTORE_URL}/activities`, { method: "POST", body: JSON.stringify(payload) });
-            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ";
-            setTimeout(() => renderSupervisorPanel(), 1000);
-        } catch(e) { msg.innerText = "❌ خطأ في الحفظ"; }
-    }
-
-    // --- الطباعة ---
-    function printActivity(id) {
-        const act = window.currentActivities.find(a => a._id === id);
-        if (!act) return;
-
-        const printDiv = document.getElementById("printArea");
-        const dateStr = new Date(act.timestamp).toLocaleString('ar-OM');
-        
-        if (act.type === 'issue') {
-            printDiv.innerHTML = `
-                <div class="print-form">
-                    <div class="print-header">
-                        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg">
-                        <div>هيئة الدفاع المدني والإسعاف<br>الإدارة العامة للإسعاف</div>
-                        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg">
-                    </div>
-                    <div class="print-title">تقرير إشكالية ميدانية</div>
-                    <table class="print-table">
-                        <tr><th>اسم المشرف</th><td>${act.supervisor}</td></tr>
-                        <tr><th>التاريخ والوقت</th><td>${dateStr}</td></tr>
-                        <tr><th>نوع الإشكالية</th><td>${act.issueType}</td></tr>
-                        <tr><th>التفاصيل</th><td>${act.description}</td></tr>
-                    </table>
-                    <div class="print-signatures">
-                        <div>توقيع المشرف<br><br>..................</div>
-                        <div>اعتماد الضابط<br><br>..................</div>
-                    </div>
-                </div>
-            `;
-        } else {
-            printDiv.innerHTML = `
-                <div class="print-form">
-                    <div class="print-header">
-                        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg">
-                        <div>هيئة الدفاع المدني والإسعاف<br>الإدارة العامة للإسعاف</div>
-                        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg">
-                    </div>
-                    <div class="print-title">تقرير زيارة مركز</div>
-                    <table class="print-table">
-                        <tr><th>اسم المشرف</th><td>${act.supervisor}</td></tr>
-                        <tr><th>المركز</th><td>${act.center}</td></tr>
-                        <tr><th>التاريخ والوقت</th><td>${dateStr}</td></tr>
-                        <tr><th>التقييم العام</th><td style="font-size:16px; font-weight:bold;">${act.score}%</td></tr>
-                        <tr><th>ملاحظات الزيارة</th><td>${act.notes}</td></tr>
-                    </table>
-                    <div class="print-signatures">
-                        <div>توقيع المشرف<br><br>..................</div>
-                        <div>اعتماد الضابط<br><br>..................</div>
-                    </div>
-                </div>
-            `;
-        }
-        window.print();
-    }
-
-    // --- الإدارة ---
-    function generateCode() {
-        const type = document.getElementById("newType").value;
-        const prefix = type === "admin" ? "ADM" : "SUP";
-        document.getElementById("newCode").value = `${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
-    }
-
-    async function saveNewUser() {
-        const name = document.getElementById("newName").value.trim();
-        const type = document.getElementById("newType").value;
-        const code = document.getElementById("newCode").value;
-        const msg = document.getElementById("adminMsg");
-        if (!name) { msg.innerText = "⚠️ أدخل الاسم"; return; }
-
-        const payload = { fields: { code: { stringValue: code }, name: { stringValue: name }, type: { stringValue: type }, active: { booleanValue: true } } };
-        try {
-            await fetch(`${FIRESTORE_URL}/access_code`, { method: "POST", body: JSON.stringify(payload) });
-            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ بنجاح!";
-            document.getElementById("newName").value = "";
-            generateCode();
-        } catch(e) { msg.innerText = "❌ خطأ"; }
-    }
-
-    function logout() { localStorage.removeItem("amb_session"); location.reload(); }
-
-    window.onload = function() {
-        const saved = localStorage.getItem("amb_session");
-        if (saved) {
-            try { currentUser = JSON.parse(saved); showDashboard(currentUser); } catch(e) { localStorage.removeItem("amb_session"); }
-        }
-    };
+    
+    loadStats();
 </script>
 </body>
 </html>
