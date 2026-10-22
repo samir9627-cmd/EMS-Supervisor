@@ -119,7 +119,7 @@
 </div>
 
 <script>
-    // إعدادات Firebase (تم تثبيت اسم المشروع الجديد)
+    // إعدادات Firebase
     const FIREBASE_PROJECT = "EMS-Supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
@@ -144,6 +144,7 @@
         return obj;
     }
 
+    // دالة الدخول المصححة (تتخطى مشكلة الفهرسة)
     async function loginWithCode() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
@@ -155,16 +156,29 @@
         btn.disabled = true; msg.innerText = "";
 
         try {
-            const filterStr = JSON.stringify({"fieldFilter":{"field":{"fieldPath":"code"},"op":"EQUAL","value":{"stringValue":code}}});
-            const res = await fetch(`${FIRESTORE_URL}/access_codes?pageSize=1&where=${encodeURIComponent(filterStr)}`, { cache: "no-store" });
+            // الحل الجديد: جلب كل الأكواد والبحث فيها محلياً
+            const res = await fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
-            if (!data.documents || data.documents.length === 0) {
+            if (!data.documents) {
+                msg.innerText = "❌ قاعدة البيانات فارغة";
+                btn.innerHTML = "🔓 دخول"; btn.disabled = false; return;
+            }
+
+            let user = null;
+            for (let doc of data.documents) {
+                const obj = docToObj(doc);
+                if (obj.code && obj.code.toUpperCase() === code) {
+                    user = obj;
+                    break;
+                }
+            }
+            
+            if (!user) {
                 msg.innerText = "❌ الكود غير صحيح";
                 btn.innerHTML = "🔓 دخول"; btn.disabled = false; return;
             }
 
-            const user = docToObj(data.documents[0]);
             if (user.active === false) {
                 msg.innerText = "⚠️ هذا الكود معطل";
                 btn.innerHTML = "🔓 دخول"; btn.disabled = false; return;
@@ -179,6 +193,7 @@
             setTimeout(() => { showDashboard(sessionData); }, 500);
 
         } catch (error) {
+            console.error(error);
             msg.innerText = "⚠️ خطأ في الشبكة";
             btn.innerHTML = "🔓 دخول"; btn.disabled = false;
         }
@@ -197,7 +212,7 @@
         if (user.role === "admin") {
             badge.className = "role-badge role-admin"; badge.innerText = "🏛️ إدارة عامة";
             document.getElementById("panelAdmin").style.display = "block";
-            generateCode(); // توليد كود تلقائي عند فتح لوحة الإدارة
+            generateCode();
         } else if (user.role === "ops") {
             badge.className = "role-badge role-ops"; badge.innerText = "📡 عمليات";
             document.getElementById("panelOps").style.display = "block";
@@ -214,7 +229,6 @@
         let prefix = "SUP";
         if (type === "admin") prefix = "ADM";
         if (type === "ops") prefix = "OPS";
-        if (type === "center") prefix = "MCT";
         
         const randomNum = Math.floor(1000 + Math.random() * 9000);
         document.getElementById("newCode").value = `${prefix}-${randomNum}`;
