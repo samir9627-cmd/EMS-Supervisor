@@ -16,14 +16,14 @@
     .logo { width:120px; height:120px; border-radius:24px; border:3px solid var(--gold); margin-bottom:20px; object-fit:contain; background:var(--green); padding:8px; }
     h1 { color:var(--gold); font-size:22px; margin-bottom:30px; text-align:center; }
     .input-box { width:100%; max-width:400px; }
-    input { width:100%; padding:18px; background:rgba(255,255,255,0.05); border:2px solid rgba(201,162,39,0.3); border-radius:14px; color:var(--gold); font-size:20px; text-align:center; font-weight:900; outline:none; margin-bottom:16px; }
+    input { width:100%; padding:18px; background:rgba(255,255,255,0.05); border:2px solid rgba(201,162,39,0.3); border-radius:14px; color:var(--gold); font-size:20px; text-align:center; font-weight:900; outline:none; margin-bottom:16px; text-transform:uppercase; }
     input:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(201,162,39,0.3); }
     button { width:100%; padding:18px; border-radius:14px; border:none; font-size:18px; font-weight:900; cursor:pointer; transition:0.2s; }
     button:active { transform:scale(0.98); }
     .btn-gold { background:linear-gradient(135deg, var(--gold), #e5c158); color:var(--bg); }
     .msg { text-align:center; margin-top:15px; font-weight:bold; font-size:14px; min-height:20px; color:var(--red); }
 
-    /* لوحة التحكم (تظهر بعد الدخول) */
+    /* لوحة التحكم */
     #mainApp { display:none; flex-direction:column; min-height:100vh; }
     .topbar { background:var(--green); padding:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); }
     .topbar h2 { font-size:16px; color:var(--gold); }
@@ -37,6 +37,15 @@
     .role-supervisor { background:rgba(41,182,246,0.2); color:#64b5f6; border:1px solid #29b6f6; }
     .role-admin { background:rgba(229,57,53,0.2); color:#ff5252; border:1px solid #e53935; }
     .role-ops { background:rgba(171,71,188,0.2); color:#ce93d8; border:1px solid #ab47bc; }
+    
+    .loader { display:inline-block; width:18px; height:18px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-left:8px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    
+    /* أزرار الإدارة */
+    .form-group { margin-bottom:12px; }
+    .form-group input, .form-group select { width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#fff; font-size:14px; text-transform:none; margin-bottom:0; }
+    .form-group select option { background:var(--bg); }
+    .btn-small { width:auto; padding:10px 20px; font-size:14px; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -48,7 +57,7 @@
     
     <div class="input-box">
         <input type="text" id="codeInput" placeholder="أدخل كود الدخول">
-        <button class="btn-gold" onclick="login()">🔓 دخول</button>
+        <button class="btn-gold" id="loginBtn" onclick="loginWithCode()">🔓 دخول</button>
         <div id="msgBox" class="msg"></div>
     </div>
 </div>
@@ -66,7 +75,8 @@
         <div id="panelSupervisor" style="display:none;">
             <div class="card">
                 <h3>👨‍💼 لوحة المشرف الميداني</h3>
-                <p>هنا ستتمكن من تسجيل الإشكاليات، ومتابعة المراكز التابعة لك، وإرسال التقارير.</p>
+                <p>أهلاً بك يا <span id="supName" style="color:var(--gold); font-weight:bold;"></span>.</p>
+                <p>هنا ستتمكن قريباً من تسجيل الإشكاليات، ومتابعة المراكز التابعة لك، وإرسال التقارير.</p>
             </div>
         </div>
 
@@ -74,7 +84,27 @@
         <div id="panelAdmin" style="display:none;">
             <div class="card">
                 <h3>🏛️ لوحة الإدارة العامة</h3>
-                <p>هنا ستتمكن من إدارة المستخدمين، توليد الأكواد، ومتابعة إحصائيات النظام بالكامل.</p>
+                <p>مرحباً بك. يمكنك توليد كود جديد هنا وسيُحفظ فوراً في Firebase.</p>
+                <hr style="border-color:rgba(255,255,255,0.1); margin:15px 0;">
+                <div class="form-group">
+                    <label style="font-size:12px; color:var(--gold);">الاسم / المركز</label>
+                    <input type="text" id="newName" placeholder="مثال: سمير العويسي">
+                </div>
+                <div class="form-group">
+                    <label style="font-size:12px; color:var(--gold);">نوع الحساب</label>
+                    <select id="newType">
+                        <option value="supervisor">مشرف ميداني</option>
+                        <option value="ops">غرفة عمليات</option>
+                        <option value="admin">إدارة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:12px; color:var(--gold);">الكود (تلقائي)</label>
+                    <input type="text" id="newCode" placeholder="SUP-XXXX" readonly style="color:var(--gold); font-weight:bold; text-align:center;">
+                </div>
+                <button class="btn-gold btn-small" onclick="generateCode()">🎲 توليد كود</button>
+                <button class="btn-gold btn-small" onclick="saveNewUser()" style="background:#43a047; margin-top:5px;">💾 حفظ في Firebase</button>
+                <div id="adminMsg" class="msg" style="font-size:12px;"></div>
             </div>
         </div>
 
@@ -82,46 +112,75 @@
         <div id="panelOps" style="display:none;">
             <div class="card">
                 <h3>📡 غرفة العمليات</h3>
-                <p>هنا ستتمكن من متابعة البلاغات الحية، والتعامل مع الحالات الطارئة.</p>
+                <p>هنا ستتمكن قريباً من متابعة البلاغات الحية، والتعامل مع الحالات الطارئة.</p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // قواعد البيانات المحلية (للتجربة السريعة بدون إنترنت)
-    // في المرحلة القادمة سنربطها بـ Firebase
-    const USERS = {
-        "SUP-1234": { name: "أحمد المشرف", role: "supervisor" },
-        "ADM-9999": { name: "المدير العام", role: "admin" },
-        "OPS-5555": { name: "غرفة العمليات", role: "ops" }
-    };
+    // إعدادات Firebase (تم تثبيت اسم المشروع الجديد)
+    const FIREBASE_PROJECT = "EMS-Supervisor";
+    const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-    function login() {
+    function fromFSValue(v) {
+        if (!v) return null;
+        if ("stringValue" in v) return v.stringValue;
+        if ("booleanValue" in v) return v.booleanValue;
+        if ("arrayValue" in v) return (v.arrayValue.values || []).map(fromFSValue);
+        if ("mapValue" in v) {
+            const o = {};
+            for (const k in v.mapValue.fields || {}) o[k] = fromFSValue(v.mapValue.fields[k]);
+            return o;
+        }
+        return null;
+    }
+
+    function docToObj(doc) {
+        const obj = {};
+        if (!doc.fields) return obj;
+        for (const k in doc.fields) obj[k] = fromFSValue(doc.fields[k]);
+        obj._id = doc.name.split("/").pop();
+        return obj;
+    }
+
+    async function loginWithCode() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
-        
-        if (!code) {
-            msg.innerText = "⚠️ الرجاء إدخال الكود";
-            return;
-        }
+        const btn = document.getElementById("loginBtn");
 
-        // محاكاة التحقق (في المرحلة القادمة سيتحقق من Firebase)
-        const user = USERS[code];
+        if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
 
-        if (user) {
-            msg.style.color = "#69f0ae";
-            msg.innerText = "✅ جاري الدخول...";
+        btn.innerHTML = `جاري التحقق... <span class="loader"></span>`;
+        btn.disabled = true; msg.innerText = "";
+
+        try {
+            const filterStr = JSON.stringify({"fieldFilter":{"field":{"fieldPath":"code"},"op":"EQUAL","value":{"stringValue":code}}});
+            const res = await fetch(`${FIRESTORE_URL}/access_codes?pageSize=1&where=${encodeURIComponent(filterStr)}`, { cache: "no-store" });
+            const data = await res.json();
             
-            // حفظ الجلسة
-            localStorage.setItem("amb_session", JSON.stringify(user));
+            if (!data.documents || data.documents.length === 0) {
+                msg.innerText = "❌ الكود غير صحيح";
+                btn.innerHTML = "🔓 دخول"; btn.disabled = false; return;
+            }
+
+            const user = docToObj(data.documents[0]);
+            if (user.active === false) {
+                msg.innerText = "⚠️ هذا الكود معطل";
+                btn.innerHTML = "🔓 دخول"; btn.disabled = false; return;
+            }
+
+            let role = user.type || "supervisor";
+            const sessionData = { name: user.name || "مستخدم", code: user.code, role: role };
+
+            localStorage.setItem("amb_session", JSON.stringify(sessionData));
+            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الدخول";
             
-            setTimeout(() => {
-                showDashboard(user);
-            }, 500);
-        } else {
-            msg.style.color = "#ff5252";
-            msg.innerText = "❌ الكود غير صحيح (جرب SUP-1234)";
+            setTimeout(() => { showDashboard(sessionData); }, 500);
+
+        } catch (error) {
+            msg.innerText = "⚠️ خطأ في الشبكة";
+            btn.innerHTML = "🔓 دخول"; btn.disabled = false;
         }
     }
 
@@ -131,25 +190,71 @@
         document.getElementById("welcomeName").innerText = "مرحباً، " + user.name;
 
         const badge = document.getElementById("roleBadge");
-        
-        // إخفاء كل اللوحات أولاً
         document.getElementById("panelSupervisor").style.display = "none";
         document.getElementById("panelAdmin").style.display = "none";
         document.getElementById("panelOps").style.display = "none";
 
-        // إظهار اللوحة المناسبة
         if (user.role === "admin") {
-            badge.className = "role-badge role-admin";
-            badge.innerText = "🏛️ إدارة عامة";
+            badge.className = "role-badge role-admin"; badge.innerText = "🏛️ إدارة عامة";
             document.getElementById("panelAdmin").style.display = "block";
+            generateCode(); // توليد كود تلقائي عند فتح لوحة الإدارة
         } else if (user.role === "ops") {
-            badge.className = "role-badge role-ops";
-            badge.innerText = "📡 عمليات";
+            badge.className = "role-badge role-ops"; badge.innerText = "📡 عمليات";
             document.getElementById("panelOps").style.display = "block";
         } else {
-            badge.className = "role-badge role-supervisor";
-            badge.innerText = "👨‍💼 مشرف ميداني";
+            badge.className = "role-badge role-supervisor"; badge.innerText = "👨‍💼 مشرف ميداني";
             document.getElementById("panelSupervisor").style.display = "block";
+            document.getElementById("supName").innerText = user.name;
+        }
+    }
+
+    // --- دوال لوحة الإدارة ---
+    function generateCode() {
+        const type = document.getElementById("newType").value;
+        let prefix = "SUP";
+        if (type === "admin") prefix = "ADM";
+        if (type === "ops") prefix = "OPS";
+        if (type === "center") prefix = "MCT";
+        
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        document.getElementById("newCode").value = `${prefix}-${randomNum}`;
+    }
+
+    async function saveNewUser() {
+        const name = document.getElementById("newName").value.trim();
+        const type = document.getElementById("newType").value;
+        const code = document.getElementById("newCode").value;
+        const msg = document.getElementById("adminMsg");
+
+        if (!name) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل الاسم"; return; }
+
+        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الحفظ...";
+
+        const payload = {
+            fields: {
+                code: { stringValue: code },
+                name: { stringValue: name },
+                type: { stringValue: type },
+                active: { booleanValue: true }
+            }
+        };
+
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/access_codes`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ في Firebase بنجاح!";
+                document.getElementById("newName").value = "";
+                generateCode();
+            } else {
+                msg.style.color = "#ff5252"; msg.innerText = "❌ فشل الحفظ، تحقق من الصلاحيات";
+            }
+        } catch (e) {
+            msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الاتصال";
         }
     }
 
@@ -158,14 +263,10 @@
         location.reload();
     }
 
-    // التحقق من وجود جلسة سابقة عند تحميل الصفحة
     window.onload = function() {
         const saved = localStorage.getItem("amb_session");
         if (saved) {
-            try {
-                const user = JSON.parse(saved);
-                showDashboard(user);
-            } catch(e) {}
+            try { showDashboard(JSON.parse(saved)); } catch(e) { localStorage.removeItem("amb_session"); }
         }
     };
 </script>
