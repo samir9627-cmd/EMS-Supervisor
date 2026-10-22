@@ -3,43 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#041814">
 <title>نظام الإسعاف الذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; }
-    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; }
-    .logo { width:100px; height:100px; border-radius:20px; border:3px solid var(--gold); margin:20px 0; object-fit:contain; background:var(--green); padding:8px; }
-    h1 { color:var(--gold); font-size:22px; margin-bottom:20px; }
-    .input-box { width:100%; max-width:400px; background:rgba(255,255,255,0.05); padding:20px; border-radius:16px; border:1px solid rgba(201,162,39,0.3); margin-bottom:20px; }
-    input { width:100%; padding:16px; background:rgba(0,0,0,0.3); border:2px solid rgba(201,162,39,0.3); border-radius:12px; color:var(--gold); font-size:20px; text-align:center; font-weight:900; outline:none; margin-bottom:12px; text-transform:uppercase; }
-    button { width:100%; padding:16px; border-radius:12px; border:none; font-size:16px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), #e5c158); color:var(--bg); }
-    .msg { text-align:center; margin-top:10px; font-size:13px; font-weight:bold; color:var(--red); }
-    .loader { display:inline-block; width:16px; height:16px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; margin-left:8px; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:400px; }
-    .stat-card { background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid rgba(201,162,39,0.2); text-align:center; }
-    .stat-card .num { font-size:24px; font-weight:900; color:var(--gold); }
-    .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); }
+    body { background:#041814; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .logo { width:120px; height:120px; border-radius:20px; border:3px solid #c9a227; margin-bottom:20px; }
+    input { width:80%; max-width:300px; padding:15px; border-radius:10px; border:1px solid #c9a227; text-align:center; font-size:20px; margin-bottom:10px; }
+    button { width:80%; max-width:300px; padding:15px; border-radius:10px; border:none; background:#c9a227; color:#000; font-weight:bold; font-size:16px; cursor:pointer; }
+    .msg { margin-top:10px; color:red; font-size:14px; text-align:center; max-width:90%; }
 </style>
 </head>
 <body>
     <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo">
-    <h1>نظام الإسعاف الذكي</h1>
-    
-    <div class="input-box">
-        <input type="text" id="codeInput" placeholder="أدخل كود الدخول">
-        <button id="loginBtn" onclick="login()">🔓 دخول النظام</button>
-        <div id="msgBox" class="msg"></div>
-    </div>
-
-    <div class="stats-grid" style="margin-top:20px;">
-        <div class="stat-card"><div class="num" id="statIssues">0</div><div class="lbl">إشكالية مسجلة</div></div>
-        <div class="stat-card"><div class="num" id="statVisits">0</div><div class="lbl">تقرير زيارة</div></div>
-        <div class="stat-card"><div class="num" id="statUsers">0</div><div class="lbl">مستخدم مسجل</div></div>
-        <div class="stat-card"><div class="num" id="statActive">0</div><div class="lbl">مستخدم نشط</div></div>
-    </div>
+    <h2 style="color:#c9a227; margin-bottom:20px;">نظام الإسعاف الذكي</h2>
+    <input type="text" id="codeInput" placeholder="أدخل الكود">
+    <button id="loginBtn" onclick="login()">دخول</button>
+    <div id="msgBox" class="msg"></div>
 
 <script>
     const FIREBASE_PROJECT = "ems-supervisor";
@@ -50,80 +30,39 @@
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
         
-        if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
-        
-        btn.innerHTML = `جاري التحقق... <span class="loader"></span>`; 
-        btn.disabled = true;
-        msg.innerText = "";
+        if (!code) { msg.innerText = "أدخل الكود"; return; }
+        btn.innerText = "جاري التحقق...";
         
         try {
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
             let foundUser = null;
-            let debugMsg = "لم يتم العثور على تطابق. ";
-            
-            if (data.documents && data.documents.length > 0) {
+            if (data.documents) {
                 for (let doc of data.documents) {
-                    if (!doc.fields) continue;
-                    
-                    // البحث عن أي حقل اسمه code أو access_code
-                    let docCode = "";
-                    if (doc.fields.code && doc.fields.code.stringValue) {
-                        docCode = doc.fields.code.stringValue;
-                    } else if (doc.fields.access_code && doc.fields.access_code.stringValue) {
-                        docCode = doc.fields.access_code.stringValue;
-                    }
-                    
-                    if (docCode && docCode.trim().toUpperCase() === code) {
+                    if (doc.fields && doc.fields.code && doc.fields.code.stringValue.toUpperCase() === code) {
                         foundUser = {
                             name: doc.fields.name ? doc.fields.name.stringValue : "مستخدم",
                             type: doc.fields.type ? doc.fields.type.stringValue : "supervisor",
-                            code: docCode
+                            code: code
                         };
                         break;
                     }
-                    debugMsg += `(الموجود: ${docCode}) `;
                 }
-            } else {
-                debugMsg = "قاعدة البيانات فارغة.";
             }
             
-            if (!foundUser) { 
-                msg.innerText = "❌ " + debugMsg; // عرض تفاصيل الخطأ
-                btn.innerHTML = "🔓 دخول"; 
-                btn.disabled = false; 
-                return; 
-            }
+            if (!foundUser) { msg.innerText = "❌ الكود غير صحيح"; btn.innerText = "دخول"; return; }
             
+            // حفظ الجلسة بشكل موحد
             localStorage.setItem("amb_session", JSON.stringify(foundUser));
             
+            // التوجيه
             if (foundUser.type === "admin") window.location.href = "admin.html";
             else if (foundUser.type === "ops") window.location.href = "ops.html";
             else window.location.href = "app.html";
 
-        } catch(e) { 
-            msg.innerText = "⚠️ خطأ في الاتصال: " + e.message; 
-            btn.innerHTML = "🔓 دخول"; 
-            btn.disabled = false; 
-        }
+        } catch(e) { msg.innerText = "خطأ في الشبكة"; btn.innerText = "دخول"; }
     }
-
-    async function loadStats() {
-        try {
-            const resUsers = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json());
-            if (resUsers.documents) {
-                document.getElementById("statUsers").innerText = resUsers.documents.length;
-                let active = 0;
-                resUsers.documents.forEach(d => { 
-                    if (d.fields && d.fields.active && d.fields.active.booleanValue !== false) active++; 
-                });
-                document.getElementById("statActive").innerText = active;
-            }
-        } catch(e) {}
-    }
-    
-    window.onload = function() { loadStats(); };
 </script>
 </body>
 </html>
