@@ -2,37 +2,171 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة العمليات</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#041814">
+<title>غرفة العمليات</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; }
-    body { background:var(--bg); color:#fff; min-height:100vh; }
-    .topbar { background:var(--green); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); }
+    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; --purple:#ab47bc; }
+    body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; }
+    
+    /* الشريط العلوي */
+    .topbar { background:var(--green); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
     .topbar h2 { font-size:14px; color:var(--gold); }
-    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; }
-    .content { padding:15px; text-align:center; }
+    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; }
+    
+    .content { padding:15px; max-width:700px; margin:0 auto; }
+    
+    /* مؤشرات سريعة */
+    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px; }
+    .stat-box { background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid rgba(201,162,39,0.2); text-align:center; }
+    .stat-box .num { font-size:28px; font-weight:900; color:var(--gold); }
+    .stat-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px; }
+    .stat-box.issue { border-color:rgba(229,57,53,0.4); }
+    .stat-box.issue .num { color:var(--red); }
+    .stat-box.visit { border-color:rgba(41,182,246,0.4); }
+    .stat-box.visit .num { color:var(--blue); }
+
+    /* قائمة الأحداث */
+    .card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; }
+    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; display:flex; align-items:center; gap:8px; }
+    
+    .activity-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; animation:fadeIn 0.3s; }
+    .activity-item.issue { border-right-color:var(--red); }
+    .activity-item.visit { border-right-color:var(--blue); }
+    
+    @keyframes fadeIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }
+    
+    .act-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .act-title { font-weight:900; font-size:14px; }
+    .activity-item.issue .act-title { color:#ff8a80; }
+    .activity-item.visit .act-title { color:#81d4fa; }
+    
+    .act-date { font-size:10px; color:rgba(255,255,255,0.6); }
+    .act-supervisor { font-size:12px; color:var(--gold); margin-bottom:6px; }
+    .act-desc { font-size:12px; color:rgba(255,255,255,0.8); line-height:1.5; }
+    
+    .refresh-btn { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); padding:10px 25px; border-radius:20px; background:var(--gold); color:var(--bg); border:none; font-weight:900; font-size:12px; box-shadow:0 5px 15px rgba(0,0,0,0.5); cursor:pointer; }
 </style>
 </head>
 <body>
+
 <div class="topbar">
     <h2 id="welcomeName">غرفة العمليات</h2>
     <button class="btn-logout" onclick="logout()">خروج</button>
 </div>
+
 <div class="content">
-    <h3 style="color:var(--gold);">📡 لوحة العمليات</h3>
-    <p style="margin-top:20px; font-size:14px;">مرحباً بك. سيتم تفعيل ميزات المتابعة الحية قريباً.</p>
+    <!-- المؤشرات -->
+    <div class="stats-grid">
+        <div class="stat-box issue">
+            <div class="num" id="statIssues">0</div>
+            <div class="lbl">إشكالية مسجلة</div>
+        </div>
+        <div class="stat-box visit">
+            <div class="num" id="statVisits">0</div>
+            <div class="lbl">تقرير زيارة</div>
+        </div>
+    </div>
+
+    <!-- سجل العمليات المباشر -->
+    <div class="card">
+        <h3>📡 الشاشة المباشرة (آخر النشاطات)</h3>
+        <div id="liveFeed">
+            <p style="text-align:center; font-size:12px; color:#ccc;">جاري جلب البيانات...</p>
+        </div>
+    </div>
 </div>
+
+<button class="refresh-btn" onclick="loadOpsData()">🔄 تحديث البيانات</button>
+
 <script>
-    window.onload = function() {
-        const saved = localStorage.getItem("amb_session");
-        if (!saved) { location.href = "index.html"; return; }
-        const user = JSON.parse(saved);
-        if (user.role !== 'ops') { location.href = "index.html"; return; }
-        document.getElementById("welcomeName").innerText = user.name;
+    const FIREBASE_PROJECT = "ems-supervisor";
+    const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+
+    // حماية الصفحة
+    const sessionStr = localStorage.getItem("amb_session");
+    if (!sessionStr) window.location.href = "index.html";
+    const currentUser = JSON.parse(sessionStr || "{}");
+    if (currentUser.type !== "ops") window.location.href = "index.html";
+    
+    document.getElementById("welcomeName").innerText = currentUser.name || "العمليات";
+
+    function logout() { localStorage.removeItem("amb_session"); window.location.href = "index.html"; }
+
+    function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
+    
+    function docToObj(doc) {
+        const obj = {}; if (!doc.fields) return obj;
+        for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
+        obj._id = doc.name.split("/").pop(); return obj;
+    }
+
+    async function loadOpsData() {
+        const feedDiv = document.getElementById("liveFeed");
+        feedDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#e5c158;'>⏳ جاري التحديث...</p>";
+
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/activities?pageSize=1000`, { cache: "no-store" });
+            const data = await res.json();
+
+            if (!data.documents || data.documents.length === 0) {
+                feedDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد نشاطات في النظام.</p>";
+                return;
+            }
+
+            // تحويل وترتيب
+            let allActs = data.documents.map(docToObj).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            // حساب الإحصائيات
+            let issuesCount = allActs.filter(a => a.type === 'issue').length;
+            let visitsCount = allActs.filter(a => a.type === 'visit').length;
+            
+            document.getElementById("statIssues").innerText = issuesCount;
+            document.getElementById("statVisits").innerText = visitsCount;
+
+            // عرض آخر 30 نشاط
+            feedDiv.innerHTML = allActs.slice(0, 30).map(a => {
+                const dateObj = new Date(a.timestamp);
+                const timeStr = dateObj.toLocaleTimeString('ar-OM', { hour: '2-digit', minute: '2-digit' });
+                const dateStr = dateObj.toLocaleDateString('ar-OM');
+                
+                if (a.type === 'issue') {
+                    return `
+                        <div class="activity-item issue">
+                            <div class="act-header">
+                                <span class="act-title">🚩 إشكالية: ${a.issueType}</span>
+                                <span class="act-date">${dateStr} - ${timeStr}</span>
+                            </div>
+                            <div class="act-supervisor">👤 المشرف: ${a.supervisor}</div>
+                            <div class="act-desc">${a.description}</div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="activity-item visit">
+                            <div class="act-header">
+                                <span class="act-title">📋 تقرير زيارة (تقييم: ${a.score}%)</span>
+                                <span class="act-date">${dateStr} - ${timeStr}</span>
+                            </div>
+                            <div class="act-supervisor">👤 المشرف: ${a.supervisor}</div>
+                            <div class="act-desc">${a.notes || 'لا توجد ملاحظات.'}</div>
+                        </div>
+                    `;
+                }
+            }).join("");
+
+        } catch(e) {
+            feedDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ff5252;'>خطأ في الاتصال بالشبكة.</p>";
+        }
+    }
+
+    // تحديث تلقائي كل 30 ثانية
+    window.onload = function() { 
+        loadOpsData(); 
+        setInterval(loadOpsData, 30000); 
     };
-    function logout() { localStorage.removeItem("amb_session"); location.href = "index.html"; }
 </script>
 </body>
 </html>
