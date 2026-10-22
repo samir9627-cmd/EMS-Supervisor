@@ -45,12 +45,11 @@
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-    function fromFS(v) {
-        if (!v) return null;
-        if ("stringValue" in v) return v.stringValue;
-        if ("booleanValue" in v) return v.booleanValue;
-        if ("mapValue" in v) { const o = {}; for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]); return o; }
-        return null;
+    // دالة مبسطة جداً لقراءة البيانات
+    function getStringValue(field) {
+        if (!field) return "";
+        if (field.stringValue !== undefined) return field.stringValue;
+        return String(field);
     }
 
     async function login() {
@@ -68,40 +67,41 @@
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
-            let user = null;
-            if (data.documents) {
+            let foundUser = null;
+            if (data.documents && data.documents.length > 0) {
                 for (let doc of data.documents) {
-                    const obj = fromFS(doc.fields);
-                    // التحقق من الكود بطريقة آمنة
-                    if (obj && obj.code && String(obj.code).toUpperCase() === code) { 
-                        user = obj; 
-                        break; 
+                    if (!doc.fields || !doc.fields.code) continue;
+                    
+                    const docCode = getStringValue(doc.fields.code).toUpperCase();
+                    
+                    if (docCode === code) {
+                        foundUser = {
+                            name: getStringValue(doc.fields.name),
+                            type: getStringValue(doc.fields.type),
+                            code: docCode
+                        };
+                        break;
                     }
                 }
             }
             
-            if (!user) { 
+            if (!foundUser) { 
                 msg.innerText = "❌ الكود غير صحيح"; 
                 btn.innerHTML = "🔓 دخول"; 
                 btn.disabled = false; 
                 return; 
             }
             
-            // حفظ الجلسة بأمان
-            const session = { 
-                name: user.name || "مستخدم", 
-                code: user.code, 
-                role: user.type || 'supervisor' 
-            };
-            localStorage.setItem("amb_session", JSON.stringify(session));
+            // حفظ الجلسة
+            localStorage.setItem("amb_session", JSON.stringify(foundUser));
             
-            // توجيه المستخدم
-            if (session.role === "admin") window.location.href = "admin.html";
-            else if (session.role === "ops") window.location.href = "ops.html";
+            // التوجيه
+            if (foundUser.type === "admin") window.location.href = "admin.html";
+            else if (foundUser.type === "ops") window.location.href = "ops.html";
             else window.location.href = "app.html";
 
         } catch(e) { 
-            msg.innerText = "⚠️ خطأ في الشبكة أو الاتصال"; 
+            msg.innerText = "⚠️ خطأ في الشبكة"; 
             btn.innerHTML = "🔓 دخول"; 
             btn.disabled = false; 
         }
@@ -114,12 +114,11 @@
                 document.getElementById("statUsers").innerText = resUsers.documents.length;
                 let active = 0;
                 resUsers.documents.forEach(d => { 
-                    const obj = fromFS(d.fields);
-                    if (obj && obj.active !== false) active++; 
+                    if (d.fields && d.fields.active && d.fields.active.booleanValue !== false) active++; 
                 });
                 document.getElementById("statActive").innerText = active;
             }
-        } catch(e) { console.log("Stats error:", e); }
+        } catch(e) {}
     }
     
     window.onload = function() { loadStats(); };
