@@ -45,13 +45,6 @@
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-    // دالة مبسطة جداً لقراءة البيانات
-    function getStringValue(field) {
-        if (!field) return "";
-        if (field.stringValue !== undefined) return field.stringValue;
-        return String(field);
-    }
-
     async function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
@@ -68,40 +61,49 @@
             const data = await res.json();
             
             let foundUser = null;
+            let debugMsg = "لم يتم العثور على تطابق. ";
+            
             if (data.documents && data.documents.length > 0) {
                 for (let doc of data.documents) {
-                    if (!doc.fields || !doc.fields.code) continue;
+                    if (!doc.fields) continue;
                     
-                    const docCode = getStringValue(doc.fields.code).toUpperCase();
+                    // البحث عن أي حقل اسمه code أو access_code
+                    let docCode = "";
+                    if (doc.fields.code && doc.fields.code.stringValue) {
+                        docCode = doc.fields.code.stringValue;
+                    } else if (doc.fields.access_code && doc.fields.access_code.stringValue) {
+                        docCode = doc.fields.access_code.stringValue;
+                    }
                     
-                    if (docCode === code) {
+                    if (docCode && docCode.trim().toUpperCase() === code) {
                         foundUser = {
-                            name: getStringValue(doc.fields.name),
-                            type: getStringValue(doc.fields.type),
+                            name: doc.fields.name ? doc.fields.name.stringValue : "مستخدم",
+                            type: doc.fields.type ? doc.fields.type.stringValue : "supervisor",
                             code: docCode
                         };
                         break;
                     }
+                    debugMsg += `(الموجود: ${docCode}) `;
                 }
+            } else {
+                debugMsg = "قاعدة البيانات فارغة.";
             }
             
             if (!foundUser) { 
-                msg.innerText = "❌ الكود غير صحيح"; 
+                msg.innerText = "❌ " + debugMsg; // عرض تفاصيل الخطأ
                 btn.innerHTML = "🔓 دخول"; 
                 btn.disabled = false; 
                 return; 
             }
             
-            // حفظ الجلسة
             localStorage.setItem("amb_session", JSON.stringify(foundUser));
             
-            // التوجيه
             if (foundUser.type === "admin") window.location.href = "admin.html";
             else if (foundUser.type === "ops") window.location.href = "ops.html";
             else window.location.href = "app.html";
 
         } catch(e) { 
-            msg.innerText = "⚠️ خطأ في الشبكة"; 
+            msg.innerText = "⚠️ خطأ في الاتصال: " + e.message; 
             btn.innerHTML = "🔓 دخول"; 
             btn.disabled = false; 
         }
