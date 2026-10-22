@@ -2,38 +2,326 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة المشرف</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#041814">
+<title>لوحة المشرف الميداني</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    body { background:#041814; color:#fff; min-height:100vh; }
-    .topbar { background:#0d4a42; padding:15px; display:flex; justify-content:space-between; border-bottom:2px solid #c9a227; }
-    .btn { background:#e53935; color:#fff; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; }
-    .content { padding:20px; text-align:center; }
+    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
+    body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; }
+    
+    /* الشريط العلوي */
+    .topbar { background:var(--green); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
+    .topbar h2 { font-size:14px; color:var(--gold); }
+    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; }
+    
+    /* المحتوى */
+    .content { padding:15px; max-width:600px; margin:0 auto; }
+    
+    /* الأزرار الرئيسية */
+    .main-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px; }
+    .action-btn { padding:15px 10px; border-radius:12px; border:none; font-size:14px; font-weight:900; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; }
+    .action-btn .icon { font-size:28px; }
+    .btn-issue { background:linear-gradient(135deg, #e53935, #ff5252); }
+    .btn-visit { background:linear-gradient(135deg, #29b6f6, #64b5f6); }
+    
+    /* البطاقات */
+    .card { background:rgba(255,255,255,0.05); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; display:none; }
+    .card.active { display:block; animation:fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; }
+    
+    /* النماذج */
+    .form-group { margin-bottom:12px; }
+    .form-group label { display:block; font-size:12px; color:var(--gold); margin-bottom:4px; }
+    input, select, textarea { width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(201,162,39,0.3); border-radius:8px; color:#fff; font-size:14px; outline:none; }
+    select option { background:var(--bg); }
+    textarea { resize:vertical; min-height:80px; }
+    
+    button.btn-save { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); margin-top:10px; }
+    button.btn-cancel { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:rgba(255,255,255,0.1); color:#fff; margin-top:8px; }
+    .msg { text-align:center; font-size:12px; font-weight:bold; margin-top:10px; }
+    
+    /* قائمة النشاطات */
+    .activity-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; }
+    .act-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+    .act-title { font-weight:900; color:var(--gold); font-size:14px; }
+    .act-date { font-size:10px; color:rgba(255,255,255,0.6); }
+    .act-desc { font-size:12px; color:rgba(255,255,255,0.8); margin-bottom:10px; }
+    .btn-print { width:auto; padding:6px 15px; border-radius:6px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; }
+    
+    /* 📄 تنسيق الطباعة */
+    #printArea { display:none; }
+    @media print {
+        @page { size: A4; margin: 10mm; }
+        body { background:#fff !important; color:#000 !important; }
+        body * { visibility: hidden; }
+        #printArea, #printArea * { visibility: visible; }
+        #printArea { display:block !important; position:absolute; left:0; top:0; width:100%; }
+        .topbar, .content { display:none !important; }
+    }
+    .print-form { background:#fff; color:#000; padding:20px; border:1px solid #ccc; }
+    .print-header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px; }
+    .print-header img { width:60px; }
+    .print-header div { text-align:center; font-weight:bold; font-size:14px; }
+    .print-title { text-align:center; font-size:18px; font-weight:900; margin-bottom:20px; background:#eee; padding:8px; }
+    .print-table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; }
+    .print-table th, .print-table td { border:1px solid #000; padding:8px; text-align:right; }
+    .print-table th { background:#eee; width:30%; }
+    .print-signatures { display:flex; justify-content:space-between; margin-top:50px; font-size:14px; font-weight:bold; text-align:center; }
+    .print-signatures div { width:30%; }
 </style>
 </head>
 <body>
+
+<!-- الشريط العلوي -->
 <div class="topbar">
-    <h3 id="nameDisplay">جاري التحميل...</h3>
-    <button class="btn" onclick="logout()">خروج</button>
+    <h2 id="welcomeName">المشرف</h2>
+    <button class="btn-logout" onclick="logout()">خروج</button>
 </div>
+
+<!-- المحتوى -->
 <div class="content">
-    <h2 style="color:#c9a227; margin-top:50px;">👨‍💼 لوحة المشرف الميداني</h2>
-    <p style="margin-top:20px;">مرحباً بك. (هنا سيتم بناء واجهة الإشكاليات والزيارات)</p>
-</div>
-<script>
-    const sessionStr = localStorage.getItem("amb_session");
     
-    if (!sessionStr) {
-        window.location.href = "index.html"; 
-    } else {
-        const user = JSON.parse(sessionStr);
-        if (user.type !== "supervisor") window.location.href = "index.html";
-        else document.getElementById("nameDisplay").innerText = user.name;
-    }
+    <!-- الأزرار الرئيسية -->
+    <div class="main-actions">
+        <button class="action-btn btn-issue" onclick="showForm('issue')">
+            <span class="icon">🚩</span>
+            <span>تسجيل إشكالية</span>
+        </button>
+        <button class="action-btn btn-visit" onclick="showForm('visit')">
+            <span class="icon">📋</span>
+            <span>تقرير زيارة</span>
+        </button>
+    </div>
+
+    <!-- نموذج الإشكالية -->
+    <div class="card" id="card-issue">
+        <h3>🚩 تسجيل إشكالية جديدة</h3>
+        <div class="form-group">
+            <label>نوع الإشكالية</label>
+            <select id="issueType">
+                <option value="تأخر استجابة">تأخر استجابة</option>
+                <option value="توثيق ناقص">توثيق ناقص</option>
+                <option value="تعامل غير احترافي">تعامل غير احترافي</option>
+                <option value="نقص تجهيزات">نقص تجهيزات</option>
+                <option value="مشكلة في المركبة">مشكلة في المركبة</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>الوصف</label>
+            <textarea id="issueDesc" placeholder="اكتب تفاصيل الإشكالية هنا..."></textarea>
+        </div>
+        <button class="btn-save" onclick="submitIssue()">💾 حفظ الإشكالية</button>
+        <button class="btn-cancel" onclick="hideForms()">إلغاء</button>
+        <div id="issueMsg" class="msg"></div>
+    </div>
+
+    <!-- نموذج الزيارة -->
+    <div class="card" id="card-visit">
+        <h3>📋 تقرير زيارة مركز</h3>
+        <div class="form-group">
+            <label>تقييم الزيارة (من 100)</label>
+            <input type="number" id="visitScore" min="0" max="100" placeholder="مثال: 95">
+        </div>
+        <div class="form-group">
+            <label>ملاحظات الزيارة</label>
+            <textarea id="visitNotes" placeholder="اكتب ملاحظاتك هنا..."></textarea>
+        </div>
+        <button class="btn-save" onclick="submitVisit()">💾 حفظ التقرير</button>
+        <button class="btn-cancel" onclick="hideForms()">إلغاء</button>
+        <div id="visitMsg" class="msg"></div>
+    </div>
+
+    <!-- قائمة النشاطات -->
+    <div class="card active" id="card-activities">
+        <h3>📌 آخر النشاطات المسجلة</h3>
+        <div id="activitiesList">
+            <p style="text-align:center; font-size:12px; color:#ccc;">جاري التحميل...</p>
+        </div>
+    </div>
+
+</div>
+
+<!-- منطقة الطباعة (مخفية) -->
+<div id="printArea"></div>
+
+<script>
+    const FIREBASE_PROJECT = "ems-supervisor";
+    const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+
+    // التحقق من الجلسة
+    const sessionStr = localStorage.getItem("amb_session");
+    if (!sessionStr) window.location.href = "index.html";
+    const currentUser = JSON.parse(sessionStr || "{}");
+    if (currentUser.type !== "supervisor") window.location.href = "index.html";
+    
+    document.getElementById("welcomeName").innerText = currentUser.name || "المشرف";
 
     function logout() { localStorage.removeItem("amb_session"); window.location.href = "index.html"; }
+
+    // دوال مساعدة
+    function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
+    function docToObj(doc) {
+        const obj = {}; if (!doc.fields) return obj;
+        for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
+        obj._id = doc.name.split("/").pop(); return obj;
+    }
+
+    // إظهار وإخفاء النماذج
+    function showForm(type) {
+        document.getElementById("card-issue").classList.remove("active");
+        document.getElementById("card-visit").classList.remove("active");
+        document.getElementById("card-activities").classList.remove("active");
+        
+        if (type === 'issue') document.getElementById("card-issue").classList.add("active");
+        if (type === 'visit') document.getElementById("card-visit").classList.add("active");
+    }
+    function hideForms() {
+        document.getElementById("card-issue").classList.remove("active");
+        document.getElementById("card-visit").classList.remove("active");
+        document.getElementById("card-activities").classList.add("active");
+    }
+
+    // حفظ إشكالية
+    async function submitIssue() {
+        const type = document.getElementById("issueType").value;
+        const desc = document.getElementById("issueDesc").value.trim();
+        const msg = document.getElementById("issueMsg");
+        if (!desc) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ اكتب الوصف"; return; }
+
+        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الحفظ...";
+        const payload = {
+            fields: {
+                supervisor: { stringValue: currentUser.name },
+                type: { stringValue: "issue" },
+                issueType: { stringValue: type },
+                description: { stringValue: desc },
+                timestamp: { stringValue: new Date().toISOString() }
+            }
+        };
+
+        try {
+            await fetch(`${FIRESTORE_URL}/activities`, { method: "POST", body: JSON.stringify(payload) });
+            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ بنجاح";
+            document.getElementById("issueDesc").value = "";
+            setTimeout(() => { hideForms(); loadActivities(); }, 1000);
+        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
+    }
+
+    // حفظ زيارة
+    async function submitVisit() {
+        const score = document.getElementById("visitScore").value;
+        const notes = document.getElementById("visitNotes").value.trim();
+        const msg = document.getElementById("visitMsg");
+        if (!score) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل التقييم"; return; }
+
+        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الحفظ...";
+        const payload = {
+            fields: {
+                supervisor: { stringValue: currentUser.name },
+                type: { stringValue: "visit" },
+                center: { stringValue: currentUser.name },
+                score: { stringValue: score },
+                notes: { stringValue: notes },
+                timestamp: { stringValue: new Date().toISOString() }
+            }
+        };
+
+        try {
+            await fetch(`${FIRESTORE_URL}/activities`, { method: "POST", body: JSON.stringify(payload) });
+            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ بنجاح";
+            document.getElementById("visitScore").value = "";
+            document.getElementById("visitNotes").value = "";
+            setTimeout(() => { hideForms(); loadActivities(); }, 1000);
+        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
+    }
+
+    // تحميل النشاطات
+    async function loadActivities() {
+        const listDiv = document.getElementById("activitiesList");
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/activities?pageSize=100`, { cache: "no-store" });
+            const data = await res.json();
+
+            if (!data.documents) {
+                listDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد نشاطات مسجلة.</p>";
+                return;
+            }
+
+            let myActs = data.documents.map(docToObj)
+                .filter(a => a.supervisor === currentUser.name)
+                .sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            if (myActs.length === 0) {
+                listDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد نشاطات مسجلة.</p>";
+                return;
+            }
+
+            window.myActsList = myActs;
+            listDiv.innerHTML = myActs.map(a => `
+                <div class="activity-item">
+                    <div class="act-header">
+                        <span class="act-title">${a.type === 'issue' ? '🚩 إشكالية' : '📋 زيارة'}</span>
+                        <span class="act-date">${new Date(a.timestamp).toLocaleDateString('ar-OM')}</span>
+                    </div>
+                    <div class="act-desc">${a.type === 'issue' ? a.issueType : 'التقييم: ' + a.score + '%'}</div>
+                    <button class="btn-print" onclick="printReport('${a._id}')">🖨️ طباعة</button>
+                </div>
+            `).join("");
+
+        } catch(e) { listDiv.innerHTML = "<p style='text-align:center; color:#ff5252;'>خطأ في التحميل.</p>"; }
+    }
+
+    // الطباعة
+    function printReport(id) {
+        const act = window.myActsList.find(a => a._id === id);
+        if (!act) return;
+        
+        const printDiv = document.getElementById("printArea");
+        const dateStr = new Date(act.timestamp).toLocaleString('ar-OM');
+        let tableRows = "";
+        let title = "";
+
+        if (act.type === 'issue') {
+            title = "تقرير إشكالية ميدانية";
+            tableRows = `
+                <tr><th>اسم المشرف</th><td>${act.supervisor}</td></tr>
+                <tr><th>التاريخ</th><td>${dateStr}</td></tr>
+                <tr><th>نوع الإشكالية</th><td>${act.issueType}</td></tr>
+                <tr><th>التفاصيل</th><td>${act.description}</td></tr>
+            `;
+        } else {
+            title = "تقرير زيارة مركز";
+            tableRows = `
+                <tr><th>اسم المشرف</th><td>${act.supervisor}</td></tr>
+                <tr><th>المركز</th><td>${act.center}</td></tr>
+                <tr><th>التاريخ</th><td>${dateStr}</td></tr>
+                <tr><th>التقييم العام</th><td style="font-size:16px; font-weight:bold;">${act.score}%</td></tr>
+                <tr><th>ملاحظات</th><td>${act.notes}</td></tr>
+            `;
+        }
+
+        printDiv.innerHTML = `
+            <div class="print-form">
+                <div class="print-header">
+                    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg">
+                    <div>هيئة الدفاع المدني والإسعاف<br>الإدارة العامة للإسعاف</div>
+                    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg">
+                </div>
+                <div class="print-title">${title}</div>
+                <table class="print-table">${tableRows}</table>
+                <div class="print-signatures">
+                    <div>توقيع المشرف<br><br>..................</div>
+                    <div>اعتماد الضابط<br><br>..................</div>
+                </div>
+            </div>
+        `;
+        window.print();
+    }
+
+    window.onload = function() { loadActivities(); };
 </script>
 </body>
 </html>
