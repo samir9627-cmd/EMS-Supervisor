@@ -14,9 +14,8 @@
     button { width:100%; padding:15px; border-radius:10px; border:none; background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; font-size:16px; font-weight:900; cursor:pointer; font-family:'Cairo'; }
     #msg { margin-top:15px; font-size:14px; color:#ff5252; min-height:20px; font-weight:bold; }
 </style>
-<!-- استدعاء Firebase كـ Compat (يعمل بدون Modules) -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -38,10 +37,8 @@
       appId: "1:230655268524:web:5043a458af3d79989ff109"
     };
 
-    // تهيئة Firebase
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const SECRET = "EMS_SECRET_PASSWORD_2026!";
+    const db = firebase.firestore();
 
     function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
@@ -55,37 +52,36 @@
         msg.textContent = "";
         msg.style.color = "#ff5252";
 
-        // تحويل الكود إلى إيميل وهمي
-        const email = `${code.toLowerCase().replace(/\s+/g, '')}@ems-system.local`;
-        
-        auth.signInWithEmailAndPassword(email, SECRET)
-            .then(() => {
-                msg.style.color = "#69f0ae";
-                msg.textContent = "✅ تم الدخول بنجاح، جاري التحويل...";
-                
-                setTimeout(() => {
-                    if (code.startsWith("ADM")) window.location.href = "./admin.html";
-                    else if (code.startsWith("OPS")) window.location.href = "./ops.html";
-                    else window.location.href = "./app.html";
-                }, 1000);
-            })
-            .catch((error) => {
-                console.error(error);
-                msg.textContent = "❌ خطأ: " + error.message;
-                btn.textContent = "دخول";
-                btn.disabled = false;
-            });
+        // البحث عن الكود في قاعدة البيانات (Firestore)
+        db.collection("access_code").where("code", "==", code).get()
+          .then(snapshot => {
+              if (snapshot.empty) {
+                  msg.textContent = "❌ الكود غير موجود";
+                  btn.textContent = "دخول"; btn.disabled = false;
+                  return;
+              }
+              
+              // الكود موجود! جلب بيانات المستخدم
+              const userData = snapshot.docs[0].data();
+              
+              // حفظ الجلسة في المتصفح
+              localStorage.setItem("ems_session", JSON.stringify(userData));
+              
+              msg.style.color = "#69f0ae";
+              msg.textContent = "✅ تم الدخول بنجاح...";
+              
+              // التوجيه حسب نوع المستخدم
+              setTimeout(() => {
+                  if (userData.type === "admin") window.location.href = "./admin.html";
+                  else if (userData.type === "ops") window.location.href = "./ops.html";
+                  else window.location.href = "./app.html";
+              }, 1000);
+          })
+          .catch(error => {
+              msg.textContent = "خطأ في الاتصال: " + error.message;
+              btn.textContent = "دخول"; btn.disabled = false;
+          });
     }
-
-    // الدخول التلقائي لو كان مسجلاً مسبقاً
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            const code = user.email.split('@')[0].toUpperCase();
-            if (code.startsWith("ADM")) window.location.href = "./admin.html";
-            else if (code.startsWith("OPS")) window.location.href = "./ops.html";
-            else window.location.href = "./app.html";
-        }
-    });
 </script>
 </body>
 </html>
