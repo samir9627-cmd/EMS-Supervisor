@@ -4,94 +4,223 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>نظام الإسعاف الذكي — البوابة</title>
+<title>نظام الإسعاف الذكي — بوابة الدخول</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
+
 :root {
   --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
   --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
   --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252;
-  --amber:#fb8c00; --blue:#29b6f6; --purple:#ab47bc;
   --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
-html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
-body { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; }
-body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
-/* نجوم الخلفية */
-.stars { position:fixed; inset:0; z-index:-1; pointer-events:none; }
+html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; min-height:100vh; }
+body { display:flex; flex-direction:column; align-items:center; padding:20px; position:relative; }
+
+/* ═══ الخلفية السحرية ═══ */
+body::before {
+  content:''; position:fixed; inset:0; z-index:-2;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%),
+    linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
+}
+
+/* شبكة متحركة */
+body::after {
+  content:''; position:fixed; inset:0; z-index:-1;
+  background-image: linear-gradient(rgba(151,141,91,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(151,141,91,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+}
+@keyframes gridMove { from { background-position: 0 0; } to { background-position: 40px 40px; } }
+
+.stars { position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
 .star { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0.4; animation:twinkle 4s infinite; }
-@keyframes twinkle { 0%,100%{opacity:0.2; transform:scale(0.8);} 50%{opacity:0.9; transform:scale(1.4);} }
+@keyframes twinkle { 0%,100%{opacity:0.1; transform:scale(0.8);} 50%{opacity:0.9; transform:scale(1.5);} }
 
-/* شاشة التحميل */
-#loadingScreen { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.5s; }
-.loading-logo { width:120px; height:120px; border-radius:24px; border:3px solid var(--gold); padding:8px; background:rgba(13,74,66,0.8); animation:float 2s infinite; }
-@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
-.loading-text { color:var(--gold-light); font-size:16px; font-weight:900; margin-top:20px; }
-.loading-bar { width:200px; height:4px; background:rgba(255,255,255,0.1); border-radius:4px; margin-top:15px; overflow:hidden; }
-.loading-bar::after { content:''; display:block; width:50%; height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-light)); animation:loadMove 1.5s infinite; }
+/* ═══ شاشة التحميل ═══ */
+#loadingScreen {
+  position:fixed; inset:0; z-index:9999;
+  background:linear-gradient(135deg, #041814, #0a5a3a, #082b26);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  transition:opacity 0.6s;
+}
+.loading-logo {
+  width:160px; height:160px; object-fit:contain;
+  background:rgba(13,74,66,0.8); border-radius:32px; padding:15px;
+  border:3px solid var(--gold);
+  filter:drop-shadow(0 0 40px rgba(151,141,91,0.9));
+  animation:logoPulse 2s infinite;
+}
+@keyframes logoPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+.loading-text { color:var(--gold-light); font-size:18px; font-weight:900; margin-top:24px; letter-spacing:2px; }
+.loading-bar { width:240px; height:4px; background:rgba(255,255,255,0.1); border-radius:4px; margin-top:15px; overflow:hidden; }
+.loading-bar::after { content:''; display:block; width:50%; height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-light)); animation:loadMove 1.5s infinite; box-shadow:0 0 20px rgba(151,141,91,0.8); }
 @keyframes loadMove { 0%{transform:translateX(-100%);} 100%{transform:translateX(200%);} }
 
-/* الهيدر */
-.header { text-align:center; margin-top:20px; margin-bottom:30px; }
-.logo { width:110px; height:110px; border-radius:22px; border:2px solid var(--gold); background:var(--teal); padding:8px; object-fit:contain; animation:float 3s infinite; }
-h1 { color:var(--gold-light); font-size:24px; margin-top:15px; font-weight:900; }
-.subtitle { color:rgba(255,255,255,0.6); font-size:12px; margin-top:5px; letter-spacing:1px; }
+/* ═══ الهيدر ═══ */
+.header { text-align:center; margin-top:40px; margin-bottom:30px; animation:fadeInDown 0.8s cubic-bezier(0.4,0,0.2,1); }
+@keyframes fadeInDown { from{opacity:0; transform:translateY(-30px);} to{opacity:1; transform:translateY(0);} }
 
-/* بطاقة الدخول */
-.login-box { width:100%; max-width:400px; background:rgba(13,74,66,0.6); backdrop-filter:blur(10px); padding:24px; border-radius:24px; border:1px solid rgba(151,141,91,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.5); z-index:1; margin-bottom:20px; }
-.login-title { color:var(--gold-light); text-align:center; margin-bottom:20px; font-size:15px; font-weight:900; }
-.input-group { position:relative; margin-bottom:15px; }
-input[type="text"] { width:100%; padding:18px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-light); font-size:16px; font-weight:900; text-align:center; text-transform:uppercase; outline:none; transition:0.3s; }
-input[type="text"]:focus { border-color:var(--gold); box-shadow:0 0 20px rgba(151,141,91,0.3); }
-.btn-login { width:100%; padding:16px; border-radius:16px; border:none; font-size:16px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); display:flex; justify-content:center; align-items:center; gap:8px; transition:0.2s; }
-.btn-login:active { transform:scale(0.97); }
+.logo-wrap { position:relative; display:inline-block; margin-bottom:16px; }
+.logo-wrap::before {
+  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:240px; height:240px;
+  background:radial-gradient(circle, rgba(151,141,91,0.4) 0%, transparent 70%);
+  border-radius:50%; animation:glowPulse 3s infinite; z-index:-1;
+}
+@keyframes glowPulse { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.5;} 50%{transform:translate(-50%,-50%) scale(1.2); opacity:1;} }
 
-/* رسائل الخطأ */
-.msg { text-align:center; font-size:13px; font-weight:bold; margin-top:15px; min-height:20px; color:var(--red-light); }
+.logo {
+  width:160px; height:160px; object-fit:contain;
+  background:linear-gradient(145deg, #0a5a3a, #064a2e);
+  border-radius:36px; padding:12px;
+  border:4px solid var(--gold);
+  filter:drop-shadow(0 0 30px rgba(151,141,91,0.9)) drop-shadow(0 0 60px rgba(151,141,91,0.4));
+  animation:logoFloat 4s ease-in-out infinite;
+}
+@keyframes logoFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-/* أزرار الدخول الخاص */
-.special-access { width:100%; max-width:400px; display:grid; grid-template-columns:1fr 1fr; gap:10px; z-index:1; margin-bottom:20px; }
-.btn-special { padding:14px 10px; border-radius:16px; border:2px solid rgba(151,141,91,0.3); background:rgba(13,74,66,0.5); color:#fff; text-align:center; cursor:pointer; transition:0.2s; display:flex; flex-direction:column; align-items:center; gap:6px; }
-.btn-special:active { transform:scale(0.96); border-color:var(--gold); }
-.btn-special .icon { font-size:24px; }
-.btn-special .name { font-size:12px; font-weight:900; color:var(--gold-light); }
+.title { font-size:28px; color:var(--gold-light); font-weight:900; text-shadow:0 0 20px rgba(151,141,91,0.6); margin-bottom:8px; letter-spacing:0.5px; }
+.subtitle { font-size:14px; color:rgba(255,255,255,0.9); font-weight:700; letter-spacing:1px; }
+.brand { font-size:12px; color:rgba(255,255,255,0.7); margin-top:10px; }
 
-/* نجوم الشهر */
-.section-title { display:flex; justify-content:center; align-items:center; gap:10px; color:var(--gold-light); font-size:15px; font-weight:900; margin:20px 0 15px; width:100%; max-width:400px; }
-.section-title::before, .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(151,141,91,0.3), transparent); }
-.featured-list { width:100%; max-width:400px; display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
-.star-card { display:grid; grid-template-columns:60px 1fr auto; gap:12px; align-items:center; background:rgba(13,74,66,0.5); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:12px; }
-.star-photo { width:60px; height:60px; border-radius:12px; border:2px solid var(--gold); background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:24px; object-fit:cover; }
-.star-name { font-size:14px; font-weight:900; color:var(--gold-light); }
-.star-role { font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
-.star-badge { font-size:24px; }
+/* ═══ بطاقة الدخول ═══ */
+.login-box {
+  width:100%; max-width:420px;
+  background:linear-gradient(145deg, rgba(13,74,66,0.7), rgba(4,24,20,0.95));
+  backdrop-filter:blur(20px);
+  padding:28px 24px; border-radius:28px;
+  border:2px solid rgba(151,141,91,0.4);
+  box-shadow:0 20px 60px rgba(0,0,0,0.7), 0 0 60px rgba(151,141,91,0.15);
+  z-index:1; margin-bottom:24px;
+  animation:fadeInUp 0.8s 0.2s both cubic-bezier(0.4,0,0.2,1);
+  position:relative; overflow:hidden;
+}
+@keyframes fadeInUp { from{opacity:0; transform:translateY(30px);} to{opacity:1; transform:translateY(0);} }
 
-/* التذييل */
-.footer { text-align:center; font-size:11px; color:rgba(255,255,255,0.4); padding-bottom:30px; z-index:1; }
+.login-box::before {
+  content:''; position:absolute; top:0; right:0; width:150px; height:150px;
+  background:radial-gradient(circle, rgba(151,141,91,0.2) 0%, transparent 70%);
+  border-radius:50%; pointer-events:none;
+}
+
+.login-title { color:var(--gold-light); text-align:center; margin-bottom:22px; font-size:16px; font-weight:900; display:flex; justify-content:center; align-items:center; gap:8px; }
+.input-group { position:relative; margin-bottom:16px; z-index:1; }
+input[type="text"] {
+  width:100%; padding:20px; background:rgba(4,24,20,0.85);
+  border:2px solid rgba(151,141,91,0.3); border-radius:18px;
+  color:var(--gold-light); font-size:20px; font-weight:900;
+  text-align:center; letter-spacing:3px; text-transform:uppercase;
+  outline:none; transition:0.3s; font-family:'Courier New', monospace;
+}
+input[type="text"]:focus { border-color:var(--gold); box-shadow:0 0 0 4px rgba(151,141,91,0.2), 0 0 30px rgba(151,141,91,0.3); background:rgba(4,24,20,0.95); }
+input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-family:'Cairo'; font-weight:600; opacity:0.4; }
+
+.btn-login {
+  width:100%; padding:18px; border-radius:18px; border:none;
+  font-size:17px; font-weight:900; cursor:pointer;
+  background:linear-gradient(135deg, var(--gold), var(--gold-light));
+  color:var(--teal-deep);
+  display:flex; justify-content:center; align-items:center; gap:10px;
+  transition:0.25s; box-shadow:0 10px 30px rgba(151,141,91,0.4);
+  position:relative; z-index:1;
+}
+.btn-login:active { transform:scale(0.97); box-shadow:0 5px 15px rgba(151,141,91,0.3); }
+
+.msg { text-align:center; font-size:13px; font-weight:700; margin-top:16px; min-height:22px; color:var(--red-light); position:relative; z-index:1; }
+
+/* ═══ أزرار الدخول الخاص ═══ */
+.special-access { width:100%; max-width:420px; display:grid; grid-template-columns:1fr 1fr; gap:14px; z-index:1; margin-bottom:30px; animation:fadeInUp 0.8s 0.4s both cubic-bezier(0.4,0,0.2,1); }
+.btn-special {
+  padding:16px 10px; border-radius:18px;
+  border:2px solid rgba(151,141,91,0.3);
+  background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9));
+  color:#fff; text-align:center; cursor:pointer; transition:0.3s;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+.btn-special:active { transform:scale(0.96); border-color:var(--gold); background:rgba(151,141,91,0.15); }
+.btn-special.ops { border-color:rgba(41,182,246,0.4); }
+.btn-special.ops:active { border-color:#29b6f6; background:rgba(41,182,246,0.15); }
+.btn-special.admin { border-color:rgba(151,141,91,0.5); }
+.btn-special.admin:active { border-color:var(--gold); background:rgba(151,141,91,0.15); }
+.btn-special .icon { font-size:30px; filter:drop-shadow(0 0 10px rgba(255,255,255,0.3)); }
+.btn-special .name { font-size:13px; font-weight:900; color:var(--gold-light); }
+
+/* ═══ نجوم الشهر ═══ */
+.section-title { display:flex; justify-content:center; align-items:center; gap:12px; color:var(--gold-light); font-size:16px; font-weight:900; margin:20px 0 20px; width:100%; max-width:420px; animation:fadeInUp 0.8s 0.6s both; }
+.section-title::before, .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(151,141,91,0.4), transparent); }
+
+.featured-list { width:100%; max-width:420px; display:flex; flex-direction:column; gap:12px; margin-bottom:30px; animation:fadeInUp 0.8s 0.8s both; }
+.star-card {
+  display:grid; grid-template-columns:64px 1fr auto; gap:14px; align-items:center;
+  background:linear-gradient(145deg, rgba(13,74,66,0.7), rgba(4,24,20,0.9));
+  border:2px solid rgba(151,141,91,0.3); border-radius:18px; padding:14px;
+  transition:0.3s; position:relative; overflow:hidden;
+}
+.star-card:hover { transform:translateY(-4px); border-color:var(--gold); box-shadow:0 12px 30px rgba(151,141,91,0.3); }
+.star-card.rank-1 { border-color:rgba(255,215,0,0.6); background:linear-gradient(145deg, rgba(255,215,0,0.08), rgba(4,24,20,0.95)); }
+.star-card.rank-2 { border-color:rgba(192,192,192,0.5); }
+.star-card.rank-3 { border-color:rgba(205,127,50,0.5); }
+
+.star-photo {
+  width:64px; height:64px; border-radius:14px;
+  border:2px solid var(--gold); background:linear-gradient(135deg, #0a5a3a, #064a2e);
+  display:flex; align-items:center; justify-content:center; font-size:28px;
+  object-fit:cover; box-shadow:0 0 15px rgba(151,141,91,0.4);
+}
+.star-name { font-size:15px; font-weight:900; color:var(--gold-light); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.star-role { font-size:11px; color:rgba(255,255,255,0.7); margin-top:3px; }
+.star-badge { font-size:32px; filter:drop-shadow(0 0 15px rgba(255,215,0,0.8)); }
+
+/* ═══ التذييل ═══ */
+.footer { text-align:center; font-size:11px; color:rgba(255,255,255,0.4); padding-bottom:30px; z-index:1; line-height:1.8; letter-spacing:0.5px; }
+
+@media (max-width:400px) {
+  .logo { width:130px; height:130px; }
+  .title { font-size:24px; }
+  .btn-special { padding:14px 8px; }
+  .btn-special .icon { font-size:24px; }
+  .btn-special .name { font-size:11px; }
+  .star-card { grid-template-columns:50px 1fr auto; padding:10px; }
+  .star-photo { width:50px; height:50px; font-size:22px; }
+  .star-name { font-size:13px; }
+  .star-badge { font-size:26px; }
+}
 </style>
 </head>
 <body>
 
+<!-- شاشة التحميل -->
 <div id="loadingScreen">
-  <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="loading-logo">
+  <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="loading-logo" id="loadingLogo">
   <div class="loading-text">جاري التحميل...</div>
   <div class="loading-bar"></div>
 </div>
 
+<!-- نجوم الخلفية -->
 <div class="stars" id="starsContainer"></div>
 
+<!-- الهيدر -->
 <div class="header">
-  <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo" id="mainLogo">
-  <h1>نظام الإسعاف الذكي</h1>
-  <div class="subtitle">الإدارة العامة للإسعاف</div>
+  <div class="logo-wrap">
+    <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="logo" id="mainLogo">
+  </div>
+  <h1 class="title">نظام الإسعاف الذكي</h1>
+  <div class="subtitle">هيئة الدفاع المدني والإسعاف</div>
+  <div class="brand">الإدارة العامة للإسعاف</div>
 </div>
 
+<!-- بطاقة الدخول -->
 <div class="login-box">
   <div class="login-title">🔐 بوابة الدخول الموحدة</div>
   <div class="input-group">
-    <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك (SUP-XXXX)">
+    <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك" autocomplete="off" autocapitalize="off" spellcheck="false">
   </div>
   <button class="btn-login" id="loginBtn" onclick="loginWithCode()">
     <span>🔓</span> <span>دخول النظام</span>
@@ -99,22 +228,25 @@ input[type="text"]:focus { border-color:var(--gold); box-shadow:0 0 20px rgba(15
   <div id="msgBox" class="msg"></div>
 </div>
 
+<!-- أزرار الدخول الخاص -->
 <div class="special-access">
-  <div class="btn-special" onclick="openSpecialLogin('ops')">
+  <div class="btn-special ops" onclick="openSpecialLogin('ops')">
     <span class="icon">📡</span>
     <span class="name">غرفة العمليات</span>
   </div>
-  <div class="btn-special" onclick="openSpecialLogin('admin')">
+  <div class="btn-special admin" onclick="openSpecialLogin('admin')">
     <span class="icon">🏛️</span>
     <span class="name">الإدارة العامة</span>
   </div>
 </div>
 
+<!-- نجوم الشهر -->
 <div class="section-title">🌟 نجوم الشهر</div>
 <div class="featured-list" id="starsMonthList">
   <div style="text-align:center; font-size:12px; color:rgba(255,255,255,0.5); padding:20px;">جاري التحميل...</div>
 </div>
 
+<!-- التذييل -->
 <div class="footer">
   هيئة الدفاع المدني والإسعاف — جميع الحقوق محفوظة &copy; 2026
 </div>
@@ -153,7 +285,7 @@ setTimeout(() => {
   let ls = document.getElementById("loadingScreen");
   if (ls) { ls.style.opacity = "0"; setTimeout(() => ls.remove(), 500); }
   document.getElementById("codeInput").focus();
-}, 1000);
+}, 1200);
 
 /* ═══════════ الدخول بالكود ═══════════ */
 async function loginWithCode() {
@@ -240,9 +372,10 @@ async function loadFeaturedStars() {
     }
 
     el.innerHTML = list.map((f, idx) => {
+      const rankCls = idx === 0 ? "rank-1" : idx === 1 ? "rank-2" : "rank-3";
       const badge = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
       return `
-        <div class="star-card">
+        <div class="star-card ${rankCls}">
           ${f.photoUrl ? `<img src="${esc(f.photoUrl)}" class="star-photo" onerror="this.outerHTML='<div class=\\'star-photo\\'>👤</div>'">` : `<div class="star-photo">👤</div>`}
           <div>
             <div class="star-name">${esc(f.name || "—")}</div>
