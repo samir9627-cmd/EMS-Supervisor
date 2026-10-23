@@ -4,70 +4,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#041814">
-<title>نظام الإسعاف الذكي — البوابة الرسمية</title>
+<title>نظام الإسعاف الذكي — البوابة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
     :root { --gold:#c9a227; --gold-light:#e5c158; --green:#0d4a42; --bg:#041814; --red:#e53935; }
-    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; overflow-x:hidden; }
     
-    /* خلفية زخرفية */
+    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; overflow-x:hidden; position:relative; }
+    
+    /* 🌟 الخلفية السحرية (نجوم وتوهج) */
     body::before {
-        content:''; position:fixed; inset:0; z-index:-1;
-        background: radial-gradient(circle at 15% 10%, rgba(201,162,39,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.4) 0%, transparent 50%);
+        content:''; position:fixed; inset:0; z-index:-2;
+        background:
+            radial-gradient(circle at 15% 10%, rgba(201,162,39,0.18) 0%, transparent 45%),
+            radial-gradient(circle at 85% 90%, rgba(10,90,58,0.6) 0%, transparent 50%),
+            linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
     }
+    .stars { position:fixed; inset:0; z-index:-1; pointer-events:none; }
+    .star { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0.4; animation:twinkle 4s infinite; }
+    @keyframes twinkle { 0%,100%{opacity:0.2; transform:scale(0.8);} 50%{opacity:0.9; transform:scale(1.4);} }
 
-    /* الشعار */
-    .logo-wrap { text-align:center; margin-top:20px; margin-bottom:20px; animation:fadeIn 0.8s; }
-    .logo { width:110px; height:110px; border-radius:24px; border:2px solid var(--gold); padding:5px; background:var(--green); box-shadow:0 0 30px rgba(201,162,39,0.3); }
-    h1 { color:var(--gold-light); font-size:22px; margin-top:15px; font-weight:900; letter-spacing:1px; }
-    .subtitle { color:rgba(255,255,255,0.6); font-size:12px; margin-top:5px; }
-
-    /* صندوق الدخول */
-    .login-box { width:100%; max-width:400px; background:rgba(255,255,255,0.03); padding:25px; border-radius:20px; border:1px solid rgba(201,162,39,0.2); backdrop-filter:blur(10px); box-shadow:0 15px 40px rgba(0,0,0,0.5); margin-bottom:25px; animation:slideUp 0.6s; }
-    .login-box h3 { color:var(--gold); font-size:15px; margin-bottom:15px; text-align:center; }
-    .input-group { position:relative; margin-bottom:15px; }
-    input { width:100%; padding:16px; background:rgba(0,0,0,0.4); border:1px solid rgba(201,162,39,0.3); border-radius:12px; color:var(--gold-light); font-size:18px; text-align:center; font-weight:900; outline:none; text-transform:uppercase; letter-spacing:2px; transition:0.3s; }
-    input:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(201,162,39,0.2); }
-    .btn-login { width:100%; padding:16px; border-radius:12px; border:none; font-size:16px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); display:flex; justify-content:center; align-items:center; gap:10px; transition:0.2s; }
-    .btn-login:active { transform:scale(0.98); }
-    .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:10px; min-height:20px; color:var(--red); }
+    /* ✨ الشعار الفاخر */
+    .logo-wrap { text-align:center; margin-top:30px; margin-bottom:25px; animation:fadeUp 0.8s cubic-bezier(.4,0,.2,1); position:relative; }
+    .logo-wrap::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:180px; height:180px; background:radial-gradient(circle, rgba(201,162,39,0.35) 0%, transparent 70%); border-radius:50%; animation:pulseGlow 3s infinite; z-index:-1; }
+    @keyframes pulseGlow { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.5;} 50%{transform:translate(-50%,-50%) scale(1.2); opacity:1;} }
     
-    /* مؤشر التحميل */
-    .loader { display:none; width:18px; height:18px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; }
+    .logo { width:110px; height:110px; border-radius:24px; border:2px solid var(--gold); padding:5px; background:linear-gradient(145deg, #0a5a3a, #064a2e); box-shadow:0 0 25px rgba(201,162,39,0.6); animation:float 3s ease-in-out infinite; object-fit:contain; }
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+    
+    h1 { color:var(--gold-light); font-size:24px; margin-top:15px; font-weight:900; letter-spacing:1px; text-shadow:0 0 20px rgba(201,162,39,0.5); }
+    .subtitle { color:rgba(255,255,255,0.7); font-size:13px; margin-top:5px; letter-spacing:2px; }
+
+    /* 🔮 صندوق الدخول الزجاجي */
+    .login-box { 
+        width:100%; max-width:400px; 
+        background:rgba(13,74,66,0.4); 
+        backdrop-filter:blur(20px); 
+        padding:30px 25px; 
+        border-radius:24px; 
+        border:1px solid rgba(201,162,39,0.3); 
+        box-shadow:0 20px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(201,162,39,0.05); 
+        margin-bottom:25px; 
+        animation:fadeUp 0.8s cubic-bezier(.4,0,.2,1) 0.2s both; 
+    }
+    .login-box h3 { color:var(--gold); font-size:15px; margin-bottom:20px; text-align:center; display:flex; justify-content:center; align-items:center; gap:8px; }
+    
+    .input-group { position:relative; margin-bottom:20px; }
+    input { 
+        width:100%; padding:18px; 
+        background:rgba(4,24,20,0.8); 
+        border:2px solid rgba(201,162,39,0.3); 
+        border-radius:16px; 
+        color:var(--gold-light); 
+        font-size:22px; 
+        text-align:center; 
+        font-weight:900; 
+        outline:none; 
+        text-transform:uppercase; 
+        letter-spacing:3px; 
+        transition:0.3s; 
+    }
+    input:focus { border-color:var(--gold); box-shadow:0 0 25px rgba(201,162,39,0.4); background:rgba(4,24,20,0.95); }
+    input::placeholder { font-size:14px; letter-spacing:1px; font-weight:normal; opacity:0.4; }
+    
+    .btn-login { 
+        width:100%; padding:18px; 
+        border-radius:16px; 
+        border:none; 
+        font-size:17px; 
+        font-weight:900; 
+        cursor:pointer; 
+        background:linear-gradient(135deg, var(--gold), var(--gold-light)); 
+        color:var(--bg); 
+        display:flex; justify-content:center; align-items:center; gap:10px; 
+        transition:0.3s; 
+        box-shadow:0 10px 25px rgba(201,162,39,0.3); 
+    }
+    .btn-login:active { transform:scale(0.97); }
+    .btn-login:hover { box-shadow:0 12px 30px rgba(201,162,39,0.5); }
+    
+    .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:15px; min-height:20px; color:var(--red); }
+    
+    .loader { display:none; width:20px; height:20px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
 
-    /* الإحصائيات */
-    .stats-container { width:100%; max-width:400px; animation:fadeIn 1s; }
-    .stats-container h4 { color:var(--gold); font-size:13px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    /* 📊 الإحصائيات بتصميم زجاجي */
+    .stats-container { width:100%; max-width:400px; animation:fadeUp 0.8s cubic-bezier(.4,0,.2,1) 0.4s both; }
+    .stats-container h4 { color:var(--gold); font-size:13px; margin-bottom:15px; display:flex; align-items:center; gap:8px; padding-right:5px; }
     .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .stat-card { background:linear-gradient(145deg, rgba(13,74,66,0.4), rgba(4,24,20,0.9)); border:1px solid rgba(201,162,39,0.15); padding:15px; border-radius:16px; text-align:center; position:relative; overflow:hidden; }
-    .stat-card::before { content:''; position:absolute; top:0; right:0; width:4px; height:100%; background:var(--gold); opacity:0.5; }
-    .stat-card .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
+    
+    .stat-card { 
+        background:rgba(255,255,255,0.03); 
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(201,162,39,0.15); 
+        padding:18px 15px; 
+        border-radius:16px; 
+        text-align:center; 
+        position:relative; 
+        overflow:hidden; 
+        transition:0.3s;
+    }
+    .stat-card::before { content:''; position:absolute; top:0; right:0; width:100%; height:3px; background:linear-gradient(90deg, transparent, var(--gold), transparent); opacity:0.5; }
+    .stat-card:hover { background:rgba(255,255,255,0.06); transform:translateY(-2px); }
+    
+    .stat-card .num { font-size:28px; font-weight:900; color:var(--gold-light); line-height:1; text-shadow:0 0 15px rgba(201,162,39,0.5); }
     .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:6px; }
     
-    /* التذييل */
-    .footer { margin-top:auto; padding:20px; font-size:10px; color:rgba(255,255,255,0.3); text-align:center; line-height:1.6; }
+    .footer { margin-top:auto; padding:25px; font-size:10px; color:rgba(255,255,255,0.3); text-align:center; line-height:1.8; }
+    .footer span { color:var(--gold); opacity:0.7; }
 
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
 
+    <div class="stars" id="starsContainer"></div>
+
     <div class="logo-wrap">
         <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzBkNGE0MiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+akTwvdGV4dD48L3N2Zz4='">
         <h1>نظام الإسعاف الذكي</h1>
-        <div class="subtitle">هيئة الدفاع المدني والإسعاف — الإدارة العامة</div>
+        <div class="subtitle">هيئة الدفاع المدني والإسعاف</div>
     </div>
 
     <div class="login-box">
-        <h3>🔐 بوابة الدخول الموحدة</h3>
+        <h3>🔐 بوابة الدخول الآمنة</h3>
         <div class="input-group">
             <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك" onkeypress="if(event.key==='Enter') login()">
         </div>
         <button class="btn-login" id="loginBtn" onclick="login()">
-            <span id="btnText">دخول النظام</span>
+            <span id="btnText">🔓 دخول النظام</span>
             <span class="loader" id="btnLoader"></span>
         </button>
         <div id="msgBox" class="msg"></div>
@@ -96,13 +161,27 @@
     </div>
 
     <div class="footer">
-        <div>الإدارة العامة للإسعاف — نظام إدارة الجودة ISO 9001:2015</div>
+        <div>الإدارة العامة للإسعاف — <span>نظام إدارة الجودة ISO 9001:2015</span></div>
         <div>© 2026 — جميع الحقوق محفوظة</div>
     </div>
 
 <script>
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+
+    // إنشاء النجوم المتحركة
+    function createStars() {
+        const container = document.getElementById("starsContainer");
+        for (let i = 0; i < 60; i++) {
+            const s = document.createElement("div");
+            s.className = "star";
+            s.style.left = Math.random() * 100 + "%";
+            s.style.top = Math.random() * 100 + "%";
+            s.style.animationDelay = (Math.random() * 4) + "s";
+            s.style.opacity = Math.random() * 0.5 + 0.2;
+            container.appendChild(s);
+        }
+    }
 
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
     function getBool(field) { return (field && field.booleanValue !== undefined) ? field.booleanValue : true; }
@@ -135,7 +214,7 @@
                     if (docCode === code) {
                         const active = getBool(doc.fields.active);
                         if (!active) {
-                            msg.innerText = "⚠️ هذا الحساب معطل حالياً. راجع الإدارة.";
+                            msg.innerText = "⚠️ هذا الحساب معطل حالياً.";
                             resetBtn();
                             return;
                         }
@@ -155,10 +234,8 @@
                 return; 
             }
             
-            // حفظ الجلسة
             localStorage.setItem("amb_session", JSON.stringify(foundUser));
             
-            // توجيه المستخدم
             if (foundUser.type === "admin") window.location.href = "admin.html";
             else if (foundUser.type === "ops") window.location.href = "ops.html";
             else window.location.href = "app.html";
@@ -170,7 +247,7 @@
     }
 
     function resetBtn() {
-        document.getElementById("btnText").innerText = "دخول النظام";
+        document.getElementById("btnText").innerText = "🔓 دخول النظام";
         document.getElementById("btnLoader").style.display = "none";
         document.getElementById("loginBtn").disabled = false;
     }
@@ -201,7 +278,10 @@
         } catch(e) { console.log("Stats error"); }
     }
 
-    window.onload = function() { loadStats(); };
+    window.onload = function() { 
+        createStars();
+        loadStats(); 
+    };
 </script>
 </body>
 </html>
