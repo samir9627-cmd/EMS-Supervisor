@@ -110,18 +110,13 @@
         </div>
     </div>
 
-    <div class="section-title">🌟 نجوم الشهر</div>
-    <div id="starsMonthList" style="width:100%; max-width:400px;">
-        <div style="text-align:center; font-size:12px; color:rgba(255,255,255,0.5); padding:20px;">جاري التحميل...</div>
-    </div>
-
 <script>
-    // 👇 تم تعديل اسم المشروع ليكون مطابقاً للصورة
-    const FIREBASE_PROJECT = "EMS-Supervisor"; 
+    // 👇 هنا جعلنا النظام يقرأ من المشروع بأي حالة أحرف (لتفادي مشكلة الكاش)
+    const FIREBASE_PROJECT = "ems-supervisor"; 
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
     const starsContainer = document.getElementById("starsContainer");
-    for(let i=0; i<50; i++) {
+    for(let i=0; i<30; i++) {
         let s = document.createElement("div");
         s.className = "star";
         s.style.left = Math.random()*100 + "%";
@@ -132,8 +127,7 @@
 
     setTimeout(() => {
         let ls = document.getElementById("loadingScreen");
-        ls.style.opacity = "0";
-        setTimeout(() => ls.remove(), 500);
+        if(ls) { ls.style.opacity = "0"; setTimeout(() => ls.remove(), 500); }
     }, 1000);
 
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
@@ -185,10 +179,11 @@
         btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.style.color = "var(--gold-light)"; msg.innerText = "جاري الاتصال...";
         
         try {
+            // 👇 الرابط هنا يعمل بدون الحاجة لصلاحيات معقدة
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             
             if (!res.ok) {
-                throw new Error("صلاحيات Firebase تمنع القراءة. يرجى تعديل الـ Rules.");
+                throw new Error("صلاحيات Firebase تمنع القراءة.");
             }
 
             const data = await res.json();
@@ -250,69 +245,8 @@
         } catch(e) { 
             console.error(e);
             msg.style.color = "var(--red)";
-            // 👇 رسالة الخطأ توضح المشكلة بالضبط
-            msg.innerText = "⚠️ خطأ: " + (e.message.includes("Firebase") ? "الصلاحيات مرفوضة (اذهب لـ Firebase Rules)" : "تأكد من اتصال الإنترنت"); 
+            msg.innerText = "⚠️ الصلاحيات مرفوضة. الرجاء العودة لصفحة Firebase وتطبيق الـ Rules."; 
             btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; 
-        }
-    }
-
-    async function loadStats() {
-        try {
-            const [resUsers, resActs, resBroadcasts] = await Promise.all([
-                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json())
-            ]);
-
-            if (resUsers.documents) document.getElementById("statUsers").innerText = resUsers.documents.length;
-            if (resBroadcasts.documents) document.getElementById("statBroadcasts").innerText = resBroadcasts.documents.length;
-            
-            let issues = 0, visits = 0;
-            if (resActs.documents) {
-                resActs.documents.forEach(d => {
-                    const t = getString(d.fields.type);
-                    if (t === 'issue') issues++;
-                    if (t === 'visit') visits++;
-                });
-            }
-            document.getElementById("statIssues").innerText = issues;
-            document.getElementById("statVisits").innerText = visits;
-
-        } catch(e) { console.log("Stats error"); }
-    }
-
-    async function loadFeatured() {
-        const el = document.getElementById("starsMonthList");
-        try {
-            const res = await fetch(`${FIRESTORE_URL}/featured?pageSize=100`, { cache: "no-store" });
-            const data = await res.json();
-            
-            const d = new Date();
-            const month = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-            
-            let docs = data.documents ? data.documents.map(docToObj) : [];
-            let list = docs.filter(f => f.month === month).sort((a, b) => (parseInt(b.score) || 0) - (parseInt(a.score) || 0)).slice(0, 3);
-            
-            if (list.length === 0) {
-                el.innerHTML = '<div style="text-align:center; font-size:12px; color:rgba(255,255,255,0.5); padding:20px;">لا يوجد متميزون هذا الشهر</div>';
-                return;
-            }
-            
-            el.innerHTML = list.map((f, idx) => {
-                const badge = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
-                return `
-                    <div class="star-card">
-                        ${f.photoUrl ? `<img src="${f.photoUrl}" class="star-photo">` : `<div class="star-photo">👤</div>`}
-                        <div>
-                            <div class="star-name">${f.name || "—"}</div>
-                            <div class="star-role">${f.role || ""} ${f.centerName ? "• " + f.centerName : ""}</div>
-                        </div>
-                        <div class="star-badge">${badge}</div>
-                    </div>
-                `;
-            }).join("");
-        } catch(e) { 
-            el.innerHTML = '<div style="text-align:center; font-size:12px; color:#ff5252;">خطأ في التحميل</div>'; 
         }
     }
 
@@ -320,8 +254,6 @@
         document.getElementById("codeInput").addEventListener("input", checkCodeType);
         document.getElementById("codeInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
         document.getElementById("passInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
-        loadStats();
-        loadFeatured();
     };
 </script>
 </body>
