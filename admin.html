@@ -8,55 +8,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
-
-:root {
-  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
-  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
-  --green:#43a047; --green-light:#69f0ae;
-  --red:#e53935; --red-light:#ff5252;
-  --amber:#fb8c00; --amber-light:#ffa726;
-  --blue:#29b6f6; --blue-light:#64b5f6;
-  --purple:#ab47bc; --purple-light:#ce93d8;
-  --surface:rgba(13,74,66,0.55);
-  --border:rgba(151,141,91,0.3);
-  --safe-top:env(safe-area-inset-top, 0px);
-  --safe-bottom:env(safe-area-inset-bottom, 0px);
-}
-
+:root { --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814; --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252; --amber:#fb8c00; --amber-light:#ffa726; --blue:#29b6f6; --blue-light:#64b5f6; --purple:#ab47bc; --surface:rgba(13,74,66,0.55); --border:rgba(151,141,91,0.3); --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px); }
 html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
 body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
 body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
-
-@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes spin { to { transform:rotate(360deg); } }
-
-#mainApp { display:none; }
-#mainApp.ready { display:block; }
-
-/* TOPBAR */
+#mainApp { display:none; } #mainApp.ready { display:block; }
 .topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); backdrop-filter:blur(20px); display:flex; align-items:center; gap:8px; }
-.topbar-logo { width:44px; height:44px; border-radius:12px; object-fit:contain; background:transparent; }
+.topbar-logo { width:44px; height:44px; border-radius:12px; object-fit:contain; }
 .topbar-info { flex:1; }
 .topbar-info h1 { font-size:13px; color:var(--gold-light); font-weight:900; }
 .topbar-info p { font-size:10px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; margin-top:3px; }
 .status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); }
 .icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
-
-/* TABS */
 .tabs-bar { position:sticky; top:calc(74px + var(--safe-top)); z-index:98; background:rgba(4,24,20,0.95); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
 .tabs-bar::-webkit-scrollbar { display:none; }
 .tabs-scroll { display:flex; gap:6px; padding:10px 12px; min-width:min-content; }
 .tab-btn { flex-shrink:0; padding:9px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:22px; color:rgba(255,255,255,0.75); font-weight:700; font-size:12px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; }
 .tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-color:var(--gold); }
-
-/* PAGE */
 .page { display:none; padding:16px; max-width:900px; margin:0 auto; }
 .page.active { display:block; animation:slideUp 0.35s; }
 .card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:18px; margin-bottom:14px; }
 .card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid rgba(151,141,91,0.15); display:flex; align-items:center; gap:8px; }
-
 .stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
 .stats-grid.four { grid-template-columns:repeat(2, 1fr); }
 @media (min-width:600px) { .stats-grid.four { grid-template-columns:repeat(4, 1fr); } }
@@ -64,7 +39,6 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .stat-mini .stat-icon { position:absolute; top:10px; left:10px; font-size:26px; opacity:0.35; }
 .stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
 .stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:5px; }
-
 .btn { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
 .btn.secondary { background:rgba(255,255,255,0.08); color:#fff; border:1px solid var(--border); }
 .btn.danger { background:linear-gradient(135deg, var(--red), var(--red-light)); color:#fff; }
@@ -72,86 +46,38 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .btn.success { background:linear-gradient(135deg, var(--green), var(--green-light)); color:#041814; }
 .btn.small { padding:8px 14px; font-size:11px; }
 .btn.block { width:100%; }
-
 input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-weight:600; outline:none; margin-bottom:12px; }
 input:focus, textarea:focus, select:focus { border-color:var(--gold); }
 select option { background:var(--teal-deep); color:#fff; }
 label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:7px; }
-
 .item-card { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
-.item-card.blue { border-right-color:var(--blue); }
-.item-card.green { border-right-color:var(--green-light); }
-.item-card.red { border-right-color:var(--red); }
-.item-card.amber { border-right-color:var(--amber); }
+.item-card.blue { border-right-color:var(--blue); } .item-card.green { border-right-color:var(--green-light); } .item-card.red { border-right-color:var(--red); } .item-card.amber { border-right-color:var(--amber); }
 .item-info { flex:1; min-width:0; }
 .item-info h4 { font-size:14px; font-weight:900; color:var(--gold-light); margin-bottom:4px; }
 .item-info p { font-size:11px; color:rgba(255,255,255,0.65); line-height:1.6; }
 .item-actions { display:flex; gap:6px; }
 .icon-btn-sm { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
-.icon-btn-sm.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
-.icon-btn-sm.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
-.icon-btn-sm.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
-
+.icon-btn-sm.edit { background:rgba(41,182,246,0.2); color:#64b5f6; } .icon-btn-sm.delete { background:rgba(229,57,53,0.2); color:#ff5252; } .icon-btn-sm.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
 .empty { text-align:center; padding:40px 20px; color:rgba(255,255,255,0.4); font-size:13px; }
 .empty .icon { font-size:52px; display:block; margin-bottom:12px; opacity:0.5; }
-
 .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); display:none; align-items:flex-end; justify-content:center; }
 .modal-overlay.show { display:flex; }
 .modal-sheet { background:linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius:26px; border-top-right-radius:26px; border-top:3px solid var(--gold); width:100%; max-width:780px; max-height:92vh; padding:24px 18px calc(24px + var(--safe-bottom)); overflow-y:auto; animation:slideUp 0.35s; }
 .modal-sheet::before { content:''; display:block; width:42px; height:4px; background:rgba(255,255,255,0.3); border-radius:3px; margin:-12px auto 16px; }
 .modal-sheet h3 { color:var(--gold-light); font-size:17px; font-weight:900; text-align:center; padding-bottom:14px; border-bottom:1px solid rgba(151,141,91,0.2); margin-bottom:18px; }
-
-/* Duty Table */
-.duty-table { width:100%; border-collapse:collapse; font-size:10px; }
-.duty-table th, .duty-table td { border:1px solid rgba(151,141,91,0.2); padding:4px; text-align:center; }
-.duty-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); font-weight:900; }
-.duty-table td { background:rgba(0,0,0,0.3); }
-.duty-table th.weekend { background:rgba(229,57,53,0.3); color:#ff8a80; }
-.duty-table td select { padding:3px; margin:0; font-size:10px; background:transparent; border:none; min-width:36px; width:auto; }
-
 .toast-container { position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:calc(100% - 32px); max-width:420px; }
 .toast { background:linear-gradient(135deg, var(--teal), var(--teal-dark)); color:#fff; padding:12px 18px; border-radius:12px; border:1px solid var(--gold); font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.6); }
-.toast.success { border-color:var(--green-light); }
-.toast.danger { border-color:var(--red-light); }
-
+.toast.success { border-color:var(--green-light); } .toast.danger { border-color:var(--red-light); }
 .warning-bar { padding:10px 14px; background:linear-gradient(90deg, rgba(251,140,0,0.2), rgba(251,140,0,0.05)); border-right:4px solid var(--amber); border-radius:10px; font-size:12px; color:#ffcc80; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
 .warning-bar.info { background:linear-gradient(90deg, rgba(41,182,246,0.2), rgba(41,182,246,0.05)); border-right-color:var(--blue); color:#81d4fa; }
-
-/* إعدادات الطباعة */
-@media print {
-  @page { size: A4 portrait; margin: 5mm; }
-  body * { visibility:hidden; }
-  body { background:#fff !important; }
-  #printArea { visibility:visible !important; display:block !important; position:absolute; left:0; top:0; width:100%; background:white !important; color:black !important; }
-  #printArea * { visibility:visible !important; }
-  .topbar, .tabs-bar, .modal-overlay, .toast-container { display:none !important; }
-}
-#printArea { display:none; }
-
-/* أنماط الطباعة الداخلية */
-.print-form { width:100%; max-width:190mm; margin:0 auto; background:white; color:#000; font-family:'Cairo',sans-serif; font-size:9pt; }
-.print-header { background:#978d5b; color:white; padding:6px 12px; border-radius:6px; display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; min-height:70px; margin-bottom:15px; }
-.print-header-side { text-align:center; font-size:8.5pt; font-weight:900; line-height:1.3; }
-.print-header-logo { width:70px !important; height:70px !important; object-fit:contain; background:transparent !important; border:none !important; }
-.print-title { text-align:center; font-size:12pt; font-weight:900; color:#1e4620; margin:8px 0; padding:4px; border-top:2px solid #1e4620; border-bottom:2px solid #1e4620; background:#f5f2e6; }
-.print-table { width:100%; border-collapse:collapse; margin:4px 0; font-size:5.5pt; table-layout:fixed; }
-.print-table th { background:#978d5b; color:white; padding:1px; border:1px solid #000; font-weight:900; font-size:5.5pt; word-break:break-all; }
-.print-table td { padding:1px; border:1px solid #000; background:white; color:#000; font-size:5.5pt; text-align:center; }
-.print-table .weekend { background:#fee !important; color:#c00; }
-.print-signatures { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:15px; padding-top:8px; border-top:1px dashed #c9a227; }
-.print-signature { text-align:center; font-size:7pt; }
-.print-signature .role { font-weight:900; color:#1e4620; margin-bottom:2px; }
-.print-signature .line { border-top:1px solid #333; padding-top:2px; margin-top:15px; font-size:6pt; color:#666; }
-.print-footer { margin-top:8px; padding-top:4px; border-top:1px solid #c9a227; display:flex; justify-content:space-between; font-size:7pt; color:#666; }
-
-/* مؤشر التحميل */
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
+@media print { @page { size: A4 portrait; margin: 5mm; } body * { visibility:hidden; } body { background:#fff !important; } #printArea { visibility:visible !important; display:block !important; position:absolute; left:0; top:0; width:100%; background:white !important; color:black !important; } #printArea * { visibility:visible !important; } .topbar, .tabs-bar, .modal-overlay, .toast-container { display:none !important; } }
+#printArea { display:none; }
 </style>
 </head>
 <body>
 
-<!-- شاشة التحميل -->
 <div id="loadingOverlay">
     <div class="spinner"></div>
     <div style="color:var(--gold-light); font-weight:900;">جاري التحقق من الصلاحيات...</div>
@@ -159,7 +85,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
 <div id="mainApp">
   <div class="topbar">
-    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo" id="topbarLogoImg" onerror="this.src='IMG_2828.png'">
+    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo" onerror="this.src='IMG_2828.png'">
     <div class="topbar-info">
       <h1>الإدارة العامة</h1>
       <p><span class="status-dot"></span><span id="currentUser">جاري التحميل...</span></p>
@@ -174,18 +100,13 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
-      <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')">📅 الدوام</button>
       <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 الإشكالات</button>
       <button class="tab-btn" data-tab="praises" onclick="switchTab('praises')">⭐ الإشادات</button>
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
-      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات المشرف</button>
-      <button class="tab-btn" data-tab="kpi" onclick="switchTab('kpi')">🏆 KPI</button>
       <button class="tab-btn" data-tab="master" onclick="switchTab('master')">📋 البيانات</button>
-      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">⚙️ الإعدادات</button>
     </div>
   </div>
 
-  <!-- 1) Dashboard -->
   <div class="page active" id="page-dashboard">
     <div class="stats-grid four">
       <div class="stat-mini blue"><span class="stat-icon">👨‍💼</span><div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div></div>
@@ -193,452 +114,16 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <div class="stat-mini amber"><span class="stat-icon">🚑</span><div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div></div>
       <div class="stat-mini red"><span class="stat-icon">🚩</span><div class="num" id="dashIssues">0</div><div class="lbl">الإشكالات</div></div>
     </div>
-    <div class="stats-grid four">
-      <div class="stat-mini green"><span class="stat-icon">⭐</span><div class="num" id="dashPraises">0</div><div class="lbl">الإشادات</div></div>
-      <div class="stat-mini blue"><span class="stat-icon">📢</span><div class="num" id="dashBroadcasts">0</div><div class="lbl">التعاميم</div></div>
-      <div class="stat-mini purple"><span class="stat-icon">📅</span><div class="num" id="dashToday">0</div><div class="lbl">نشاط اليوم</div></div>
-      <div class="stat-mini red"><span class="stat-icon">⚠️</span><div class="num" id="dashOpenIssues">0</div><div class="lbl">غير محلولة</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">📊 نشاط المشرفين (آخر 7 أيام)</div>
-      <div style="display:flex; justify-content:center; align-items:flex-end; height:120px; gap:8px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);" id="weeklyChart"></div>
-    </div>
-    <div class="card">
-      <div class="card-title">📡 نبض المراكز</div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;" id="centersPulse"></div>
-    </div>
   </div>
 
-  <!-- 2) Supervisors -->
   <div class="page" id="page-supervisors">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مشرف</div>
-      <input type="hidden" id="editSupId">
       <label>الاسم *</label><input type="text" id="supName">
       <label>القطاع</label><select id="supSector"><option>قطاع A</option><option>قطاع B</option></select>
       <label>الهاتف</label><input type="tel" id="supPhone">
       <label>الكود (تلقائي)</label><input type="text" id="supCode" readonly style="text-align:center;font-weight:bold;color:var(--gold-light);">
       <button class="btn block" onclick="saveSupervisor()" id="btnSaveSup">💾 حفظ وإنشاء حساب</button>
-      <button class="btn secondary block" id="btnCancelSup" onclick="cancelEditSupervisor()" style="display:none;margin-top:8px;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 المشرفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="supervisorsCount">0</span></div>
-      <div id="supervisorsList"><div class="empty"><span class="icon">👨‍💼</span>جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 3) Paramedics -->
-  <div class="page" id="page-paramedics">
-    <div class="card">
-      <div class="card-title">➕ إضافة مسعف</div>
-      <label>الاسم *</label><input type="text" id="pmName">
-      <label>المركز</label><select id="pmCenter"></select>
-      <label>الرتبة</label><input type="text" id="pmRank">
-      <button class="btn block" onclick="saveParamedic()">💾 حفظ</button>
-    </div>
-    <div class="card">
-      <div class="card-title">📋 المسعفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="paramedsCount">0</span></div>
-      <div id="paramedicsList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 4) Vehicles -->
-  <div class="page" id="page-vehicles">
-    <div class="card">
-      <div class="card-title">➕ إضافة مركبة</div>
-      <label>اللوحة *</label><input type="text" id="vPlate">
-      <label>النوع</label><input type="text" id="vType">
-      <label>المركز</label><select id="vCenter"></select>
-      <button class="btn block" onclick="saveVehicle()">💾 حفظ</button>
-    </div>
-    <div class="card">
-      <div class="card-title">📋 المركبات <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="vehiclesCount">0</span></div>
-      <div id="vehiclesList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 5) Duty -->
-  <div class="page" id="page-duty">
-    <div class="card">
-      <div class="card-title">📅 جدول الدوام الشهري</div>
-      <div style="display:flex; gap:8px; margin-bottom:10px;">
-        <input type="month" id="dutyMonth" onchange="loadDutyTable()" style="margin-bottom:0;flex:1;">
-        <button class="btn small" onclick="printDutyTable()" style="flex-shrink:0; background:var(--blue);">🖨️ طباعة</button>
-      </div>
-      <div class="warning-bar info"><span>ℹ️</span><span><b>ص</b> صباحي • <b>م</b> مسائي • <b>أ</b> إجازة • <b>د</b> إداري • <b>س</b> سنوية • <b>خ</b> أخرى</span></div>
-      <div style="overflow-x:auto;" id="dutyTableContainer"></div>
-      <button class="btn block" onclick="saveDuty()" style="margin-top:10px;">💾 حفظ</button>
-    </div>
-  </div>
-
-  <!-- 6) Issues -->
-  <div class="page" id="page-issues">
-    <div class="card">
-      <div class="card-title">🚩 الإشكالات <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="issuesCount">0</span></div>
-      <div id="issuesList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 7) Praises -->
-  <div class="page" id="page-praises">
-    <div class="card">
-      <div class="card-title">⭐ الإشادات <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="praisesCount">0</span></div>
-      <div id="praisesList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 8) Broadcasts -->
-  <div class="page" id="page-broadcasts">
-    <div class="card">
-      <div class="card-title">📢 إرسال تعميم</div>
-      <label>العنوان</label><input type="text" id="bTitle">
-      <label>النص</label><textarea id="bDesc" rows="4"></textarea>
-      <button class="btn block" onclick="sendBroadcast()">📤 إرسال</button>
-    </div>
-    <div class="card">
-      <div class="card-title">📜 التعاميم السابقة</div>
-      <div id="broadcastsList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 9) Notes -->
-  <div class="page" id="page-notes">
-    <div class="card">
-      <div class="card-title">📝 ملاحظات المشرفين</div>
-      <div id="notesList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 10) KPI -->
-  <div class="page" id="page-kpi">
-    <div class="card">
-      <div class="card-title">🏆 تقييم الأداء KPI</div>
-      <div id="kpiList"><div class="empty">جاري التحميل...</div></div>
-    </div>
-  </div>
-
-  <!-- 11) Master Data -->
-  <div class="page" id="page-master">
-    <div class="warning-bar info"><span>ℹ️</span><span>هذه البيانات تُغذي قوائم الاختيار في تطبيق المشرف الميداني.</span></div>
-    <div class="card"><div class="card-title">🚩 إشكالات (مسعف)</div><input type="text" id="mdIssueParam"><button class="btn small success" onclick="addMasterData('issue_types_paramedic', 'mdIssueParam')">➕ إضافة</button><div id="issueTypesParamList"></div></div>
-    <div class="card"><div class="card-title">🚩 إشكالات (مركز)</div><input type="text" id="mdIssueCenter"><button class="btn small success" onclick="addMasterData('issue_types_center', 'mdIssueCenter')">➕ إضافة</button><div id="issueTypesCenterList"></div></div>
-    <div class="card"><div class="card-title">🚩 إشكالات (مركبة)</div><input type="text" id="mdIssueVehicle"><button class="btn small success" onclick="addMasterData('issue_types_vehicle', 'mdIssueVehicle')">➕ إضافة</button><div id="issueTypesVehicleList"></div></div>
-    <div class="card"><div class="card-title">🚩 إشكالات (مخزن)</div><input type="text" id="mdIssueStock"><button class="btn small success" onclick="addMasterData('issue_types_stock', 'mdIssueStock')">➕ إضافة</button><div id="issueTypesStockList"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات (مسعف)</div><input type="text" id="mdPraiseParam"><button class="btn small success" onclick="addMasterData('praise_types_paramedic', 'mdPraiseParam')">➕ إضافة</button><div id="praiseTypesParamList"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات (مركز)</div><input type="text" id="mdPraiseCenter"><button class="btn small success" onclick="addMasterData('praise_types_center', 'mdPraiseCenter')">➕ إضافة</button><div id="praiseTypesCenterList"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات (مركبة)</div><input type="text" id="mdPraiseVehicle"><button class="btn small success" onclick="addMasterData('praise_types_vehicle', 'mdPraiseVehicle')">➕ إضافة</button><div id="praiseTypesVehicleList"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات (مخزن)</div><input type="text" id="mdPraiseStock"><button class="btn small success" onclick="addMasterData('praise_types_stock', 'mdPraiseStock')">➕ إضافة</button><div id="praiseTypesStockList"></div></div>
-  </div>
-
-  <!-- 12) Settings -->
-  <div class="page" id="page-settings">
-    <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة الخطر</div>
-      <p style="font-size:12px; opacity:0.8; margin-bottom:10px;">ملاحظة: كلمة المرور أصبحت تُدار عبر Firebase Authentication بشكل آمن. لا حاجة لتغييرها من هنا.</p>
-      <button class="btn danger block" onclick="wipeData('activities')" style="margin-bottom:8px;">🗑️ حذف الإشكالات والإشادات</button>
-    </div>
-  </div>
-
-</div>
-
-<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal-sheet">
-    <h3 id="modalTitle">تفاصيل</h3>
-    <div id="modalBody"></div>
-  </div>
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
-<div id="printArea"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     السكريبت الرئيسي - الربط مع Firebase Auth و Firestore
-     ═══════════════════════════════════════════════════════════ -->
-<script type="module">
-    import { checkAuthState, createUserWithCode, logoutUser } from './shared/auth.js';
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, addDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
-      authDomain: "ems-supervisor.firebaseapp.com",
-      projectId: "ems-supervisor",
-      storageBucket: "ems-supervisor.firebasestorage.app",
-      messagingSenderId: "230655268524",
-      appId: "1:230655268524:web:5043a458af3d79989ff109"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const CENTERS_LIST = ["مركز إسعاف دارسيت","مركز إسعاف بوشر","مركز إسعاف العامرات","مركز إسعاف قريات","مركز إسعاف الخوض 1","مركز إسعاف الخوض 2","مركز إسعاف العذيبة","مركز إسعاف الرسيل"];
-    const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "إجازة أخرى" };
-
-    let adminUser = null;
-    let allSupervisors = [], allParameds = [], allVehicles = [];
-    let allIssues = [], allPraises = [], allBroadcasts = [], allNotes = [];
-    let allMasterData = {};
-    let currentTab = "dashboard";
-    let isSyncing = false;
-
-    // أدوات مساعدة
-    function esc(s) { if (s === null || s === undefined) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
-    function showToast(msg, type="success") { const c = document.getElementById("toastContainer"); const t = document.createElement("div"); t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg; c.appendChild(t); setTimeout(() => t.remove(), 2800); }
-    function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
-    function timeAgo(ts) { if (!ts) return "—"; const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; if (diff < 86400) return `قبل ${Math.floor(diff/3600)}س`; return `قبل ${Math.floor(diff/86400)}ي`; }
-    function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
-
-    // دالة مساعدة للتعامل مع Firestore بسهولة
-    async function fsList(colName) {
-        const snapshot = await getDocs(collection(db, colName));
-        return snapshot.docs.map(d => ({ _id: d.id, ...d.data() }));
-    }
-
-    // التحقق من الصلاحيات عند الدخول
-    checkAuthState(async (code, user) => {
-        if (!code || !code.startsWith("ADM")) {
-            // ليس أدمن، اطرده
-            await logoutUser();
-            window.location.href = "index.html";
-            return;
-        }
-
-        adminUser = { code, email: user.email };
-        document.getElementById("currentUser").textContent = "المدير العام (" + code + ")";
-        document.getElementById("supCode").value = generateCode();
-        document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
-        
-        ["pmCenter", "vCenter"].forEach(id => {
-            const sel = document.getElementById(id);
-            if (sel) sel.innerHTML = CENTERS_LIST.map(c => `<option>${c}</option>`).join("");
-        });
-
-        document.getElementById("loadingOverlay").style.display = "none";
-        document.getElementById("mainApp").classList.add("ready");
-
-        syncAll();
-        setInterval(syncAll, 60000); // تحديث كل دقيقة لتخفيف الحمل
-    });
-
-    // جلب البيانات من Firestore
-    async function syncAll() {
-        if (isSyncing) return; isSyncing = true;
-        try {
-            const [sup, par, veh, iss, pra, bro, notes] = await Promise.all([
-                fsList("access_code").then(l => l.filter(u => u.type === "supervisor")),
-                fsList("paramedics").catch(() => []),
-                fsList("vehicles").catch(() => []),
-                fsList("issues").catch(() => []),
-                fsList("praises").catch(() => []),
-                fsList("broadcasts").catch(() => []),
-                fsList("notes").catch(() => [])
-            ]);
-            allSupervisors = sup; allParameds = par; allVehicles = veh;
-            allIssues = iss; allPraises = pra; allBroadcasts = bro; allNotes = notes;
-
-            // جلب البيانات الأساسية (Master Data)
-            const masterCols = ["issue_types_paramedic","issue_types_center","issue_types_vehicle","issue_types_stock","praise_types_paramedic","praise_types_center","praise_types_vehicle","praise_types_stock"];
-            for (let col of masterCols) {
-                allMasterData[col] = await fsList(col).catch(() => []);
-            }
-
-            renderCurrentTab();
-        } catch(e) { 
-            console.warn(e); 
-            showToast("فشل تحديث البيانات. تحقق من الاتصال.", "danger");
-        }
-        finally { isSyncing = false; }
-    }
-
-    function manualRefresh() { showToast("تحديث..."); syncAll(); }
-    
-    window.confirmLogout = async function() { 
-        if (confirm("تسجيل الخروج؟")) { 
-            await logoutUser(); 
-            window.location.href = "index.html"; 
-        } 
-    };
-
-    window.switchTab = function(id) {
-        currentTab = id;
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        const pg = document.getElementById("page-" + id); if (pg) pg.classList.add("active");
-        const tb = document.querySelector(`.tab-btn[data-tab="${id}"]`); if (tb) tb.classList.add("active");
-        window.scrollTo({top:0,behavior:"smooth"}); renderCurrentTab();
-    };
-
-    function renderCurrentTab() {
-        if (currentTab === "dashboard") renderDashboard();
-        else if (currentTab === "supervisors") renderSupervisors();
-        else if (currentTab === "paramedics") renderParameds();
-        else if (currentTab === "vehicles") renderVehicles();
-        else if (currentTab === "issues") renderIssues();
-        else if (currentTab === "praises") renderPraises();
-        else if (currentTab === "broadcasts") renderBroadcasts();
-        else if (currentTab === "notes") renderNotes();
-        else if (currentTab === "master") renderMasterData();
-    }
-
-    // ═══ Dashboard ═══
-    function renderDashboard() {
-        const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-        set("dashSups", allSupervisors.length); set("dashParams", allParameds.length); set("dashVehicles", allVehicles.length);
-        set("dashIssues", allIssues.length); set("dashPraises", allPraises.length); set("dashBroadcasts", allBroadcasts.length);
-        set("dashToday", [...allIssues, ...allPraises].filter(i => (i.timestamp||"").slice(0,10) === todayKey()).length);
-        set("dashOpenIssues", allIssues.filter(i => i.status !== "resolved").length);
-
-        // رسم بياني بسيط
-        const days = [0,0,0,0,0,0,0]; const now = new Date();
-        [...allIssues, ...allPraises].forEach(item => { const diff = Math.floor((now - new Date(item.timestamp)) / 86400000); if (diff >= 0 && diff < 7) days[6-diff]++; });
-        const max = Math.max(...days, 1);
-        document.getElementById("weeklyChart").innerHTML = days.map((c, i) => {
-            const h = Math.max(10, (c/max)*100);
-            return `<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:4px;"><div style="font-size:10px; color:var(--gold-light);">${c}</div><div style="width:100%; max-width:30px; height:${h}%; background:linear-gradient(180deg, var(--gold-light), var(--gold)); border-radius:4px 4px 0 0;"></div></div>`;
-        }).join("");
-
-        document.getElementById("centersPulse").innerHTML = CENTERS_LIST.map(c => {
-            const iss = allIssues.filter(i => i.centerName === c).length;
-            const pra = allPraises.filter(p => p.centerName === c).length;
-            let cls = "green"; if (iss > 5) cls = "red"; else if (iss > 2) cls = "amber";
-            return `<div style="background:rgba(0,0,0,0.4); padding:10px; border-radius:10px; text-align:center; border:1px solid var(--border); cursor:pointer;" onclick="showCenterDetails('${esc(c)}')"><div style="font-size:11px; font-weight:900; color:var(--gold-light);">${esc(c.replace("مركز إسعاف ", ""))}</div><div style="font-size:14px; font-weight:900; margin-top:4px;">🚩 ${iss} | ⭐ ${pra}</div></div>`;
-        }).join("");
-    }
-
-    // ═══ Supervisors (تم تعديلها لتنشئ حساباً حقيقياً) ═══
-    function renderSupervisors() {
-        const el = document.getElementById("supervisorsList");
-        if (allSupervisors.length === 0) { el.innerHTML = '<div class="empty"><span class="icon">👨‍💼</span>لا يوجد مشرفون</div>'; return; }
-        el.innerHTML = allSupervisors.map(u => `
-            <div class="item-card blue">
-            <div class="item-info">
-                <h4>👨‍💼 ${esc(u.name)}</h4>
-                <p>🏢 ${esc(u.sector||"—")} | 📱 ${esc(u.phone||"—")} | 🔑 ${esc(u.code||"—")}</p>
-            </div>
-            <div class="item-actions">
-                <button class="icon-btn-sm copy" onclick="copyCode('${esc(u.code)}')">📋</button>
-                <button class="icon-btn-sm delete" onclick="deleteSupervisor('${esc(u._id)}')">🗑️</button>
-            </div>
-            </div>
-        `).join("");
-    }
-
-    window.copyCode = function(code) { navigator.clipboard.writeText(code); showToast("تم نسخ الكود: " + code); };
-    window.cancelEditSupervisor = function() {
-        document.getElementById("editSupId").value = "";
-        document.getElementById("supName").value = "";
-        document.getElementById("supPhone").value = "";
-        document.getElementById("supCode").value = generateCode();
-        document.getElementById("btnCancelSup").style.display = "none";
-    };
-
-    // الدالة الأهم: حفظ المشرف وإنشاء حسابه في Firebase
-    window.saveSupervisor = async function() {
-        const name = document.getElementById("supName").value.trim();
-        const sector = document.getElementById("supSector").value;
-        const phone = document.getElementById("supPhone").value.trim();
-        const code = document.getElementById("supCode").value.trim();
-        const btn = document.getElementById("btnSaveSup");
-
-        if (!name) { showToast("أدخل الاسم", "danger"); return; }
-
-        btn.innerHTML = "⏳ جاري الإنشاء..."; btn.disabled = true;
-
-        try {
-            // 1. إنشاء حساب في Firebase Auth
-            const authResult = await createUserWithCode(code);
-            if (!authResult.success) {
-                showToast(authResult.message, "danger");
-                btn.innerHTML = "💾 حفظ وإنشاء حساب"; btn.disabled = false;
-                return;
-            }
-
-            // 2. حفظ بيانات المشرف في Firestore
-            await addDoc(collection(db, "access_code"), {
-                name, sector, phone, code, type: "supervisor", active: true, createdAt: new Date().toISOString()
-            });
-
-            cancelEditSupervisor(); 
-            showToast("تم إنشاء الحساب وحفظ المشرف بنجاح"); 
-            syncAll();
-        } catch (error) {
-            console.error(error);
-            showToast("حدث خطأ أثناء الإنشاء", "danger");
-        } finally {
-            btn.innerHTML = "💾 حفظ وإنشاء حساب"; btn.disabled = false;
-        }
-    };
-
-    window.deleteSupervisor = async function(id) {
-        if (!confirm("حذف المشرف؟ (ملاحظة: الحساب سيبقى في Firebase Auth)")) return;
-        await deleteDoc(doc(db, "access_code", id));
-        showToast("تم الحذف من قاعدة البيانات"); syncAll();
-    };
-
-    // ═══ Paramedics & Vehicles (تحديث بسيط) ═══
-    function renderParameds() {
-        const el = document.getElementById("paramedicsList");
-        el.innerHTML = allParameds.map(p => `<div class="item-card green"><div class="item-info"><h4>👨‍🚒 ${esc(p.name)}</h4><p>🏥 ${esc(p.centerName)} | 🎖️ ${esc(p.rank||"—")}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteParamedic('${esc(p._id)}')">🗑️</button></div></div>`).join("");
-    }
-    window.saveParamedic = async function() {
-        const name = document.getElementById("pmName").value.trim();
-        if (!name) return showToast("أدخل الاسم", "danger");
-        await addDoc(collection(db, "paramedics"), { name, centerName: document.getElementById("pmCenter").value, rank: document.getElementById("pmRank").value.trim() });
-        document.getElementById("pmName").value = ""; showToast("تم الحفظ"); syncAll();
-    };
-    window.deleteParamedic = async function(id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, "paramedics", id)); syncAll(); } };
-
-    function renderVehicles() {
-        const el = document.getElementById("vehiclesList");
-        el.innerHTML = allVehicles.map(v => `<div class="item-card amber"><div class="item-info"><h4>🚑 ${esc(v.plateNumber)}</h4><p>🏷️ ${esc(v.type||"—")} | 🏥 ${esc(v.centerName)}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteVehicle('${esc(v._id)}')">🗑️</button></div></div>`).join("");
-    }
-    window.saveVehicle = async function() {
-        const plate = document.getElementById("vPlate").value.trim();
-        if (!plate) return showToast("أدخل اللوحة", "danger");
-        await addDoc(collection(db, "vehicles"), { plateNumber: plate, type: document.getElementById("vType").value.trim(), centerName: document.getElementById("vCenter").value });
-        document.getElementById("vPlate").value = ""; showToast("تم الحفظ"); syncAll();
-    };
-    window.deleteVehicle = async function(id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, "vehicles", id)); syncAll(); } };
-
-    // ═══ Issues, Praises, Broadcasts, Notes (عرض فقط) ═══
-    function renderIssues() { document.getElementById("issuesList").innerHTML = allIssues.map(i => `<div class="item-card red"><div class="item-info"><h4>🚩 ${esc(i.issueType||i.praiseType)}</h4><p>👤 ${esc(i.supervisor)} | 🏥 ${esc(i.centerName)} | 🎯 ${esc(i.targetName)}</p></div></div>`).join(""); }
-    function renderPraises() { document.getElementById("praisesList").innerHTML = allPraises.map(p => `<div class="item-card green"><div class="item-info"><h4>⭐ ${esc(p.praiseType)}</h4><p>👤 ${esc(p.supervisor)} | 🏥 ${esc(p.centerName)}</p></div></div>`).join(""); }
-    
-    window.sendBroadcast = async function() {
-        const title = document.getElementById("bTitle").value.trim(), desc = document.getElementById("bDesc").value.trim();
-        if (!title || !desc) return showToast("أكمل البيانات", "danger");
-        await addDoc(collection(db, "broadcasts"), { title, description: desc, sender: "الإدارة", timestamp: new Date().toISOString() });
-        document.getElementById("bTitle").value = ""; document.getElementById("bDesc").value = ""; showToast("تم الإرسال"); syncAll();
-    };
-    function renderBroadcasts() { document.getElementById("broadcastsList").innerHTML = allBroadcasts.map(b => `<div class="item-card blue"><div class="item-info"><h4>📢 ${esc(b.title)}</h4><p>${esc(b.description)}</p></div></div>`).join(""); }
-    function renderNotes() { document.getElementById("notesList").innerHTML = allNotes.map(n => `<div class="item-card"><div class="item-info"><h4>📝 ${esc(n.supervisor)}</h4><p>${esc(n.text)}</p></div></div>`).join(""); }
-    
-    // ═══ Master Data ═══
-    function renderMasterData() {
-        const map = { issue_types_paramedic: "issueTypesParamList", issue_types_center: "issueTypesCenterList", issue_types_vehicle: "issueTypesVehicleList", issue_types_stock: "issueTypesStockList", praise_types_paramedic: "praiseTypesParamList", praise_types_center: "praiseTypesCenterList", praise_types_vehicle: "praiseTypesVehicleList", praise_types_stock: "praiseTypesStockList" };
-        for (let col in map) {
-            const el = document.getElementById(map[col]);
-            if (el) el.innerHTML = (allMasterData[col]||[]).map(t => `<div class="item-card" style="padding:8px; margin-bottom:4px;"><div class="item-info"><h4 style="font-size:12px;">${esc(t.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteMaster('${col}','${esc(t._id)}')">🗑️</button></div>`).join("");
-        }
-    }
-    window.addMasterData = async function(col, inputId) {
-        const val = document.getElementById(inputId).value.trim(); if (!val) return;
-        await addDoc(collection(db, col), { name: val }); document.getElementById(inputId).value = ""; showToast("تمت الإضافة"); syncAll();
-    };
-    window.deleteMaster = async function(col, id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, col, id)); syncAll(); } };
-
-    // أدوات إضافية
-    window.openModal = function(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); };
-    window.closeModal = function() { document.getElementById("modalOverlay").classList.remove("show"); };
-    window.wipeData = async function(type) {
-        if (!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
-        let cols = (type === 'activities') ? ['issues', 'praises'] : ['issues', 'praises', 'notes'];
-        for (const col of cols) {
-            const items = await fsList(col);
-            for (const item of items) await deleteDoc(doc(db, col, item._id));
-        }
-        showToast("✅ تم الحذف"); syncAll();
-    };
-</script>
-</body>
-</html>
+      <div class="card-title">📋 المشرفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius
