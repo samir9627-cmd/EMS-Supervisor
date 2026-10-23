@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>لوحة الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+    body { margin:0; padding:20px; background:#041814; color:#fff; font-family:'Cairo', sans-serif; }
+    .card { background:rgba(13,74,66,0.6); border:1px solid #978d5b; padding:20px; border-radius:15px; margin-bottom:15px; }
+    h1 { color:#d4c896; text-align:center; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:center; }
+    .stat { background:#082b26; padding:15px; border-radius:10px; }
+    .stat h2 { color:#d4c896; margin:0; font-size:28px; }
+    .btn { background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; padding:10px; border:none; border-radius:8px; font-weight:900; width:100%; margin-top:10px; cursor:pointer; }
+    #loading { position:fixed; inset:0; background:#041814; display:flex; align-items:center; justify-content:center; font-size:18px; color:#d4c896; font-weight:bold; z-index:9999; }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div id="loading">جاري تحميل لوحة الإدارة...</div>
+
+<div id="content" style="display:none;">
+    <h1>🏛️ الإدارة العامة</h1>
+    <div class="card">
+        <div class="grid">
+            <div class="stat"><h2 id="countSups">0</h2><p>مشرفون</p></div>
+            <div class="stat"><h2 id="countParams">0</h2><p>مسعفون</p></div>
+            <div class="stat"><h2 id="countVehicles">0</h2><p>مركبات</p></div>
+            <div class="stat"><h2 id="countIssues">0</h2><p>إشكالات</p></div>
+        </div>
+    </div>
+    <div class="card">
+        <h3>إضافة مشرف جديد</h3>
+        <input type="text" id="newSupName" placeholder="اسم المشرف" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #978d5b; background:#041814; color:#fff;">
+        <button class="btn" onclick="addSupervisor()">حفظ وإنشاء حساب</button>
+    </div>
+    <button class="btn" style="background:#e53935; color:#fff;" onclick="logout()">🚪 تسجيل الخروج</button>
+</div>
+
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
+      authDomain: "ems-supervisor.firebaseapp.com",
+      projectId: "ems-supervisor",
+      storageBucket: "ems-supervisor.firebasestorage.app",
+      messagingSenderId: "230655268524",
+      appId: "1:230655268524:web:5043a458af3d79989ff109"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const SECRET = "EMS_SECRET_PASSWORD_2026!";
+
+    // التحقق من الدخول
+    auth.onAuthStateChanged((user) => {
+        if (!user) { window.location.href = "./index.html"; return; }
+        const code = user.email.split('@')[0].toUpperCase();
+        if (!code.startsWith("ADM")) { window.location.href = "./index.html"; return; }
+        
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("content").style.display = "block";
+        loadStats();
+    });
+
+    function loadStats() {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(snap => document.getElementById("countSups").innerText = snap.size);
+        db.collection("paramedics").get().then(snap => document.getElementById("countParams").innerText = snap.size);
+        db.collection("vehicles").get().then(snap => document.getElementById("countVehicles").innerText = snap.size);
+        db.collection("issues").get().then(snap => document.getElementById("countIssues").innerText = snap.size);
+    }
+
+    function addSupervisor() {
+        const name = document.getElementById("newSupName").value.trim();
+        if (!name) return alert("أدخل الاسم");
+        
+        const code = "SUP-" + Math.floor(1000 + Math.random() * 9000);
+        const email = `${code.toLowerCase()}@ems-system.local`;
+        
+        auth.createUserWithEmailAndPassword(email, SECRET).then(() => {
+            db.collection("access_code").add({ name, code, type: "supervisor", active: true }).then(() => {
+                alert("تم إنشاء الحساب! الكود: " + code);
+                document.getElementById("newSupName").value = "";
+                loadStats();
+            });
+        }).catch((error) => alert("خطأ: " + error.message));
+    }
+
+    function logout() {
+        auth.signOut().then(() => window.location.href = "./index.html");
+    }
+</script>
+</body>
+</html>
