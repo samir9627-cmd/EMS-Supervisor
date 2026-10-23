@@ -2,20 +2,20 @@
   "name": "نظام الإسعاف الذكي",
   "short_name": "الإسعاف",
   "description": "الإدارة العامة للإسعاف - المشرف الطبي الميداني",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#978d5b",
   "icons": [
     {
-      "src": "https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png",
+      "src": "logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png",
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
