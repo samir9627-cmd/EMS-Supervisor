@@ -8,255 +8,196 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
-    :root { --gold:#c9a227; --gold-light:#e5c158; --green:#0d4a42; --bg:#041814; --red:#e53935; }
+    :root { 
+        --gold:#c9a227; 
+        --gold-light:#e5c158; 
+        --gold-brand:#978d5b; /* لون الهوية الذي أرسلته */
+        --green:#0d4a42; 
+        --bg:#041814; 
+        --red:#e53935; 
+    }
+    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; overflow-x:hidden; }
     
-    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; overflow-x:hidden; position:relative; }
-    
-    /* 🌟 الخلفية السحرية (نجوم وتوهج) */
+    /* الخلفية السحرية */
     body::before {
         content:''; position:fixed; inset:0; z-index:-2;
-        background:
-            radial-gradient(circle at 15% 10%, rgba(201,162,39,0.18) 0%, transparent 45%),
-            radial-gradient(circle at 85% 90%, rgba(10,90,58,0.6) 0%, transparent 50%),
-            linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
+        background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), 
+                    radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), 
+                    linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
     }
     .stars { position:fixed; inset:0; z-index:-1; pointer-events:none; }
     .star { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0.4; animation:twinkle 4s infinite; }
     @keyframes twinkle { 0%,100%{opacity:0.2; transform:scale(0.8);} 50%{opacity:0.9; transform:scale(1.4);} }
 
-    /* ✨ الشعار الفاخر */
-    .logo-wrap { text-align:center; margin-top:30px; margin-bottom:25px; animation:fadeUp 0.8s cubic-bezier(.4,0,.2,1); position:relative; }
-    .logo-wrap::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:180px; height:180px; background:radial-gradient(circle, rgba(201,162,39,0.35) 0%, transparent 70%); border-radius:50%; animation:pulseGlow 3s infinite; z-index:-1; }
-    @keyframes pulseGlow { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.5;} 50%{transform:translate(-50%,-50%) scale(1.2); opacity:1;} }
-    
-    .logo { width:110px; height:110px; border-radius:24px; border:2px solid var(--gold); padding:5px; background:linear-gradient(145deg, #0a5a3a, #064a2e); box-shadow:0 0 25px rgba(201,162,39,0.6); animation:float 3s ease-in-out infinite; object-fit:contain; }
-    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
-    
-    h1 { color:var(--gold-light); font-size:24px; margin-top:15px; font-weight:900; letter-spacing:1px; text-shadow:0 0 20px rgba(201,162,39,0.5); }
-    .subtitle { color:rgba(255,255,255,0.7); font-size:13px; margin-top:5px; letter-spacing:2px; }
+    /* شاشة التحميل */
+    #loadingScreen { position:fixed; inset:0; z-index:9999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.5s; }
+    .loading-logo { width:120px; height:120px; border-radius:24px; border:3px solid var(--gold-brand); padding:5px; filter:drop-shadow(0 0 30px rgba(151,141,91,0.8)); animation:float 2s infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-    /* 🔮 صندوق الدخول الزجاجي */
-    .login-box { 
-        width:100%; max-width:400px; 
-        background:rgba(13,74,66,0.4); 
-        backdrop-filter:blur(20px); 
-        padding:30px 25px; 
-        border-radius:24px; 
-        border:1px solid rgba(201,162,39,0.3); 
-        box-shadow:0 20px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(201,162,39,0.05); 
-        margin-bottom:25px; 
-        animation:fadeUp 0.8s cubic-bezier(.4,0,.2,1) 0.2s both; 
-    }
-    .login-box h3 { color:var(--gold); font-size:15px; margin-bottom:20px; text-align:center; display:flex; justify-content:center; align-items:center; gap:8px; }
-    
-    .input-group { position:relative; margin-bottom:20px; }
-    input { 
-        width:100%; padding:18px; 
-        background:rgba(4,24,20,0.8); 
-        border:2px solid rgba(201,162,39,0.3); 
-        border-radius:16px; 
-        color:var(--gold-light); 
-        font-size:22px; 
-        text-align:center; 
-        font-weight:900; 
-        outline:none; 
-        text-transform:uppercase; 
-        letter-spacing:3px; 
-        transition:0.3s; 
-    }
-    input:focus { border-color:var(--gold); box-shadow:0 0 25px rgba(201,162,39,0.4); background:rgba(4,24,20,0.95); }
-    input::placeholder { font-size:14px; letter-spacing:1px; font-weight:normal; opacity:0.4; }
-    
-    .btn-login { 
-        width:100%; padding:18px; 
-        border-radius:16px; 
-        border:none; 
-        font-size:17px; 
-        font-weight:900; 
-        cursor:pointer; 
-        background:linear-gradient(135deg, var(--gold), var(--gold-light)); 
-        color:var(--bg); 
-        display:flex; justify-content:center; align-items:center; gap:10px; 
-        transition:0.3s; 
-        box-shadow:0 10px 25px rgba(201,162,39,0.3); 
-    }
+    /* الهيدر */
+    .header { text-align:center; margin-top:20px; margin-bottom:30px; z-index:1; }
+    .logo-wrap { position:relative; display:inline-block; }
+    .logo { width:110px; height:110px; border-radius:22px; border:2px solid var(--gold-brand); background:var(--green); padding:5px; animation:float 3s infinite; }
+    h1 { color:var(--gold-brand); font-size:24px; margin-top:15px; font-weight:900; text-shadow:0 0 20px rgba(151,141,91,0.5); }
+    .subtitle { color:rgba(255,255,255,0.6); font-size:12px; letter-spacing:2px; margin-top:5px; }
+
+    /* صندوق الدخول الزجاجي */
+    .login-box { width:100%; max-width:400px; background:rgba(13,74,66,0.4); backdrop-filter:blur(20px); padding:30px 25px; border-radius:24px; border:1px solid rgba(151,141,91,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.6); margin-bottom:25px; z-index:1; }
+    input { width:100%; padding:18px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-brand); font-size:22px; text-align:center; font-weight:900; outline:none; text-transform:uppercase; letter-spacing:3px; margin-bottom:20px; transition:0.3s; }
+    input:focus { border-color:var(--gold-brand); box-shadow:0 0 25px rgba(151,141,91,0.4); }
+    .btn-login { width:100%; padding:18px; border-radius:16px; border:none; font-size:17px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold-brand), var(--gold-light)); color:var(--bg); display:flex; justify-content:center; align-items:center; gap:10px; transition:0.3s; box-shadow:0 10px 25px rgba(151,141,91,0.3); }
     .btn-login:active { transform:scale(0.97); }
-    .btn-login:hover { box-shadow:0 12px 30px rgba(201,162,39,0.5); }
-    
     .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:15px; min-height:20px; color:var(--red); }
     
-    .loader { display:none; width:20px; height:20px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-
-    /* 📊 الإحصائيات بتصميم زجاجي */
-    .stats-container { width:100%; max-width:400px; animation:fadeUp 0.8s cubic-bezier(.4,0,.2,1) 0.4s both; }
-    .stats-container h4 { color:var(--gold); font-size:13px; margin-bottom:15px; display:flex; align-items:center; gap:8px; padding-right:5px; }
+    /* الإحصائيات */
+    .stats-container { width:100%; max-width:400px; z-index:1; }
     .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    
-    .stat-card { 
-        background:rgba(255,255,255,0.03); 
-        backdrop-filter:blur(10px);
-        border:1px solid rgba(201,162,39,0.15); 
-        padding:18px 15px; 
-        border-radius:16px; 
-        text-align:center; 
-        position:relative; 
-        overflow:hidden; 
-        transition:0.3s;
-    }
-    .stat-card::before { content:''; position:absolute; top:0; right:0; width:100%; height:3px; background:linear-gradient(90deg, transparent, var(--gold), transparent); opacity:0.5; }
-    .stat-card:hover { background:rgba(255,255,255,0.06); transform:translateY(-2px); }
-    
-    .stat-card .num { font-size:28px; font-weight:900; color:var(--gold-light); line-height:1; text-shadow:0 0 15px rgba(201,162,39,0.5); }
+    .stat-card { background:rgba(255,255,255,0.03); backdrop-filter:blur(10px); border:1px solid rgba(151,141,91,0.15); padding:18px 15px; border-radius:16px; text-align:center; }
+    .stat-card .num { font-size:28px; font-weight:900; color:var(--gold-brand); line-height:1; }
     .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:6px; }
-    
-    .footer { margin-top:auto; padding:25px; font-size:10px; color:rgba(255,255,255,0.3); text-align:center; line-height:1.8; }
-    .footer span { color:var(--gold); opacity:0.7; }
 
-    @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    /* نجوم الشهر */
+    .section-title { display:flex; justify-content:center; align-items:center; gap:10px; color:var(--gold-brand); font-size:15px; font-weight:900; margin:25px 0 15px; width:100%; max-width:400px; }
+    .section-title::before, .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(151,141,91,0.3), transparent); }
+    .star-card { display:grid; grid-template-columns:60px 1fr auto; gap:12px; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:12px; margin-bottom:10px; width:100%; max-width:400px; }
+    .star-photo { width:60px; height:60px; border-radius:12px; border:2px solid var(--gold-brand); background:var(--green); display:flex; align-items:center; justify-content:center; font-size:24px; object-fit:cover; }
+    .star-name { font-size:14px; font-weight:900; color:var(--gold-brand); }
+    .star-role { font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
+    .star-badge { font-size:28px; filter:drop-shadow(0 0 10px var(--gold-brand)); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
+    <div id="loadingScreen">
+        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="loading-logo">
+        <h1 style="color:var(--gold-brand); margin-top:20px;">جاري التحميل...</h1>
+    </div>
 
     <div class="stars" id="starsContainer"></div>
 
-    <div class="logo-wrap">
-        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzBkNGE0MiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+akTwvdGV4dD48L3N2Zz4='">
+    <div class="header">
+        <div class="logo-wrap">
+            <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo">
+        </div>
         <h1>نظام الإسعاف الذكي</h1>
         <div class="subtitle">هيئة الدفاع المدني والإسعاف</div>
     </div>
 
     <div class="login-box">
-        <h3>🔐 بوابة الدخول الآمنة</h3>
-        <div class="input-group">
-            <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك" onkeypress="if(event.key==='Enter') login()">
-        </div>
+        <h3 style="color:var(--gold-brand); text-align:center; margin-bottom:20px; font-size:15px;">🔐 بوابة الدخول الموحدة</h3>
+        <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك">
         <button class="btn-login" id="loginBtn" onclick="login()">
-            <span id="btnText">🔓 دخول النظام</span>
-            <span class="loader" id="btnLoader"></span>
+            <span>🔓 دخول النظام</span>
         </button>
         <div id="msgBox" class="msg"></div>
     </div>
 
     <div class="stats-container">
-        <h4>📊 إحصائيات النظام المباشرة</h4>
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="num" id="statIssues">0</div>
-                <div class="lbl">إشكالية ميدانية</div>
-            </div>
-            <div class="stat-card">
-                <div class="num" id="statVisits">0</div>
-                <div class="lbl">تقرير زيارة</div>
-            </div>
-            <div class="stat-card">
-                <div class="num" id="statUsers">0</div>
-                <div class="lbl">مستخدم مسجل</div>
-            </div>
-            <div class="stat-card">
-                <div class="num" id="statBroadcasts">0</div>
-                <div class="lbl">تعميم مرسل</div>
-            </div>
+            <div class="stat-card"><div class="num" id="statIssues">0</div><div class="lbl">إشكالية ميدانية</div></div>
+            <div class="stat-card"><div class="num" id="statVisits">0</div><div class="lbl">تقرير زيارة</div></div>
+            <div class="stat-card"><div class="num" id="statUsers">0</div><div class="lbl">مستخدم مسجل</div></div>
+            <div class="stat-card"><div class="num" id="statBroadcasts">0</div><div class="lbl">تعميم مرسل</div></div>
         </div>
     </div>
 
-    <div class="footer">
-        <div>الإدارة العامة للإسعاف — <span>نظام إدارة الجودة ISO 9001:2015</span></div>
-        <div>© 2026 — جميع الحقوق محفوظة</div>
+    <div class="section-title">🌟 نجوم الشهر</div>
+    <div id="starsMonthList" style="width:100%; max-width:400px;">
+        <div style="text-align:center; font-size:12px; color:rgba(255,255,255,0.5); padding:20px;">جاري التحميل...</div>
     </div>
 
 <script>
-    const FIREBASE_PROJECT = "ems-supervisor";
+    // ⚠️ ضع هنا اسم مشروع Firebase الخاص بك
+    const FIREBASE_PROJECT = "ems-supervisor"; 
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-    // إنشاء النجوم المتحركة
-    function createStars() {
-        const container = document.getElementById("starsContainer");
-        for (let i = 0; i < 60; i++) {
-            const s = document.createElement("div");
-            s.className = "star";
-            s.style.left = Math.random() * 100 + "%";
-            s.style.top = Math.random() * 100 + "%";
-            s.style.animationDelay = (Math.random() * 4) + "s";
-            s.style.opacity = Math.random() * 0.5 + 0.2;
-            container.appendChild(s);
-        }
+    // إنشاء النجوم
+    const starsContainer = document.getElementById("starsContainer");
+    for(let i=0; i<50; i++) {
+        let s = document.createElement("div");
+        s.className = "star";
+        s.style.left = Math.random()*100 + "%";
+        s.style.top = Math.random()*100 + "%";
+        s.style.animationDelay = (Math.random()*4) + "s";
+        starsContainer.appendChild(s);
     }
 
+    // إخفاء شاشة التحميل
+    setTimeout(() => {
+        let ls = document.getElementById("loadingScreen");
+        ls.style.opacity = "0";
+        setTimeout(() => ls.remove(), 500);
+    }, 1000);
+
+    // دوال مساعدة
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
-    function getBool(field) { return (field && field.booleanValue !== undefined) ? field.booleanValue : true; }
+    function docToObj(doc) {
+        const obj = {}; if (!doc.fields) return obj;
+        for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
+        obj._id = doc.name.split("/").pop(); return obj;
+    }
 
     // تسجيل الدخول
     async function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
-        const btnText = document.getElementById("btnText");
-        const loader = document.getElementById("btnLoader");
         
-        if (!code) { msg.innerText = "⚠️ الرجاء إدخال الكود"; return; }
+        if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
         
-        btnText.innerText = "جاري التحقق...";
-        loader.style.display = "block";
-        btn.disabled = true;
-        msg.innerText = "";
+        btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.innerText = "";
         
         try {
-            const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
+            const res = await fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
             let foundUser = null;
-            if (data.documents && data.documents.length > 0) {
+            if (data.documents) {
                 for (let doc of data.documents) {
-                    if (!doc.fields || !doc.fields.code) continue;
                     const docCode = getString(doc.fields.code).toUpperCase();
-                    
                     if (docCode === code) {
-                        const active = getBool(doc.fields.active);
-                        if (!active) {
-                            msg.innerText = "⚠️ هذا الحساب معطل حالياً.";
-                            resetBtn();
-                            return;
-                        }
-                        foundUser = {
-                            name: getString(doc.fields.name),
-                            type: getString(doc.fields.type),
-                            code: docCode
-                        };
+                        foundUser = docToObj(doc);
                         break;
                     }
                 }
             }
             
             if (!foundUser) { 
-                msg.innerText = "❌ الكود غير صحيح أو غير موجود"; 
-                resetBtn();
-                return; 
+                msg.innerText = "❌ الكود غير صحيح"; 
+                btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
             }
             
-            localStorage.setItem("amb_session", JSON.stringify(foundUser));
+            if (foundUser.active === false || foundUser.active === "false") {
+                msg.innerText = "⚠️ هذا الحساب معطل حالياً"; 
+                btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
+            }
             
-            if (foundUser.type === "admin") window.location.href = "admin.html";
-            else if (foundUser.type === "ops") window.location.href = "ops.html";
-            else window.location.href = "app.html";
+            // حفظ الجلسة الموحدة
+            const sessionData = JSON.stringify(foundUser);
+            localStorage.setItem("amb_user", sessionData);
+            sessionStorage.setItem("amb_user", sessionData);
+            
+            // التوجيه
+            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الدخول بنجاح";
+            
+            setTimeout(() => {
+                if (foundUser.type === "admin") window.location.href = "admin.html";
+                else if (foundUser.type === "ops") window.location.href = "ops.html";
+                else window.location.href = "app.html";
+            }, 500);
 
         } catch(e) { 
             msg.innerText = "⚠️ خطأ في الاتصال بالشبكة"; 
-            resetBtn();
+            btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; 
         }
-    }
-
-    function resetBtn() {
-        document.getElementById("btnText").innerText = "🔓 دخول النظام";
-        document.getElementById("btnLoader").style.display = "none";
-        document.getElementById("loginBtn").disabled = false;
     }
 
     // تحميل الإحصائيات
     async function loadStats() {
         try {
             const [resUsers, resActs, resBroadcasts] = await Promise.all([
-                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
+                fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json())
             ]);
@@ -278,9 +219,46 @@
         } catch(e) { console.log("Stats error"); }
     }
 
-    window.onload = function() { 
-        createStars();
-        loadStats(); 
+    // تحميل نجوم الشهر
+    async function loadFeatured() {
+        const el = document.getElementById("starsMonthList");
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/featured?pageSize=100`, { cache: "no-store" });
+            const data = await res.json();
+            
+            const d = new Date();
+            const month = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+            
+            let docs = data.documents ? data.documents.map(docToObj) : [];
+            let list = docs.filter(f => f.month === month).sort((a, b) => (parseInt(b.score) || 0) - (parseInt(a.score) || 0)).slice(0, 3);
+            
+            if (list.length === 0) {
+                el.innerHTML = '<div style="text-align:center; font-size:12px; color:rgba(255,255,255,0.5); padding:20px;">لا يوجد متميزون هذا الشهر</div>';
+                return;
+            }
+            
+            el.innerHTML = list.map((f, idx) => {
+                const badge = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
+                return `
+                    <div class="star-card">
+                        ${f.photoUrl ? `<img src="${f.photoUrl}" class="star-photo">` : `<div class="star-photo">👤</div>`}
+                        <div>
+                            <div class="star-name">${f.name || "—"}</div>
+                            <div class="star-role">${f.role || ""} ${f.centerName ? "• " + f.centerName : ""}</div>
+                        </div>
+                        <div class="star-badge">${badge}</div>
+                    </div>
+                `;
+            }).join("");
+        } catch(e) { 
+            el.innerHTML = '<div style="text-align:center; font-size:12px; color:#ff5252;">خطأ في التحميل</div>'; 
+        }
+    }
+
+    window.onload = function() {
+        document.getElementById("codeInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
+        loadStats();
+        loadFeatured();
     };
 </script>
 </body>
