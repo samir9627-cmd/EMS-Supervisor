@@ -2,414 +2,504 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
 <title>الإدارة العامة — غرفة التحكم</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
-    :root { 
-        --gold:#978d5b; 
-        --gold-light:#d4c896; 
-        --green:#0d4a42; 
-        --bg:#041814; 
-        --red:#e53935; 
-    }
-    body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:80px; }
-    body::before {
-        content:''; position:fixed; inset:0; z-index:-1;
-        background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), 
-                    linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
-    }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
+:root {
+  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
+  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae;
+  --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726;
+  --blue:#29b6f6; --blue-light:#64b5f6;
+  --purple:#ab47bc; --purple-light:#ce93d8;
+  --pink:#ec407a;
+  --surface:rgba(13,74,66,0.55); --surface-2:rgba(4,24,20,0.75);
+  --border:rgba(151,141,91,0.3);
+  --safe-top:env(safe-area-inset-top, 0px);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
+html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; overscroll-behavior-y:contain; }
+body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
+body::before {
+  content:''; position:fixed; inset:0; z-index:-1;
+  background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
+}
+#loginScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; background:linear-gradient(135deg, #041814, #0d4a42, #082b26); overflow-y:auto; }
+.login-box { text-align:center; max-width:440px; width:100%; padding:34px 24px; background:linear-gradient(145deg, rgba(13,74,66,0.65), rgba(4,24,20,0.95)); border:2px solid var(--border); border-radius:28px; box-shadow:0 25px 70px rgba(0,0,0,0.7), 0 0 60px rgba(151,141,91,0.15); }
+.login-logo { width:130px; height:130px; object-fit:contain; border-radius:22px; background:linear-gradient(145deg, #0a5a3a, #064a2e); padding:8px; border:2px solid rgba(151,141,91,0.5); filter:drop-shadow(0 0 25px rgba(151,141,91,0.9)); animation:logoFloat 3s ease-in-out infinite; }
+@keyframes logoFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+.login-title { font-size:24px; color:var(--gold-light); font-weight:900; margin-bottom:6px; margin-top:20px; }
+.login-subtitle { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:26px; letter-spacing:2px; }
+.pass-input { width:100%; padding:18px; background:rgba(4,24,20,0.85); border:2px solid var(--border); border-radius:16px; color:var(--gold-light); font-size:18px; font-weight:900; text-align:center; letter-spacing:4px; font-family:'Courier New', monospace; outline:none; margin-bottom:16px; transition:0.3s; direction:ltr; }
+.pass-input:focus { border-color:var(--gold); box-shadow:0 0 0 4px rgba(151,141,91,0.2), 0 0 30px rgba(151,141,91,0.5); }
+.login-btn { width:100%; padding:17px; border:none; border-radius:16px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:17px; font-weight:900; cursor:pointer; font-family:inherit; box-shadow:0 10px 30px rgba(151,141,91,0.4); }
+.login-btn:active { transform:scale(0.97); }
+.login-msg { margin-top:16px; font-size:13px; min-height:22px; font-weight:700; }
+.login-footer { margin-top:22px; font-size:11px; color:rgba(255,255,255,0.5); padding-top:18px; border-top:1px solid rgba(151,141,91,0.15); }
 
-    /* التبويبات العلوية */
-    .topbar { background:linear-gradient(135deg, rgba(13,74,66,0.95), rgba(4,24,20,0.98)); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
-    .topbar h1 { font-size:16px; color:var(--gold-light); font-weight:900; }
-    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:inherit; }
-    
-    .tabs { display:flex; gap:8px; overflow-x:auto; padding:15px; scrollbar-width:none; border-bottom:1px solid rgba(151,141,91,0.2); }
-    .tabs::-webkit-scrollbar { display:none; }
-    .tab-btn { padding:10px 18px; border-radius:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(151,141,91,0.3); color:#fff; font-weight:bold; font-size:13px; cursor:pointer; white-space:nowrap; font-family:inherit; transition:0.3s; }
-    .tab-btn.active { background:var(--gold); color:var(--bg); border-color:var(--gold); }
+#mainApp { display:none; }
+#mainApp.ready { display:block; }
 
-    /* المحتوى */
-    .content { padding:15px; max-width:800px; margin:0 auto; }
-    .page { display:none; animation:fadeIn 0.3s; }
-    .page.active { display:block; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+/* Topbar */
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); backdrop-filter:blur(20px); display:flex; align-items:center; gap:10px; box-shadow:0 4px 25px rgba(0,0,0,0.7); }
+.topbar-logo { width:46px; height:46px; border-radius:12px; flex-shrink:0; background:linear-gradient(145deg, #0a5a3a, #064a2e); padding:3px; border:1px solid var(--border); object-fit:contain; }
+.topbar-info { flex:1; min-width:0; }
+.topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
+.topbar-info p { font-size:10px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; margin-top:3px; flex-wrap:wrap; }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); box-shadow:0 0 8px var(--green-light); }
+.status-dot.offline { background:var(--red-light); box-shadow:0 0 8px var(--red-light); }
+.status-dot.checking { background:var(--amber-light); box-shadow:0 0 8px var(--amber-light); animation:pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; position:relative; }
+.icon-btn:active { transform:scale(0.92); background:rgba(151,141,91,0.25); }
+.icon-btn.danger { background:rgba(198,40,40,0.4); border-color:rgba(255,82,82,0.5); }
 
-    /* البطاقات */
-    .card { background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:20px; margin-bottom:15px; backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
-    .card h3 { color:var(--gold-light); font-size:15px; margin-bottom:15px; border-bottom:1px solid rgba(151,141,91,0.2); padding-bottom:10px; display:flex; align-items:center; gap:8px; }
-    
-    /* النماذج */
-    .form-group { margin-bottom:12px; }
-    .form-group label { display:block; font-size:12px; color:var(--gold-light); margin-bottom:6px; font-weight:bold; }
-    input, select, textarea { width:100%; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(151,141,91,0.3); border-radius:10px; color:#fff; font-size:14px; font-family:inherit; outline:none; transition:0.3s; }
-    input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(151,141,91,0.2); }
-    select option { background:var(--bg); }
-    textarea { resize:vertical; min-height:100px; }
-    
-    .btn { width:100%; padding:14px; border-radius:10px; border:none; font-size:15px; font-weight:900; cursor:pointer; font-family:inherit; transition:0.2s; display:flex; justify-content:center; align-items:center; gap:8px; }
-    .btn:active { transform:scale(0.98); }
-    .btn-gold { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); }
-    .btn-red { background:linear-gradient(135deg, #e53935, #ff5252); color:#fff; }
-    .btn-blue { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
-    .btn-small { padding:8px 12px; font-size:12px; width:auto; }
+/* Tabs */
+.tabs-bar { position:sticky; top:calc(74px + var(--safe-top)); z-index:98; background:linear-gradient(180deg, rgba(4,24,20,0.98), rgba(4,24,20,0.92)); backdrop-filter:blur(20px); border-bottom:1px solid rgba(151,141,91,0.2); overflow-x:auto; scrollbar-width:none; }
+.tabs-bar::-webkit-scrollbar { display:none; }
+.tabs-scroll { display:flex; gap:6px; padding:10px 12px; min-width:min-content; }
+.tab-btn { flex-shrink:0; padding:9px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:22px; color:rgba(255,255,255,0.75); font-family:inherit; font-weight:700; font-size:12px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; }
+.tab-btn:active { transform:scale(0.95); }
+.tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-color:var(--gold); box-shadow:0 4px 15px rgba(151,141,91,0.4); }
 
-    /* القوائم */
-    .list-item { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:10px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
-    .list-info h4 { font-size:14px; color:var(--gold-light); margin-bottom:4px; }
-    .list-info p { font-size:11px; color:rgba(255,255,255,0.6); }
-    .list-actions { display:flex; gap:8px; }
-    .icon-btn { width:36px; height:36px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; }
-    .icon-btn.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
-    .icon-btn.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
+.page { display:none; padding:16px; max-width:900px; margin:0 auto; }
+.page.active { display:block; animation:pageIn 0.35s ease-out; }
+@keyframes pageIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-    /* مؤشرات KPI */
-    .kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px; }
-    .kpi-box { background:rgba(13,74,66,0.5); border:1px solid rgba(151,141,91,0.3); border-radius:12px; padding:15px; text-align:center; }
-    .kpi-box .num { font-size:28px; font-weight:900; color:var(--gold-light); }
-    .kpi-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px; }
+/* Cards & Stats */
+.card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:18px; margin-bottom:14px; box-shadow:0 8px 25px rgba(0,0,0,0.4); }
+.card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid rgba(151,141,91,0.15); display:flex; align-items:center; gap:8px; }
+.stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
+.stats-grid.three { grid-template-columns:repeat(3, 1fr); }
+.stats-grid.four { grid-template-columns:repeat(2, 1fr); }
+@media (min-width:600px) { .stats-grid.four { grid-template-columns:repeat(4, 1fr); } }
+.stat-mini { background:linear-gradient(145deg, var(--surface-2), rgba(13,74,66,0.4)); border:1px solid var(--border); border-radius:16px; padding:16px 14px; position:relative; overflow:hidden; cursor:pointer; }
+.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; font-family:'Tajawal', sans-serif; }
+.stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:5px; font-weight:600; }
 
-    /* منطقة الأيزو */
-    .iso-card { display:flex; align-items:center; gap:15px; background:linear-gradient(135deg, rgba(151,141,91,0.2), rgba(4,24,20,0.9)); padding:15px; border-radius:12px; border:1px solid var(--gold); }
-    .iso-card img { width:60px; height:60px; }
-    .iso-card h4 { color:var(--gold-light); font-size:15px; margin-bottom:4px; }
-    .iso-card p { font-size:11px; color:#ccc; }
+/* Buttons & Inputs */
+.btn { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn:active { transform:scale(0.97); }
+.btn.secondary { background:rgba(255,255,255,0.08); color:#fff; border:1px solid var(--border); }
+.btn.danger { background:linear-gradient(135deg, var(--red), var(--red-light)); color:#fff; }
+.btn.info { background:linear-gradient(135deg, var(--blue), var(--blue-light)); color:#fff; }
+.btn.small { padding:8px 14px; font-size:11px; }
+.btn.block { width:100%; }
+.btn.big { padding:16px 20px; font-size:15px; }
+input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-family:inherit; font-weight:600; outline:none; margin-bottom:12px; }
+input:focus, textarea:focus, select:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(151,141,91,0.15); }
+label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:7px; }
+
+/* Item Cards */
+.item-card { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; cursor:pointer; }
+.item-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; }
+.item-title { font-size:14px; font-weight:900; color:var(--gold-light); display:flex; align-items:center; gap:6px; flex:1; min-width:0; }
+.item-badge { font-family:'Courier New', monospace; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); padding:3px 10px; border-radius:8px; font-size:11px; font-weight:900; display:inline-block; }
+.item-meta { font-size:11px; color:rgba(255,255,255,0.65); line-height:1.7; margin-bottom:8px; }
+.item-meta b { color:var(--gold-light); font-weight:900; }
+
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:200; background:linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top:2px solid var(--gold); padding:8px 8px calc(8px + var(--safe-bottom)); display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; backdrop-filter:blur(20px); box-shadow:0 -4px 25px rgba(0,0,0,0.6); }
+.nav-btn { display:flex; flex-direction:column; align-items:center; gap:3px; padding:8px 4px; border-radius:12px; cursor:pointer; background:transparent; border:none; color:rgba(255,255,255,0.65); font-family:inherit; font-weight:700; font-size:10px; }
+.nav-btn .nav-icon { font-size:22px; line-height:1; }
+.nav-btn:active { transform:scale(0.92); }
+.nav-btn.active { background:linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color:var(--gold-light); }
+.modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); display:none; align-items:flex-end; justify-content:center; }
+.modal-overlay.show { display:flex; }
+.modal-sheet { background:linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius:26px; border-top-right-radius:26px; border-top:3px solid var(--gold); width:100%; max-width:780px; max-height:92vh; padding:24px 18px calc(24px + var(--safe-bottom)); overflow-y:auto; animation:sheetUp 0.35s cubic-bezier(0.22,1,0.36,1); }
+@keyframes sheetUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+.modal-sheet::before { content:''; display:block; width:42px; height:4px; background:rgba(255,255,255,0.3); border-radius:3px; margin:-12px auto 16px; }
+.modal-sheet h3 { color:var(--gold-light); font-size:17px; font-weight:900; text-align:center; padding-bottom:14px; border-bottom:1px solid rgba(151,141,91,0.2); margin-bottom:18px; }
+.modal-actions { display:grid; grid-template-columns:1fr 2fr; gap:10px; margin-top:16px; }
+.toast-container { position:fixed; top:calc(90px + var(--safe-top)); left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:calc(100% - 32px); max-width:440px; }
+.toast { background:linear-gradient(135deg, var(--teal), var(--teal-dark)); color:#fff; padding:14px 18px; border-radius:14px; border:1px solid var(--gold); font-size:13px; font-weight:700; box-shadow:0 15px 40px rgba(0,0,0,0.6); display:flex; align-items:center; gap:10px; pointer-events:auto; animation:toastIn 0.4s; }
+@keyframes toastIn { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-    <h1>🏛️ الإدارة العامة</h1>
-    <button class="btn-logout" onclick="logout()">خروج</button>
+<div id="loginScreen">
+  <div class="login-box">
+    <img id="loginLogo" src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" alt="الشعار" class="login-logo">
+    <div class="login-title">الإدارة العامة</div>
+    <div class="login-subtitle">نظام الإسعاف الذكي — v15.0</div>
+    <input type="password" id="passInput" class="pass-input" placeholder="كلمة المرور" autocomplete="off">
+    <button class="login-btn" id="loginBtn" onclick="loginWithPassword()">🔓 دخول</button>
+    <div class="login-msg" id="loginMsg"></div>
+    <div class="login-footer">🔒 لوحة محمية — للمسؤولين فقط</div>
+  </div>
 </div>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 الإحصائيات</button>
-    <button class="tab-btn" onclick="switchTab('supervisors', this)">👨‍💼 المشرفون</button>
-    <button class="tab-btn" onclick="switchTab('broadcasts', this)">📢 التعاميم</button>
-    <button class="tab-btn" onclick="switchTab('featured', this)">🌟 المتميزون</button>
-    <button class="tab-btn" onclick="switchTab('iso', this)">🏆 الأيزو</button>
+<div id="mainApp">
+  <div class="topbar">
+    <img id="topLogo" src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" alt="الشعار" class="topbar-logo">
+    <div class="topbar-info">
+      <h1 id="topTitle">الإدارة العامة</h1>
+      <p><span class="status-dot" id="statusDot"></span><span id="currentUser">مسؤول</span></p>
+    </div>
+    <button class="icon-btn" onclick="manualRefresh()" title="تحديث">🔄</button>
+    <button class="icon-btn danger" onclick="confirmLogout()" title="خروج">🚪</button>
+  </div>
+
+  <div class="tabs-bar">
+    <div class="tabs-scroll">
+      <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')"><span>📊</span> لوحة القيادة</button>
+      <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')"><span>👨‍💼</span> المشرفون</button>
+      <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')"><span>👥</span> الطواقم</button>
+      <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')"><span>🚩</span> الإشكاليات</button>
+      <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')"><span>📢</span> التعاميم</button>
+      <button class="tab-btn" data-tab="featured" onclick="switchTab('featured')"><span>🌟</span> المتميزون</button>
+      <button class="tab-btn" data-tab="branding" onclick="switchTab('branding')"><span>🎨</span> الهوية</button>
+      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')"><span>⚙️</span> الإعدادات</button>
+    </div>
+  </div>
+
+  <!-- 1) لوحة القيادة -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-grid four">
+      <div class="stat-mini blue"><span class="stat-icon">📞</span><div class="num" id="dashTodayReports">0</div><div class="lbl">بلاغات اليوم</div></div>
+      <div class="stat-mini red"><span class="stat-icon">🚨</span><div class="num" id="dashCriticalIssues">0</div><div class="lbl">إشكاليات حرجة</div></div>
+      <div class="stat-mini green"><span class="stat-icon">👥</span><div class="num" id="dashSupervisorsCount">0</div><div class="lbl">المشرفون</div></div>
+      <div class="stat-mini amber"><span class="stat-icon">📦</span><div class="num" id="dashBroadcasts">0</div><div class="lbl">التعاميم</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>👥</span> من في الدوام الآن؟</div>
+      <div id="dashDuty"><div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا يوجد شفتات</div></div>
+    </div>
+  </div>
+
+  <!-- 2) المشرفون -->
+  <div class="page" id="page-supervisors">
+    <div class="card">
+      <div class="card-title"><span>➕</span> إضافة مشرف</div>
+      <input type="hidden" id="editSupId" value="">
+      <label>الاسم</label><input type="text" id="supName" placeholder="اسم المشرف">
+      <label>المركز / القطاع</label><input type="text" id="supCenter" placeholder="مركز بوشر">
+      <label>رقم الهاتف</label><input type="tel" id="supPhone" placeholder="9XXXXXXX">
+      <label>الكود التلقائي</label><input type="text" id="supCode" readonly style="text-align:center;color:var(--gold-light);font-weight:bold;">
+      <button class="btn block" onclick="saveSupervisor()">💾 حفظ</button>
+      <button class="btn secondary block" onclick="cancelEditSupervisor()" id="btnCancelSup" style="display:none;margin-top:8px;">إلغاء التعديل</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📋</span> المشرفون المسجلون</div>
+      <div id="supervisorsList"></div>
+    </div>
+  </div>
+
+  <!-- 3) الطواقم -->
+  <div class="page" id="page-duty">
+    <div class="card">
+      <div class="card-title"><span>👥</span> المداومات اليوم</div>
+      <div id="dutyList"><div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">جاري التحميل...</div></div>
+    </div>
+  </div>
+
+  <!-- 4) الإشكاليات -->
+  <div class="page" id="page-issues">
+    <div class="card">
+      <div class="card-title"><span>🚩</span> الإشكاليات المسجلة</div>
+      <div id="issuesList"><div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">جاري التحميل...</div></div>
+    </div>
+  </div>
+
+  <!-- 5) التعاميم -->
+  <div class="page" id="page-broadcasts">
+    <div class="card">
+      <div class="card-title"><span>📢</span> إرسال تعميم</div>
+      <label>العنوان</label><input type="text" id="bTitle" placeholder="عنوان التعميم">
+      <label>النص</label><textarea id="bDesc" rows="5" placeholder="نص التعميم..."></textarea>
+      <button class="btn block" onclick="sendBroadcast()">📤 إرسال</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📜</span> التعاميم السابقة</div>
+      <div id="broadcastsList"></div>
+    </div>
+  </div>
+
+  <!-- 6) المتميزون -->
+  <div class="page" id="page-featured">
+    <div class="card">
+      <div class="card-title"><span>🌟</span> إضافة متميز</div>
+      <label>الاسم</label><input type="text" id="ftName">
+      <label>الدور / المركز</label><input type="text" id="ftRole">
+      <label>الشهر</label><input type="month" id="ftMonth">
+      <button class="btn block" onclick="saveFeatured()">➕ إضافة</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🏆</span> المتميزون</div>
+      <div id="featuredList"></div>
+    </div>
+  </div>
+
+  <!-- 7) الهوية -->
+  <div class="page" id="page-branding">
+    <div class="card">
+      <div class="card-title"><span>🎨</span> هوية النظام</div>
+      <label>رابط الشعار</label><input type="url" id="brandingLogo" placeholder="https://...">
+      <label>العنوان الرئيسي</label><input type="text" id="brandingTitle">
+      <label>العنوان الفرعي</label><input type="text" id="brandingSubtitle">
+      <button class="btn block" onclick="saveBranding()">💾 حفظ الهوية</button>
+    </div>
+  </div>
+
+  <!-- 8) الإعدادات -->
+  <div class="page" id="page-settings">
+    <div class="card">
+      <div class="card-title"><span>⚙️</span> إعدادات النظام</div>
+      <p style="font-size:12px;line-height:2;color:rgba(255,255,255,0.7);">
+        <b>الإصدار:</b> 15.0.0<br>
+        <b>Firebase:</b> ems-supervisor<br>
+        <b>المجموعة:</b> access_code
+      </p>
+    </div>
+    <button class="btn danger block" onclick="confirmLogout()">🚪 تسجيل الخروج</button>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-page="dashboard" onclick="switchTab('dashboard')"><span class="nav-icon">📊</span>القيادة</button>
+    <button class="nav-btn" data-page="supervisors" onclick="switchTab('supervisors')"><span class="nav-icon">👨‍💼</span>المشرفون</button>
+    <button class="nav-btn" data-page="issues" onclick="switchTab('issues')"><span class="nav-icon">🚩</span>الإشكاليات</button>
+    <button class="nav-btn" data-page="broadcasts" onclick="switchTab('broadcasts')"><span class="nav-icon">📢</span>التعاميم</button>
+    <button class="nav-btn" data-page="settings" onclick="switchTab('settings')"><span class="nav-icon">⚙️</span>الإعدادات</button>
+  </div>
 </div>
 
-<div class="content">
-
-    <!-- 1. الإحصائيات -->
-    <div class="page active" id="tab-dashboard">
-        <div class="kpi-grid">
-            <div class="kpi-box"><div class="num" id="kpiSupervisors">0</div><div class="lbl">المشرفون</div></div>
-            <div class="kpi-box"><div class="num" id="kpiIssues">0</div><div class="lbl">الإشكالات</div></div>
-            <div class="kpi-box"><div class="num" id="kpiVisits">0</div><div class="lbl">الزيارات</div></div>
-            <div class="kpi-box"><div class="num" id="kpiBroadcasts">0</div><div class="lbl">التعاميم</div></div>
-        </div>
-    </div>
-
-    <!-- 2. إدارة المشرفين -->
-    <div class="page" id="tab-supervisors">
-        <div class="card">
-            <h3>➕ إضافة / تعديل مشرف</h3>
-            <input type="hidden" id="editSupervisorId" value="">
-            <div class="form-group"><label>اسم المشرف</label><input type="text" id="supName" placeholder="مثال: أحمد المشرف"></div>
-            <div class="form-group"><label>القطاع / المركز</label><input type="text" id="supCenter" placeholder="مثال: مركز بوشر"></div>
-            <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="supPhone" placeholder="مثال: 9XXXXXXX"></div>
-            <div class="form-group"><label>الكود (تلقائي)</label><input type="text" id="supCode" readonly style="text-align:center; color:var(--gold-light); font-weight:bold; letter-spacing:2px;"></div>
-            <button class="btn btn-gold" id="btnSaveSup" onclick="saveSupervisor()">➕ إضافة مشرف</button>
-            <button class="btn btn-blue" id="btnCancelEdit" onclick="cancelEditSupervisor()" style="display:none; margin-top:10px;">إلغاء التعديل</button>
-            <div id="supMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
-        </div>
-        <div class="card">
-            <h3>📋 قائمة المشرفين</h3>
-            <div id="supervisorsList"><p style="text-align:center; font-size:12px; color:#ccc;">جاري التحميل...</p></div>
-        </div>
-    </div>
-
-    <!-- 3. التعاميم -->
-    <div class="page" id="tab-broadcasts">
-        <div class="card">
-            <h3>📢 إرسال تعميم جديد</h3>
-            <div class="form-group"><label>العنوان</label><input type="text" id="bTitle" placeholder="عنوان التعميم..."></div>
-            <div class="form-group"><label>النص</label><textarea id="bDesc" placeholder="نص التعميم..."></textarea></div>
-            <button class="btn btn-gold" onclick="sendBroadcast()">📤 إرسال التعميم</button>
-            <div id="bMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
-        </div>
-        <div class="card">
-            <h3>📜 التعاميم السابقة</h3>
-            <div id="broadcastsList"><p style="text-align:center; font-size:12px; color:#ccc;">جاري التحميل...</p></div>
-        </div>
-    </div>
-
-    <!-- 4. المتميزون -->
-    <div class="page" id="tab-featured">
-        <div class="card">
-            <h3>🌟 إضافة متميز</h3>
-            <div class="form-group"><label>اسم الموظف</label><input type="text" id="ftName" placeholder="الاسم الكامل"></div>
-            <div class="form-group"><label>الدور / المركز</label><input type="text" id="ftRole" placeholder="مشرف مركز بوشر"></div>
-            <div class="form-group"><label>الشهر</label><input type="month" id="ftMonth"></div>
-            <button class="btn btn-gold" onclick="saveFeatured()">➕ إضافة متميز</button>
-            <div id="ftMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
-        </div>
-    </div>
-
-    <!-- 5. الأيزو -->
-    <div class="page" id="tab-iso">
-        <div class="card">
-            <h3>🏆 شهادة الأيزو 9001:2015</h3>
-            <div class="iso-card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/ISO_9001-2015.png/200px-ISO_9001-2015.png" onerror="this.src='https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg'">
-                <div>
-                    <h4>نظام إدارة الجودة معتمد</h4>
-                    <p>الإدارة العامة للإسعاف — جميع العمليات موثقة وفقاً لمعايير الجودة العالمية.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet"><h3 id="modalTitle">تفاصيل</h3><div id="modalBody"></div></div>
 </div>
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
-    // ⚠️ اسم المشروع والمجموعة
-    const FIREBASE_PROJECT = "ems-supervisor";
-    const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+const FIREBASE_PROJECT = "ems-supervisor";
+const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-    // حماية الصفحة
-    const sessionStr = localStorage.getItem("amb_user") || sessionStorage.getItem("amb_user");
-    if (!sessionStr) window.location.href = "index.html";
-    let currentUser = JSON.parse(sessionStr);
-    if (currentUser.type !== "admin") window.location.href = "index.html";
+let allSupervisors = [], allIssues = [], allReports = [], allBroadcasts = [], allFeatured = [], allShifts = [];
+let currentTab = "dashboard", isSyncing = false;
+let adminUser = { name: "المدير العام" };
+let brandingData = { logoUrl: "", mainTitle: "نظام الإسعاف الذكي", subtitle: "هيئة الدفاع المدني والإسعاف" };
 
-    function logout() { localStorage.removeItem("amb_user"); sessionStorage.removeItem("amb_user"); window.location.href = "index.html"; }
+function esc(s) { if (!s) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function showToast(msg, type="success") {
+  const c = document.getElementById("toastContainer"); const t = document.createElement("div");
+  t.className = "toast"; t.style.borderColor = type==="danger"?"#ff5252":"#69f0ae";
+  t.innerHTML = `<span>${type==="danger"?"⚠️":"✅"}</span><span>${esc(msg)}</span>`;
+  c.appendChild(t); setTimeout(()=>t.remove(), 2500);
+}
+function fromFS(v) {
+  if (!v) return null;
+  if ("stringValue" in v) return v.stringValue;
+  if ("booleanValue" in v) return v.booleanValue;
+  if ("mapValue" in v) { const o = {}; for (const k in v.mapValue.fields||{}) o[k] = fromFS(v.mapValue.fields[k]); return o; }
+  return null;
+}
+function docToObj(doc) { const o = {}; if (!doc.fields) return o; for (const k in doc.fields) o[k] = fromFS(doc.fields[k]); o._id = doc.name.split("/").pop(); return o; }
+async function fsList(col) { const r = await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`, {cache:"no-store"}); const d = await r.json(); return (d.documents||[]).map(docToObj); }
+async function fsAdd(col, data) { const fields = {}; for (const k in data) fields[k] = { stringValue: String(data[k]) }; await fetch(`${FIRESTORE_URL}/${col}`, {method:"POST", body: JSON.stringify({fields})}); }
+async function fsUpdate(col, id, data) { const fields = {}; for (const k in data) fields[k] = { stringValue: String(data[k]) }; await fetch(`${FIRESTORE_URL}/${col}/${id}`, {method:"PATCH", body: JSON.stringify({fields})}); }
+async function fsDelete(col, id) { await fetch(`${FIRESTORE_URL}/${col}/${id}`, {method:"DELETE"}); }
 
-    function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
-    function docToObj(doc) {
-        const obj = {}; if (!doc.fields) return obj;
-        for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
-        obj._id = doc.name.split("/").pop(); return obj;
-    }
+// Login
+async function loginWithPassword() {
+  const p = document.getElementById("passInput").value;
+  if (!["supervisor2025","admin2025","123456"].includes(p)) { document.getElementById("loginMsg").innerHTML = '<span style="color:#ff5252">❌ كلمة المرور خاطئة</span>'; return; }
+  adminUser = { name: "المدير العام" };
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("mainApp").classList.add("ready");
+  initApp();
+}
 
-    // التبويبات
-    function switchTab(id, btn) {
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById("tab-" + id).classList.add("active");
-        btn.classList.add("active");
-    }
+function confirmLogout() { if (confirm("خروج؟")) location.reload(); }
 
-    // توليد كود عشوائي
-    function generateCode() {
-        return "SUP-" + Math.floor(1000 + Math.random() * 9000);
-    }
+function switchTab(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  const pg = document.getElementById("page-"+id);
+  if (pg) pg.classList.add("active");
+  const tb = document.querySelector(`.tab-btn[data-tab="${id}"]`);
+  if (tb) tb.classList.add("active");
+  const nb = document.querySelector(`.nav-btn[data-page="${id}"]`);
+  if (nb) nb.classList.add("active");
+  currentTab = id;
+  renderCurrentTab();
+}
 
-    // 1. الإحصائيات
-    async function loadKPIs() {
-        try {
-            const [resSup, resActs, resB] = await Promise.all([
-                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json())
-            ]);
-            
-            let sups = 0, issues = 0, visits = 0;
-            if (resSup.documents) {
-                resSup.documents.forEach(d => { if(getString(d.fields.type) === 'supervisor') sups++; });
-            }
-            if (resActs.documents) {
-                resActs.documents.forEach(d => {
-                    let t = getString(d.fields.type);
-                    if(t === 'issue') issues++;
-                    if(t === 'visit') visits++;
-                });
-            }
+function renderCurrentTab() {
+  if (currentTab === "dashboard") renderDashboard();
+  else if (currentTab === "supervisors") renderSupervisors();
+  else if (currentTab === "duty") renderDuty();
+  else if (currentTab === "issues") renderIssues();
+  else if (currentTab === "broadcasts") renderBroadcasts();
+  else if (currentTab === "featured") renderFeatured();
+  else if (currentTab === "branding") loadBrandingUI();
+}
 
-            document.getElementById("kpiSupervisors").innerText = sups;
-            document.getElementById("kpiIssues").innerText = issues;
-            document.getElementById("kpiVisits").innerText = visits;
-            document.getElementById("kpiBroadcasts").innerText = resB.documents ? resB.documents.length : 0;
-        } catch(e) {}
-    }
+async function syncFromCloud() {
+  if (isSyncing) return;
+  isSyncing = true;
+  try {
+    const [sups, issues, reps, bcs, fts, shifts] = await Promise.all([
+      fsList("access_code").then(l => l.filter(u => u.type === "supervisor")),
+      fsList("issues"), fsList("reports"), fsList("broadcasts"), fsList("featured"), fsList("shifts")
+    ]);
+    allSupervisors = sups; allIssues = issues; allReports = reps;
+    allBroadcasts = bcs; allFeatured = fts; allShifts = shifts;
+    renderCurrentTab();
+  } catch(e) { console.warn(e); }
+  finally { isSyncing = false; }
+}
 
-    // 2. المشرفون
-    async function loadSupervisors() {
-        const el = document.getElementById("supervisorsList");
-        try {
-            const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
-            const data = await res.json();
-            
-            let list = data.documents ? data.documents.map(docToObj) : [];
-            list = list.filter(u => u.type === "supervisor");
+async function manualRefresh() {
+  showToast("جاري التحديث...");
+  await syncFromCloud();
+  showToast("تم التحديث");
+}
 
-            if (list.length === 0) { el.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا يوجد مشرفون.</p>"; return; }
-            
-            el.innerHTML = list.map(u => `
-                <div class="list-item">
-                    <div class="list-info">
-                        <h4>👨‍💼 ${u.name}</h4>
-                        <p>🏥 ${u.centerName || "—"} | 📱 ${u.phone || "—"} | 🔑 ${u.code}</p>
-                    </div>
-                    <div class="list-actions">
-                        <button class="icon-btn edit" onclick="editSupervisor('${u._id}', '${u.name}', '${u.centerName}', '${u.phone}', '${u.code}')">✏️</button>
-                        <button class="icon-btn delete" onclick="deleteSupervisor('${u._id}')">🗑️</button>
-                    </div>
-                </div>
-            `).join("");
-        } catch(e) { el.innerHTML = "<p style='text-align:center; font-size:12px; color:#ff5252;'>خطأ في التحميل.</p>"; }
-    }
+function renderDashboard() {
+  const tk = new Date().toISOString().slice(0,10);
+  document.getElementById("dashTodayReports").textContent = allReports.filter(r => (r.createdAt||"").slice(0,10) === tk).length;
+  document.getElementById("dashCriticalIssues").textContent = allIssues.filter(i => !i.isPraise && i.status !== "resolved" && (i.severity||"").includes("عالي")).length;
+  document.getElementById("dashSupervisorsCount").textContent = allSupervisors.length;
+  document.getElementById("dashBroadcasts").textContent = allBroadcasts.length;
+  document.getElementById("dashDuty").innerHTML = allShifts.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا يوجد شفتات</div>' : allShifts.map(s => `<div class="item-card"><div class="item-head"><div class="item-title">🏥 ${esc(s.centerName)}</div></div><div class="item-meta">${esc(s.shiftType)} — ${esc(s.supervisor||"—")}</div></div>`).join("");
+}
 
-    function editSupervisor(id, name, center, phone, code) {
-        document.getElementById("editSupervisorId").value = id;
-        document.getElementById("supName").value = name;
-        document.getElementById("supCenter").value = center;
-        document.getElementById("supPhone").value = phone;
-        document.getElementById("supCode").value = code;
-        document.getElementById("btnSaveSup").innerHTML = "💾 حفظ التعديل";
-        document.getElementById("btnSaveSup").className = "btn btn-blue";
-        document.getElementById("btnCancelEdit").style.display = "block";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
 
-    function cancelEditSupervisor() {
-        document.getElementById("editSupervisorId").value = "";
-        document.getElementById("supName").value = "";
-        document.getElementById("supCenter").value = "";
-        document.getElementById("supPhone").value = "";
-        document.getElementById("supCode").value = "";
-        document.getElementById("btnSaveSup").innerHTML = "➕ إضافة مشرف";
-        document.getElementById("btnSaveSup").className = "btn btn-gold";
-        document.getElementById("btnCancelEdit").style.display = "none";
-        document.getElementById("supMsg").innerText = "";
-    }
+function renderSupervisors() {
+  document.getElementById("supervisorsList").innerHTML = allSupervisors.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا يوجد مشرفون</div>' : allSupervisors.map(s => `
+    <div class="item-card">
+      <div class="item-head"><div class="item-title">👨‍💼 ${esc(s.name)}</div><span class="item-badge">${esc(s.code)}</span></div>
+      <div class="item-meta">🏥 ${esc(s.centerName||"—")}<br>📱 ${esc(s.phone||"—")}</div>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <button class="btn small info" onclick="editSupervisor('${s._id}', '${esc(s.name)}', '${esc(s.centerName||"")}', '${esc(s.phone||"")}', '${esc(s.code)}')">✏️ تعديل</button>
+        <button class="btn small danger" onclick="deleteSupervisor('${s._id}')">🗑️ حذف</button>
+      </div>
+    </div>`).join("");
+}
 
-    async function saveSupervisor() {
-        const id = document.getElementById("editSupervisorId").value;
-        const name = document.getElementById("supName").value.trim();
-        const center = document.getElementById("supCenter").value.trim();
-        const phone = document.getElementById("supPhone").value.trim();
-        let code = document.getElementById("supCode").value.trim();
-        const msg = document.getElementById("supMsg");
+async function saveSupervisor() {
+  const id = document.getElementById("editSupId").value;
+  const name = document.getElementById("supName").value.trim();
+  const center = document.getElementById("supCenter").value.trim();
+  const phone = document.getElementById("supPhone").value.trim();
+  let code = document.getElementById("supCode").value.trim();
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
+  if (!code) code = generateCode();
+  const data = { name, centerName: center, phone, code, type: "supervisor", active: true };
+  if (id) await fsUpdate("access_code", id, data);
+  else await fsAdd("access_code", { ...data, createdAt: new Date().toISOString() });
+  document.getElementById("editSupId").value = "";
+  document.getElementById("supName").value = "";
+  document.getElementById("supCenter").value = "";
+  document.getElementById("supPhone").value = "";
+  document.getElementById("supCode").value = "";
+  document.getElementById("btnCancelSup").style.display = "none";
+  showToast("تم الحفظ");
+  await syncFromCloud();
+}
 
-        if (!name) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل اسم المشرف"; return; }
-        if (!code) { code = generateCode(); }
+function editSupervisor(id, name, center, phone, code) {
+  document.getElementById("editSupId").value = id;
+  document.getElementById("supName").value = name;
+  document.getElementById("supCenter").value = center;
+  document.getElementById("supPhone").value = phone;
+  document.getElementById("supCode").value = code;
+  document.getElementById("btnCancelSup").style.display = "block";
+  switchTab("supervisors");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 
-        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الحفظ...";
+function cancelEditSupervisor() {
+  document.getElementById("editSupId").value = "";
+  document.getElementById("supName").value = "";
+  document.getElementById("supCenter").value = "";
+  document.getElementById("supPhone").value = "";
+  document.getElementById("supCode").value = "";
+  document.getElementById("btnCancelSup").style.display = "none";
+}
 
-        const payload = {
-            fields: {
-                name: { stringValue: name },
-                centerName: { stringValue: center },
-                phone: { stringValue: phone },
-                code: { stringValue: code },
-                type: { stringValue: "supervisor" },
-                active: { booleanValue: true }
-            }
-        };
+async function deleteSupervisor(id) {
+  if (!confirm("حذف المشرف؟")) return;
+  await fsDelete("access_code", id);
+  showToast("تم الحذف");
+  await syncFromCloud();
+}
 
-        try {
-            // الحفظ في access_code بدون S
-            if (id) {
-                await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
-                msg.style.color = "#69f0ae"; msg.innerText = "✅ تم التعديل بنجاح";
-            } else {
-                payload.fields.createdAt = { stringValue: new Date().toISOString() };
-                await fetch(`${FIRESTORE_URL}/access_code`, { method: "POST", body: JSON.stringify(payload) });
-                msg.style.color = "#69f0ae"; msg.innerText = "✅ تمت الإضافة بنجاح";
-            }
-            cancelEditSupervisor();
-            loadSupervisors();
-            loadKPIs();
-        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
-    }
+function renderDuty() {
+  document.getElementById("dutyList").innerHTML = allShifts.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا يوجد مداومات</div>' : allShifts.map(s => `<div class="item-card green"><div class="item-head"><div class="item-title">🏥 ${esc(s.centerName)}</div><span class="item-badge">${esc(s.shiftType)}</span></div><div class="item-meta">👤 ${esc(s.supervisor||"—")}</div></div>`).join("");
+}
 
-    async function deleteSupervisor(id) {
-        if (!confirm("هل أنت متأكد من حذف هذا المشرف؟")) return;
-        try {
-            await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "DELETE" });
-            loadSupervisors();
-            loadKPIs();
-        } catch(e) { alert("خطأ في الحذف"); }
-    }
+function renderIssues() {
+  document.getElementById("issuesList").innerHTML = allIssues.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا إشكاليات</div>' : allIssues.map(i => `
+    <div class="item-card ${i.isPraise ? 'gold' : 'red'}">
+      <div class="item-head"><div class="item-title">${i.isPraise ? '⭐' : '🚩'} ${esc(i.issueType||i.praiseType||"—")}</div><small style="font-size:10px;color:rgba(255,255,255,0.6);">${new Date(i.timestamp).toLocaleDateString('ar-OM')}</small></div>
+      <div class="item-meta">🏥 ${esc(i.centerName||"—")}<br>👤 ${esc(i.targetName||"—")}</div>
+    </div>`).join("");
+}
 
-    // 3. التعاميم
-    async function sendBroadcast() {
-        const title = document.getElementById("bTitle").value.trim();
-        const desc = document.getElementById("bDesc").value.trim();
-        const msg = document.getElementById("bMsg");
-        if (!title || !desc) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل العنوان والوصف"; return; }
+async function sendBroadcast() {
+  const title = document.getElementById("bTitle").value.trim();
+  const desc = document.getElementById("bDesc").value.trim();
+  if (!title || !desc) { showToast("أدخل العنوان والنص", "danger"); return; }
+  await fsAdd("broadcasts", { title, description: desc, sender: adminUser.name, timestamp: new Date().toISOString() });
+  document.getElementById("bTitle").value = "";
+  document.getElementById("bDesc").value = "";
+  showToast("تم الإرسال");
+  await syncFromCloud();
+}
 
-        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الإرسال...";
-        const payload = {
-            fields: {
-                title: { stringValue: title },
-                description: { stringValue: desc },
-                sender: { stringValue: currentUser.name },
-                timestamp: { stringValue: new Date().toISOString() }
-            }
-        };
+function renderBroadcasts() {
+  document.getElementById("broadcastsList").innerHTML = allBroadcasts.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا تعاميم</div>' : allBroadcasts.slice().reverse().map(b => `<div class="item-card"><div class="item-head"><div class="item-title">📢 ${esc(b.title)}</div></div><div class="item-meta">${esc(b.description)}<br><small>من: ${esc(b.sender)} — ${new Date(b.timestamp).toLocaleDateString('ar-OM')}</small></div></div>`).join("");
+}
 
-        try {
-            await fetch(`${FIRESTORE_URL}/broadcasts`, { method: "POST", body: JSON.stringify(payload) });
-            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الإرسال بنجاح";
-            document.getElementById("bTitle").value = "";
-            document.getElementById("bDesc").value = "";
-            loadBroadcasts();
-            loadKPIs();
-        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
-    }
+async function saveFeatured() {
+  const name = document.getElementById("ftName").value.trim();
+  const role = document.getElementById("ftRole").value.trim();
+  const month = document.getElementById("ftMonth").value;
+  if (!name || !month) { showToast("أدخل الاسم والشهر", "danger"); return; }
+  await fsAdd("featured", { name, role, month, score: "100", createdAt: new Date().toISOString() });
+  document.getElementById("ftName").value = "";
+  document.getElementById("ftRole").value = "";
+  showToast("تمت الإضافة");
+  await syncFromCloud();
+}
 
-    async function loadBroadcasts() {
-        const listDiv = document.getElementById("broadcastsList");
-        try {
-            const res = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=50`, { cache: "no-store" });
-            const data = await res.json();
-            if (!data.documents) { listDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد تعاميم.</p>"; return; }
-            
-            listDiv.innerHTML = data.documents.map(docToObj).reverse().map(b => `
-                <div class="list-item" style="border-right-color:var(--gold);">
-                    <div class="list-info">
-                        <h4>📢 ${b.title}</h4>
-                        <p>${b.description}</p>
-                        <p style="font-size:10px; opacity:0.5; margin-top:4px;">من: ${b.sender} | ${new Date(b.timestamp).toLocaleDateString('ar-OM')}</p>
-                    </div>
-                </div>
-            `).join("");
-        } catch(e) {}
-    }
+function renderFeatured() {
+  document.getElementById("featuredList").innerHTML = allFeatured.length === 0 ? '<div style="text-align:center;padding:20px;font-size:12px;color:#ccc;">لا متميزون</div>' : allFeatured.slice().reverse().map(f => `<div class="item-card gold"><div class="item-head"><div class="item-title">🌟 ${esc(f.name)}</div></div><div class="item-meta">${esc(f.role||"—")} — ${esc(f.month)}</div></div>`).join("");
+}
 
-    // 4. المتميزون
-    async function saveFeatured() {
-        const name = document.getElementById("ftName").value.trim();
-        const role = document.getElementById("ftRole").value.trim();
-        const month = document.getElementById("ftMonth").value;
-        const msg = document.getElementById("ftMsg");
+function loadBrandingUI() {
+  document.getElementById("brandingLogo").value = brandingData.logoUrl || "";
+  document.getElementById("brandingTitle").value = brandingData.mainTitle || "";
+  document.getElementById("brandingSubtitle").value = brandingData.subtitle || "";
+}
 
-        if (!name || !month) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل الاسم والشهر"; return; }
+async function saveBranding() {
+  brandingData.logoUrl = document.getElementById("brandingLogo").value.trim();
+  brandingData.mainTitle = document.getElementById("brandingTitle").value.trim();
+  brandingData.subtitle = document.getElementById("brandingSubtitle").value.trim();
+  await fsAdd("settings", { logoUrl: brandingData.logoUrl, mainTitle: brandingData.mainTitle, subtitle: brandingData.subtitle });
+  showToast("تم حفظ الهوية");
+}
 
-        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الإضافة...";
-        const payload = {
-            fields: {
-                name: { stringValue: name },
-                role: { stringValue: role },
-                month: { stringValue: month },
-                score: { stringValue: "100" },
-                createdAt: { stringValue: new Date().toISOString() }
-            }
-        };
+function openModal(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); }
+function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
 
-        try {
-            await fetch(`${FIRESTORE_URL}/featured`, { method: "POST", body: JSON.stringify(payload) });
-            msg.style.color = "#69f0ae"; msg.innerText = "✅ تمت الإضافة بنجاح";
-            document.getElementById("ftName").value = "";
-            document.getElementById("ftRole").value = "";
-        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
-    }
+function initApp() {
+  document.getElementById("currentUser").textContent = adminUser.name;
+  syncFromCloud();
+  setInterval(() => { if (currentTab === "dashboard") syncFromCloud(); }, 20000);
+  document.getElementById("ftMonth").value = new Date().toISOString().slice(0,7);
+  document.getElementById("supCode").value = generateCode();
+}
 
-    // التشغيل
-    window.onload = function() {
-        loadKPIs();
-        loadSupervisors();
-        loadBroadcasts();
-        document.getElementById("ftMonth").value = new Date().toISOString().slice(0, 7);
-    };
+window.onload = function() {
+  document.getElementById("passInput").addEventListener("keypress", e => { if (e.key === "Enter") loginWithPassword(); });
+};
 </script>
 </body>
 </html>
