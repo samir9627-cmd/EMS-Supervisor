@@ -8,11 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
-    :root { --gold:#978d5b; --gold-light:#d4c896; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; --purple:#ab47bc; }
+    :root { --gold:#978d5b; --gold-light:#d4c896; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
     body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:80px; }
     body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
-    /* التبويبات العلوية */
     .topbar { background:linear-gradient(135deg, rgba(13,74,66,0.95), rgba(4,24,20,0.98)); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
     .topbar h1 { font-size:16px; color:var(--gold-light); font-weight:900; }
     .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:inherit; }
@@ -22,20 +21,17 @@
     .tab-btn { padding:10px 18px; border-radius:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(151,141,91,0.3); color:#fff; font-weight:bold; font-size:13px; cursor:pointer; white-space:nowrap; font-family:inherit; transition:0.3s; }
     .tab-btn.active { background:var(--gold); color:var(--bg); border-color:var(--gold); }
 
-    /* المحتوى */
     .content { padding:15px; max-width:900px; margin:0 auto; }
     .page { display:none; animation:fadeIn 0.3s; }
     .page.active { display:block; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-    /* البطاقات */
     .card { background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:20px; margin-bottom:15px; backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
     .card h3 { color:var(--gold-light); font-size:15px; margin-bottom:15px; border-bottom:1px solid rgba(151,141,91,0.2); padding-bottom:10px; display:flex; align-items:center; gap:8px; }
     
-    /* النماذج */
     .form-group { margin-bottom:12px; }
     .form-group label { display:block; font-size:12px; color:var(--gold-light); margin-bottom:6px; font-weight:bold; }
-    input, select, textarea { width:100%; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(151,141,91,0.3); border-radius:10px; color:#fff; font-size:14px; font-family:inherit; outline:none; transition:0.3s; }
+    input, select, textarea { width:100%; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(151,141,91,0.3); border-radius:10px; color:#fff; font-size:14px; font-family:inherit; outline:none; }
     input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(151,141,91,0.2); }
     select option { background:var(--bg); }
     
@@ -44,46 +40,31 @@
     .btn-gold { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); }
     .btn-red { background:linear-gradient(135deg, #e53935, #ff5252); color:#fff; }
     .btn-blue { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
-    .btn-green { background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); }
-    .btn-purple { background:linear-gradient(135deg, #ab47bc, #ce93d8); color:#fff; }
     .btn-small { padding:8px 12px; font-size:12px; width:auto; margin:0; }
 
-    /* القوائم */
     .list-item { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:10px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
     .list-info h4 { font-size:14px; color:var(--gold-light); margin-bottom:4px; }
     .list-info p { font-size:11px; color:rgba(255,255,255,0.6); }
-    .list-actions { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+    .list-actions { display:flex; gap:6px; }
     .icon-btn { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
     .icon-btn.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
     .icon-btn.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
     .icon-btn.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
-    .icon-btn.print { background:rgba(171,71,188,0.2); color:#ce93d8; }
 
-    /* جدول الدوام */
-    .duty-table { width:100%; border-collapse:collapse; margin-top:10px; }
-    .duty-table th, .duty-table td { padding:8px; border:1px solid rgba(151,141,91,0.3); text-align:center; font-size:12px; }
-    .duty-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); }
-    .duty-table td { background:rgba(0,0,0,0.3); color:#fff; }
-    .duty-table select { margin:0; padding:6px; font-size:12px; }
-    .duty-table .shift-morning { background:rgba(255,193,7,0.2); }
-    .duty-table .shift-evening { background:rgba(41,182,246,0.2); }
-
-    /* الإحصائيات */
     .kpi-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:15px; }
     .kpi-box { background:rgba(13,74,66,0.5); border:1px solid rgba(151,141,91,0.3); border-radius:12px; padding:15px; text-align:center; }
     .kpi-box .num { font-size:26px; font-weight:900; color:var(--gold-light); }
     .kpi-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px; }
 
-    /* الدردشة */
-    .chat-box { display:flex; flex-direction:column; height:400px; background:rgba(0,0,0,0.2); border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
-    .chat-messages { flex:1; overflow-y:auto; padding:10px; display:flex; flex-direction:column; gap:8px; }
-    .msg { max-width:80%; padding:10px; border-radius:10px; font-size:13px; }
-    .msg.mine { align-self:flex-end; background:var(--gold); color:var(--bg); }
-    .msg.theirs { align-self:flex-start; background:rgba(255,255,255,0.1); color:#fff; }
-    .msg .time { font-size:9px; opacity:0.6; margin-top:4px; display:block; }
-    .chat-input { display:flex; padding:10px; background:rgba(0,0,0,0.3); border-top:1px solid rgba(255,255,255,0.1); }
-    .chat-input input { flex:1; margin:0; border-radius:8px 0 0 8px; }
-    .chat-input button { padding:0 15px; background:var(--gold); color:var(--bg); border:none; border-radius:0 8px 8px 0; font-weight:bold; cursor:pointer; }
+    /* جدول الدوام الشهري */
+    .schedule-table { width:100%; border-collapse:collapse; font-size:11px; }
+    .schedule-table th, .schedule-table td { border:1px solid rgba(151,141,91,0.2); padding:6px; text-align:center; }
+    .schedule-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); }
+    .schedule-table td { background:rgba(0,0,0,0.3); }
+    .schedule-table select { padding:4px; font-size:10px; margin:0; background:transparent; border:none; }
+    
+    .morning-shift { background:rgba(255,193,7,0.2) !important; }
+    .evening-shift { background:rgba(41,182,246,0.2) !important; }
 </style>
 </head>
 <body>
@@ -94,30 +75,22 @@
 </div>
 
 <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 لوحة القيادة</button>
+    <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 التحليلات</button>
     <button class="tab-btn" onclick="switchTab('supervisors', this)">👨‍💼 المشرفون</button>
     <button class="tab-btn" onclick="switchTab('paramedics', this)">👨‍🚒 المسعفون</button>
     <button class="tab-btn" onclick="switchTab('vehicles', this)">🚑 المركبات</button>
-    <button class="tab-btn" onclick="switchTab('duty', this)">📅 الدوام</button>
-    <button class="tab-btn" onclick="switchTab('activities', this)">📌 المتابعة</button>
-    <button class="tab-btn" onclick="switchTab('messages', this)">💬 المراسلة</button>
-    <button class="tab-btn" onclick="switchTab('broadcasts', this)">📢 التعاميم</button>
-    <button class="tab-btn" onclick="switchTab('settings', this)">⚙️ الإعدادات</button>
+    <button class="tab-btn" onclick="switchTab('schedule', this)">📅 الدوام الشهري</button>
+    <button class="tab-btn" onclick="switchTab('reports', this)">📈 التقارير</button>
+    <button class="tab-btn" onclick="switchTab('masterdata', this)">📋 البيانات الأساسية</button>
 </div>
 
 <div class="content">
-
-    <!-- 1. لوحة القيادة -->
+    <!-- 1. لوحة التحليلات -->
     <div class="page active" id="tab-dashboard">
         <div class="kpi-grid">
             <div class="kpi-box"><div class="num" id="kpiSups">0</div><div class="lbl">المشرفون</div></div>
-            <div class="kpi-box"><div class="num" id="kpiParams">0</div><div class="lbl">المسعفون</div></div>
-            <div class="kpi-box"><div class="num" id="kpiVehicles">0</div><div class="lbl">المركبات</div></div>
-        </div>
-        <div class="kpi-grid">
             <div class="kpi-box"><div class="num" id="kpiIssues">0</div><div class="lbl">الإشكالات</div></div>
             <div class="kpi-box"><div class="num" id="kpiPraises">0</div><div class="lbl">الإشادات</div></div>
-            <div class="kpi-box"><div class="num" id="kpiMessages">0</div><div class="lbl">الرسائل</div></div>
         </div>
         <div class="card">
             <h3>📊 نشاط المشرفين (آخر 7 أيام)</h3>
@@ -130,165 +103,73 @@
         <div class="card">
             <h3>➕ إضافة / تعديل مشرف</h3>
             <input type="hidden" id="editSupId" value="">
-            <div class="form-group"><label>اسم المشرف</label><input type="text" id="supName" placeholder="مثال: أحمد المشرف"></div>
-            <div class="form-group"><label>القطاع</label>
-                <select id="supSector">
-                    <option value="قطاع A">قطاع A</option>
-                    <option value="قطاع B">قطاع B</option>
-                </select>
-            </div>
-            <div class="form-group"><label>الهاتف</label><input type="tel" id="supPhone" placeholder="9XXXXXXX"></div>
-            <div class="form-group"><label>الكود</label><input type="text" id="supCode" readonly style="text-align:center; color:var(--gold-light); font-weight:bold; letter-spacing:2px;"></div>
+            <div class="form-group"><label>الاسم</label><input type="text" id="supName"></div>
+            <div class="form-group"><label>القطاع</label><select id="supSector"><option>قطاع A</option><option>قطاع B</option></select></div>
+            <div class="form-group"><label>الهاتف</label><input type="tel" id="supPhone"></div>
+            <div class="form-group"><label>الكود</label><input type="text" id="supCode" readonly></div>
             <button class="btn btn-gold" onclick="saveSupervisor()">💾 حفظ</button>
             <button class="btn btn-blue" id="btnCancelSup" onclick="cancelEditSupervisor()" style="display:none;">إلغاء</button>
         </div>
-        <div class="card">
-            <h3>📋 المشرفون</h3>
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-                <button class="btn btn-green btn-small" style="flex:1;" onclick="printPDF('supervisors')">🖨️ طباعة</button>
-                <button class="btn btn-blue btn-small" style="flex:1;" onclick="exportCSV('supervisors')">📊 Excel</button>
-            </div>
-            <div id="supervisorsList"></div>
-        </div>
+        <div class="card"><h3>📋 المشرفون</h3><div id="supervisorsList"></div></div>
     </div>
 
     <!-- 3. المسعفون -->
     <div class="page" id="tab-paramedics">
         <div class="card">
-            <h3>➕ إضافة / تعديل مسعف</h3>
-            <input type="hidden" id="editPmId" value="">
-            <div class="form-group"><label>الاسم</label><input type="text" id="pmName" placeholder="اسم المسعف"></div>
-            <div class="form-group"><label>المركز</label>
-                <select id="pmCenter">
-                    <option value="مركز إسعاف دارسيت">مركز إسعاف دارسيت</option>
-                    <option value="مركز إسعاف بوشر">مركز إسعاف بوشر</option>
-                    <option value="مركز إسعاف العامرات">مركز إسعاف العامرات</option>
-                    <option value="مركز إسعاف قريات">مركز إسعاف قريات</option>
-                    <option value="مركز إسعاف الخوض 1">مركز إسعاف الخوض 1</option>
-                    <option value="مركز إسعاف الخوض 2">مركز إسعاف الخوض 2</option>
-                    <option value="مركز إسعاف العذيبة">مركز إسعاف العذيبة</option>
-                    <option value="مركز إسعاف الرسيل">مركز إسعاف الرسيل</option>
-                </select>
-            </div>
-            <div class="form-group"><label>الرتبة</label><input type="text" id="pmRank" placeholder="مثال: مسعف أول"></div>
+            <h3>➕ إضافة مسعف</h3>
+            <div class="form-group"><label>الاسم</label><input type="text" id="pmName"></div>
+            <div class="form-group"><label>المركز</label><select id="pmCenter"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option><option>مركز إسعاف الخوض 1</option><option>مركز إسعاف الخوض 2</option><option>مركز إسعاف العذيبة</option><option>مركز إسعاف الرسيل</option></select></div>
+            <div class="form-group"><label>الرتبة</label><input type="text" id="pmRank"></div>
             <button class="btn btn-gold" onclick="saveParamedic()">💾 حفظ</button>
-            <button class="btn btn-blue" id="btnCancelPm" onclick="cancelEditParamedic()" style="display:none;">إلغاء</button>
         </div>
-        <div class="card">
-            <h3>📋 المسعفون</h3>
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-                <button class="btn btn-green btn-small" style="flex:1;" onclick="printPDF('paramedics')">🖨️ طباعة</button>
-                <button class="btn btn-blue btn-small" style="flex:1;" onclick="exportCSV('paramedics')">📊 Excel</button>
-            </div>
-            <div id="paramedicsList"></div>
-        </div>
+        <div class="card"><h3>📋 المسعفون</h3><div id="paramedicsList"></div></div>
     </div>
 
     <!-- 4. المركبات -->
     <div class="page" id="tab-vehicles">
         <div class="card">
-            <h3>➕ إضافة / تعديل مركبة</h3>
-            <input type="hidden" id="editVehId" value="">
-            <div class="form-group"><label>رقم اللوحة</label><input type="text" id="vPlate" placeholder="AMB-01"></div>
-            <div class="form-group"><label>النوع</label><input type="text" id="vType" placeholder="إسعاف أساسي"></div>
-            <div class="form-group"><label>المركز</label>
-                <select id="vCenter">
-                    <option value="مركز إسعاف دارسيت">مركز إسعاف دارسيت</option>
-                    <option value="مركز إسعاف بوشر">مركز إسعاف بوشر</option>
-                    <option value="مركز إسعاف العامرات">مركز إسعاف العامرات</option>
-                    <option value="مركز إسعاف قريات">مركز إسعاف قريات</option>
-                    <option value="مركز إسعاف الخوض 1">مركز إسعاف الخوض 1</option>
-                    <option value="مركز إسعاف الخوض 2">مركز إسعاف الخوض 2</option>
-                    <option value="مركز إسعاف العذيبة">مركز إسعاف العذيبة</option>
-                    <option value="مركز إسعاف الرسيل">مركز إسعاف الرسيل</option>
-                </select>
-            </div>
+            <h3>➕ إضافة مركبة</h3>
+            <div class="form-group"><label>اللوحة</label><input type="text" id="vPlate"></div>
+            <div class="form-group"><label>النوع</label><input type="text" id="vType"></div>
+            <div class="form-group"><label>المركز</label><select id="vCenter"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option><option>مركز إسعاف الخوض 1</option><option>مركز إسعاف الخوض 2</option><option>مركز إسعاف العذيبة</option><option>مركز إسعاف الرسيل</option></select></div>
             <button class="btn btn-gold" onclick="saveVehicle()">💾 حفظ</button>
-            <button class="btn btn-blue" id="btnCancelVeh" onclick="cancelEditVehicle()" style="display:none;">إلغاء</button>
         </div>
+        <div class="card"><h3>📋 المركبات</h3><div id="vehiclesList"></div></div>
+    </div>
+
+    <!-- 5. الدوام الشهري -->
+    <div class="page" id="tab-schedule">
         <div class="card">
-            <h3>📋 المركبات</h3>
-            <div style="display:flex; gap:8px; margin-bottom:10px;">
-                <button class="btn btn-green btn-small" style="flex:1;" onclick="printPDF('vehicles')">🖨️ طباعة</button>
-                <button class="btn btn-blue btn-small" style="flex:1;" onclick="exportCSV('vehicles')">📊 Excel</button>
-            </div>
-            <div id="vehiclesList"></div>
+            <h3>📅 جدول الدوام الشهري</h3>
+            <div class="form-group"><label>اختر الشهر</label><input type="month" id="scheduleMonth" onchange="loadSchedule()"></div>
+            <div style="overflow-x:auto;" id="scheduleContainer"></div>
+            <button class="btn btn-gold" onclick="saveSchedule()" style="margin-top:10px;">💾 حفظ الجدول</button>
         </div>
     </div>
 
-    <!-- 5. جدول الدوام -->
-    <div class="page" id="tab-duty">
+    <!-- 6. التقارير والتحليلات -->
+    <div class="page" id="tab-reports">
         <div class="card">
-            <h3>📅 توزيع المشرفين (القطاع A)</h3>
-            <table class="duty-table">
-                <thead><tr><th>المشرف</th><th>الفترة</th></tr></thead>
-                <tbody id="dutyAList"></tbody>
-            </table>
-        </div>
-        <div class="card">
-            <h3>📅 توزيع المشرفين (القطاع B)</h3>
-            <table class="duty-table">
-                <thead><tr><th>المشرف</th><th>الفترة</th></tr></thead>
-                <tbody id="dutyBList"></tbody>
-            </table>
-        </div>
-        <button class="btn btn-gold" onclick="saveDuty()">💾 حفظ التوزيع</button>
-    </div>
-
-    <!-- 6. المتابعة -->
-    <div class="page" id="tab-activities">
-        <div class="card">
-            <h3>📌 الإشكالات والإشادات</h3>
-            <div id="activitiesList"></div>
+            <h3>📊 تقييم أداء المراكز (حسب إشكالات المشرفين)</h3>
+            <div id="centersReport"></div>
         </div>
     </div>
 
-    <!-- 7. الدردشة -->
-    <div class="page" id="tab-messages">
+    <!-- 7. البيانات الأساسية (Master Data) -->
+    <div class="page" id="tab-masterdata">
         <div class="card">
-            <h3>💬 المراسلة المباشرة</h3>
-            <div class="form-group">
-                <select id="chatTarget" onchange="loadChat()">
-                    <option value="">اختر المشرف...</option>
-                </select>
-            </div>
-            <div class="chat-box">
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input">
-                    <input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter')sendMsg()">
-                    <button onclick="sendMsg()">📤</button>
-                </div>
-            </div>
+            <h3>🚩 أنواع الإشكالات</h3>
+            <div class="form-group"><input type="text" id="mdIssueType" placeholder="اسم النوع (مثال: تأخر استجابة)"></div>
+            <button class="btn btn-gold btn-small" onclick="addMasterData('issue_types')">➕ إضافة</button>
+            <div id="issueTypesList" style="margin-top:10px;"></div>
+        </div>
+        <div class="card">
+            <h3>⭐ أنواع الإشادات</h3>
+            <div class="form-group"><input type="text" id="mdPraiseType" placeholder="اسم النوع (مثال: أداء متميز)"></div>
+            <button class="btn btn-gold btn-small" onclick="addMasterData('praise_types')">➕ إضافة</button>
+            <div id="praiseTypesList" style="margin-top:10px;"></div>
         </div>
     </div>
-
-    <!-- 8. التعاميم -->
-    <div class="page" id="tab-broadcasts">
-        <div class="card">
-            <h3>📢 إرسال تعميم</h3>
-            <input type="text" id="bTitle" placeholder="عنوان التعميم" style="margin-bottom:10px;">
-            <textarea id="bDesc" rows="4" placeholder="نص التعميم..."></textarea>
-            <button class="btn btn-gold" onclick="sendBroadcast()" style="margin-top:10px;">📤 إرسال</button>
-        </div>
-        <div class="card">
-            <h3>📜 التعاميم السابقة</h3>
-            <div id="broadcastsList"></div>
-        </div>
-    </div>
-
-    <!-- 9. الإعدادات -->
-    <div class="page" id="tab-settings">
-        <div class="card">
-            <h3>⚙️ إعدادات النظام</h3>
-            <button class="btn btn-red block" onclick="resetAllData()" style="margin-bottom:10px;">🗑️ مسح جميع البيانات</button>
-            <button class="btn btn-blue block" onclick="exportFullBackup()">💾 نسخة احتياطية كاملة</button>
-            <div style="margin-top:15px; font-size:12px; color:rgba(255,255,255,0.6);">
-                <div><b>الإصدار:</b> 18.0</div>
-                <div><b>المشروع:</b> ems-supervisor</div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <script>
@@ -300,15 +181,11 @@
     let currentUser = JSON.parse(sessionStr);
     if (currentUser.type !== "admin") window.location.href = "index.html";
 
-    let allSupervisors = [], allParameds = [], allVehicles = [], allIssues = [], allPraises = [], allMessages = [], allBroadcasts = [];
+    let allSupervisors = [], allParameds = [], allVehicles = [], allIssues = [], allPraises = [], allMasterData = {};
 
     function logout() { localStorage.removeItem("amb_user"); sessionStorage.removeItem("amb_user"); window.location.href = "index.html"; }
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
-    function docToObj(doc) {
-        const obj = {}; if (!doc.fields) return obj;
-        for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
-        obj._id = doc.name.split("/").pop(); return obj;
-    }
+    function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) obj[k] = getString(doc.fields[k]); obj._id = doc.name.split("/").pop(); return obj; }
     function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
 
     function switchTab(id, btn) {
@@ -320,43 +197,31 @@
         else if (id === 'supervisors') loadSupervisors();
         else if (id === 'paramedics') loadParameds();
         else if (id === 'vehicles') loadVehicles();
-        else if (id === 'duty') loadDuty();
-        else if (id === 'activities') loadActivities();
-        else if (id === 'messages') loadChatTargets();
-        else if (id === 'broadcasts') loadBroadcasts();
+        else if (id === 'schedule') loadSchedule();
+        else if (id === 'reports') loadReports();
+        else if (id === 'masterdata') loadMasterData();
     }
 
-    // تحميل الإحصائيات
+    // تحميل KPIs
     async function loadKPIs() {
         try {
-            const [resSup, resPar, resVeh, resIss, resPra, resMsgs] = await Promise.all([
+            const [resSup, resIss, resPra] = await Promise.all([
                 fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/paramedics?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/vehicles?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/issues?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/praises?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/chats?pageSize=1000`).then(r => r.json())
+                fetch(`${FIRESTORE_URL}/praises?pageSize=1000`).then(r => r.json())
             ]);
             allSupervisors = resSup.documents ? resSup.documents.map(docToObj).filter(u => u.type === "supervisor") : [];
-            allParameds = resPar.documents ? resPar.documents.map(docToObj) : [];
-            allVehicles = resVeh.documents ? resVeh.documents.map(docToObj) : [];
             allIssues = resIss.documents ? resIss.documents.map(docToObj) : [];
             allPraises = resPra.documents ? resPra.documents.map(docToObj) : [];
-            allMessages = resMsgs.documents ? resMsgs.documents.map(docToObj) : [];
 
             document.getElementById("kpiSups").innerText = allSupervisors.length;
-            document.getElementById("kpiParams").innerText = allParameds.length;
-            document.getElementById("kpiVehicles").innerText = allVehicles.length;
             document.getElementById("kpiIssues").innerText = allIssues.length;
             document.getElementById("kpiPraises").innerText = allPraises.length;
-            document.getElementById("kpiMessages").innerText = allMessages.length;
 
-            // الرسم البياني
             const days = [0,0,0,0,0,0,0];
             const now = new Date();
             [...allIssues, ...allPraises].forEach(item => {
-                const d = new Date(item.timestamp);
-                const diff = Math.floor((now - d) / 86400000);
+                const diff = Math.floor((now - new Date(item.timestamp)) / 86400000);
                 if (diff >= 0 && diff < 7) days[6-diff]++;
             });
             const max = Math.max(...days, 1);
@@ -373,13 +238,9 @@
     // المشرفون
     async function loadSupervisors() {
         const el = document.getElementById("supervisorsList");
-        if (allSupervisors.length === 0) { el.innerHTML = "<p style='text-align:center;color:#ccc;'>لا يوجد مشرفون.</p>"; return; }
         el.innerHTML = allSupervisors.map(u => `
             <div class="list-item">
-                <div class="list-info">
-                    <h4>👨‍💼 ${u.name}</h4>
-                    <p>🏢 ${u.sector || "—"} | 📱 ${u.phone || "—"} | 🔑 ${u.code}</p>
-                </div>
+                <div class="list-info"><h4>${u.name}</h4><p>${u.sector} | ${u.code}</p></div>
                 <div class="list-actions">
                     <button class="icon-btn copy" onclick="copyCode('${u.code}')">📋</button>
                     <button class="icon-btn edit" onclick="editSupervisor('${u._id}', '${u.name}', '${u.sector}', '${u.phone}', '${u.code}')">✏️</button>
@@ -388,11 +249,7 @@
             </div>
         `).join("");
     }
-
-    function copyCode(code) {
-        navigator.clipboard.writeText(code).then(() => alert("📋 تم نسخ الكود: " + code)).catch(() => alert("الكود: " + code));
-    }
-
+    function copyCode(code) { navigator.clipboard.writeText(code); alert("📋 تم النسخ: " + code); }
     function editSupervisor(id, name, sector, phone, code) {
         document.getElementById("editSupId").value = id;
         document.getElementById("supName").value = name;
@@ -400,9 +257,7 @@
         document.getElementById("supPhone").value = phone;
         document.getElementById("supCode").value = code;
         document.getElementById("btnCancelSup").style.display = "block";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
     function cancelEditSupervisor() {
         document.getElementById("editSupId").value = "";
         document.getElementById("supName").value = "";
@@ -410,282 +265,150 @@
         document.getElementById("supCode").value = generateCode();
         document.getElementById("btnCancelSup").style.display = "none";
     }
-
     async function saveSupervisor() {
         const id = document.getElementById("editSupId").value;
         const name = document.getElementById("supName").value.trim();
         const sector = document.getElementById("supSector").value;
         const phone = document.getElementById("supPhone").value.trim();
-        let code = document.getElementById("supCode").value.trim();
-        if (!name) { alert("أدخل الاسم"); return; }
-        if (!code) code = generateCode();
+        let code = document.getElementById("supCode").value.trim() || generateCode();
         const payload = { fields: { name: {stringValue:name}, sector: {stringValue:sector}, phone: {stringValue:phone}, code: {stringValue:code}, type: {stringValue:"supervisor"}, active: {booleanValue:true} } };
         if (id) await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
         else await fetch(`${FIRESTORE_URL}/access_code`, { method: "POST", body: JSON.stringify(payload) });
         cancelEditSupervisor(); loadKPIs(); loadSupervisors();
     }
-
     async function deleteSupervisor(id) {
-        if (!confirm("حذف المشرف؟")) return;
+        if (!confirm("حذف؟")) return;
         await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "DELETE" });
         loadKPIs(); loadSupervisors();
     }
 
     // المسعفون
     async function loadParameds() {
-        const el = document.getElementById("paramedicsList");
-        if (allParameds.length === 0) { el.innerHTML = "<p style='text-align:center;color:#ccc;'>لا يوجد مسعفون.</p>"; return; }
-        el.innerHTML = allParameds.map(p => `
+        const res = await fetch(`${FIRESTORE_URL}/paramedics?pageSize=1000`).then(r => r.json());
+        allParameds = res.documents ? res.documents.map(docToObj) : [];
+        document.getElementById("paramedicsList").innerHTML = allParameds.map(p => `
             <div class="list-item">
-                <div class="list-info">
-                    <h4>👨‍🚒 ${p.name}</h4>
-                    <p>🏥 ${p.centerName} | 🎖️ ${p.rank || "—"}</p>
-                </div>
-                <div class="list-actions">
-                    <button class="icon-btn edit" onclick="editParamedic('${p._id}', '${p.name}', '${p.centerName}', '${p.rank}')">✏️</button>
-                    <button class="icon-btn delete" onclick="deleteParamedic('${p._id}')">🗑️</button>
-                </div>
+                <div class="list-info"><h4>${p.name}</h4><p>${p.centerName} | ${p.rank}</p></div>
+                <div class="list-actions"><button class="icon-btn delete" onclick="deleteParamedic('${p._id}')">🗑️</button></div>
             </div>
         `).join("");
     }
-
-    function editParamedic(id, name, center, rank) {
-        document.getElementById("editPmId").value = id;
-        document.getElementById("pmName").value = name;
-        document.getElementById("pmCenter").value = center;
-        document.getElementById("pmRank").value = rank;
-        document.getElementById("btnCancelPm").style.display = "block";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelEditParamedic() {
-        document.getElementById("editPmId").value = "";
-        document.getElementById("pmName").value = "";
-        document.getElementById("pmRank").value = "";
-        document.getElementById("btnCancelPm").style.display = "none";
-    }
-
     async function saveParamedic() {
-        const id = document.getElementById("editPmId").value;
         const name = document.getElementById("pmName").value.trim();
         const center = document.getElementById("pmCenter").value;
         const rank = document.getElementById("pmRank").value.trim();
-        if (!name) { alert("أدخل الاسم"); return; }
-        const payload = { fields: { name: {stringValue:name}, centerName: {stringValue:center}, rank: {stringValue:rank} } };
-        if (id) await fetch(`${FIRESTORE_URL}/paramedics/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
-        else await fetch(`${FIRESTORE_URL}/paramedics`, { method: "POST", body: JSON.stringify(payload) });
-        cancelEditParamedic(); loadKPIs(); loadParameds();
+        await fetch(`${FIRESTORE_URL}/paramedics`, { method: "POST", body: JSON.stringify({ fields: { name: {stringValue:name}, centerName: {stringValue:center}, rank: {stringValue:rank} } }) });
+        document.getElementById("pmName").value = ""; document.getElementById("pmRank").value = "";
+        loadParameds();
     }
-
     async function deleteParamedic(id) {
-        if (!confirm("حذف المسعف؟")) return;
+        if (!confirm("حذف؟")) return;
         await fetch(`${FIRESTORE_URL}/paramedics/${id}`, { method: "DELETE" });
-        loadKPIs(); loadParameds();
+        loadParameds();
     }
 
     // المركبات
     async function loadVehicles() {
-        const el = document.getElementById("vehiclesList");
-        if (allVehicles.length === 0) { el.innerHTML = "<p style='text-align:center;color:#ccc;'>لا يوجد مركبات.</p>"; return; }
-        el.innerHTML = allVehicles.map(v => `
+        const res = await fetch(`${FIRESTORE_URL}/vehicles?pageSize=1000`).then(r => r.json());
+        allVehicles = res.documents ? res.documents.map(docToObj) : [];
+        document.getElementById("vehiclesList").innerHTML = allVehicles.map(v => `
             <div class="list-item">
-                <div class="list-info">
-                    <h4>🚑 ${v.plateNumber}</h4>
-                    <p>🚗 ${v.type} | 🏥 ${v.centerName}</p>
-                </div>
-                <div class="list-actions">
-                    <button class="icon-btn edit" onclick="editVehicle('${v._id}', '${v.plateNumber}', '${v.type}', '${v.centerName}')">✏️</button>
-                    <button class="icon-btn delete" onclick="deleteVehicle('${v._id}')">🗑️</button>
-                </div>
+                <div class="list-info"><h4>${v.plateNumber}</h4><p>${v.type} | ${v.centerName}</p></div>
+                <div class="list-actions"><button class="icon-btn delete" onclick="deleteVehicle('${v._id}')">🗑️</button></div>
             </div>
         `).join("");
     }
-
-    function editVehicle(id, plate, type, center) {
-        document.getElementById("editVehId").value = id;
-        document.getElementById("vPlate").value = plate;
-        document.getElementById("vType").value = type;
-        document.getElementById("vCenter").value = center;
-        document.getElementById("btnCancelVeh").style.display = "block";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cancelEditVehicle() {
-        document.getElementById("editVehId").value = "";
-        document.getElementById("vPlate").value = "";
-        document.getElementById("vType").value = "";
-        document.getElementById("btnCancelVeh").style.display = "none";
-    }
-
     async function saveVehicle() {
-        const id = document.getElementById("editVehId").value;
         const plate = document.getElementById("vPlate").value.trim();
         const type = document.getElementById("vType").value.trim();
         const center = document.getElementById("vCenter").value;
-        if (!plate) { alert("أدخل اللوحة"); return; }
-        const payload = { fields: { plateNumber: {stringValue:plate}, type: {stringValue:type}, centerName: {stringValue:center} } };
-        if (id) await fetch(`${FIRESTORE_URL}/vehicles/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
-        else await fetch(`${FIRESTORE_URL}/vehicles`, { method: "POST", body: JSON.stringify(payload) });
-        cancelEditVehicle(); loadKPIs(); loadVehicles();
+        await fetch(`${FIRESTORE_URL}/vehicles`, { method: "POST", body: JSON.stringify({ fields: { plateNumber: {stringValue:plate}, type: {stringValue:type}, centerName: {stringValue:center} } }) });
+        document.getElementById("vPlate").value = ""; document.getElementById("vType").value = "";
+        loadVehicles();
     }
-
     async function deleteVehicle(id) {
-        if (!confirm("حذف المركبة؟")) return;
+        if (!confirm("حذف؟")) return;
         await fetch(`${FIRESTORE_URL}/vehicles/${id}`, { method: "DELETE" });
-        loadKPIs(); loadVehicles();
+        loadVehicles();
     }
 
-    // جدول الدوام
-    function loadDuty() {
-        const buildRows = (sector) => {
-            const sups = allSupervisors.filter(s => s.sector === sector);
-            return sups.map(s => {
-                const currentShift = localStorage.getItem("shift_" + s.code) || "";
-                return `<tr>
-                    <td>${s.name}</td>
-                    <td>
-                        <select onchange="setShift('${s.code}', this.value)">
-                            <option value="">—</option>
-                            <option value="صباحية" ${currentShift === 'صباحية' ? 'selected' : ''}>🌅 صباحية (6ص-6م)</option>
-                            <option value="مسائية" ${currentShift === 'مسائية' ? 'selected' : ''}>🌇 مسائية (6م-6ص)</option>
-                        </select>
-                    </td>
-                </tr>`;
-            }).join("");
-        };
-        document.getElementById("dutyAList").innerHTML = buildRows("قطاع A");
-        document.getElementById("dutyBList").innerHTML = buildRows("قطاع B");
+    // الدوام الشهري
+    function loadSchedule() {
+        const monthInput = document.getElementById("scheduleMonth");
+        if (!monthInput.value) monthInput.value = new Date().toISOString().slice(0,7);
+        const [year, month] = monthInput.value.split("-");
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const sups = allSupervisors;
+        
+        let html = `<table class="schedule-table"><thead><tr><th>المشرف</th>`;
+        for (let d = 1; d <= daysInMonth; d++) html += `<th>${d}</th>`;
+        html += `</tr></thead><tbody>`;
+        
+        sups.forEach(s => {
+            html += `<tr><td style="text-align:right;padding-right:8px;">${s.name}</td>`;
+            for (let d = 1; d <= daysInMonth; d++) {
+                const key = `shift_${monthInput.value}_${s.code}_${d}`;
+                const val = localStorage.getItem(key) || "";
+                html += `<td><select onchange="setScheduleShift('${s.code}', ${d}, this.value)">
+                    <option value="">—</option>
+                    <option value="morning" ${val === 'morning' ? 'selected' : ''}>ص</option>
+                    <option value="evening" ${val === 'evening' ? 'selected' : ''}>م</option>
+                </select></td>`;
+            }
+            html += `</tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById("scheduleContainer").innerHTML = html;
+    }
+    function setScheduleShift(code, day, shift) {
+        const monthInput = document.getElementById("scheduleMonth");
+        localStorage.setItem(`shift_${monthInput.value}_${code}_${day}`, shift);
+    }
+    function saveSchedule() { alert("✅ تم حفظ الجدول محلياً"); }
+
+    // التقارير
+    function loadReports() {
+        const centers = ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات", "مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"];
+        let html = `<table class="schedule-table"><thead><tr><th>المركز</th><th>إشكالات</th><th>إشادات</th><th>الحالة</th></tr></thead><tbody>`;
+        centers.forEach(c => {
+            const cIssues = allIssues.filter(i => i.centerName === c).length;
+            const cPraises = allPraises.filter(p => p.centerName === c).length;
+            const status = cIssues > 5 ? "🔴 ضغط" : cIssues > 2 ? "🟡 متوسط" : "🟢 ممتاز";
+            html += `<tr><td style="text-align:right;">${c}</td><td>${cIssues}</td><td>${cPraises}</td><td>${status}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById("centersReport").innerHTML = html;
     }
 
-    function setShift(code, shift) {
-        localStorage.setItem("shift_" + code, shift);
+    // البيانات الأساسية
+    async function loadMasterData() {
+        const [resIssTypes, resPraTypes] = await Promise.all([
+            fetch(`${FIRESTORE_URL}/issue_types?pageSize=1000`).then(r => r.json()),
+            fetch(`${FIRESTORE_URL}/praise_types?pageSize=1000`).then(r => r.json())
+        ]);
+        const issTypes = resIssTypes.documents ? resIssTypes.documents.map(docToObj) : [];
+        const praTypes = resPraTypes.documents ? resPraTypes.documents.map(docToObj) : [];
+        document.getElementById("issueTypesList").innerHTML = issTypes.map(t => `<div class="list-item"><div class="list-info"><h4>${t.name}</h4></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteMasterData('issue_types', '${t._id}')">🗑️</button></div></div>`).join("");
+        document.getElementById("praiseTypesList").innerHTML = praTypes.map(t => `<div class="list-item"><div class="list-info"><h4>${t.name}</h4></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteMasterData('praise_types', '${t._id}')">🗑️</button></div></div>`).join("");
     }
-
-    async function saveDuty() {
-        // حفظ التوزيع في Firebase (اختياري)
-        alert("✅ تم حفظ التوزيع (محلياً)");
+    async function addMasterData(col) {
+        const input = col === 'issue_types' ? document.getElementById("mdIssueType") : document.getElementById("mdPraiseType");
+        const name = input.value.trim();
+        if (!name) return;
+        await fetch(`${FIRESTORE_URL}/${col}`, { method: "POST", body: JSON.stringify({ fields: { name: {stringValue:name} } }) });
+        input.value = "";
+        loadMasterData();
     }
-
-    // المتابعة
-    function loadActivities() {
-        const el = document.getElementById("activitiesList");
-        let all = [...allIssues, ...allPraises].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-        if (all.length === 0) { el.innerHTML = "<p style='text-align:center;color:#ccc;'>لا توجد أنشطة.</p>"; return; }
-        el.innerHTML = all.slice(0, 50).map(item => {
-            const isPraise = item._id in allPraises.reduce((acc, p) => ({ ...acc, [p._id]: true }), {});
-            return `<div class="list-item" style="border-right-color:${isPraise ? '#69f0ae' : '#ff5252'};">
-                <div class="list-info">
-                    <h4>${isPraise ? '⭐ إشادة' : '🚩 إشكالية'} — ${item.supervisor || "—"}</h4>
-                    <p>${item.description || "—"}</p>
-                </div>
-                <div class="list-actions">
-                    <button class="icon-btn delete" onclick="deleteActivity('${isPraise ? 'praises' : 'issues'}', '${item._id}')">🗑️</button>
-                </div>
-            </div>`;
-        }).join("");
-    }
-
-    async function deleteActivity(col, id) {
-        if (!confirm("حذف هذا السجل؟")) return;
+    async function deleteMasterData(col, id) {
+        if (!confirm("حذف؟")) return;
         await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" });
-        loadKPIs(); loadActivities();
-    }
-
-    // الدردشة
-    function loadChatTargets() {
-        const sel = document.getElementById("chatTarget");
-        sel.innerHTML = '<option value="">اختر المشرف...</option>' + allSupervisors.map(s => `<option value="${s.code}">${s.name}</option>`).join("");
-    }
-
-    async function loadChat() {
-        const target = document.getElementById("chatTarget").value;
-        if (!target) return;
-        let msgs = allMessages.filter(m => m.room === target);
-        msgs.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
-        const el = document.getElementById("chatMessages");
-        el.innerHTML = msgs.map(m => {
-            const isMine = m.sender === "admin";
-            return `<div class="msg ${isMine ? 'mine' : 'theirs'}">${m.text}<span class="time">${new Date(m.timestamp).toLocaleTimeString('ar-OM')}</span></div>`;
-        }).join("");
-        el.scrollTop = el.scrollHeight;
-    }
-
-    async function sendMsg() {
-        const target = document.getElementById("chatTarget").value;
-        const text = document.getElementById("chatInput").value.trim();
-        if (!target || !text) return;
-        const payload = { fields: { room: {stringValue:target}, sender: {stringValue:"admin"}, text: {stringValue:text}, timestamp: {stringValue:new Date().toISOString()} } };
-        await fetch(`${FIRESTORE_URL}/chats`, { method: "POST", body: JSON.stringify(payload) });
-        document.getElementById("chatInput").value = "";
-        await loadKPIs();
-        loadChat();
-    }
-
-    // التعاميم
-    async function sendBroadcast() {
-        const title = document.getElementById("bTitle").value.trim();
-        const desc = document.getElementById("bDesc").value.trim();
-        if (!title || !desc) { alert("أدخل البيانات"); return; }
-        const payload = { fields: { title: {stringValue:title}, description: {stringValue:desc}, sender: {stringValue:"الإدارة"}, timestamp: {stringValue:new Date().toISOString()} } };
-        await fetch(`${FIRESTORE_URL}/broadcasts`, { method: "POST", body: JSON.stringify(payload) });
-        document.getElementById("bTitle").value = "";
-        document.getElementById("bDesc").value = "";
-        alert("✅ تم الإرسال");
-        await loadBroadcasts();
-    }
-
-    async function loadBroadcasts() {
-        const res = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=50`, { cache: "no-store" });
-        const data = await res.json();
-        const list = data.documents ? data.documents.map(docToObj).reverse() : [];
-        document.getElementById("broadcastsList").innerHTML = list.map(b => `<div class="list-item"><div class="list-info"><h4>📢 ${b.title}</h4><p>${b.description}</p><p style="font-size:9px;opacity:0.5;">${b.sender} — ${new Date(b.timestamp).toLocaleDateString('ar-OM')}</p></div></div>`).join("");
-    }
-
-    // التصدير
-    function exportCSV(type) {
-        let headers = [], rows = [], name = "";
-        if (type === 'supervisors') { headers = ["الاسم", "القطاع", "الهاتف", "الكود"]; rows = allSupervisors.map(s => [s.name, s.sector, s.phone, s.code]); name = "supervisors"; }
-        else if (type === 'paramedics') { headers = ["الاسم", "المركز", "الرتبة"]; rows = allParameds.map(p => [p.name, p.centerName, p.rank]); name = "paramedics"; }
-        else if (type === 'vehicles') { headers = ["اللوحة", "النوع", "المركز"]; rows = allVehicles.map(v => [v.plateNumber, v.type, v.centerName]); name = "vehicles"; }
-        if (rows.length === 0) { alert("لا توجد بيانات"); return; }
-        const csv = "\uFEFF" + [headers, ...rows].map(row => row.map(c => `"${String(c||"").replace(/"/g,'""')}"`).join(",")).join("\n");
-        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
-        const a = document.createElement("a"); a.href = url; a.download = name + ".csv"; a.click();
-        URL.revokeObjectURL(url);
-    }
-
-    function printPDF(type) {
-        let title = "", headers = [], rows = [];
-        if (type === 'supervisors') { title = "المشرفون"; headers = ["الاسم", "القطاع", "الهاتف", "الكود"]; rows = allSupervisors.map(s => [s.name, s.sector, s.phone, s.code]); }
-        else if (type === 'paramedics') { title = "المسعفون"; headers = ["الاسم", "المركز", "الرتبة"]; rows = allParameds.map(p => [p.name, p.centerName, p.rank]); }
-        else if (type === 'vehicles') { title = "المركبات"; headers = ["اللوحة", "النوع", "المركز"]; rows = allVehicles.map(v => [v.plateNumber, v.type, v.centerName]); }
-        const win = window.open("", "_blank");
-        win.document.write(`<html dir="rtl"><body style="font-family:Cairo;padding:20px;">
-            <h1 style="text-align:center;color:#1e4620;">${title}</h1>
-            <table border="1" style="width:100%;border-collapse:collapse;">
-                <thead><tr style="background:#1e4620;color:#fff;">${headers.map(h => `<th style="padding:8px;">${h}</th>`).join("")}</tr></thead>
-                <tbody>${rows.map(r => `<tr>${r.map(c => `<td style="padding:8px;text-align:center;">${c||""}</td>`).join("")}</tr>`).join("")}</tbody>
-            </table>
-        </body></html>`);
-        win.document.close();
-        setTimeout(() => { win.print(); win.close(); }, 500);
-    }
-
-    function resetAllData() {
-        if (!confirm("⚠️ سيتم حذف جميع البيانات نهائياً. هل أنت متأكد؟")) return;
-        alert("هذه الميزة تحتاج تأكيد إضافي في نسخة الإنتاج.");
-    }
-
-    function exportFullBackup() {
-        const data = { supervisors: allSupervisors, paramedics: allParameds, vehicles: allVehicles, issues: allIssues, praises: allPraises, messages: allMessages, broadcasts: allBroadcasts };
-        const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
-        const a = document.createElement("a"); a.href = url; a.download = "backup.json"; a.click();
-        URL.revokeObjectURL(url);
+        loadMasterData();
     }
 
     window.onload = function() { 
         document.getElementById("supCode").value = generateCode();
         loadKPIs(); 
+        document.getElementById("scheduleMonth").value = new Date().toISOString().slice(0,7);
     };
 </script>
 </body>
