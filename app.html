@@ -4,33 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#041814">
-<title>لوحة المشرف الميداني</title>
+<title>المشرف الميداني — نظام الإسعاف الذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
+    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; --purple:#ab47bc; }
     body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; }
     
     /* الشريط العلوي */
-    .topbar { background:var(--green); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
-    .topbar h2 { font-size:14px; color:var(--gold); }
-    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; }
+    .topbar { background:linear-gradient(135deg, var(--green), #041814); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; box-shadow:0 4px 15px rgba(0,0,0,0.5); }
+    .topbar h2 { font-size:15px; color:var(--gold); display:flex; align-items:center; gap:8px; }
+    .btn-logout { background:var(--red); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.2s; }
+    .btn-logout:active { transform:scale(0.95); }
     
-    /* المحتوى */
     .content { padding:15px; max-width:600px; margin:0 auto; }
     
+    /* تنبيه التعاميم */
+    .broadcast-alert { background:linear-gradient(135deg, rgba(41,182,246,0.15), rgba(4,24,20,0.9)); border:1px solid var(--blue); border-right:4px solid var(--blue); padding:12px; border-radius:8px; margin-bottom:15px; display:none; animation:slideDown 0.4s; }
+    .broadcast-alert.show { display:block; }
+    .broadcast-alert h4 { color:var(--blue); font-size:13px; margin-bottom:4px; }
+    .broadcast-alert p { font-size:12px; color:#fff; line-height:1.5; }
+    .broadcast-alert .meta { font-size:10px; opacity:0.6; margin-top:6px; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+
     /* الأزرار الرئيسية */
-    .main-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px; }
-    .action-btn { padding:15px 10px; border-radius:12px; border:none; font-size:14px; font-weight:900; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; }
-    .action-btn .icon { font-size:28px; }
+    .main-actions { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+    .action-btn { padding:20px 10px; border-radius:16px; border:none; font-size:14px; font-weight:900; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:10px; color:#fff; transition:0.2s; box-shadow:0 8px 20px rgba(0,0,0,0.4); }
+    .action-btn:active { transform:scale(0.96); }
+    .action-btn .icon { font-size:32px; }
     .btn-issue { background:linear-gradient(135deg, #e53935, #ff5252); }
     .btn-visit { background:linear-gradient(135deg, #29b6f6, #64b5f6); }
     
     /* البطاقات */
-    .card { background:rgba(255,255,255,0.05); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; display:none; }
-    .card.active { display:block; animation:fadeIn 0.3s; }
+    .card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; display:none; animation:fadeIn 0.3s; }
+    .card.active { display:block; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
-    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; }
+    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; border-bottom:1px solid rgba(201,162,39,0.2); padding-bottom:10px; }
     
     /* النماذج */
     .form-group { margin-bottom:12px; }
@@ -38,9 +47,8 @@
     input, select, textarea { width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(201,162,39,0.3); border-radius:8px; color:#fff; font-size:14px; outline:none; }
     select option { background:var(--bg); }
     textarea { resize:vertical; min-height:80px; }
-    
-    button.btn-save { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); margin-top:10px; }
-    button.btn-cancel { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:rgba(255,255,255,0.1); color:#fff; margin-top:8px; }
+    .btn-save { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); margin-top:10px; }
+    .btn-cancel { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:rgba(255,255,255,0.1); color:#fff; margin-top:8px; }
     .msg { text-align:center; font-size:12px; font-weight:bold; margin-top:10px; }
     
     /* قائمة النشاطات */
@@ -49,9 +57,9 @@
     .act-title { font-weight:900; color:var(--gold); font-size:14px; }
     .act-date { font-size:10px; color:rgba(255,255,255,0.6); }
     .act-desc { font-size:12px; color:rgba(255,255,255,0.8); margin-bottom:10px; }
-    .btn-print { width:auto; padding:6px 15px; border-radius:6px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; }
+    .btn-print { width:auto; padding:8px 15px; border-radius:6px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; }
     
-    /* 📄 تنسيق الطباعة */
+    /* 📄 تنسيق الطباعة A4 */
     #printArea { display:none; }
     @media print {
         @page { size: A4; margin: 10mm; }
@@ -61,15 +69,15 @@
         #printArea { display:block !important; position:absolute; left:0; top:0; width:100%; }
         .topbar, .content { display:none !important; }
     }
-    .print-form { background:#fff; color:#000; padding:20px; border:1px solid #ccc; }
-    .print-header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px; }
-    .print-header img { width:60px; }
-    .print-header div { text-align:center; font-weight:bold; font-size:14px; }
-    .print-title { text-align:center; font-size:18px; font-weight:900; margin-bottom:20px; background:#eee; padding:8px; }
+    .print-form { background:#fff; color:#000; padding:20px; border:1px solid #ccc; font-family:'Cairo'; }
+    .print-header { display:flex; justify-content:space-between; align-items:center; border-bottom:3px double #000; padding-bottom:15px; margin-bottom:20px; }
+    .print-header img { width:70px; height:70px; object-fit:contain; }
+    .print-header div { text-align:center; font-weight:bold; font-size:14px; line-height:1.6; }
+    .print-title { text-align:center; font-size:18px; font-weight:900; margin-bottom:20px; background:#f0f0f0; padding:10px; border:1px solid #000; }
     .print-table { width:100%; border-collapse:collapse; margin-bottom:20px; font-size:12px; }
-    .print-table th, .print-table td { border:1px solid #000; padding:8px; text-align:right; }
-    .print-table th { background:#eee; width:30%; }
-    .print-signatures { display:flex; justify-content:space-between; margin-top:50px; font-size:14px; font-weight:bold; text-align:center; }
+    .print-table th, .print-table td { border:1px solid #000; padding:10px; text-align:right; }
+    .print-table th { background:#f0f0f0; width:30%; }
+    .print-signatures { display:flex; justify-content:space-between; margin-top:60px; font-size:14px; font-weight:bold; text-align:center; }
     .print-signatures div { width:30%; }
 </style>
 </head>
@@ -77,13 +85,19 @@
 
 <!-- الشريط العلوي -->
 <div class="topbar">
-    <h2 id="welcomeName">المشرف</h2>
+    <h2>👨‍💼 <span id="welcomeName">المشرف</span></h2>
     <button class="btn-logout" onclick="logout()">خروج</button>
 </div>
 
-<!-- المحتوى -->
 <div class="content">
     
+    <!-- تنبيه التعاميم -->
+    <div class="broadcast-alert" id="broadcastBox">
+        <h4>📢 تعميم جديد من الإدارة</h4>
+        <p id="bcText"></p>
+        <div class="meta" id="bcMeta"></div>
+    </div>
+
     <!-- الأزرار الرئيسية -->
     <div class="main-actions">
         <button class="action-btn btn-issue" onclick="showForm('issue')">
@@ -107,6 +121,7 @@
                 <option value="تعامل غير احترافي">تعامل غير احترافي</option>
                 <option value="نقص تجهيزات">نقص تجهيزات</option>
                 <option value="مشكلة في المركبة">مشكلة في المركبة</option>
+                <option value="أخرى">أخرى</option>
             </select>
         </div>
         <div class="form-group">
@@ -267,11 +282,38 @@
                         <span class="act-date">${new Date(a.timestamp).toLocaleDateString('ar-OM')}</span>
                     </div>
                     <div class="act-desc">${a.type === 'issue' ? a.issueType : 'التقييم: ' + a.score + '%'}</div>
-                    <button class="btn-print" onclick="printReport('${a._id}')">🖨️ طباعة</button>
+                    <button class="btn-print" onclick="printReport('${a._id}')">🖨️ طباعة / PDF</button>
                 </div>
             `).join("");
 
         } catch(e) { listDiv.innerHTML = "<p style='text-align:center; color:#ff5252;'>خطأ في التحميل.</p>"; }
+    }
+
+    // تحميل التعاميم
+    async function loadBroadcast() {
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1`, { cache: "no-store" }); // جلب آخر تعميم فقط
+            const data = await res.json();
+
+            if (data.documents && data.documents.length > 0) {
+                const b = docToObj(data.documents[0]);
+                const broadcastBox = document.getElementById("broadcastBox");
+                
+                // عرض التعميم فقط إذا كان جديداً (لم يقرأه المشرف)
+                const readKey = "read_bc_" + b._id;
+                if (!localStorage.getItem(readKey)) {
+                    document.getElementById("bcText").innerText = b.description;
+                    document.getElementById("bcMeta").innerText = "من: " + b.sender + " | " + new Date(b.timestamp).toLocaleDateString('ar-OM');
+                    broadcastBox.classList.add("show");
+                    
+                    // حفظ أنه تم قراءته
+                    localStorage.setItem(readKey, "true");
+                    
+                    // إخفاء التنبيه بعد 10 ثواني
+                    setTimeout(() => { broadcastBox.classList.remove("show"); }, 10000);
+                }
+            }
+        } catch(e) { console.log("Broadcast error"); }
     }
 
     // الطباعة
@@ -288,7 +330,7 @@
             title = "تقرير إشكالية ميدانية";
             tableRows = `
                 <tr><th>اسم المشرف</th><td>${act.supervisor}</td></tr>
-                <tr><th>التاريخ</th><td>${dateStr}</td></tr>
+                <tr><th>التاريخ والوقت</th><td>${dateStr}</td></tr>
                 <tr><th>نوع الإشكالية</th><td>${act.issueType}</td></tr>
                 <tr><th>التفاصيل</th><td>${act.description}</td></tr>
             `;
@@ -297,9 +339,9 @@
             tableRows = `
                 <tr><th>اسم المشرف</th><td>${act.supervisor}</td></tr>
                 <tr><th>المركز</th><td>${act.center}</td></tr>
-                <tr><th>التاريخ</th><td>${dateStr}</td></tr>
+                <tr><th>التاريخ والوقت</th><td>${dateStr}</td></tr>
                 <tr><th>التقييم العام</th><td style="font-size:16px; font-weight:bold;">${act.score}%</td></tr>
-                <tr><th>ملاحظات</th><td>${act.notes}</td></tr>
+                <tr><th>ملاحظات الزيارة</th><td>${act.notes}</td></tr>
             `;
         }
 
@@ -321,7 +363,11 @@
         window.print();
     }
 
-    window.onload = function() { loadActivities(); };
+    // التشغيل
+    window.onload = function() { 
+        loadActivities(); 
+        loadBroadcast();
+    };
 </script>
 </body>
 </html>
