@@ -2,427 +2,712 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — غرفة التحكم الشاملة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<title>الإدارة العامة — غرفة التحكم الشاملة v22.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
-    :root { --gold:#978d5b; --gold-light:#d4c896; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; --amber:#fb8c00; }
-    body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:80px; }
-    body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 
-    /* Topbar & Tabs */
-    .topbar { background:linear-gradient(135deg, rgba(13,74,66,0.95), rgba(4,24,20,0.98)); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
-    .topbar h1 { font-size:16px; color:var(--gold-light); font-weight:900; }
-    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:inherit; }
-    
-    .tabs { display:flex; gap:8px; overflow-x:auto; padding:15px; scrollbar-width:none; border-bottom:1px solid rgba(151,141,91,0.2); }
-    .tabs::-webkit-scrollbar { display:none; }
-    .tab-btn { padding:10px 18px; border-radius:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(151,141,91,0.3); color:#fff; font-weight:bold; font-size:13px; cursor:pointer; white-space:nowrap; font-family:inherit; transition:0.3s; }
-    .tab-btn.active { background:var(--gold); color:var(--bg); border-color:var(--gold); }
+:root {
+  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
+  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae;
+  --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726;
+  --blue:#29b6f6; --blue-light:#64b5f6;
+  --purple:#ab47bc; --purple-light:#ce93d8;
+  --pink:#ec407a;
+  --surface:rgba(13,74,66,0.55); --surface-2:rgba(4,24,20,0.75);
+  --border:rgba(151,141,91,0.3);
+  --safe-top:env(safe-area-inset-top, 0px);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
 
-    .content { padding:15px; max-width:900px; margin:0 auto; }
-    .page { display:none; animation:fadeIn 0.3s; }
-    .page.active { display:block; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; overscroll-behavior-y:contain; }
+body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
+body::before {
+  content:''; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%),
+    linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
+}
 
-    /* Cards & Forms */
-    .card { background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:20px; margin-bottom:15px; backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
-    .card h3 { color:var(--gold-light); font-size:15px; margin-bottom:15px; border-bottom:1px solid rgba(151,141,91,0.2); padding-bottom:10px; display:flex; align-items:center; gap:8px; }
-    
-    .form-group { margin-bottom:12px; }
-    .form-group label { display:block; font-size:12px; color:var(--gold-light); margin-bottom:6px; font-weight:bold; }
-    input, select, textarea { width:100%; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(151,141,91,0.3); border-radius:10px; color:#fff; font-size:14px; font-family:inherit; outline:none; }
-    input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(151,141,91,0.2); }
-    select option { background:var(--bg); }
-    
-    .btn { width:100%; padding:14px; border-radius:10px; border:none; font-size:15px; font-weight:900; cursor:pointer; font-family:inherit; transition:0.2s; display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:8px; }
-    .btn:active { transform:scale(0.98); }
-    .btn-gold { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); }
-    .btn-red { background:linear-gradient(135deg, #e53935, #ff5252); color:#fff; }
-    .btn-blue { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
-    .btn-small { padding:8px 12px; font-size:12px; width:auto; margin:0; }
+/* شاشة الدخول */
+#loginScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; background:linear-gradient(135deg, #041814, #0d4a42, #082b26); }
+.login-box { text-align:center; max-width:440px; width:100%; padding:34px 24px; background:linear-gradient(145deg, rgba(13,74,66,0.65), rgba(4,24,20,0.95)); border:2px solid var(--border); border-radius:28px; box-shadow:0 25px 70px rgba(0,0,0,0.7), 0 0 60px rgba(151,141,91,0.15); }
+.login-logo { width:130px; height:130px; object-fit:contain; border-radius:22px; background:linear-gradient(145deg, #0a5a3a, #064a2e); padding:8px; border:2px solid rgba(151,141,91,0.5); filter:drop-shadow(0 0 25px rgba(151,141,91,0.9)); }
+.login-title { font-size:24px; color:var(--gold-light); font-weight:900; margin-top:20px; }
+.login-subtitle { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:26px; letter-spacing:2px; }
+.pass-input { width:100%; padding:18px; background:rgba(4,24,20,0.85); border:2px solid var(--border); border-radius:16px; color:var(--gold-light); font-size:18px; font-weight:900; text-align:center; letter-spacing:4px; font-family:monospace; outline:none; margin-bottom:16px; }
+.login-btn { width:100%; padding:17px; border:none; border-radius:16px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:17px; font-weight:900; cursor:pointer; }
+.login-msg { margin-top:16px; font-size:13px; min-height:22px; font-weight:700; color:var(--red-light); }
 
-    /* Lists */
-    .list-item { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:10px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
-    .list-info h4 { font-size:14px; color:var(--gold-light); margin-bottom:4px; }
-    .list-info p { font-size:11px; color:rgba(255,255,255,0.6); }
-    .list-actions { display:flex; gap:6px; }
-    .icon-btn { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
-    .icon-btn.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
-    .icon-btn.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
-    .icon-btn.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
+#mainApp { display:none; }
+#mainApp.ready { display:block; }
 
-    /* KPI */
-    .kpi-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:15px; }
-    .kpi-box { background:rgba(13,74,66,0.5); border:1px solid rgba(151,141,91,0.3); border-radius:12px; padding:15px; text-align:center; }
-    .kpi-box .num { font-size:26px; font-weight:900; color:var(--gold-light); }
-    .kpi-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px; }
+/* Topbar */
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); backdrop-filter:blur(20px); display:flex; align-items:center; gap:10px; }
+.topbar-logo { width:46px; height:46px; border-radius:12px; background:linear-gradient(145deg, #0a5a3a, #064a2e); padding:3px; border:1px solid var(--border); object-fit:contain; }
+.topbar-info { flex:1; }
+.topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
+.topbar-info p { font-size:10px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; margin-top:3px; }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); box-shadow:0 0 8px var(--green-light); }
+.icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; }
+.icon-btn.danger { background:rgba(198,40,40,0.4); border-color:rgba(255,82,82,0.5); }
 
-    /* Schedule */
-    .schedule-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
-    .schedule-table th, .schedule-table td { border:1px solid rgba(151,141,91,0.2); padding:6px; text-align:center; }
-    .schedule-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); }
-    .schedule-table td { background:rgba(0,0,0,0.3); }
-    .schedule-table select { padding:4px; font-size:10px; margin:0; background:transparent; border:none; }
+/* Tabs */
+.tabs-bar { position:sticky; top:calc(74px + var(--safe-top)); z-index:98; background:linear-gradient(180deg, rgba(4,24,20,0.98), rgba(4,24,20,0.92)); border-bottom:1px solid rgba(151,141,91,0.2); overflow-x:auto; scrollbar-width:none; }
+.tabs-bar::-webkit-scrollbar { display:none; }
+.tabs-scroll { display:flex; gap:6px; padding:10px 12px; min-width:min-content; }
+.tab-btn { flex-shrink:0; padding:9px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:22px; color:rgba(255,255,255,0.75); font-family:inherit; font-weight:700; font-size:12px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; }
+.tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-color:var(--gold); }
 
-    /* Reports table */
-    .report-table { width:100%; border-collapse:collapse; font-size:12px; }
-    .report-table th, .report-table td { border:1px solid rgba(151,141,91,0.2); padding:8px; text-align:center; }
-    .report-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); }
-    .report-table td { background:rgba(0,0,0,0.3); }
+.page { display:none; padding:16px; max-width:900px; margin:0 auto; }
+.page.active { display:block; animation:pageIn 0.35s ease-out; }
+@keyframes pageIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* Cards */
+.card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:18px; margin-bottom:14px; }
+.card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid rgba(151,141,91,0.15); display:flex; align-items:center; gap:8px; }
+
+/* Stats & KPI */
+.stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
+.stats-grid.three { grid-template-columns:repeat(3, 1fr); }
+.stats-grid.four { grid-template-columns:repeat(4, 1fr); }
+@media (max-width:600px) { .stats-grid.four { grid-template-columns:repeat(2, 1fr); } }
+.stat-mini { background:linear-gradient(145deg, var(--surface-2), rgba(13,74,66,0.4)); border:1px solid var(--border); border-radius:16px; padding:16px 14px; position:relative; }
+.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
+.stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:5px; }
+.stat-mini.red .num { color:var(--red-light); }
+.stat-mini.green .num { color:var(--green-light); }
+.stat-mini.amber .num { color:var(--amber-light); }
+.stat-mini.blue .num { color:var(--blue-light); }
+
+/* Buttons & Inputs */
+.btn { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn.secondary { background:rgba(255,255,255,0.08); color:#fff; border:1px solid var(--border); }
+.btn.danger { background:linear-gradient(135deg, var(--red), var(--red-light)); color:#fff; }
+.btn.info { background:linear-gradient(135deg, var(--blue), var(--blue-light)); color:#fff; }
+.btn.small { padding:8px 14px; font-size:11px; }
+.btn.block { width:100%; }
+
+input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-family:inherit; font-weight:600; outline:none; margin-bottom:12px; }
+input:focus, textarea:focus, select:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(151,141,91,0.15); }
+select option { background:var(--teal-deep); color:#fff; }
+label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:7px; }
+
+/* Item Cards */
+.item-card { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.item-info h4 { font-size:14px; font-weight:900; color:var(--gold-light); margin-bottom:4px; }
+.item-info p { font-size:11px; color:rgba(255,255,255,0.65); }
+.item-actions { display:flex; gap:6px; }
+.icon-btn-sm { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.icon-btn-sm.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
+.icon-btn-sm.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
+.icon-btn-sm.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
+
+/* Modal */
+.modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); display:none; align-items:flex-end; justify-content:center; }
+.modal-overlay.show { display:flex; }
+.modal-sheet { background:linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius:26px; border-top-right-radius:26px; border-top:3px solid var(--gold); width:100%; max-width:780px; max-height:92vh; padding:24px 18px calc(24px + var(--safe-bottom)); overflow-y:auto; }
+.modal-sheet h3 { color:var(--gold-light); font-size:17px; font-weight:900; text-align:center; padding-bottom:14px; border-bottom:1px solid rgba(151,141,91,0.2); margin-bottom:18px; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-    <h1>🏛️ الإدارة العامة</h1>
-    <button class="btn-logout" onclick="logout()">خروج</button>
+<!-- ═══ شاشة الدخول ═══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <img id="loginLogo" src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" alt="الشعار" class="login-logo">
+    <div class="login-title">الإدارة العامة</div>
+    <div class="login-subtitle">نظام الإسعاف الذكي v22.0</div>
+    <input type="password" id="passInput" class="pass-input" placeholder="كلمة المرور" autocomplete="off">
+    <button class="login-btn" id="loginBtn" onclick="loginWithPassword()">🔓 دخول</button>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
 </div>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('dashboard', this)">📊 التحليلات</button>
-    <button class="tab-btn" onclick="switchTab('supervisors', this)">👨‍💼 المشرفون</button>
-    <button class="tab-btn" onclick="switchTab('paramedics', this)">👨‍🚒 المسعفون</button>
-    <button class="tab-btn" onclick="switchTab('vehicles', this)">🚑 المركبات</button>
-    <button class="tab-btn" onclick="switchTab('schedule', this)">📅 الدوام الشهري</button>
-    <button class="tab-btn" onclick="switchTab('reports', this)">📈 التقارير</button>
-    <button class="tab-btn" onclick="switchTab('masterdata', this)">📋 البيانات الأساسية</button>
+<!-- ═══ التطبيق ═══ -->
+<div id="mainApp">
+
+  <div class="topbar">
+    <img id="topLogo" src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" alt="الشعار" class="topbar-logo">
+    <div class="topbar-info">
+      <h1 id="topTitle">الإدارة العامة</h1>
+      <p><span class="status-dot" id="statusDot"></span><span id="currentUser">مسؤول</span></p>
+    </div>
+    <button class="icon-btn" onclick="manualRefresh()" title="تحديث">🔄</button>
+    <button class="icon-btn danger" onclick="confirmLogout()" title="خروج">🚪</button>
+  </div>
+
+  <div class="tabs-bar">
+    <div class="tabs-scroll">
+      <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')"><span>📊</span> لوحة القيادة</button>
+      <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')"><span>👨‍💼</span> المشرفون</button>
+      <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')"><span>👨‍🚒</span> المسعفون</button>
+      <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')"><span>🚑</span> المركبات</button>
+      <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')"><span>📅</span> جدول الدوام</button>
+      <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')"><span>🚩</span> الإشكالات</button>
+      <button class="tab-btn" data-tab="praises" onclick="switchTab('praises')"><span>⭐</span> الإشادات</button>
+      <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')"><span>📢</span> التعاميم</button>
+      <button class="tab-btn" data-tab="master" onclick="switchTab('master')"><span>📋</span> البيانات الأساسية</button>
+      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')"><span>⚙️</span> الإعدادات</button>
+    </div>
+  </div>
+
+  <!-- 1. لوحة القيادة -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-grid four">
+      <div class="stat-mini blue"><div class="num" id="dashSups">0</div><div class="lbl">👨‍💼 المشرفون</div></div>
+      <div class="stat-mini green"><div class="num" id="dashParams">0</div><div class="lbl">👨‍🚒 المسعفون</div></div>
+      <div class="stat-mini amber"><div class="num" id="dashVehicles">0</div><div class="lbl">🚑 المركبات</div></div>
+      <div class="stat-mini red"><div class="num" id="dashIssues">0</div><div class="lbl">🚩 الإشكالات</div></div>
+    </div>
+    <div class="stats-grid four">
+      <div class="stat-mini green"><div class="num" id="dashPraises">0</div><div class="lbl">⭐ الإشادات</div></div>
+      <div class="stat-mini blue"><div class="num" id="dashBroadcasts">0</div><div class="lbl">📢 التعاميم</div></div>
+      <div class="stat-mini amber"><div class="num" id="dashToday">0</div><div class="lbl">📅 اليوم</div></div>
+      <div class="stat-mini red"><div class="num" id="dashOpenIssues">0</div><div class="lbl">⚠️ غير محلولة</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📊</span> نشاط المشرفين (آخر 7 أيام)</div>
+      <div id="weeklyChart" style="display:flex; align-items:flex-end; height:150px; gap:6px; padding:10px; border-bottom:2px solid var(--gold);"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📡</span> نبض المراكز</div>
+      <div id="centersPulse" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;"></div>
+    </div>
+  </div>
+
+  <!-- 2. المشرفون -->
+  <div class="page" id="page-supervisors">
+    <div class="card">
+      <div class="card-title"><span>➕</span> إضافة / تعديل مشرف</div>
+      <input type="hidden" id="editSupId" value="">
+      <label>الاسم *</label><input type="text" id="supName">
+      <label>القطاع</label><select id="supSector"><option>قطاع A</option><option>قطاع B</option></select>
+      <label>الهاتف</label><input type="tel" id="supPhone">
+      <label>الكود (تلقائي)</label><input type="text" id="supCode" readonly style="text-align:center; font-weight:bold; color:var(--gold-light);">
+      <button class="btn block" onclick="saveSupervisor()">💾 حفظ</button>
+      <button class="btn secondary block" id="btnCancelSup" onclick="cancelEditSupervisor()" style="display:none; margin-top:8px;">إلغاء</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📋</span> المشرفون</div>
+      <div id="supervisorsList"></div>
+    </div>
+  </div>
+
+  <!-- 3. المسعفون -->
+  <div class="page" id="page-paramedics">
+    <div class="card">
+      <div class="card-title"><span>➕</span> إضافة مسعف</div>
+      <label>الاسم *</label><input type="text" id="pmName">
+      <label>المركز</label>
+      <select id="pmCenter">
+        <option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option>
+        <option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option>
+        <option>مركز إسعاف الخوض 1</option><option>مركز إسعاف الخوض 2</option>
+        <option>مركز إسعاف العذيبة</option><option>مركز إسعاف الرسيل</option>
+      </select>
+      <label>الرتبة</label><input type="text" id="pmRank">
+      <button class="btn block" onclick="saveParamedic()">💾 حفظ</button>
+    </div>
+    <div class="card"><div class="card-title"><span>📋</span> المسعفون</div><div id="paramedicsList"></div></div>
+  </div>
+
+  <!-- 4. المركبات -->
+  <div class="page" id="page-vehicles">
+    <div class="card">
+      <div class="card-title"><span>➕</span> إضافة مركبة</div>
+      <label>اللوحة *</label><input type="text" id="vPlate">
+      <label>النوع</label><input type="text" id="vType">
+      <label>المركز</label>
+      <select id="vCenter">
+        <option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option>
+        <option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option>
+        <option>مركز إسعاف الخوض 1</option><option>مركز إسعاف الخوض 2</option>
+        <option>مركز إسعاف العذيبة</option><option>مركز إسعاف الرسيل</option>
+      </select>
+      <button class="btn block" onclick="saveVehicle()">💾 حفظ</button>
+    </div>
+    <div class="card"><div class="card-title"><span>📋</span> المركبات</div><div id="vehiclesList"></div></div>
+  </div>
+
+  <!-- 5. جدول الدوام -->
+  <div class="page" id="page-duty">
+    <div class="card">
+      <div class="card-title"><span>📅</span> جدول الدوام الشهري</div>
+      <label>اختر الشهر</label>
+      <input type="month" id="dutyMonth" onchange="loadDutyTable()">
+      <div style="overflow-x:auto;" id="dutyTableContainer"></div>
+      <button class="btn block" onclick="saveDuty()" style="margin-top:10px;">💾 حفظ الجدول</button>
+    </div>
+  </div>
+
+  <!-- 6. الإشكالات -->
+  <div class="page" id="page-issues">
+    <div class="card">
+      <div class="card-title"><span>🚩</span> الإشكالات المسجلة</div>
+      <div id="issuesAdminList"></div>
+    </div>
+  </div>
+
+  <!-- 7. الإشادات -->
+  <div class="page" id="page-praises">
+    <div class="card">
+      <div class="card-title"><span>⭐</span> الإشادات المسجلة</div>
+      <div id="praisesAdminList"></div>
+    </div>
+  </div>
+
+  <!-- 8. التعاميم -->
+  <div class="page" id="page-broadcasts">
+    <div class="card">
+      <div class="card-title"><span>📢</span> إرسال تعميم</div>
+      <input type="text" id="bTitle" placeholder="عنوان التعميم">
+      <textarea id="bDesc" rows="5" placeholder="نص التعميم..."></textarea>
+      <button class="btn block" onclick="sendBroadcast()">📤 إرسال</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>📜</span> التعاميم السابقة</div>
+      <div id="broadcastsList"></div>
+    </div>
+  </div>
+
+  <!-- 9. البيانات الأساسية -->
+  <div class="page" id="page-master">
+    <div class="card">
+      <div class="card-title"><span>🚩</span> أنواع الإشكالات</div>
+      <input type="text" id="mdIssueType" placeholder="اسم النوع">
+      <button class="btn small" onclick="addMasterData('issue_types')">➕ إضافة</button>
+      <div id="issueTypesList" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>⭐</span> أنواع الإشادات</div>
+      <input type="text" id="mdPraiseType" placeholder="اسم النوع">
+      <button class="btn small" onclick="addMasterData('praise_types')">➕ إضافة</button>
+      <div id="praiseTypesList" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- 10. الإعدادات -->
+  <div class="page" id="page-settings">
+    <div class="card">
+      <div class="card-title"><span>⚙️</span> الإعدادات</div>
+      <p style="font-size:12px;line-height:2;color:rgba(255,255,255,0.7);">
+        <b>الإصدار:</b> 22.0.0<br>
+        <b>Firebase Project:</b> ems-supervisor<br>
+        <b>Collection:</b> access_code
+      </p>
+      <button class="btn danger block" onclick="confirmLogout()" style="margin-top:15px;">🚪 تسجيل الخروج</button>
+    </div>
+  </div>
+
 </div>
 
-<div class="content">
-    <!-- 1. لوحة التحليلات -->
-    <div class="page active" id="tab-dashboard">
-        <div class="kpi-grid">
-            <div class="kpi-box"><div class="num" id="kpiSups">0</div><div class="lbl">المشرفون</div></div>
-            <div class="kpi-box"><div class="num" id="kpiIssues">0</div><div class="lbl">الإشكالات</div></div>
-            <div class="kpi-box"><div class="num" id="kpiPraises">0</div><div class="lbl">الإشادات</div></div>
-        </div>
-        <div class="card">
-            <h3>📊 نشاط المشرفين (آخر 7 أيام)</h3>
-            <div id="activityChart" style="display:flex; align-items:flex-end; height:150px; gap:6px; padding:10px; border-bottom:2px solid var(--gold);"></div>
-        </div>
-        <div class="card">
-            <h3>📡 نبض المراكز (Heatmap)</h3>
-            <div id="centersHeatmap" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;"></div>
-        </div>
-    </div>
-
-    <!-- 2. المشرفون -->
-    <div class="page" id="tab-supervisors">
-        <div class="card">
-            <h3>➕ إضافة / تعديل مشرف</h3>
-            <input type="hidden" id="editSupId" value="">
-            <div class="form-group"><label>الاسم</label><input type="text" id="supName"></div>
-            <div class="form-group"><label>القطاع</label><select id="supSector"><option>قطاع A</option><option>قطاع B</option></select></div>
-            <div class="form-group"><label>الهاتف</label><input type="tel" id="supPhone"></div>
-            <div class="form-group"><label>الكود (تلقائي)</label><input type="text" id="supCode" readonly style="text-align:center; font-weight:bold; color:var(--gold-light);"></div>
-            <button class="btn btn-gold" onclick="saveSupervisor()">💾 حفظ</button>
-            <button class="btn btn-blue" id="btnCancelSup" onclick="cancelEditSupervisor()" style="display:none;">إلغاء</button>
-        </div>
-        <div class="card"><h3>📋 المشرفون</h3><div id="supervisorsList"></div></div>
-    </div>
-
-    <!-- 3. المسعفون -->
-    <div class="page" id="tab-paramedics">
-        <div class="card">
-            <h3>➕ إضافة مسعف</h3>
-            <div class="form-group"><label>الاسم</label><input type="text" id="pmName"></div>
-            <div class="form-group"><label>المركز</label><select id="pmCenter"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option><option>مركز إسعاف الخوض 1</option><option>مركز إسعاف الخوض 2</option><option>مركز إسعاف العذيبة</option><option>مركز إسعاف الرسيل</option></select></div>
-            <div class="form-group"><label>الرتبة</label><input type="text" id="pmRank"></div>
-            <button class="btn btn-gold" onclick="saveParamedic()">💾 حفظ</button>
-        </div>
-        <div class="card"><h3>📋 المسعفون</h3><div id="paramedicsList"></div></div>
-    </div>
-
-    <!-- 4. المركبات -->
-    <div class="page" id="tab-vehicles">
-        <div class="card">
-            <h3>➕ إضافة مركبة</h3>
-            <div class="form-group"><label>اللوحة</label><input type="text" id="vPlate"></div>
-            <div class="form-group"><label>النوع</label><input type="text" id="vType"></div>
-            <div class="form-group"><label>المركز</label><select id="vCenter"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option><option>مركز إسعاف الخوض 1</option><option>مركز إسعاف الخوض 2</option><option>مركز إسعاف العذيبة</option><option>مركز إسعاف الرسيل</option></select></div>
-            <button class="btn btn-gold" onclick="saveVehicle()">💾 حفظ</button>
-        </div>
-        <div class="card"><h3>📋 المركبات</h3><div id="vehiclesList"></div></div>
-    </div>
-
-    <!-- 5. الدوام الشهري -->
-    <div class="page" id="tab-schedule">
-        <div class="card">
-            <h3>📅 جدول الدوام الشهري</h3>
-            <div class="form-group"><label>اختر الشهر</label><input type="month" id="scheduleMonth" onchange="loadSchedule()"></div>
-            <div style="overflow-x:auto;" id="scheduleContainer"></div>
-            <button class="btn btn-gold" onclick="saveSchedule()" style="margin-top:10px;">💾 حفظ الجدول</button>
-        </div>
-    </div>
-
-    <!-- 6. التقارير -->
-    <div class="page" id="tab-reports">
-        <div class="card">
-            <h3>📊 تقييم أداء المراكز</h3>
-            <div id="centersReport"></div>
-        </div>
-    </div>
-
-    <!-- 7. البيانات الأساسية -->
-    <div class="page" id="tab-masterdata">
-        <div class="card">
-            <h3>🚩 أنواع الإشكالات</h3>
-            <div class="form-group"><input type="text" id="mdIssueType" placeholder="اسم النوع"></div>
-            <button class="btn btn-gold btn-small" onclick="addMasterData('issue_types')">➕ إضافة</button>
-            <div id="issueTypesList" style="margin-top:10px;"></div>
-        </div>
-        <div class="card">
-            <h3>⭐ أنواع الإشادات</h3>
-            <div class="form-group"><input type="text" id="mdPraiseType" placeholder="اسم النوع"></div>
-            <button class="btn btn-gold btn-small" onclick="addMasterData('praise_types')">➕ إضافة</button>
-            <div id="praiseTypesList" style="margin-top:10px;"></div>
-        </div>
-    </div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <h3 id="modalTitle">تفاصيل</h3>
+    <div id="modalBody"></div>
+  </div>
 </div>
 
+<div class="toast-container" id="toastContainer" style="position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:3000;"></div>
 <script>
-    const FIREBASE_PROJECT = "ems-supervisor";
-    const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
-    const CENTERS_LIST = ["مركز إسعاف دارسيت","مركز إسعاف بوشر","مركز إسعاف العامرات","مركز إسعاف قريات","مركز إسعاف الخوض 1","مركز إسعاف الخوض 2","مركز إسعاف العذيبة","مركز إسعاف الرسيل"];
+/* ═══════════════════════════════════════════════════════════
+   الإدارة العامة — v22.0.0 (نظام متكامل شامل)
+   ═══════════════════════════════════════════════════════════ */
 
-    const sessionStr = localStorage.getItem("amb_user") || sessionStorage.getItem("amb_user");
-    if (!sessionStr) window.location.href = "index.html";
-    let currentUser = JSON.parse(sessionStr);
-    if (currentUser.type !== "admin") window.location.href = "index.html";
+const FIREBASE_PROJECT = "ems-supervisor";
+const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+const DEFAULT_LOGO = "https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg";
+const ADMIN_VERSION = "22.0.0";
 
-    let allSupervisors = [], allParameds = [], allVehicles = [], allIssues = [], allPraises = [];
+const SESSION_KEY = "amb_user";
+const PASSWORDS_DEFAULT = ["supervisor2025", "admin2025", "123456"];
 
-    function logout() { localStorage.removeItem("amb_user"); sessionStorage.removeItem("amb_user"); window.location.href = "index.html"; }
-    function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
-    function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) obj[k] = getString(doc.fields[k]); obj._id = doc.name.split("/").pop(); return obj; }
-    function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
+let adminUser = null;
+let allSupervisors = [], allParameds = [], allVehicles = [];
+let allIssues = [], allPraises = [], allBroadcasts = [];
+let allIssueTypes = [], allPraiseTypes = [];
 
-    function switchTab(id, btn) {
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById("tab-" + id).classList.add("active");
-        btn.classList.add("active");
-        if (id === 'dashboard') loadKPIs();
-        else if (id === 'supervisors') loadSupervisors();
-        else if (id === 'paramedics') loadParameds();
-        else if (id === 'vehicles') loadVehicles();
-        else if (id === 'schedule') loadSchedule();
-        else if (id === 'reports') loadReports();
-        else if (id === 'masterdata') loadMasterData();
-    }
+const CENTERS_LIST = [
+  "مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات",
+  "مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"
+];
 
-    async function loadKPIs() {
-        try {
-            const [resSup, resIss, resPra] = await Promise.all([
-                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/issues?pageSize=1000`).then(r => r.json()),
-                fetch(`${FIRESTORE_URL}/praises?pageSize=1000`).then(r => r.json())
-            ]);
-            allSupervisors = resSup.documents ? resSup.documents.map(docToObj).filter(u => u.type === "supervisor") : [];
-            allIssues = resIss.documents ? resIss.documents.map(docToObj) : [];
-            allPraises = resPra.documents ? resPra.documents.map(docToObj) : [];
+/* ═══ أدوات ═══ */
+function esc(s) { if (!s) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function showToast(msg, type="success") {
+  const c = document.getElementById("toastContainer");
+  const t = document.createElement("div");
+  t.style.cssText = "padding:12px 20px; background:" + (type==="success" ? "linear-gradient(135deg,#43a047,#69f0ae)" : "linear-gradient(135deg,#e53935,#ff5252)") + "; color:#fff; border-radius:12px; font-weight:700; font-size:13px; box-shadow:0 10px 30px rgba(0,0,0,0.5); margin-bottom:8px;";
+  t.textContent = (type==="success" ? "✅ " : "⚠️ ") + msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+function fmtTime(ts) { if (!ts) return "—"; const d = new Date(ts); return `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`; }
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
 
-            document.getElementById("kpiSups").innerText = allSupervisors.length;
-            document.getElementById("kpiIssues").innerText = allIssues.length;
-            document.getElementById("kpiPraises").innerText = allPraises.length;
+/* ═══ Firebase ═══ */
+function fromFS(v) {
+  if (!v) return null;
+  if ("stringValue" in v) return v.stringValue;
+  if ("integerValue" in v) return parseInt(v.integerValue);
+  if ("booleanValue" in v) return v.booleanValue;
+  if ("nullValue" in v) return null;
+  if ("arrayValue" in v) return (v.arrayValue.values || []).map(fromFS);
+  if ("mapValue" in v) { const o = {}; for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]); return o; }
+  return null;
+}
+function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) obj[k] = fromFS(doc.fields[k]); obj._id = doc.name.split("/").pop(); return obj; }
+async function fsList(col) { const r = await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`, {cache:"no-store"}); if (!r.ok) throw new Error("HTTP "+r.status); const d = await r.json(); return (d.documents||[]).map(docToObj); }
+async function fsAdd(col, data) {
+  const fields = {};
+  for (const k in data) {
+    if (data[k] === null || data[k] === undefined) continue;
+    if (typeof data[k] === "string") fields[k] = { stringValue: data[k] };
+    else if (typeof data[k] === "number") fields[k] = { integerValue: String(data[k]) };
+    else if (typeof data[k] === "boolean") fields[k] = { booleanValue: data[k] };
+    else if (Array.isArray(data[k])) fields[k] = { arrayValue: { values: data[k].map(x => ({ stringValue: String(x) })) } };
+  }
+  const r = await fetch(`${FIRESTORE_URL}/${col}`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({fields}) });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+async function fsUpdate(col, id, data) {
+  const fields = {};
+  for (const k in data) {
+    if (data[k] === null || data[k] === undefined) continue;
+    if (typeof data[k] === "string") fields[k] = { stringValue: data[k] };
+    else if (typeof data[k] === "number") fields[k] = { integerValue: String(data[k]) };
+    else if (typeof data[k] === "boolean") fields[k] = { booleanValue: data[k] };
+  }
+  await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "PATCH", headers: {"Content-Type":"application/json"}, body: JSON.stringify({fields}) });
+}
+async function fsDelete(col, id) { await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" }); }
 
-            const days = [0,0,0,0,0,0,0];
-            const now = new Date();
-            [...allIssues, ...allPraises].forEach(item => {
-                const diff = Math.floor((now - new Date(item.timestamp)) / 86400000);
-                if (diff >= 0 && diff < 7) days[6-diff]++;
-            });
-            const max = Math.max(...days, 1);
-            document.getElementById("activityChart").innerHTML = days.map((c, i) => {
-                const h = Math.max(10, (c / max) * 100);
-                return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;">
-                    <div style="font-size:10px;color:var(--gold-light);margin-bottom:4px;">${c}</div>
-                    <div style="width:100%;height:${h}%;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:4px 4px 0 0;"></div>
-                </div>`;
-            }).join("");
+/* ═══ الدخول ═══ */
+async function loginWithPassword() {
+  const pass = document.getElementById("passInput").value.trim();
+  const msg = document.getElementById("loginMsg");
+  const btn = document.getElementById("loginBtn");
+  if (!pass) { msg.textContent = "⚠️ أدخل كلمة المرور"; return; }
+  if (!PASSWORDS_DEFAULT.includes(pass)) { msg.textContent = "❌ كلمة المرور خاطئة"; return; }
+  adminUser = { name: "المدير العام", role: "admin" };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(adminUser));
+  msg.innerHTML = '<span style="color:#69f0ae">✅ مرحباً بك</span>';
+  setTimeout(() => {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("mainApp").classList.add("ready");
+    initApp();
+  }, 400);
+}
+function confirmLogout() { if (!confirm("خروج؟")) return; localStorage.removeItem(SESSION_KEY); location.reload(); }
 
-            const heatmap = document.getElementById("centersHeatmap");
-            heatmap.innerHTML = CENTERS_LIST.map(c => {
-                const iss = allIssues.filter(i => i.centerName === c).length;
-                const pra = allPraises.filter(p => p.centerName === c).length;
-                let color = "rgba(67,160,71,0.5)";
-                if (iss > 5) color = "rgba(229,57,53,0.5)";
-                else if (iss > 2) color = "rgba(251,140,0,0.5)";
-                return `<div style="background:${color}; border-radius:10px; padding:10px; text-align:center;">
-                    <div style="font-size:11px; font-weight:bold;">${c.replace("مركز إسعاف ", "")}</div>
-                    <div style="font-size:18px; font-weight:900; color:#fff;">${iss} / ${pra}</div>
-                    <div style="font-size:9px; opacity:0.8;">إشكالات / إشادات</div>
-                </div>`;
-            }).join("");
-        } catch(e) {}
-    }
+/* ═══ التهيئة ═══ */
+function initApp() {
+  document.getElementById("supCode").value = generateCode();
+  document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
+  syncAll();
+  setInterval(syncAll, 30000);
+}
 
-    // المشرفون
-    async function loadSupervisors() {
-        const el = document.getElementById("supervisorsList");
-        el.innerHTML = allSupervisors.map(u => `
-            <div class="list-item">
-                <div class="list-info"><h4>${u.name}</h4><p>${u.sector} | ${u.phone || "—"} | ${u.code}</p></div>
-                <div class="list-actions">
-                    <button class="icon-btn copy" onclick="copyCode('${u.code}')">📋</button>
-                    <button class="icon-btn edit" onclick="editSupervisor('${u._id}', '${u.name}', '${u.sector}', '${u.phone}', '${u.code}')">✏️</button>
-                    <button class="icon-btn delete" onclick="deleteSupervisor('${u._id}')">🗑️</button>
-                </div>
-            </div>
-        `).join("");
-    }
-    function copyCode(code) { navigator.clipboard.writeText(code); alert("📋 تم النسخ: " + code); }
-    function editSupervisor(id, name, sector, phone, code) {
-        document.getElementById("editSupId").value = id;
-        document.getElementById("supName").value = name;
-        document.getElementById("supSector").value = sector;
-        document.getElementById("supPhone").value = phone;
-        document.getElementById("supCode").value = code;
-        document.getElementById("btnCancelSup").style.display = "block";
-    }
-    function cancelEditSupervisor() {
-        document.getElementById("editSupId").value = "";
-        document.getElementById("supName").value = "";
-        document.getElementById("supPhone").value = "";
-        document.getElementById("supCode").value = generateCode();
-        document.getElementById("btnCancelSup").style.display = "none";
-    }
-    async function saveSupervisor() {
-        const id = document.getElementById("editSupId").value;
-        const name = document.getElementById("supName").value.trim();
-        const sector = document.getElementById("supSector").value;
-        const phone = document.getElementById("supPhone").value.trim();
-        let code = document.getElementById("supCode").value.trim() || generateCode();
-        const payload = { fields: { name: {stringValue:name}, sector: {stringValue:sector}, phone: {stringValue:phone}, code: {stringValue:code}, type: {stringValue:"supervisor"}, active: {booleanValue:true} } };
-        if (id) await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
-        else await fetch(`${FIRESTORE_URL}/access_code`, { method: "POST", body: JSON.stringify(payload) });
-        cancelEditSupervisor(); loadKPIs(); loadSupervisors();
-    }
-    async function deleteSupervisor(id) {
-        if (!confirm("حذف؟")) return;
-        await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "DELETE" });
-        loadKPIs(); loadSupervisors();
-    }
+async function syncAll() {
+  try {
+    const [sup, par, veh, iss, pra, bro, ist, prt] = await Promise.all([
+      fsList("access_code").then(l => l.filter(u => u.type === "supervisor")),
+      fsList("paramedics"), fsList("vehicles"),
+      fsList("issues"), fsList("praises"), fsList("broadcasts"),
+      fsList("issue_types"), fsList("praise_types")
+    ]);
+    allSupervisors = sup; allParameds = par; allVehicles = veh;
+    allIssues = iss; allPraises = pra; allBroadcasts = bro;
+    allIssueTypes = ist; allPraiseTypes = prt;
+    renderCurrentTab();
+  } catch(e) { console.warn("Sync:", e); }
+}
 
-    // المسعفون والمركبات (تم اختصارها للتركيز على الأساسيات)
-    async function loadParameds() {
-        const res = await fetch(`${FIRESTORE_URL}/paramedics?pageSize=1000`).then(r => r.json());
-        allParameds = res.documents ? res.documents.map(docToObj) : [];
-        document.getElementById("paramedicsList").innerHTML = allParameds.map(p => `
-            <div class="list-item"><div class="list-info"><h4>${p.name}</h4><p>${p.centerName} | ${p.rank}</p></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteParamedic('${p._id}')">🗑️</button></div></div>
-        `).join("");
-    }
-    async function saveParamedic() {
-        const name = document.getElementById("pmName").value.trim();
-        const center = document.getElementById("pmCenter").value;
-        const rank = document.getElementById("pmRank").value.trim();
-        await fetch(`${FIRESTORE_URL}/paramedics`, { method: "POST", body: JSON.stringify({ fields: { name: {stringValue:name}, centerName: {stringValue:center}, rank: {stringValue:rank} } }) });
-        document.getElementById("pmName").value = ""; document.getElementById("pmRank").value = "";
-        loadParameds();
-    }
-    async function deleteParamedic(id) {
-        if (!confirm("حذف؟")) return;
-        await fetch(`${FIRESTORE_URL}/paramedics/${id}`, { method: "DELETE" });
-        loadParameds();
-    }
-    async function loadVehicles() {
-        const res = await fetch(`${FIRESTORE_URL}/vehicles?pageSize=1000`).then(r => r.json());
-        allVehicles = res.documents ? res.documents.map(docToObj) : [];
-        document.getElementById("vehiclesList").innerHTML = allVehicles.map(v => `
-            <div class="list-item"><div class="list-info"><h4>${v.plateNumber}</h4><p>${v.type} | ${v.centerName}</p></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteVehicle('${v._id}')">🗑️</button></div></div>
-        `).join("");
-    }
-    async function saveVehicle() {
-        const plate = document.getElementById("vPlate").value.trim();
-        const type = document.getElementById("vType").value.trim();
-        const center = document.getElementById("vCenter").value;
-        await fetch(`${FIRESTORE_URL}/vehicles`, { method: "POST", body: JSON.stringify({ fields: { plateNumber: {stringValue:plate}, type: {stringValue:type}, centerName: {stringValue:center} } }) });
-        document.getElementById("vPlate").value = ""; document.getElementById("vType").value = "";
-        loadVehicles();
-    }
-    async function deleteVehicle(id) {
-        if (!confirm("حذف؟")) return;
-        await fetch(`${FIRESTORE_URL}/vehicles/${id}`, { method: "DELETE" });
-        loadVehicles();
-    }
+function manualRefresh() { showToast("تحديث..."); syncAll(); }
+function confirmLogout() { if (!confirm("خروج؟")) return; localStorage.removeItem(SESSION_KEY); location.reload(); }
 
-    // جدول الدوام
-    function loadSchedule() {
-        const monthInput = document.getElementById("scheduleMonth");
-        if (!monthInput.value) monthInput.value = new Date().toISOString().slice(0,7);
-        const [year, month] = monthInput.value.split("-");
-        const daysInMonth = new Date(year, month, 0).getDate();
-        let html = `<table class="schedule-table"><thead><tr><th>المشرف</th>`;
-        for (let d = 1; d <= daysInMonth; d++) html += `<th>${d}</th>`;
-        html += `</tr></thead><tbody>`;
-        allSupervisors.forEach(s => {
-            html += `<tr><td style="text-align:right;padding-right:8px;">${s.name}</td>`;
-            for (let d = 1; d <= daysInMonth; d++) {
-                const key = `shift_${monthInput.value}_${s.code}_${d}`;
-                const val = localStorage.getItem(key) || "";
-                html += `<td><select onchange="setScheduleShift('${s.code}', ${d}, this.value)">
-                    <option value="">—</option>
-                    <option value="morning" ${val === 'morning' ? 'selected' : ''}>ص</option>
-                    <option value="evening" ${val === 'evening' ? 'selected' : ''}>م</option>
-                </select></td>`;
-            }
-            html += `</tr>`;
-        });
-        html += `</tbody></table>`;
-        document.getElementById("scheduleContainer").innerHTML = html;
-    }
-    function setScheduleShift(code, day, shift) {
-        const monthInput = document.getElementById("scheduleMonth");
-        localStorage.setItem(`shift_${monthInput.value}_${code}_${day}`, shift);
-    }
-    function saveSchedule() { alert("✅ تم حفظ الجدول محلياً"); }
+/* ═══ التبويبات ═══ */
+let currentTab = "dashboard";
+function switchTab(id) {
+  currentTab = id;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  const pg = document.getElementById("page-" + id); if (pg) pg.classList.add("active");
+  const tb = document.querySelector(`.tab-btn[data-tab="${id}"]`); if (tb) tb.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+  renderCurrentTab();
+}
+function renderCurrentTab() {
+  if (currentTab === "dashboard") renderDashboard();
+  else if (currentTab === "supervisors") renderSupervisors();
+  else if (currentTab === "paramedics") renderParameds();
+  else if (currentTab === "vehicles") renderVehicles();
+  else if (currentTab === "duty") loadDutyTable();
+  else if (currentTab === "issues") renderIssues();
+  else if (currentTab === "praises") renderPraises();
+  else if (currentTab === "broadcasts") renderBroadcasts();
+  else if (currentTab === "master") renderMasterData();
+}
 
-    // التقارير
-    function loadReports() {
-        let html = `<table class="report-table"><thead><tr><th>المركز</th><th>إشكالات</th><th>إشادات</th><th>الحالة</th></tr></thead><tbody>`;
-        CENTERS_LIST.forEach(c => {
-            const cIssues = allIssues.filter(i => i.centerName === c).length;
-            const cPraises = allPraises.filter(p => p.centerName === c).length;
-            const status = cIssues > 5 ? "🔴 ضغط عالي" : cIssues > 2 ? "🟡 متوسط" : "🟢 مستقر";
-            html += `<tr><td>${c.replace("مركز إسعاف ", "")}</td><td>${cIssues}</td><td>${cPraises}</td><td>${status}</td></tr>`;
-        });
-        html += `</tbody></table>`;
-        document.getElementById("centersReport").innerHTML = html;
-    }
+/* ═══ لوحة القيادة ═══ */
+function renderDashboard() {
+  document.getElementById("dashSups").textContent = allSupervisors.length;
+  document.getElementById("dashParams").textContent = allParameds.length;
+  document.getElementById("dashVehicles").textContent = allVehicles.length;
+  document.getElementById("dashIssues").textContent = allIssues.length;
+  document.getElementById("dashPraises").textContent = allPraises.length;
+  document.getElementById("dashBroadcasts").textContent = allBroadcasts.length;
+  const tk = todayKey();
+  document.getElementById("dashToday").textContent = [...allIssues, ...allPraises].filter(i => (i.timestamp||"").slice(0,10) === tk).length;
+  document.getElementById("dashOpenIssues").textContent = allIssues.filter(i => i.status !== "resolved").length;
 
-    // البيانات الأساسية
-    async function loadMasterData() {
-        const [resIss, resPra] = await Promise.all([
-            fetch(`${FIRESTORE_URL}/issue_types?pageSize=1000`).then(r => r.json()),
-            fetch(`${FIRESTORE_URL}/praise_types?pageSize=1000`).then(r => r.json())
-        ]);
-        const issTypes = resIss.documents ? resIss.documents.map(docToObj) : [];
-        const praTypes = resPra.documents ? resPra.documents.map(docToObj) : [];
-        document.getElementById("issueTypesList").innerHTML = issTypes.map(t => `<div class="list-item"><div class="list-info"><h4>${t.name}</h4></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteMasterData('issue_types', '${t._id}')">🗑️</button></div></div>`).join("");
-        document.getElementById("praiseTypesList").innerHTML = praTypes.map(t => `<div class="list-item"><div class="list-info"><h4>${t.name}</h4></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteMasterData('praise_types', '${t._id}')">🗑️</button></div></div>`).join("");
-    }
-    async function addMasterData(col) {
-        const input = col === 'issue_types' ? document.getElementById("mdIssueType") : document.getElementById("mdPraiseType");
-        const name = input.value.trim();
-        if (!name) return;
-        await fetch(`${FIRESTORE_URL}/${col}`, { method: "POST", body: JSON.stringify({ fields: { name: {stringValue:name} } }) });
-        input.value = "";
-        loadMasterData();
-    }
-    async function deleteMasterData(col, id) {
-        if (!confirm("حذف؟")) return;
-        await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" });
-        loadMasterData();
-    }
+  // نشاط أسبوعي
+  const days = [0,0,0,0,0,0,0];
+  const now = new Date();
+  [...allIssues, ...allPraises].forEach(item => {
+    const diff = Math.floor((now - new Date(item.timestamp)) / 86400000);
+    if (diff >= 0 && diff < 7) days[6-diff]++;
+  });
+  const max = Math.max(...days, 1);
+  document.getElementById("weeklyChart").innerHTML = days.map((c, i) => {
+    const h = Math.max(10, (c / max) * 100);
+    return `<div style="flex:1; display:flex; flex-direction:column; align-items:center;">
+      <div style="font-size:10px;color:var(--gold-light);margin-bottom:4px;">${c}</div>
+      <div style="width:100%;height:${h}%;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:4px 4px 0 0;"></div>
+    </div>`;
+  }).join("");
 
-    window.onload = function() { 
-        document.getElementById("supCode").value = generateCode();
-        loadKPIs(); 
-        document.getElementById("scheduleMonth").value = new Date().toISOString().slice(0,7);
-    };
+  // نبض المراكز
+  document.getElementById("centersPulse").innerHTML = CENTERS_LIST.map(c => {
+    const iss = allIssues.filter(i => i.centerName === c).length;
+    const pra = allPraises.filter(p => p.centerName === c).length;
+    let color = "rgba(67,160,71,0.5)";
+    if (iss > 5) color = "rgba(229,57,53,0.5)";
+    else if (iss > 2) color = "rgba(251,140,0,0.5)";
+    return `<div style="background:${color}; border-radius:10px; padding:10px; text-align:center;">
+      <div style="font-size:11px; font-weight:bold;">${esc(c.replace("مركز إسعاف ", ""))}</div>
+      <div style="font-size:18px; font-weight:900; color:#fff;">${iss}/${pra}</div>
+      <div style="font-size:9px; opacity:0.8;">إشكالات/إشادات</div>
+    </div>`;
+  }).join("");
+}
+
+/* ═══ المشرفون ═══ */
+function renderSupervisors() {
+  const el = document.getElementById("supervisorsList");
+  if (allSupervisors.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:#ccc;">لا يوجد مشرفون</div>'; return; }
+  el.innerHTML = allSupervisors.map(u => `
+    <div class="item-card">
+      <div class="item-info">
+        <h4>👨‍💼 ${esc(u.name)}</h4>
+        <p>${esc(u.sector || "—")} | ${esc(u.phone || "—")} | 🔑 ${esc(u.code)}</p>
+      </div>
+      <div class="item-actions">
+        <button class="icon-btn-sm copy" onclick="copyCode('${u.code}')">📋</button>
+        <button class="icon-btn-sm edit" onclick="editSupervisor('${u._id}', '${esc(u.name)}', '${esc(u.sector||"")}', '${esc(u.phone||"")}', '${esc(u.code)}')">✏️</button>
+        <button class="icon-btn-sm delete" onclick="deleteSupervisor('${u._id}')">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+function copyCode(code) { navigator.clipboard.writeText(code); showToast("نسخ: " + code); }
+function editSupervisor(id, name, sector, phone, code) {
+  document.getElementById("editSupId").value = id;
+  document.getElementById("supName").value = name;
+  document.getElementById("supSector").value = sector;
+  document.getElementById("supPhone").value = phone;
+  document.getElementById("supCode").value = code;
+  document.getElementById("btnCancelSup").style.display = "block";
+}
+function cancelEditSupervisor() {
+  document.getElementById("editSupId").value = "";
+  document.getElementById("supName").value = "";
+  document.getElementById("supPhone").value = "";
+  document.getElementById("supCode").value = generateCode();
+  document.getElementById("btnCancelSup").style.display = "none";
+}
+async function saveSupervisor() {
+  const id = document.getElementById("editSupId").value;
+  const name = document.getElementById("supName").value.trim();
+  const sector = document.getElementById("supSector").value;
+  const phone = document.getElementById("supPhone").value.trim();
+  let code = document.getElementById("supCode").value.trim() || generateCode();
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
+  const data = { name, sector, phone, code, type: "supervisor", active: true };
+  if (id) await fsUpdate("access_code", id, data);
+  else await fsAdd("access_code", { ...data, createdAt: new Date().toISOString() });
+  cancelEditSupervisor(); showToast("تم الحفظ"); syncAll();
+}
+async function deleteSupervisor(id) {
+  if (!confirm("حذف المشرف؟")) return;
+  await fsDelete("access_code", id);
+  showToast("تم الحذف"); syncAll();
+}
+
+/* ═══ المسعفون ═══ */
+function renderParameds() {
+  const el = document.getElementById("paramedicsList");
+  if (allParameds.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:#ccc;">لا يوجد مسعفون</div>'; return; }
+  el.innerHTML = allParameds.map(p => `
+    <div class="item-card">
+      <div class="item-info"><h4>👨‍🚒 ${esc(p.name)}</h4><p>${esc(p.centerName)} | ${esc(p.rank||"—")}</p></div>
+      <div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteParamedic('${p._id}')">🗑️</button></div>
+    </div>
+  `).join("");
+}
+async function saveParamedic() {
+  const name = document.getElementById("pmName").value.trim();
+  const center = document.getElementById("pmCenter").value;
+  const rank = document.getElementById("pmRank").value.trim();
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
+  await fsAdd("paramedics", { name, centerName: center, rank });
+  document.getElementById("pmName").value = ""; document.getElementById("pmRank").value = "";
+  showToast("تم الحفظ"); syncAll();
+}
+async function deleteParamedic(id) { if (!confirm("حذف؟")) return; await fsDelete("paramedics", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ المركبات ═══ */
+function renderVehicles() {
+  const el = document.getElementById("vehiclesList");
+  if (allVehicles.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:#ccc;">لا يوجد مركبات</div>'; return; }
+  el.innerHTML = allVehicles.map(v => `
+    <div class="item-card">
+      <div class="item-info"><h4>🚑 ${esc(v.plateNumber)}</h4><p>${esc(v.type||"—")} | ${esc(v.centerName)}</p></div>
+      <div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteVehicle('${v._id}')">🗑️</button></div>
+    </div>
+  `).join("");
+}
+async function saveVehicle() {
+  const plate = document.getElementById("vPlate").value.trim();
+  const type = document.getElementById("vType").value.trim();
+  const center = document.getElementById("vCenter").value;
+  if (!plate) { showToast("أدخل اللوحة", "danger"); return; }
+  await fsAdd("vehicles", { plateNumber: plate, type, centerName: center });
+  document.getElementById("vPlate").value = ""; document.getElementById("vType").value = "";
+  showToast("تم الحفظ"); syncAll();
+}
+async function deleteVehicle(id) { if (!confirm("حذف؟")) return; await fsDelete("vehicles", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ جدول الدوام ═══ */
+function loadDutyTable() {
+  const month = document.getElementById("dutyMonth").value;
+  if (!month) return;
+  const [year, m] = month.split("-");
+  const days = new Date(year, m, 0).getDate();
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:11px;"><thead><tr><th style="padding:6px;border:1px solid var(--border);">م</th>';
+  for (let d = 1; d <= days; d++) html += `<th style="padding:4px;border:1px solid var(--border);">${d}</th>`;
+  html += '</tr></thead><tbody>';
+  allSupervisors.forEach(s => {
+    html += `<tr><td style="padding:6px;border:1px solid var(--border);text-align:right;">${esc(s.name)}</td>`;
+    for (let d = 1; d <= days; d++) {
+      const key = `shift_${month}_${s.code}_${d}`;
+      const val = localStorage.getItem(key) || "";
+      html += `<td style="padding:2px;border:1px solid var(--border);text-align:center;"><select onchange="setShift('${month}','${s.code}',${d},this.value)" style="padding:2px;margin:0;font-size:9px;width:auto;min-width:32px;"><option value="">—</option><option value="ص" ${val==="ص"?"selected":""}>ص</option><option value="م" ${val==="م"?"selected":""}>م</option></select></td>`;
+    }
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById("dutyTableContainer").innerHTML = html;
+}
+function setShift(month, code, day, val) { localStorage.setItem(`shift_${month}_${code}_${day}`, val); }
+function saveDuty() { showToast("تم حفظ الجدول"); }
+
+/* ═══ الإشكالات ═══ */
+function renderIssues() {
+  const el = document.getElementById("issuesAdminList");
+  if (allIssues.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:#ccc;">لا إشكالات</div>'; return; }
+  el.innerHTML = allIssues.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(i => `
+    <div class="item-card" style="border-right-color:#ff5252;">
+      <div class="item-info">
+        <h4>🚩 ${esc(i.issueType||"—")}</h4>
+        <p>${esc(i.supervisor||"—")} • ${esc(i.centerName||"—")} • ${fmtTime(i.timestamp)}</p>
+        <p style="margin-top:4px;color:rgba(255,255,255,0.9);">${esc(i.description||"")}</p>
+      </div>
+      <div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteIssue('${i._id}')">🗑️</button></div>
+    </div>
+  `).join("");
+}
+async function deleteIssue(id) { if (!confirm("حذف؟")) return; await fsDelete("issues", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ الإشادات ═══ */
+function renderPraises() {
+  const el = document.getElementById("praisesAdminList");
+  if (allPraises.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:#ccc;">لا إشادات</div>'; return; }
+  el.innerHTML = allPraises.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(p => `
+    <div class="item-card" style="border-right-color:#69f0ae;">
+      <div class="item-info">
+        <h4>⭐ ${esc(p.praiseType||"—")}</h4>
+        <p>${esc(p.supervisor||"—")} • ${esc(p.centerName||"—")} • ${fmtTime(p.timestamp)}</p>
+        <p style="margin-top:4px;color:rgba(255,255,255,0.9);">${esc(p.description||"")}</p>
+      </div>
+      <div class="item-actions"><button class="icon-btn-sm delete" onclick="deletePraise('${p._id}')">🗑️</button></div>
+    </div>
+  `).join("");
+}
+async function deletePraise(id) { if (!confirm("حذف؟")) return; await fsDelete("praises", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ التعاميم ═══ */
+async function sendBroadcast() {
+  const title = document.getElementById("bTitle").value.trim();
+  const desc = document.getElementById("bDesc").value.trim();
+  if (!title || !desc) { showToast("أكمل البيانات", "danger"); return; }
+  await fsAdd("broadcasts", { title, description: desc, sender: "الإدارة", timestamp: new Date().toISOString() });
+  document.getElementById("bTitle").value = ""; document.getElementById("bDesc").value = "";
+  showToast("تم الإرسال"); syncAll();
+}
+function renderBroadcasts() {
+  const el = document.getElementById("broadcastsList");
+  if (allBroadcasts.length === 0) { el.innerHTML = '<div style="text-align:center;padding:20px;color:#ccc;">لا تعاميم</div>'; return; }
+  el.innerHTML = allBroadcasts.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)).map(b => `
+    <div class="item-card">
+      <div class="item-info"><h4>📢 ${esc(b.title)}</h4><p>${esc(b.description)}</p><p style="font-size:9px;opacity:0.5;">${esc(b.sender)} • ${fmtTime(b.timestamp)}</p></div>
+      <div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteBroadcast('${b._id}')">🗑️</button></div>
+    </div>
+  `).join("");
+}
+async function deleteBroadcast(id) { if (!confirm("حذف؟")) return; await fsDelete("broadcasts", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ البيانات الأساسية ═══ */
+function renderMasterData() {
+  const elI = document.getElementById("issueTypesList");
+  const elP = document.getElementById("praiseTypesList");
+  elI.innerHTML = allIssueTypes.map(t => `<div class="item-card"><div class="item-info"><h4>${esc(t.name)}</h4></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteMasterData('issue_types','${t._id}')">🗑️</button></div></div>`).join("") || '<div style="text-align:center;padding:15px;color:#ccc;">لا أنواع</div>';
+  elP.innerHTML = allPraiseTypes.map(t => `<div class="item-card"><div class="item-info"><h4>${esc(t.name)}</h4></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteMasterData('praise_types','${t._id}')">🗑️</button></div></div>`).join("") || '<div style="text-align:center;padding:15px;color:#ccc;">لا أنواع</div>';
+}
+async function addMasterData(col) {
+  const input = col === 'issue_types' ? document.getElementById("mdIssueType") : document.getElementById("mdPraiseType");
+  const name = input.value.trim();
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
+  await fsAdd(col, { name });
+  input.value = ""; showToast("تمت الإضافة"); syncAll();
+}
+async function deleteMasterData(col, id) { if (!confirm("حذف؟")) return; await fsDelete(col, id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ إقلاع ═══ */
+(function bootstrap() {
+  const saved = localStorage.getItem(SESSION_KEY);
+  if (saved) {
+    try {
+      adminUser = JSON.parse(saved);
+      if (adminUser && adminUser.role === "admin") {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("mainApp").classList.add("ready");
+        setTimeout(initApp, 100);
+      }
+    } catch(e) {}
+  }
+  document.addEventListener("keydown", e => {
+    if (e.key === "Enter" && document.getElementById("loginScreen").style.display !== "none") loginWithPassword();
+  });
+})();
 </script>
 </body>
 </html>
