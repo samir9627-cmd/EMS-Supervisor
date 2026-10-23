@@ -9,7 +9,7 @@
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
     :root { 
-        --gold:#978d5b; /* لون الهوية */
+        --gold:#978d5b; 
         --gold-light:#d4c896; 
         --green:#0d4a42; 
         --bg:#041814; 
@@ -42,10 +42,21 @@
 
     /* صندوق الدخول الزجاجي */
     .login-box { width:100%; max-width:400px; background:rgba(13,74,66,0.4); backdrop-filter:blur(20px); padding:30px 25px; border-radius:24px; border:1px solid rgba(151,141,91,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.6); margin-bottom:25px; z-index:1; }
-    input { width:100%; padding:18px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-light); font-size:22px; text-align:center; font-weight:900; outline:none; text-transform:uppercase; letter-spacing:3px; margin-bottom:20px; transition:0.3s; }
+    
+    .input-group { position:relative; margin-bottom:15px; }
+    input { width:100%; padding:18px; padding-left:50px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-light); font-size:18px; font-weight:900; outline:none; transition:0.3s; }
     input:focus { border-color:var(--gold); box-shadow:0 0 25px rgba(151,141,91,0.4); }
+    
+    /* حقول مخصصة */
+    #codeInput { text-align:center; text-transform:uppercase; letter-spacing:3px; padding-left:18px; }
+    #passInput { text-align:center; letter-spacing:5px; padding-left:50px; font-family:monospace; }
+    
+    .toggle-pass { position:absolute; left:15px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--gold); font-size:20px; cursor:pointer; padding:5px; }
+    
     .btn-login { width:100%; padding:18px; border-radius:16px; border:none; font-size:17px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); display:flex; justify-content:center; align-items:center; gap:10px; transition:0.3s; box-shadow:0 10px 25px rgba(151,141,91,0.3); }
     .btn-login:active { transform:scale(0.97); }
+    .btn-login:disabled { opacity:0.7; cursor:not-allowed; }
+    
     .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:15px; min-height:20px; color:var(--red); }
     
     /* الإحصائيات */
@@ -85,7 +96,16 @@
 
     <div class="login-box">
         <h3 style="color:var(--gold-light); text-align:center; margin-bottom:20px; font-size:15px;">🔐 بوابة الدخول الموحدة</h3>
-        <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك">
+        
+        <div class="input-group">
+            <input type="text" id="codeInput" placeholder="كود المشرف (SUP-XXXX)" autocomplete="off">
+        </div>
+        
+        <div class="input-group">
+            <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
+            <button class="toggle-pass" id="togglePassBtn" onclick="togglePassword()">👁️</button>
+        </div>
+        
         <button class="btn-login" id="loginBtn" onclick="login()">
             <span>🔓 دخول النظام</span>
         </button>
@@ -107,7 +127,6 @@
     </div>
 
 <script>
-    // ⚠️ تم تثبيت اسم المشروع الجديد والمجموعة بدون حرف S
     const FIREBASE_PROJECT = "ems-supervisor"; 
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
@@ -137,18 +156,30 @@
         obj._id = doc.name.split("/").pop(); return obj;
     }
 
+    async function sha256(text) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function togglePassword() {
+        const p = document.getElementById("passInput");
+        const b = document.getElementById("togglePassBtn");
+        if(p.type === "password") { p.type = "text"; b.textContent = "🙈"; }
+        else { p.type = "password"; b.textContent = "👁️"; }
+    }
+
     // تسجيل الدخول
     async function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
+        const pass = document.getElementById("passInput").value;
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
         
-        if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
+        if (!code || !pass) { msg.innerText = "⚠️ أدخل الكود وكلمة المرور"; return; }
         
         btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.innerText = "";
         
         try {
-            // القراءة من access_code (بدون S)
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
@@ -171,6 +202,21 @@
             if (foundUser.active === false || foundUser.active === "false") {
                 msg.innerText = "⚠️ هذا الحساب معطل حالياً"; 
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
+            }
+
+            // 👇 التعديل هنا: التحقق من كلمة المرور (غير حساس لحالة الأحرف)
+            let isValid = false;
+            const hashedPass = await sha256(pass.toLowerCase());
+            
+            if (foundUser.passwordHash) {
+                isValid = (foundUser.passwordHash === hashedPass);
+            } else {
+                isValid = (pass === "123456"); // كلمة المرور الافتراضية
+            }
+
+            if (!isValid) {
+                msg.innerText = "❌ كلمة المرور خاطئة";
+                btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return;
             }
             
             // حفظ الجلسة
@@ -256,6 +302,7 @@
 
     window.onload = function() {
         document.getElementById("codeInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
+        document.getElementById("passInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
         loadStats();
         loadFeatured();
     };
