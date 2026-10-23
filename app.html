@@ -2,60 +2,155 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#041814">
 <title>لوحة المشرف الميداني</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-    body { margin:0; padding:20px; background:#041814; color:#fff; font-family:'Cairo', sans-serif; }
-    .card { background:rgba(13,74,66,0.6); border:1px solid #978d5b; padding:20px; border-radius:15px; margin-bottom:15px; }
-    h1 { color:#d4c896; text-align:center; }
-    .btn { background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; padding:15px; border:none; border-radius:8px; font-weight:900; width:100%; margin-bottom:10px; cursor:pointer; font-family:'Cairo'; font-size:16px; }
-    .btn-danger { background:linear-gradient(135deg, #e53935, #ff5252); color:#fff; }
-    .btn-success { background:linear-gradient(135deg, #43a047, #69f0ae); color:#041814; }
-    input, select, textarea { width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #978d5b; background:#041814; color:#fff; font-family:'Cairo'; box-sizing:border-box; }
-    #loading { position:fixed; inset:0; background:#041814; display:flex; align-items:center; justify-content:center; font-size:18px; color:#d4c896; font-weight:bold; z-index:9999; }
-    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); padding:20px; z-index:1000; overflow-y:auto; }
-    .modal-content { background:#0d4a42; padding:20px; border-radius:15px; margin-top:50px; border:1px solid #978d5b; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
+:root { --gold:#978d5b; --gold-light:#d4c896; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814; --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252; --amber:#fb8c00; --blue:#29b6f6; --border:rgba(151,141,91,0.3); --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px); }
+html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
+body { min-height: 100vh; padding-bottom: calc(100px + var(--safe-bottom)); }
+body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+#mainApp { display: none; } #mainApp.ready { display: block; }
+
+/* الشريط العلوي */
+.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; }
+.topbar-logo { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; background: #fff; padding: 2px; }
+.topbar-info { flex: 1; }
+.topbar-info h1 { font-size: 14px; color: var(--gold-light); font-weight: 900; }
+.topbar-info p { font-size: 10px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-light); box-shadow: 0 0 8px var(--green-light); }
+.icon-btn { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: #fff; font-size: 17px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.icon-btn.danger { background: rgba(198,40,40,0.4); border-color: var(--red-light); }
+
+/* التبويبات السفلية */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 4px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border-radius: 10px; cursor: pointer; background: transparent; border: none; color: rgba(255,255,255,0.65); font-family: inherit; font-weight: 700; font-size: 9px; }
+.nav-btn .nav-icon { font-size: 20px; line-height: 1; }
+.nav-btn.active { background: linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color: var(--gold-light); }
+
+/* الصفحات */
+.page { display: none; padding: 16px; max-width: 720px; margin: 0 auto; }
+.page.active { display: block; animation: slideUp 0.35s; }
+.card { background: rgba(13,74,66,0.55); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
+.card-title { font-size: 14px; color: var(--gold-light); font-weight: 900; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+/* الأزرار الرئيسية */
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.action-btn { padding: 20px 14px; border-radius: 18px; border: none; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; }
+.action-btn.danger { background: linear-gradient(135deg, #e53935, #ff5252); }
+.action-btn.success { background: linear-gradient(135deg, #43a047, #69f0ae); color: #041814; }
+
+/* البطاقات */
+.item-card { background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.item-card.red { border-right-color: var(--red); }
+.item-card.green { border-right-color: var(--green-light); }
+.item-card.blue { border-right-color: var(--blue); }
+.item-info { flex: 1; min-width: 0; }
+.item-info h4 { font-size: 14px; font-weight: 900; color: var(--gold-light); margin-bottom: 4px; }
+.item-info p { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+
+/* المدخلات */
+input, select, textarea { width: 100%; padding: 12px 14px; background: rgba(4,24,20,0.7); border: 1px solid var(--border); border-radius: 11px; color: #fff; font-size: 13px; font-family: inherit; font-weight: 600; outline: none; margin-bottom: 12px; }
+input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+select option { background: var(--teal-deep); color: #fff; }
+label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 700; margin-bottom: 7px; }
+
+/* الأزرار */
+.btn { padding: 12px 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.btn.danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
+.btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #041814; }
+.btn.block { width: 100%; }
+
+/* النوافذ المنبثقة */
+.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
+.modal-sheet h3 { color: var(--gold-light); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+
+/* التنبيهات */
+.toast-container { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
+.toast { background: linear-gradient(135deg, var(--teal), var(--teal-dark)); color: #fff; padding: 12px 18px; border-radius: 12px; border: 1px solid var(--gold); font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+.toast.success { border-color: var(--green-light); }
+.toast.danger { border-color: var(--red-light); }
+
+#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<div id="loading">جاري تحميل لوحة المشرف...</div>
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري التحقق...</div>
+</div>
 
-<div id="content" style="display:none;">
-    <h1>🚑 المشرف الميداني</h1>
-    
+<div id="mainApp">
+  <div class="topbar">
+    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo">
+    <div class="topbar-info">
+      <h1>لوحة المشرف الميداني</h1>
+      <p><span class="status-dot"></span><span id="currentUser">—</span></p>
+    </div>
+    <button class="icon-btn" onclick="manualRefresh()">🔄</button>
+    <button class="icon-btn danger" onclick="logout()">🚪</button>
+  </div>
+
+  <!-- 1) الرئيسية -->
+  <div class="page active" id="page-home">
+    <div class="card" style="background:linear-gradient(135deg, rgba(151,141,91,0.15), rgba(13,74,66,0.6)); border-color:var(--gold);">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.7);">مرحباً بك 👋</div>
+          <div style="font-size:20px; color:#fff; font-weight:900;" id="welcomeName">—</div>
+          <div style="font-size:12px; color:var(--gold-light); margin-top:4px;" id="welcomeSector">—</div>
+        </div>
+        <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900;" id="heroAvatar">👤</div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <button class="action-btn danger" onclick="startEntry('complaint')"><span style="font-size:32px;">🚩</span><span>تسجيل إشكالية</span></button>
+      <button class="action-btn success" onclick="startEntry('praise')"><span style="font-size:32px;">⭐</span><span>تسجيل إشادة</span></button>
+    </div>
+
     <div class="card">
-        <h3 style="margin-top:0; color:#d4c896;">مرحباً، <span id="supName">...</span></h3>
-        <p style="font-size:12px; color:#ccc;">القطاع: <span id="supSector">...</span></p>
+      <div class="card-title">📢 التعاميم الأخيرة</div>
+      <div id="broadcastsList">جاري التحميل...</div>
     </div>
+  </div>
 
-    <button class="btn btn-danger" onclick="openForm('complaint')">🚩 تسجيل إشكالية</button>
-    <button class="btn btn-success" onclick="openForm('praise')">⭐ تسجيل إشادة</button>
-    <button class="btn btn-danger" style="background:#555; color:#fff; margin-top:20px;" onclick="logout()">🚪 تسجيل الخروج</button>
+  <!-- 2) السجلات -->
+  <div class="page" id="page-issues">
+    <div class="card"><div class="card-title">🚩 سجلاتي</div><div id="issuesList">جاري التحميل...</div></div>
+  </div>
+
+  <!-- 3) تواصل -->
+  <div class="page" id="page-chat">
+    <div class="card">
+      <div class="card-title">💬 تواصل مع الإدارة</div>
+      <p style="font-size:12px; opacity:0.7; text-align:center;">هذه الميزة ستتوفر في التحديث القادم.</p>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
+    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">🚩</span><span>سجلاتي</span></button>
+    <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>تواصل</span></button>
+  </div>
 </div>
 
-<!-- نافذة تسجيل الإشكالية/الإشادة -->
-<div class="modal" id="entryModal">
-    <div class="modal-content">
-        <h3 id="modalTitle">تسجيل</h3>
-        <label>المركز</label>
-        <select id="entryCenter">
-            <option>مركز إسعاف دارسيت</option>
-            <option>مركز إسعاف بوشر</option>
-            <option>مركز إسعاف العامرات</option>
-            <option>مركز إسعاف قريات</option>
-        </select>
-        <label>اسم الهدف (المسعف/المركبة)</label>
-        <input type="text" id="entryTarget">
-        <label>الوصف</label>
-        <textarea id="entryDesc" rows="3"></textarea>
-        <button class="btn" onclick="submitEntry()">💾 حفظ</button>
-        <button class="btn" style="background:#555; color:#fff;" onclick="closeForm()">إلغاء</button>
-    </div>
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet"><h3 id="modalTitle">تفاصيل</h3><div id="modalBody"></div></div>
 </div>
+
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
     const firebaseConfig = {
@@ -77,53 +172,106 @@
     const user = JSON.parse(session);
     if (user.type === "admin") { window.location.href = "./admin.html"; }
 
-    document.getElementById("loading").style.display = "none";
-    document.getElementById("content").style.display = "block";
-    document.getElementById("supName").innerText = user.name;
-    document.getElementById("supSector").innerText = user.sector || "غير محدد";
+    document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("mainApp").classList.add("ready");
+    document.getElementById("currentUser").innerText = user.name;
+    document.getElementById("welcomeName").innerText = user.name;
+    document.getElementById("welcomeSector").innerText = user.sector || "غير محدد";
+    document.getElementById("heroAvatar").innerText = (user.name || "م").charAt(0);
 
-    let currentEntryType = "";
-
-    function openForm(type) {
-        currentEntryType = type;
-        document.getElementById("modalTitle").innerText = type === 'complaint' ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة";
-        document.getElementById("entryModal").style.display = "block";
+    function showToast(msg, type="success") {
+        const c = document.getElementById("toastContainer");
+        const t = document.createElement("div");
+        t.className = "toast " + type;
+        t.textContent = (type==="success"?"✅ ":"⚠️ ") + msg;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
     }
 
-    function closeForm() {
-        document.getElementById("entryModal").style.display = "none";
+    function switchPage(id) {
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.getElementById(id ? "page-" + id : "page-home").classList.add("active");
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        document.querySelector(`.nav-btn[data-page="${id}"]`).classList.add("active");
+        window.scrollTo({top:0,behavior:"smooth"});
     }
 
-    function submitEntry() {
+    function loadData() {
+        // جلب التعاميم
+        db.collection("broadcasts").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`;
+            });
+            document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
+        }).catch(()=>{});
+
+        // جلب سجلاتي
+        db.collection("issues").where("supervisor", "==", user.name).get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card ${data.isPraise ? 'green' : 'red'}">
+                    <div class="item-info"><h4>${data.issueType || data.praiseType}</h4><p>الهدف: ${data.targetName}</p></div>
+                </div>`;
+            });
+            document.getElementById("issuesList").innerHTML = html || "لا يوجد سجلات";
+        }).catch(()=>{});
+    }
+
+    function startEntry(type) {
+        const title = type === 'complaint' ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة";
+        const btnClass = type === 'complaint' ? 'danger' : 'success';
+        
+        document.getElementById("modalTitle").innerText = title;
+        document.getElementById("modalBody").innerHTML = `
+            <label>المركز</label>
+            <select id="entryCenter">
+                <option>مركز إسعاف دارسيت</option>
+                <option>مركز إسعاف بوشر</option>
+                <option>مركز إسعاف العامرات</option>
+                <option>مركز إسعاف قريات</option>
+            </select>
+            <label>اسم الهدف (المسعف/المركبة)</label>
+            <input type="text" id="entryTarget" placeholder="اسم الهدف">
+            <label>الوصف</label>
+            <textarea id="entryDesc" rows="3" placeholder="اكتب التفاصيل هنا..."></textarea>
+            <button class="btn ${btnClass} block" onclick="submitEntry('${type}')">💾 حفظ</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    function submitEntry(type) {
         const center = document.getElementById("entryCenter").value;
         const target = document.getElementById("entryTarget").value.trim();
         const desc = document.getElementById("entryDesc").value.trim();
 
-        if (!target || !desc) return alert("أكمل البيانات");
+        if (!target || !desc) return showToast("أكمل البيانات", "danger");
 
         db.collection("issues").add({
             centerName: center,
             targetName: target,
-            issueType: currentEntryType === 'complaint' ? 'إشكالية عامة' : null,
-            praiseType: currentEntryType === 'praise' ? 'إشادة عامة' : null,
+            issueType: type === 'complaint' ? 'إشكالية عامة' : null,
+            praiseType: type === 'praise' ? 'إشادة عامة' : null,
             description: desc,
             supervisor: user.name,
             sector: user.sector,
-            isPraise: currentEntryType === 'praise',
-            status: 'new',
+            isPraise: type === 'praise',
+            status: type === 'praise' ? 'resolved' : 'new',
             timestamp: new Date()
         }).then(() => {
-            alert("✅ تم الحفظ بنجاح");
-            document.getElementById("entryTarget").value = "";
-            document.getElementById("entryDesc").value = "";
-            closeForm();
-        }).catch(err => alert("خطأ: " + err.message));
+            showToast("تم الحفظ بنجاح");
+            closeModal();
+            loadData();
+        }).catch(err => showToast("خطأ: " + err.message, "danger"));
     }
 
-    function logout() {
-        localStorage.removeItem("ems_session");
-        window.location.href = "./index.html";
-    }
+    function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
+    function manualRefresh() { showToast("تحديث..."); loadData(); }
+    function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
+
+    loadData();
 </script>
 </body>
 </html>
