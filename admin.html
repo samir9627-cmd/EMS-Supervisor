@@ -4,65 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>مركز القيادة والتحكم — v34.0</title>
+<title>الإدارة العامة — غرفة التحكم v35.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 /* ═══ الأساسيات ═══ */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 :root {
-  --gold:#978d5b; --gold-light:#d4c896; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
-  --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252;
-  --amber:#fb8c00; --blue:#29b6f6; --purple:#ab47bc; --border:rgba(151,141,91,0.3);
+  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
+  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae;
+  --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726;
+  --blue:#29b6f6; --blue-light:#64b5f6;
+  --purple:#ab47bc; --purple-light:#ce93d8;
+  --border:rgba(151,141,91,0.3);
+  --surface:rgba(13,74,66,0.55); --surface-2:rgba(4,24,20,0.75);
   --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
 html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
 body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
 body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
+@keyframes spin { to { transform:rotate(360deg); } }
 
 /* ═══ شاشة التحميل ═══ */
-#loadingScreen { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--teal-deep); }
+#loadingScreen { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--teal-deep); transition:opacity 0.4s; }
 .spinner { width:50px; height:50px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
-@keyframes spin { to { transform:rotate(360deg); } }
+#loadingText { color:var(--gold-light); font-size:14px; font-weight:900; }
 
 #mainApp { display:none; }
 #mainApp.ready { display:block; }
 
-/* ═══ Topbar ═══ */
-.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
-.topbar-logo { width:44px; height:44px; border-radius:12px; }
+/* ═══ الشريط العلوي ═══ */
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5); }
+.topbar-logo { width:44px; height:44px; border-radius:12px; border:1px solid var(--border); padding:2px; }
 .topbar-info { flex:1; }
 .topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
-.topbar-info p { font-size:11px; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:6px; }
+.topbar-info p { font-size:11px; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:6px; margin-top:2px; }
 .status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); box-shadow:0 0 8px var(--green-light); }
-.icon-btn { width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:16px; cursor:pointer; }
-.icon-btn.danger { background:rgba(198,40,40,0.4); }
+.icon-btn { width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.icon-btn:active { transform:scale(0.95); }
+.icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
 
-/* ═══ Tabs ═══ */
+/* ═══ التبويبات ═══ */
 .tabs-bar { position:sticky; top:calc(74px + var(--safe-top)); z-index:98; background:rgba(4,24,20,0.95); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
-.tabs-scroll { display:flex; gap:6px; padding:10px 12px; }
-.tab-btn { padding:9px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:22px; color:#fff; font-size:12px; cursor:pointer; white-space:nowrap; }
-.tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-weight:900; }
-.tab-btn .badge { background:var(--red); color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; margin-right:4px; }
+.tabs-bar::-webkit-scrollbar { display:none; }
+.tabs-scroll { display:flex; gap:6px; padding:10px 12px; min-width:min-content; }
+.tab-btn { flex-shrink:0; padding:9px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:22px; color:rgba(255,255,255,0.75); font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; transition:0.2s; }
+.tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-color:var(--gold); font-weight:900; }
+.tab-btn .badge { background:var(--red); color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; margin-right:4px; animation:pulseRed 2s infinite; }
 
-/* ═══ Pages & Cards ═══ */
+/* ═══ الصفحات والبطاقات ═══ */
 .page { display:none; padding:16px; max-width:900px; margin:0 auto; }
 .page.active { display:block; animation:slideUp 0.35s; }
-.card { background:rgba(13,74,66,0.55); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px; }
+.card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px; }
 .card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.empty-state { text-align:center; padding:30px; color:rgba(255,255,255,0.4); font-size:13px; }
 
-/* ═══ Stats ═══ */
+/* ═══ لوحة القيادة ═══ */
 .stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
 @media(min-width:600px){ .stats-grid { grid-template-columns:repeat(4, 1fr); } }
-.stat-mini { background:rgba(4,24,20,0.75); border:1px solid var(--border); border-radius:16px; padding:16px; text-align:center; cursor:pointer; }
+.stat-mini { background:rgba(4,24,20,0.75); border:1px solid var(--border); border-radius:16px; padding:16px; text-align:center; cursor:pointer; transition:0.2s; position:relative; overflow:hidden; }
 .stat-mini:active { transform:scale(0.97); }
-.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); }
-.stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); }
+.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
+.stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:4px; }
 .stat-mini.alert .num { color:var(--red-light); animation:pulseRed 2s infinite; }
+.stat-mini.green .num { color:var(--green-light); }
+.stat-mini.blue .num { color:var(--blue-light); }
+.stat-mini .icon-bg { position:absolute; top:10px; left:10px; font-size:28px; opacity:0.1; }
 
-/* ═══ Items ═══ */
+/* ═══ الأكورديون ═══ */
+.accordion { border:1px solid var(--border); border-radius:12px; margin-bottom:8px; overflow:hidden; background:rgba(0,0,0,0.2); }
+.accordion-header { padding:12px; font-weight:900; color:var(--gold-light); cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+.accordion-header:active { background:rgba(255,255,255,0.05); }
+.accordion-content { display:none; padding:10px; border-top:1px solid var(--border); }
+.accordion.open .accordion-content { display:block; }
+.accordion-arrow { transition:0.3s; font-size:10px; }
+.accordion.open .accordion-arrow { transform:rotate(180deg); }
+
+/* ═══ البطاقات (Items) ═══ */
 .item-card { background:rgba(4,24,20,0.8); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:12px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
 .item-card.red { border-right-color:var(--red); }
 .item-card.green { border-right-color:var(--green-light); }
@@ -77,24 +100,27 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .icon-btn-sm.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
 .icon-btn-sm.lock { background:rgba(255,193,7,0.2); color:#ffc107; }
 .icon-btn-sm.check { background:rgba(67,160,71,0.2); color:#69f0ae; }
+.icon-btn-sm.message { background:rgba(171,71,188,0.2); color:#ce93d8; }
 
-/* ═══ Inputs & Buttons ═══ */
-input, select, textarea { width:100%; padding:12px; background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:13px; margin-bottom:10px; font-family:inherit; }
-input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:none; }
-.btn { padding:12px; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; display:block; width:100%; text-align:center; margin-bottom:8px; }
+/* ═══ المدخلات والأزرار ═══ */
+input, select, textarea { width:100%; padding:12px; background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:13px; margin-bottom:10px; font-family:inherit; outline:none; }
+input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 10px rgba(151,141,91,0.2); }
+.btn { padding:12px; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; display:block; width:100%; text-align:center; margin-bottom:8px; transition:0.2s; }
 .btn:active { transform:scale(0.98); }
 .btn.small { padding:8px; font-size:11px; width:auto; display:inline-block; }
 .btn.danger { background:var(--red); color:#fff; }
 .btn.info { background:var(--blue); color:#fff; }
 .btn.success { background:var(--green); color:#fff; }
+.btn.outline { background:transparent; border:1px solid var(--gold); color:var(--gold); }
 
-/* ═══ Modal ═══ */
+/* ═══ النوافذ المنبثقة (Modal) ═══ */
 .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.show { display:flex; }
-.modal-sheet { background:var(--teal-dark); border:2px solid var(--gold); border-radius:16px; width:100%; max-width:600px; max-height:90vh; padding:20px; overflow-y:auto; animation:slideUp 0.3s; }
+.modal-sheet { background:var(--teal-dark); border:2px solid var(--gold); border-radius:16px; width:100%; max-width:600px; max-height:90vh; padding:20px; overflow-y:auto; animation:slideUp 0.3s; box-shadow:0 20px 50px rgba(0,0,0,0.8); }
 .modal-sheet h3 { color:var(--gold-light); text-align:center; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:10px; font-size:16px; }
+.modal-close { position:absolute; top:15px; left:15px; background:transparent; border:none; color:var(--red); font-size:20px; cursor:pointer; }
 
-/* ═══ Duty Table ═══ */
+/* ═══ جدول الدوام ═══ */
 .duty-table { width:100%; border-collapse:collapse; font-size:10px; }
 .duty-table th, .duty-table td { border:1px solid var(--border); padding:2px; text-align:center; }
 .duty-table th { background:rgba(255,255,255,0.1); }
@@ -107,18 +133,18 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
 .duty-table td.s-س { background:rgba(226,227,229,0.2); }
 .duty-table td.s-خ { background:rgba(245,194,199,0.3); }
 
-/* ═══ Chat ═══ */
-.chat-container { display:flex; flex-direction:column; height:60vh; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid var(--border); }
-.chat-messages { flex:1; padding:10px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; }
-.message { max-width:80%; padding:10px; border-radius:8px; font-size:13px; line-height:1.4; }
-.message.mine { align-self:flex-end; background:var(--green); border-bottom-left-radius:0; }
-.message.theirs { align-self:flex-start; background:rgba(255,255,255,0.1); border-bottom-right-radius:0; }
+/* ═══ الشات ═══ */
+.chat-container { display:flex; flex-direction:column; height:55vh; background:rgba(0,0,0,0.2); border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+.chat-messages { flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.message { max-width:85%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.5; position:relative; }
+.message.mine { align-self:flex-end; background:linear-gradient(135deg, var(--green), #2e7d32); border-bottom-left-radius:2px; }
+.message.theirs { align-self:flex-start; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-bottom-right-radius:2px; }
 .message .time { font-size:9px; opacity:0.6; margin-top:4px; display:block; text-align:left; }
-.chat-input-box { display:flex; padding:10px; background:rgba(0,0,0,0.3); border-top:1px solid var(--border); }
+.chat-input-box { display:flex; padding:10px; background:rgba(0,0,0,0.4); border-top:1px solid var(--border); }
 .chat-input-box input { flex:1; margin:0; border-radius:8px 0 0 8px; border-left:none; }
-.chat-input-box button { padding:0 15px; background:var(--gold); color:var(--teal-deep); border:none; border-radius:0 8px 8px 0; font-weight:bold; cursor:pointer; }
+.chat-input-box button { padding:0 20px; background:var(--gold); color:var(--teal-deep); border:none; border-radius:0 8px 8px 0; font-weight:900; cursor:pointer; }
 
-/* ═══ Print ═══ */
+/* ═══ الطباعة الحرة ═══ */
 #printArea { display:none; }
 @media print {
   @page { margin: 5mm; }
@@ -127,20 +153,27 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
   #printArea { position:absolute; left:0; top:0; width:100%; display:block; background:#fff; color:#000; }
 }
 .print-table { width:100%; border-collapse:collapse; font-size:6pt; table-layout:fixed; }
-.print-table th, .print-table td { border:1px solid #000; padding:1px; text-align:center; }
-.print-table th { background:#1e4620; color:#fff; }
-.print-table th.name-col { width:45px; text-align:right; background:#eee; color:#000; }
-.print-table td.name-col { width:45px; text-align:right; background:#f9f9f9; }
+.print-table th, .print-table td { border:1px solid #000; padding:1px; text-align:center; word-break:break-all; }
+.print-table th { background:#1e4620; color:#fff; font-size:5.5pt; }
+.print-table th.name-col { width:45px; text-align:right; padding-right:2px; background:#eee; color:#000; font-weight:900; }
+.print-table td.name-col { width:45px; text-align:right; padding-right:2px; font-weight:bold; background:#f9f9f9; }
 .print-table .weekend { background:#fee; }
+.print-legend { display:flex; gap:5px; justify-content:center; margin:5px 0; font-size:6pt; }
+.print-legend span { padding:1px 4px; border:1px solid #000; border-radius:3px; }
+.print-header { text-align:center; margin-bottom:10px; }
+.print-header h2 { font-size:14pt; margin:0; }
+.print-header p { font-size:10pt; margin:2px 0; }
 </style>
 </head>
 <body>
 
+<!-- شاشة التحميل -->
 <div id="loadingScreen">
   <div class="spinner"></div>
-  <h2 style="color:var(--gold); font-size:16px;">جاري تحميل مركز القيادة...</h2>
+  <div id="loadingText">جاري التحقق من الصلاحيات...</div>
 </div>
 
+<!-- التطبيق -->
 <div id="mainApp">
   <div class="topbar">
     <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo">
@@ -157,23 +190,26 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
       <button class="tab-btn" data-tab="activities" onclick="switchTab('activities')">📋 النشاطات</button>
       <button class="tab-btn" data-tab="messages" onclick="switchTab('messages')">💬 الرسائل <span id="msgBadge" class="badge" style="display:none;">0</span></button>
       <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')">📅 الدوام</button>
-      <button class="tab-btn" data-tab="users" onclick="switchTab('users')">👨‍💼 المشرفون</button>
-      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">⚙️ الإعدادات</button>
+      <button class="tab-btn admin-only" data-tab="users" onclick="switchTab('users')" style="display:none;">👨‍💼 المشرفون</button>
+      <button class="tab-btn admin-only" data-tab="master" onclick="switchTab('master')" style="display:none;">📋 البيانات</button>
+      <button class="tab-btn admin-only" data-tab="settings" onclick="switchTab('settings')" style="display:none;">⚙️ الإعدادات</button>
     </div>
   </div>
 
   <!-- 1. لوحة القيادة -->
   <div class="page active" id="page-dashboard">
     <div class="stats-grid">
-      <div class="stat-mini" onclick="switchTab('activities')"><div class="num" id="dashIssues">0</div><div class="lbl">إشكالات</div></div>
-      <div class="stat-mini" onclick="switchTab('activities')"><div class="num" id="dashVisits">0</div><div class="lbl">زيارات</div></div>
-      <div class="stat-mini alert" onclick="switchTab('messages')"><div class="num" id="dashMessages">0</div><div class="lbl">رسائل جديدة</div></div>
-      <div class="stat-mini"><div class="num" id="dashUsers">0</div><div class="lbl">مشرفين</div></div>
+      <div class="stat-mini" onclick="switchTab('activities')"><span class="icon-bg">🚩</span><div class="num" id="dashIssues">0</div><div class="lbl">إشكالات</div></div>
+      <div class="stat-mini" onclick="switchTab('activities')"><span class="icon-bg">📋</span><div class="num" id="dashVisits">0</div><div class="lbl">زيارات</div></div>
+      <div class="stat-mini alert" onclick="switchTab('messages')"><span class="icon-bg">💬</span><div class="num" id="dashMessages">0</div><div class="lbl">رسائل جديدة</div></div>
+      <div class="stat-mini blue" onclick="switchTab('users')"><span class="icon-bg">👤</span><div class="num" id="dashUsers">0</div><div class="lbl">مشرفين</div></div>
     </div>
+    
     <div class="card">
-      <div class="card-title">📡 نبض المراكز (ملخص)</div>
-      <div id="centersPulse" style="font-size:12px; line-height:1.8;"></div>
+      <div class="card-title">📡 نبض المراكز</div>
+      <div id="centersPulse"></div>
     </div>
+
     <div class="card">
       <div class="card-title">🕐 آخر النشاطات الميدانية</div>
       <div id="recentActivities"></div>
@@ -189,6 +225,9 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
           <option value="all">الكل</option>
           <option value="issue">إشكالات فقط</option>
           <option value="visit">زيارات فقط</option>
+        </select>
+        <select id="filterCenter" onchange="renderActivities()" style="flex:1;">
+          <option value="all">كل المراكز</option>
         </select>
         <button class="btn small info" onclick="exportCSV()">📥 Excel</button>
       </div>
@@ -244,7 +283,23 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
     </div>
   </div>
 
-  <!-- 6. الإعدادات -->
+  <!-- 6. البيانات الأساسية -->
+  <div class="page" id="page-master">
+    <div class="card">
+      <div class="card-title">🚩 أنواع الإشكالات</div>
+      <input type="text" id="newIssueType" placeholder="اسم النوع (مثال: نقص معدات)">
+      <button class="btn small success" onclick="addMasterType('issue_types')">➕ إضافة</button>
+      <div id="issueTypesList" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⭐ أنواع الإشادات</div>
+      <input type="text" id="newPraiseType" placeholder="اسم النوع (مثال: تعامل ممتاز)">
+      <button class="btn small success" onclick="addMasterType('praise_types')">➕ إضافة</button>
+      <div id="praiseTypesList" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- 7. الإعدادات -->
   <div class="page" id="page-settings">
     <div class="card">
       <div class="card-title">🔐 تغيير كلمة المرور</div>
@@ -252,11 +307,15 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
       <button class="btn" onclick="changePassword()">تحديث</button>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة الخطر</div>
+      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة الخطر (التحكم الشامل)</div>
       <p style="font-size:11px; opacity:0.8; margin-bottom:10px;">حذف البيانات لا يمكن التراجع عنه.</p>
-      <button class="btn danger" onclick="wipeData('activities')">🗑️ حذف كل النشاطات</button>
+      <button class="btn danger" onclick="wipeData('activities')">🗑️ حذف كل النشاطات (إشكالات + زيارات)</button>
       <button class="btn danger" onclick="wipeData('messages')">🗑️ حذف كل الرسائل</button>
-      <button class="btn danger" onclick="wipeData('all')">💥 تصفير شامل</button>
+      <button class="btn danger" onclick="wipeData('all')">💥 تصفير شامل (كل شيء)</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📜 سجل العمليات (Audit Log)</div>
+      <div id="auditList" style="font-size:11px; max-height:300px; overflow-y:auto;"></div>
     </div>
   </div>
 </div>
@@ -269,172 +328,398 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); outline:no
 </div>
 
 <div id="printArea"></div>
-
 <script>
 /* ═══════════════════════════════════════════════════════════
-   مركز القيادة v34.0
+   الإدارة العامة — v35.0 (النسخة الاحترافية الشاملة)
    ═══════════════════════════════════════════════════════════ */
 
 const FIREBASE_PROJECT = "ems-supervisor";
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
 let currentUser = null;
-let allUsers = [], allActivities = [], allMessages = [], allDutyGrids = {};
+let allUsers = [], allActivities = [], allMessages = [], allBroadcasts = [];
+let issueTypes = [], praiseTypes = [], allDutyGrids = {}, allAudit = [];
 let currentChatSupervisor = null;
+let isSyncing = false;
+
 const CENTERS_LIST = ["دارسيت", "بوشر", "العامرات", "قريات", "الخوض 1", "الخوض 2", "العذيبة", "الرسيل"];
 const SHIFT_KEYS = ['ص','م','د','أ','س','خ'];
+const SHIFT_CODES = { 'ص':'صباحي', 'م':'مسائي', 'د':'إداري', 'أ':'إجازة', 'س':'سنوية', 'خ':'أخرى' };
 
-/* ═══ Helpers ═══ */
-async function sha256(t) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join(''); }
-function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-function todayKey() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-function fmtDate(ts) { if(!ts) return "—"; return new Date(ts).toLocaleDateString('ar-OM'); }
+/* ═══════════════════════════════════════════════════════════
+   دوال مساعدة (Helpers)
+   ═══════════════════════════════════════════════════════════ */
 
-/* ═══ Firebase ═══ */
-function fromFS(v) { if(!v)return null; if("stringValue"in v)return v.stringValue; if("integerValue"in v)return parseInt(v.integerValue); if("booleanValue"in v)return v.booleanValue; if("mapValue"in v){const o={};for(const k in v.mapValue.fields||{})o[k]=fromFS(v.mapValue.fields[k]);return o;} return null; }
-function docToObj(d) { const o={}; if(!d.fields)return o; for(const k in d.fields)o[k]=fromFS(d.fields[k]); o._id=d.name.split("/").pop(); return o; }
-async function fsList(col) { const r=await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`); const d=await r.json(); return (d.documents||[]).map(docToObj); }
-async function fsAdd(col, data) { 
-  const f={}; for(const k in data){ if(data[k]===null||data[k]===undefined)continue; 
-  if(typeof data[k]==="string")f[k]={stringValue:data[k]}; else if(typeof data[k]==="number")f[k]={integerValue:String(data[k])}; 
-  else if(typeof data[k]==="boolean")f[k]={booleanValue:data[k]}; else if(typeof data[k]==="object")f[k]={mapValue:{fields:data[k]}}; } 
-  await fetch(`${FIRESTORE_URL}/${col}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:f})}); 
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
-async function fsUpdate(col, id, data) { 
-  const f={}; for(const k in data){ if(data[k]===null||data[k]===undefined)continue; 
-  if(typeof data[k]==="string")f[k]={stringValue:data[k]}; else if(typeof data[k]==="number")f[k]={integerValue:String(data[k])}; 
-  else if(typeof data[k]==="boolean")f[k]={booleanValue:data[k]}; else if(typeof data[k]==="object")f[k]={mapValue:{fields:data[k]}}; } 
-  await fetch(`${FIRESTORE_URL}/${col}/${id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:f})}); 
-}
-async function fsDelete(col, id) { await fetch(`${FIRESTORE_URL}/${col}/${id}`,{method:"DELETE"}); }
 
-/* ═══ Sync & Init ═══ */
-async function syncData() {
+function esc(s) {
+  if (s === null || s === undefined) return "";
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function showToast(msg, type = "success") {
+  const c = document.getElementById("toastContainer");
+  if (!c) return; // In case toast container isn't defined in HTML
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function vibrate(p = 20) { try { if (navigator.vibrate) navigator.vibrate(p); } catch(e) {} }
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function fmtDate(ts) {
+  if (!ts) return "—";
+  return new Date(ts).toLocaleDateString('ar-OM');
+}
+
+function timeAgo(ts) {
+  if (!ts) return "—";
+  const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+  if (diff < 60) return "الآن";
+  if (diff < 3600) return `قبل ${Math.floor(diff / 60)}د`;
+  if (diff < 86400) return `قبل ${Math.floor(diff / 3600)}س`;
+  return `قبل ${Math.floor(diff / 86400)}ي`;
+}
+
+function generateCode() {
+  return "SUP-" + Math.floor(1000 + Math.random() * 9000);
+}
+
+function isWeekend(year, month, day) {
+  const dow = new Date(year, month - 1, day).getDay();
+  return dow === 5 || dow === 6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Firebase REST API
+   ═══════════════════════════════════════════════════════════ */
+
+function fromFS(v) {
+  if (!v) return null;
+  if ("stringValue" in v) return v.stringValue;
+  if ("integerValue" in v) return parseInt(v.integerValue);
+  if ("doubleValue" in v) return parseFloat(v.doubleValue);
+  if ("booleanValue" in v) return v.booleanValue;
+  if ("nullValue" in v) return null;
+  if ("arrayValue" in v) return (v.arrayValue.values || []).map(fromFS);
+  if ("mapValue" in v) {
+    const o = {};
+    for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]);
+    return o;
+  }
+  return null;
+}
+
+function docToObj(doc) {
+  const obj = {};
+  if (!doc.fields) return obj;
+  for (const k in doc.fields) obj[k] = fromFS(doc.fields[k]);
+  obj._id = doc.name.split("/").pop();
+  return obj;
+}
+
+function toFS(data) {
+  const fields = {};
+  for (const k in data) {
+    if (data[k] === null || data[k] === undefined) continue;
+    if (typeof data[k] === "string") fields[k] = { stringValue: data[k] };
+    else if (typeof data[k] === "number") fields[k] = { integerValue: String(data[k]) };
+    else if (typeof data[k] === "boolean") fields[k] = { booleanValue: data[k] };
+    else if (typeof data[k] === "object") fields[k] = { mapValue: { fields: toFS(data[k]) } };
+  }
+  return fields;
+}
+
+async function fsList(col) {
+  const r = await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`, { cache: "no-store" });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const d = await r.json();
+  return (d.documents || []).map(docToObj);
+}
+
+async function fsAdd(col, data) {
+  const r = await fetch(`${FIRESTORE_URL}/${col}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fields: toFS(data) })
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return r.json();
+}
+
+async function fsUpdate(col, id, data) {
+  await fetch(`${FIRESTORE_URL}/${col}/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fields: toFS(data) })
+  });
+}
+
+async function fsDelete(col, id) {
+  await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Audit Log (سجل العمليات)
+   ═══════════════════════════════════════════════════════════ */
+
+async function logAction(action, details) {
+  if (!currentUser) return;
   try {
-    const [u, act, msg, duty] = await Promise.all([
-      fsList("access_code"), fsList("activities"), fsList("messages"), fsList("duty_schedule")
+    await fsAdd("audit_log", {
+      actor: currentUser.name,
+      actorCode: currentUser.code,
+      action: action,
+      details: details,
+      timestamp: new Date().toISOString()
+    });
+  } catch (e) { console.warn("Audit Log Error:", e); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   مزامنة البيانات (Sync)
+   ═══════════════════════════════════════════════════════════ */
+
+async function syncData() {
+  if (isSyncing) return;
+  isSyncing = true;
+  
+  try {
+    const [u, act, msg, bc, it, pt, duty, aud] = await Promise.all([
+      fsList("access_code").then(l => l.filter(x => !x.archived)),
+      fsList("activities").then(l => l.filter(x => !x.archived)),
+      fsList("messages"),
+      fsList("broadcasts").then(l => l.filter(x => !x.archived)),
+      fsList("issue_types"),
+      fsList("praise_types"),
+      fsList("duty_schedule"),
+      fsList("audit_log")
     ]);
-    allUsers = u; allActivities = act; allMessages = msg;
-    allDutyGrids = {}; duty.forEach(d => { allDutyGrids[d.month] = d.grid || {}; });
+    
+    allUsers = u;
+    allActivities = act;
+    allMessages = msg;
+    allBroadcasts = bc;
+    issueTypes = it;
+    praiseTypes = pt;
+    allAudit = aud.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 50);
+    
+    // Parse duty schedule into object
+    allDutyGrids = {};
+    duty.forEach(d => { allDutyGrids[d.month] = d.grid || {}; });
     
     renderAll();
     checkUnreadMessages();
-  } catch(e) { console.error("Sync Error", e); }
+    
+  } catch (e) {
+    console.error("Sync Error:", e);
+  } finally {
+    isSyncing = false;
+  }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Initialize UI
+   ═══════════════════════════════════════════════════════════ */
 
 function initAppUI() {
   document.getElementById("userNameHeader").textContent = currentUser.name;
-  document.getElementById("newUserCode").value = "SUP-" + Math.floor(1000+Math.random()*9000);
-  document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
+  document.getElementById("userSectorHeader").textContent = currentUser.type === "admin" ? "مدير النظام" : (currentUser.sector || "مشرف");
   
+  // Show admin-only tabs
+  if (currentUser.type === "admin") {
+    document.querySelectorAll(".admin-only").forEach(el => el.style.display = "block");
+    document.getElementById("newUserCode").value = generateCode();
+    renderAudit();
+  }
+  
+  // Hide loading screen
   const ls = document.getElementById("loadingScreen");
-  ls.style.opacity = "0"; setTimeout(() => ls.remove(), 400);
+  if (ls) {
+    ls.style.opacity = "0";
+    setTimeout(() => ls.remove(), 400);
+  }
   
+  document.getElementById("mainApp").classList.add("ready");
   switchTab("dashboard");
 }
 
-function doLogout() { localStorage.removeItem("amb_user"); sessionStorage.removeItem("amb_user"); window.location.href = "index.html"; }
+function doLogout() {
+  if (!confirm("تسجيل الخروج؟")) return;
+  localStorage.removeItem("amb_user");
+  sessionStorage.removeItem("amb_user");
+  window.location.href = "index.html";
+}
 
-/* ═══ Tabs ═══ */
+/* ═══════════════════════════════════════════════════════════
+   Tabs Navigation
+   ═══════════════════════════════════════════════════════════ */
+
 function switchTab(id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("page-"+id).classList.add("active");
-  document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
   
-  if(id === "duty") loadDutyTable();
-  if(id === "users") renderUsers();
-  if(id === "messages") loadSupervisorsForChat();
+  const page = document.getElementById("page-" + id);
+  if (page) page.classList.add("active");
+  
+  const tab = document.querySelector(`.tab-btn[data-tab="${id}"]`);
+  if (tab) tab.classList.add("active");
+  
+  vibrate(15);
+  
+  // Lazy load specific tabs
+  if (id === "duty") loadDutyTable();
+  if (id === "users") renderUsers();
+  if (id === "messages") loadSupervisorsForChat();
+  if (id === "master") renderMaster();
+  if (id === "settings") renderAudit();
+  if (id === "activities") renderActivities();
 }
 
-/* ═══ Render ═══ */
+/* ═══════════════════════════════════════════════════════════
+   Render Dashboard
+   ═══════════════════════════════════════════════════════════ */
+
 function renderAll() {
   const myActs = allActivities.filter(x => !x.archived);
+  
   document.getElementById("dashIssues").textContent = myActs.filter(x => x.type === "issue").length;
   document.getElementById("dashVisits").textContent = myActs.filter(x => x.type === "visit").length;
   document.getElementById("dashUsers").textContent = allUsers.filter(u => u.type === "supervisor").length;
-
+  
   renderRecentActivities(myActs);
   renderCentersPulse();
-  if(document.getElementById("page-activities").classList.contains("active")) renderActivities();
+  
+  if (document.getElementById("page-activities").classList.contains("active")) {
+    renderActivities();
+  }
 }
 
 function renderRecentActivities(list) {
-  const recent = list.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0, 5);
+  const recent = [...list].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 5);
+  
   document.getElementById("recentActivities").innerHTML = recent.map(a => `
-    <div class="item-card ${a.type==='issue'?'red':'green'}" style="padding:10px;">
+    <div class="item-card ${a.type === 'issue' ? 'red' : 'green'}" style="padding:10px;">
       <div class="item-info">
         <h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 تقرير زيارة'}</h4>
-        <p>👤 ${esc(a.supervisor)} • 🕐 ${fmtDate(a.timestamp)}</p>
+        <p>👤 ${esc(a.supervisor)} • 🕐 ${timeAgo(a.timestamp)}</p>
       </div>
       <div class="item-actions">
-        ${a.type === 'issue' ? `<button class="icon-btn-sm check" onclick="resolveActivity('${a._id}')">✔️</button>` : ''}
+        ${a.type === 'issue' ? `<button class="icon-btn-sm check" onclick="resolveActivity('${a._id}')" title="حل">✔️</button>` : ''}
       </div>
     </div>
-  `).join("") || '<div style="text-align:center; opacity:0.5;">لا يوجد نشاطات</div>';
-}
-
-function renderActivities() {
-  const filter = document.getElementById("filterType")?.value || "all";
-  let list = allActivities.filter(x => !x.archived);
-  if(filter === "issue") list = list.filter(x => x.type === "issue");
-  if(filter === "visit") list = list.filter(x => x.type === "visit");
-  
-  list.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-  document.getElementById("actsCount").textContent = list.length;
-  
-  document.getElementById("activitiesList").innerHTML = list.map(a => `
-    <div class="item-card ${a.type==='issue'?'red':'green'}" style="margin-bottom:8px;">
-      <div class="item-info">
-        <h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 زيارة تقييم ' + a.score + '%'}</h4>
-        <p>👤 ${esc(a.supervisor)} | 🏥 ${esc(a.center||'—')} | 🕐 ${fmtDate(a.timestamp)}</p>
-        <p style="font-size:10px; opacity:0.6;">${esc(a.description || a.notes || '')}</p>
-      </div>
-      <div class="item-actions">
-        <button class="icon-btn-sm delete" onclick="deleteRecord('activities','${a._id}')">🗑️</button>
-      </div>
-    </div>
-  `).join("") || '<div style="text-align:center; opacity:0.5;">لا يوجد نشاطات</div>';
-}
-
-async function resolveActivity(id) {
-  if(!confirm("تحديد كـ (تمت المعالجة)؟")) return;
-  await fsUpdate("activities", id, { archived: true });
-  syncData();
-}
-
-async function deleteRecord(col, id) {
-  if(!confirm("تأكيد الحذف؟")) return;
-  await fsDelete(col, id);
-  syncData();
+  `).join("") || '<div class="empty-state">لا يوجد نشاطات حديثة</div>';
 }
 
 function renderCentersPulse() {
   const el = document.getElementById("centersPulse");
+  if (!el) return;
+  
   el.innerHTML = CENTERS_LIST.map(c => {
     const centerName = "مركز إسعاف " + c;
-    const iss = allActivities.filter(i => i.center === centerName && i.type==="issue").length;
-    const vis = allActivities.filter(i => i.center === centerName && i.type==="visit").length;
-    return `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding:6px 0;">
-      <span>🏥 ${c}</span>
-      <span>🚩 ${iss} | 📋 ${vis}</span>
-    </div>`;
+    const iss = allActivities.filter(i => i.center === centerName && i.type === "issue").length;
+    const vis = allActivities.filter(i => i.center === centerName && i.type === "visit").length;
+    return `
+      <div class="accordion">
+        <div class="accordion-header" onclick="this.parentElement.classList.toggle('open')">
+          <span>🏥 ${c}</span>
+          <span style="font-size:11px; opacity:0.7;">🚩 ${iss} | 📋 ${vis} <span class="accordion-arrow">▼</span></span>
+        </div>
+        <div class="accordion-content">
+          <div style="display:flex; justify-content:space-between; padding:5px 0; font-size:11px;">
+            <span>🚩 الإشكالات:</span>
+            <span style="font-weight:900;">${iss}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:5px 0; font-size:11px;">
+            <span>📋 الزيارات:</span>
+            <span style="font-weight:900;">${vis}</span>
+          </div>
+        </div>
+      </div>
+    `;
   }).join("");
 }
 
-/* ═══ Chat (Messages) ═══ */
+async function resolveActivity(id) {
+  if (!confirm("تحديد كـ (تمت المعالجة/محلولة)؟")) return;
+  await fsUpdate("activities", id, { archived: true });
+  logAction("حل إشكالية", "تمت أرشفة الإشكالية كـ محلولة");
+  syncData();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Render Activities (Full List)
+   ═══════════════════════════════════════════════════════════ */
+
+function renderActivities() {
+  const filter = document.getElementById("filterType")?.value || "all";
+  const centerFilter = document.getElementById("filterCenter")?.value || "all";
+  
+  let list = allActivities.filter(x => !x.archived);
+  
+  if (filter === "issue") list = list.filter(x => x.type === "issue");
+  if (filter === "visit") list = list.filter(x => x.type === "visit");
+  if (centerFilter !== "all") list = list.filter(x => x.center === centerFilter);
+  
+  list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  
+  document.getElementById("actsCount").textContent = list.length;
+  
+  document.getElementById("activitiesList").innerHTML = list.map(a => `
+    <div class="item-card ${a.type === 'issue' ? 'red' : 'green'}" style="margin-bottom:8px;">
+      <div class="item-info">
+        <h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 زيارة تقييم ' + a.score + '%'}</h4>
+        <p>👤 ${esc(a.supervisor)} | 🏥 ${esc(a.center || '—')} | 🕐 ${fmtDate(a.timestamp)}</p>
+        <p style="font-size:10px; opacity:0.6;">${esc(a.description || a.notes || '')}</p>
+      </div>
+      <div class="item-actions">
+        ${a.type === 'issue' ? `<button class="icon-btn-sm check" onclick="resolveActivity('${a._id}')" title="حل">✔️</button>` : ''}
+        <button class="icon-btn-sm delete" onclick="deleteRecord('activities','${a._id}')" title="حذف">🗑️</button>
+      </div>
+    </div>
+  `).join("") || '<div class="empty-state">لا يوجد نشاطات مطابقة للفلتر</div>';
+}
+
+async function deleteRecord(col, id) {
+  if (!confirm("تأكيد الحذف النهائي؟")) return;
+  try {
+    await fsDelete(col, id);
+    logAction("حذف", `تم حذف سجل من ${col}`);
+    syncData();
+  } catch (e) {
+    alert("فشل الحذف");
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Messages (Chat)
+   ═══════════════════════════════════════════════════════════ */
+
 function loadSupervisorsForChat() {
   const sups = allUsers.filter(u => u.type === "supervisor");
   const list = document.getElementById("supervisorsChatList");
+  if (!list) return;
   
   list.innerHTML = sups.map(s => {
     const unread = allMessages.filter(m => m.supervisor === s.name && m.sender !== "الإدارة" && !m.read).length;
-    return `<div class="item-card blue" style="min-width:120px; cursor:pointer; padding:8px;" onclick="openChat('${esc(s.name)}')">
-      <div class="item-info">
-        <h4>${esc(s.name)}</h4>
-        <p style="font-size:9px;">${unread>0 ? `<span style="color:var(--red);">${unread} رسالة جديدة</span>` : 'لا جديد'}</p>
+    return `
+      <div class="item-card blue" style="min-width:120px; cursor:pointer; padding:8px;" onclick="openChat('${esc(s.name)}')">
+        <div class="item-info">
+          <h4>${esc(s.name)}</h4>
+          <p style="font-size:9px;">${unread > 0 ? `<span style="color:var(--red);">${unread} رسالة جديدة</span>` : 'لا جديد'}</p>
+        </div>
       </div>
-    </div>`;
+    `;
   }).join("");
 }
 
@@ -446,24 +731,28 @@ function openChat(supName) {
 }
 
 async function loadMessages() {
-  if(!currentChatSupervisor) return;
+  if (!currentChatSupervisor) return;
+  
   const div = document.getElementById("chatMessages");
-  let msgs = allMessages.filter(m => m.supervisor === currentChatSupervisor).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+  let msgs = allMessages.filter(m => m.supervisor === currentChatSupervisor)
+    .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
   
   div.innerHTML = msgs.map(m => {
     const isMine = m.sender === "الإدارة";
     const time = new Date(m.timestamp).toLocaleTimeString('ar-OM', { hour: '2-digit', minute: '2-digit' });
-    return `<div class="message ${isMine ? 'mine' : 'theirs'}">
-      <div>${esc(m.text)}</div>
-      <span class="time">${time}</span>
-    </div>`;
+    return `
+      <div class="message ${isMine ? 'mine' : 'theirs'}">
+        <div>${esc(m.text)}</div>
+        <span class="time">${time}</span>
+      </div>
+    `;
   }).join("") || "<p style='text-align:center; color:#ccc;'>لا توجد رسائل. ابدأ المحادثة.</p>";
   
   div.scrollTop = div.scrollHeight;
-
-  // Mark as read
+  
+  // Mark incoming as read
   const unread = msgs.filter(m => m.sender !== "الإدارة" && !m.read);
-  for(let m of unread) {
+  for (let m of unread) {
     await fsUpdate("messages", m._id, { read: true });
   }
 }
@@ -472,6 +761,7 @@ async function sendMessage() {
   const input = document.getElementById("chatInput");
   const text = input.value.trim();
   if (!text || !currentChatSupervisor) return;
+  
   input.value = "";
   
   await fsAdd("messages", {
@@ -481,49 +771,61 @@ async function sendMessage() {
     timestamp: new Date().toISOString(),
     read: false
   });
+  
   syncData();
 }
 
 function checkUnreadMessages() {
   const unreadCount = allMessages.filter(m => m.sender !== "الإدارة" && !m.read).length;
-  document.getElementById("dashMessages").textContent = unreadCount;
+  const dashMsg = document.getElementById("dashMessages");
+  if (dashMsg) dashMsg.textContent = unreadCount;
+  
   const badge = document.getElementById("msgBadge");
-  if(unreadCount > 0) { badge.style.display = "inline-block"; badge.textContent = unreadCount; }
-  else { badge.style.display = "none"; }
+  if (badge) {
+    if (unreadCount > 0) { badge.style.display = "inline-block"; badge.textContent = unreadCount; }
+    else { badge.style.display = "none"; }
+  }
 }
 
-/* ═══ Duty ═══ */
+/* ═══════════════════════════════════════════════════════════
+   Duty Table
+   ═══════════════════════════════════════════════════════════ */
+
 function loadDutyTable() {
-  const month = document.getElementById("dutyMonth").value;
+  const monthEl = document.getElementById("dutyMonth");
+  if (!monthEl) return;
+  
+  const month = monthEl.value || new Date().toISOString().slice(0, 7);
   const [y, m] = month.split("-").map(Number);
   const days = new Date(y, m, 0).getDate();
   const grid = allDutyGrids[month] || {};
   
   let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
-  for(let d=1; d<=days; d++) {
-    const dow = new Date(y, m-1, d).getDay();
-    const wk = (dow===5 || dow===6) ? 'class="weekend"' : '';
+  for (let d = 1; d <= days; d++) {
+    const dow = new Date(y, m - 1, d).getDay();
+    const wk = (dow === 5 || dow === 6) ? 'class="weekend"' : '';
     html += `<th ${wk}>${d}</th>`;
   }
   html += '</tr></thead><tbody>';
   
   allUsers.filter(u => u.type === "supervisor").forEach(s => {
-    html += `<tr><td style="text-align:right; font-size:10px; font-weight:bold;">${esc(s.name)}</td>`;
-    for(let d=1; d<=days; d++) {
+    html += `<tr><td style="text-align:right; font-size:10px; font-weight:bold; white-space:nowrap;">${esc(s.name)}</td>`;
+    for (let d = 1; d <= days; d++) {
       const val = (grid[s.code] && grid[s.code][d]) ? grid[s.code][d] : "";
-      html += `<td class="${val?'s-'+val:''}"><select onchange="updateDutyCell('${month}','${s.code}',${d},this.value)">
-        <option value=""></option>${SHIFT_KEYS.map(k => `<option value="${k}" ${val===k?'selected':''}>${k}</option>`).join("")}
+      html += `<td class="${val ? 's-' + val : ''}"><select onchange="updateDutyCell('${month}','${s.code}',${d},this.value)">
+        <option value=""></option>${SHIFT_KEYS.map(k => `<option value="${k}" ${val === k ? 'selected' : ''}>${k}</option>`).join("")}
       </select></td>`;
     }
     html += '</tr>';
   });
   html += '</tbody></table>';
+  
   document.getElementById("dutyTableContainer").innerHTML = html;
 }
 
 function updateDutyCell(month, code, day, val) {
-  if(!allDutyGrids[month]) allDutyGrids[month] = {};
-  if(!allDutyGrids[month][code]) allDutyGrids[month][code] = {};
+  if (!allDutyGrids[month]) allDutyGrids[month] = {};
+  if (!allDutyGrids[month][code]) allDutyGrids[month][code] = {};
   allDutyGrids[month][code][day] = val;
 }
 
@@ -533,131 +835,279 @@ async function saveDutyToCloud() {
   const existing = await fsList("duty_schedule");
   const record = existing.find(x => x.month === month);
   
-  if(record) await fsUpdate("duty_schedule", record._id, { grid });
+  if (record) await fsUpdate("duty_schedule", record._id, { grid });
   else await fsAdd("duty_schedule", { month, grid });
   
   alert("✅ تم حفظ جدول الدوام!");
+  logAction("تحديث الدوام", `تم حفظ جدول شهر ${month}`);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Free Print Modal
+   ═══════════════════════════════════════════════════════════ */
 
 function openPrintModal() {
   openModal("خيارات الطباعة", `
-    <p style="font-size:11px; margin-bottom:10px;">اختر اتجاه الطباعة.</p>
-    <button class="btn info" onclick="triggerPrint('landscape')">🖨️ طباعة (أفقي - موصى به)</button>
-    <button class="btn info" onclick="triggerPrint('portrait')">🖨️ طباعة (عمودي)</button>
+    <p style="font-size:11px; margin-bottom:10px; text-align:center;">اختر اتجاه الطباعة المناسب.</p>
+    <button class="btn info" onclick="triggerPrint('landscape')">🖨️ طباعة (أفقي - Landscape)</button>
+    <button class="btn info" onclick="triggerPrint('portrait')">🖨️ طباعة (عمودي - Portrait)</button>
   `);
 }
 
 function triggerPrint(orientation) {
   closeModal();
+  
   const month = document.getElementById("dutyMonth").value;
   const [y, m] = month.split("-").map(Number);
   const days = new Date(y, m, 0).getDate();
   const grid = allDutyGrids[month] || {};
+  const monthNames = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
   
   let css = `@page { margin: 5mm; size: ${orientation}; }`;
-  let html = `<style>${css}</style><div style="text-align:center; margin-bottom:5px; font-size:12pt; font-weight:bold;">جدول دوام ${m}-${y}</div>`;
+  let html = `<style>${css}</style>`;
+  
+  html += `<div class="print-header"><h2>هيئة الدفاع المدني والإسعاف</h2><p>جدول دوام شهر ${monthNames[m-1]} ${y}</p></div>`;
+  
   html += '<table class="print-table"><tr><th class="name-col">المشرف</th>';
-  for(let d=1; d<=days; d++) {
-    const dow = new Date(y, m-1, d).getDay();
-    const wk = (dow===5 || dow===6) ? 'class="weekend"' : '';
+  for (let d = 1; d <= days; d++) {
+    const dow = new Date(y, m - 1, d).getDay();
+    const wk = (dow === 5 || dow === 6) ? 'class="weekend"' : '';
     html += `<th ${wk}>${d}</th>`;
   }
   html += '</tr>';
   
-  allUsers.filter(u=>u.type==="supervisor").forEach(s => {
+  allUsers.filter(u => u.type === "supervisor").forEach(s => {
     html += `<tr><td class="name-col">${esc(s.name)}</td>`;
-    for(let d=1; d<=days; d++) {
+    for (let d = 1; d <= days; d++) {
       const val = (grid[s.code] && grid[s.code][d]) ? grid[s.code][d] : "";
-      html += `<td class="${val?'s-'+val:''}">${val}</td>`;
+      html += `<td class="${val ? 's-' + val : ''}">${val}</td>`;
     }
     html += '</tr>';
   });
   html += '</table>';
   
+  html += `<div class="print-legend">
+    ${SHIFT_KEYS.map(k => `<span style="background:${{'ص':'#fff3cd','م':'#cfe2ff','د':'#d1e7dd','أ':'#f8d7da','س':'#e2e3e5','خ':'#f5c2c7'}[k]}">${k} = ${SHIFT_CODES[k]}</span>`).join("")}
+  </div>`;
+  
   document.getElementById("printArea").innerHTML = html;
   setTimeout(() => { window.print(); document.getElementById("printArea").innerHTML = ""; }, 300);
 }
 
-/* ═══ Users & Settings ═══ */
+/* ═══════════════════════════════════════════════════════════
+   Users Management
+   ═══════════════════════════════════════════════════════════ */
+
 function renderUsers() {
-  document.getElementById("usersList").innerHTML = allUsers.filter(u=>u.type==="supervisor").map(u => `
+  const sups = allUsers.filter(u => u.type === "supervisor");
+  
+  document.getElementById("usersList").innerHTML = sups.map(u => `
     <div class="item-card blue" style="margin-bottom:4px;">
-      <div class="item-info"><h4>${esc(u.name)}</h4><p>${esc(u.code)} | ${esc(u.sector||'—')} | ${esc(u.center||'—')}</p></div>
+      <div class="item-info">
+        <h4>${esc(u.name)}</h4>
+        <p>🔑 ${esc(u.code)} | 🏢 ${esc(u.sector || '—')} | 🏥 ${esc(u.center || '—')}</p>
+        <p style="font-size:9px; opacity:0.5;">آخر دخول: ${timeAgo(u.lastLogin)}</p>
+      </div>
       <div class="item-actions">
-        <button class="icon-btn-sm lock" onclick="resetPassword('${u._id}','${esc(u.name)}')">🔑</button>
-        <button class="icon-btn-sm delete" onclick="deleteRecord('access_code','${u._id}')">🗑️</button>
+        <button class="icon-btn-sm lock" onclick="resetPassword('${u._id}','${esc(u.name)}')" title="إعادة تعيين">🔑</button>
+        <button class="icon-btn-sm delete" onclick="deleteRecord('access_code','${u._id}')" title="حذف">🗑️</button>
       </div>
     </div>
-  `).join("");
+  `).join("") || '<div class="empty-state">لا يوجد مشرفين</div>';
 }
 
 async function addNewUser() {
-  const name = document.getElementById("newUserName").value;
-  const sector = document.getElementById("newUserSector").value;
-  const center = document.getElementById("newUserCenter").value;
-  const code = document.getElementById("newUserCode").value;
-  if(!name || !code) return alert("أكمل البيانات");
+  const name = document.getElementById("newUserName").value.trim();
+  const sector = document.getElementById("newUserSector").value.trim();
+  const center = document.getElementById("newUserCenter").value.trim();
+  const code = document.getElementById("newUserCode").value.trim();
   
-  await fsAdd("access_code", { name, sector, center, code, type: "supervisor", active: true, timestamp: new Date().toISOString() });
-  alert("تمت الإضافة! كلمة المرور: 123456");
-  document.getElementById("newUserName").value = "";
-  document.getElementById("newUserCode").value = "SUP-" + Math.floor(1000+Math.random()*9000);
-  syncData();
+  if (!name || !code) return alert("أكمل البيانات (الاسم والكود)");
+  
+  try {
+    await fsAdd("access_code", {
+      name, sector, center, code, type: "supervisor", active: true, timestamp: new Date().toISOString()
+    });
+    alert("تمت الإضافة! كلمة المرور الافتراضية: 123456");
+    logAction("إضافة مشرف", `تم إضافة ${name}`);
+    document.getElementById("newUserName").value = "";
+    document.getElementById("newUserSector").value = "";
+    document.getElementById("newUserCenter").value = "";
+    document.getElementById("newUserCode").value = generateCode();
+    syncData();
+  } catch (e) { alert("فشل الإضافة"); }
 }
 
 async function resetPassword(id, name) {
-  if(!confirm(`إعادة تعيين كلمة مرور (${name}) لتصبح 123456؟`)) return;
+  if (!confirm(`إعادة تعيين كلمة مرور (${name}) لتصبح 123456؟`)) return;
   await fsUpdate("access_code", id, { passwordHash: "" });
-  alert("✅ تمت الإعادة.");
+  alert("✅ تمت الإعادة. كلمة المرور الآن: 123456");
+  logAction("تصفير كلمة المرور", `للمشرف ${name}`);
 }
 
 async function changePassword() {
   const pass = document.getElementById("pwNew").value;
-  if(pass.length < 6) return alert("كلمة المرور قصيرة");
+  if (pass.length < 6) return alert("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
   const hash = await sha256(pass);
   await fsUpdate("access_code", currentUser._id, { passwordHash: hash });
-  alert("✅ تم التحديث"); document.getElementById("pwNew").value = "";
+  alert("✅ تم تحديث كلمة المرور");
+  logAction("تغيير كلمة المرور", "تم تحديث كلمة المرور الخاصة بالمدير");
+  document.getElementById("pwNew").value = "";
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Master Data (أنواع الإشكالات والإشادات)
+   ═══════════════════════════════════════════════════════════ */
+
+function renderMaster() {
+  document.getElementById("issueTypesList").innerHTML = issueTypes.map(t => `
+    <div class="item-card red" style="padding:8px; margin-bottom:4px;">
+      <div class="item-info"><h4>${esc(t.name)}</h4></div>
+      <button class="icon-btn-sm delete" onclick="deleteRecord('issue_types','${t._id}')">🗑️</button>
+    </div>
+  `).join("") || '<div class="empty-state">لا يوجد أنواع</div>';
+  
+  document.getElementById("praiseTypesList").innerHTML = praiseTypes.map(t => `
+    <div class="item-card green" style="padding:8px; margin-bottom:4px;">
+      <div class="item-info"><h4>${esc(t.name)}</h4></div>
+      <button class="icon-btn-sm delete" onclick="deleteRecord('praise_types','${t._id}')">🗑️</button>
+    </div>
+  `).join("") || '<div class="empty-state">لا يوجد أنواع</div>';
+}
+
+async function addMasterType(col) {
+  const input = col === "issue_types" ? document.getElementById("newIssueType") : document.getElementById("newPraiseType");
+  const val = input.value.trim();
+  if (!val) return;
+  
+  await fsAdd(col, { name: val });
+  input.value = "";
+  syncData();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Audit Log
+   ═══════════════════════════════════════════════════════════ */
+
+function renderAudit() {
+  const el = document.getElementById("auditList");
+  if (!el) return;
+  
+  el.innerHTML = allAudit.map(a => `
+    <div style="padding:6px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <span style="color:var(--gold); font-weight:bold;">${esc(a.actor)}</span>
+        <span style="font-size:10px; opacity:0.7; margin-right:5px;">- ${esc(a.action)}</span>
+        <div style="font-size:10px; opacity:0.5;">${esc(a.details)}</div>
+      </div>
+      <span style="font-size:9px; opacity:0.4; white-space:nowrap;">${timeAgo(a.timestamp)}</span>
+    </div>
+  `).join("") || '<div class="empty-state">لا سجلات</div>';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Danger Zone (التحكم الشامل)
+   ═══════════════════════════════════════════════════════════ */
 
 async function wipeData(type) {
-  if(!confirm("⚠️ هل أنت متأكد؟")) return;
-  if(!confirm("تأكيد أخير: الحذف نهائي!")) return;
+  if (!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع عن هذه الخطوة!")) return;
+  if (!confirm("تأكيد أخير: سيتم الحذف نهائياً!")) return;
   
   let cols = [];
-  if(type === 'activities') cols = ['activities'];
-  else if(type === 'messages') cols = ['messages'];
-  else cols = ['activities', 'messages', 'duty_schedule'];
+  if (type === 'activities') cols = ['activities'];
+  else if (type === 'messages') cols = ['messages'];
+  else cols = ['activities', 'messages', 'duty_schedule', 'audit_log'];
   
-  for(const col of cols) {
-    const items = await fsList(col);
-    for(const item of items) await fsDelete(col, item._id);
+  for (const col of cols) {
+    try {
+      const items = await fsList(col);
+      for (const item of items) await fsDelete(col, item._id);
+    } catch (e) { console.warn("Wipe error on", col); }
   }
-  alert("✅ تم الحذف."); syncData();
+  
+  alert("✅ تم الحذف بنجاح.");
+  syncData();
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Export CSV (Excel)
+   ═══════════════════════════════════════════════════════════ */
 
 function exportCSV() {
-  let rows = [['#','المشرف','النوع','المركز','التفاصيل','التاريخ']];
-  allActivities.forEach((a,i)=>rows.push([i+1, a.supervisor, a.type==='issue'?'إشكالية':'زيارة', a.center||'', a.description||a.notes||'', fmtDate(a.timestamp)]));
-  const csv = '\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\r\n');
-  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
-  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'activities.csv'; link.click();
+  let rows = [['#', 'المشرف', 'النوع', 'المركز', 'التفاصيل', 'التقييم', 'التاريخ']];
+  
+  allActivities.forEach((a, i) => {
+    rows.push([
+      i + 1,
+      a.supervisor || '',
+      a.type === 'issue' ? 'إشكالية' : 'زيارة',
+      a.center || '',
+      a.description || a.notes || '',
+      a.score || '',
+      fmtDate(a.timestamp)
+    ]);
+  });
+  
+  const csv = '\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(';')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `activities_${todayKey()}.csv`;
+  link.click();
 }
 
-/* ═══ Modal Helper ═══ */
-function openModal(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); }
-function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
+/* ═══════════════════════════════════════════════════════════
+   Modal Helpers
+   ═══════════════════════════════════════════════════════════ */
 
-/* ═══ Startup ═══ */
-window.onload = async () => {
+function openModal(title, body) {
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalBody").innerHTML = body;
+  document.getElementById("modalOverlay").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.remove("show");
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Startup (Bootstrap)
+   ═══════════════════════════════════════════════════════════ */
+
+window.onload = async function () {
+  // Read session
   const savedUser = localStorage.getItem("amb_user") || sessionStorage.getItem("amb_user");
-  if(!savedUser) { window.location.href = "index.html"; return; }
+  if (!savedUser) { window.location.href = "index.html"; return; }
   
-  currentUser = JSON.parse(savedUser);
-  if(currentUser.type !== "admin") { window.location.href = "index.html"; return; }
+  try {
+    currentUser = JSON.parse(savedUser);
+  } catch (e) { window.location.href = "index.html"; return; }
+  
+  if (!currentUser || currentUser.type !== "admin") {
+    window.location.href = "index.html";
+    return;
+  }
+  
+  // Set default duty month
+  const dm = document.getElementById("dutyMonth");
+  if (dm) dm.value = new Date().toISOString().slice(0, 7);
+  
+  // Populate center filter
+  const cf = document.getElementById("filterCenter");
+  if (cf) {
+    CENTERS_LIST.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = "مركز إسعاف " + c;
+      opt.textContent = c;
+      cf.appendChild(opt);
+    });
+  }
   
   await syncData();
   initAppUI();
-  setInterval(syncData, 20000); // تحديث تلقائي كل 20 ثانية
+  
+  // Auto sync every 20 seconds
+  setInterval(syncData, 20000);
 };
 </script>
 </body>
