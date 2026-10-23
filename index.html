@@ -87,11 +87,9 @@
         <h3 style="color:var(--gold-light); text-align:center; margin-bottom:20px; font-size:15px;">🔐 بوابة الدخول الموحدة</h3>
         
         <div class="input-group">
-            <!-- عند كتابة الكود، سيتم فحصه فوراً -->
             <input type="text" id="codeInput" placeholder="كود الدخول (SUP / ADM / OPS)" autocomplete="off" oninput="checkCodeType()">
         </div>
         
-        <!-- حقل كلمة المرور مخفي افتراضياً، ويظهر فقط للإدارة والعمليات -->
         <div class="input-group" id="passwordGroup" style="display:none;">
             <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
             <button class="toggle-pass" id="togglePassBtn" onclick="togglePassword()">👁️</button>
@@ -118,7 +116,8 @@
     </div>
 
 <script>
-    const FIREBASE_PROJECT = "ems-supervisor"; 
+    // 👇 تم تعديل اسم المشروع ليكون مطابقاً للصورة
+    const FIREBASE_PROJECT = "EMS-Supervisor"; 
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
     const starsContainer = document.getElementById("starsContainer");
@@ -149,7 +148,6 @@
         return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // 👇 الدالة الذكية: إذا كان الكود يبدأ بـ SUP (مشرف)، نخفي حقل الباسورد
     function checkCodeType() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const passGroup = document.getElementById("passwordGroup");
@@ -157,11 +155,11 @@
 
         if (code.startsWith("SUP")) {
             passGroup.style.display = "none";
-            passInput.value = ""; // تصفير الباسورد
+            passInput.value = "";
         } else if (code.startsWith("ADM") || code.startsWith("OPS")) {
             passGroup.style.display = "block";
         } else {
-            passGroup.style.display = "none"; // إخفاء في الحالات الأخرى
+            passGroup.style.display = "none"; 
         }
     }
 
@@ -184,10 +182,15 @@
         if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
         if (!isSupervisor && !pass) { msg.innerText = "⚠️ أدخل كلمة المرور"; return; }
         
-        btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.innerText = "";
+        btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.style.color = "var(--gold-light)"; msg.innerText = "جاري الاتصال...";
         
         try {
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
+            
+            if (!res.ok) {
+                throw new Error("صلاحيات Firebase تمنع القراءة. يرجى تعديل الـ Rules.");
+            }
+
             const data = await res.json();
             
             let foundUser = null;
@@ -202,18 +205,17 @@
             }
             
             if (!foundUser) { 
+                msg.style.color = "var(--red)";
                 msg.innerText = "❌ الكود غير صحيح"; 
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
             }
             
             if (foundUser.active === false || foundUser.active === "false") {
+                msg.style.color = "var(--red)";
                 msg.innerText = "⚠️ هذا الحساب معطل حالياً"; 
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
             }
 
-            // 👇 التحقق:
-            // 1. المشرف (SUP) لا يحتاج باسورد (نعطيه true مباشرة)
-            // 2. الإدارة والعمليات يحتاجون باسورد
             let isValid = false;
             
             if (foundUser.type === "supervisor" || isSupervisor) {
@@ -228,6 +230,7 @@
             }
 
             if (!isValid) {
+                msg.style.color = "var(--red)";
                 msg.innerText = "❌ كلمة المرور خاطئة";
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return;
             }
@@ -245,7 +248,10 @@
             }, 500);
 
         } catch(e) { 
-            msg.innerText = "⚠️ خطأ في الاتصال"; 
+            console.error(e);
+            msg.style.color = "var(--red)";
+            // 👇 رسالة الخطأ توضح المشكلة بالضبط
+            msg.innerText = "⚠️ خطأ: " + (e.message.includes("Firebase") ? "الصلاحيات مرفوضة (اذهب لـ Firebase Rules)" : "تأكد من اتصال الإنترنت"); 
             btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; 
         }
     }
@@ -311,9 +317,7 @@
     }
 
     window.onload = function() {
-        // فحص الكود أثناء الكتابة لإظهار/إخفاء الباسورد
         document.getElementById("codeInput").addEventListener("input", checkCodeType);
-        
         document.getElementById("codeInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
         document.getElementById("passInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
         loadStats();
