@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>لوحة المشرف الميداني — نظام الإسعاف الذكي</title>
+<title>لوحة المشرف الميداني — v30.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal','Segoe UI',sans-serif; }
@@ -30,17 +30,6 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
 
-/* شاشات الدخول */
-#loginScreen, #scopeScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; background:linear-gradient(135deg, #041814, #0d4a42, #082b26); overflow-y:auto; }
-.login-box, .scope-box { text-align:center; max-width:420px; width:100%; padding:34px 24px; background:linear-gradient(145deg, rgba(13,74,66,0.65), rgba(4,24,20,0.95)); border:2px solid var(--border); border-radius:28px; box-shadow:0 25px 70px rgba(0,0,0,0.7); }
-.login-logo { width:120px; height:120px; object-fit:contain; border-radius:22px; padding:8px; border:2px solid var(--gold); background:transparent; }
-.login-title { font-size:22px; color:var(--gold-light); font-weight:900; margin-top:20px; }
-.login-subtitle { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:26px; letter-spacing:2px; }
-.code-input { width:100%; padding:20px; background:rgba(4,24,20,0.85); border:2px solid var(--border); border-radius:16px; color:var(--gold-light); font-size:22px; font-weight:900; text-align:center; letter-spacing:6px; font-family:monospace; outline:none; margin-bottom:16px; text-transform:uppercase; }
-.code-input:focus { border-color:var(--gold); }
-.login-btn { width:100%; padding:17px; border:none; border-radius:16px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:17px; font-weight:900; cursor:pointer; }
-.login-msg { margin-top:16px; font-size:13px; min-height:22px; font-weight:700; color:var(--red-light); }
-
 #mainApp { display:none; }
 #mainApp.ready { display:block; }
 
@@ -48,9 +37,9 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
 .topbar-logo { width:44px; height:44px; border-radius:12px; object-fit:contain; background:transparent; }
 .topbar-info { flex:1; }
-.topbar-info h1 { font-size:13px; color:var(--gold-light); font-weight:900; }
+.topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
 .topbar-info p { font-size:10px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; margin-top:3px; }
-.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); box-shadow:0 0 8px var(--green-light); }
 .icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
 
@@ -59,6 +48,7 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .nav-btn { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; border-radius:10px; cursor:pointer; background:transparent; border:none; color:rgba(255,255,255,0.65); font-family:inherit; font-weight:700; font-size:9px; }
 .nav-btn .nav-icon { font-size:20px; line-height:1; }
 .nav-btn.active { background:linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color:var(--gold-light); }
+.nav-btn .badge { position:absolute; top:0; right:4px; background:var(--red); width:8px; height:8px; border-radius:50%; display:none; }
 
 /* الصفحات */
 .page { display:none; padding:16px; max-width:720px; margin:0 auto; }
@@ -74,7 +64,7 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 
 /* الأزرار الرئيسية */
 .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
-.action-btn { padding:18px 14px; border-radius:18px; border:none; font-family:inherit; font-weight:900; font-size:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; }
+.action-btn { padding:20px 14px; border-radius:18px; border:none; font-family:inherit; font-weight:900; font-size:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; }
 .action-btn.danger { background:linear-gradient(135deg, #e53935, #ff5252); }
 .action-btn.success { background:linear-gradient(135deg, #43a047, #69f0ae); color:#041814; }
 
@@ -108,42 +98,26 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 .toast { background:linear-gradient(135deg, var(--teal), var(--teal-dark)); color:#fff; padding:12px 18px; border-radius:12px; border:1px solid var(--gold); font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.6); }
 .toast.success { border-color:var(--green-light); }
 .toast.danger { border-color:var(--red-light); }
+
+/* الدردشة */
+.chat-container { display:flex; flex-direction:column; height:60vh; background:rgba(0,0,0,0.3); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
+.chat-messages { flex:1; padding:14px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
+.message { max-width:80%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.5; }
+.message.mine { align-self:flex-end; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-bottom-left-radius:2px; }
+.message.theirs { align-self:flex-start; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-bottom-right-radius:2px; }
+.message .time { font-size:9px; opacity:0.6; margin-top:4px; display:block; text-align:left; }
+.chat-input-box { display:flex; padding:10px; background:rgba(4,24,20,0.6); border-top:1px solid var(--border); }
+.chat-input-box input { flex:1; margin:0; border-radius:8px 0 0 8px; border-left:none; }
+.chat-input-box button { padding:0 20px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border:none; border-radius:0 8px 8px 0; font-weight:900; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<!-- شاشة الدخول (احتياطية) -->
-<div id="loginScreen" style="display:none;">
-  <div class="login-box">
-    <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="login-logo">
-    <div class="login-title">لوحة المشرف الميداني</div>
-    <div class="login-subtitle">هيئة الدفاع المدني والإسعاف</div>
-    <input type="text" id="codeInput" class="code-input" placeholder="SUP-XXXX" autocomplete="off">
-    <button class="login-btn" onclick="loginWithCode()">🔓 دخول</button>
-    <div class="login-msg" id="loginMsg"></div>
-  </div>
-</div>
-
-<!-- شاشة النطاق -->
-<div id="scopeScreen" style="display:none;">
-  <div class="scope-box">
-    <div style="font-size:64px; margin-bottom:16px;">👨‍💼</div>
-    <div class="login-title">مرحباً بك</div>
-    <div style="font-size:13px; color:rgba(255,255,255,0.6); margin-bottom:20px;">هذا نطاقك كما حددته الإدارة</div>
-    <div style="background:rgba(151,141,91,0.15); border:1px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:20px; text-align:right;">
-      <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><span>الاسم</span><span id="scopeName" style="color:var(--gold-light);font-weight:900;">—</span></div>
-      <div style="display:flex; justify-content:space-between; padding:8px 0;"><span>القطاع</span><span id="scopeSector" style="color:var(--gold-light);font-weight:900;">—</span></div>
-    </div>
-    <button class="login-btn" onclick="confirmScopeAndStart()">✅ ابدأ المتابعة</button>
-  </div>
-</div>
-
-<!-- التطبيق -->
 <div id="mainApp">
   <div class="topbar">
     <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="topbar-logo">
     <div class="topbar-info">
-      <h1>لوحة المشرف</h1>
+      <h1>لوحة المشرف الميداني</h1>
       <p><span class="status-dot"></span><span id="currentUser">—</span></p>
     </div>
     <button class="icon-btn" onclick="manualRefresh()">🔄</button>
@@ -157,6 +131,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
         <div>
           <div style="font-size:12px; color:rgba(255,255,255,0.7);">مرحباً بك 👋</div>
           <div style="font-size:20px; color:#fff; font-weight:900;" id="welcomeName">—</div>
+          <div style="font-size:12px; color:var(--gold-light); margin-top:4px;" id="welcomeSector">—</div>
         </div>
         <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900;" id="heroAvatar">👤</div>
       </div>
@@ -175,37 +150,45 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
     <div class="stats-grid">
       <div class="stat-mini" onclick="switchPage('issues')"><div class="num" id="statOpenIssues">0</div><div class="lbl">إشكالياتي المفتوحة</div></div>
-      <div class="stat-mini" onclick="switchPage('visits')"><div class="num" id="statVisits">0</div><div class="lbl">زياراتي</div></div>
+      <div class="stat-mini" onclick="switchPage('issues')"><div class="num" id="statTotalIssues">0</div><div class="lbl">إجمالي سجلاتي</div></div>
     </div>
 
     <div class="card">
-      <div class="card-title">📡 نبض المراكز التابعة لك</div>
-      <div id="centersPulse"></div>
+      <div class="card-title">📢 التعاميم الأخيرة</div>
+      <div id="broadcastsList"></div>
     </div>
   </div>
 
   <!-- 2) الإشكالات -->
   <div class="page" id="page-issues">
     <div class="card">
-      <div class="card-title">🚩 الإشكالات <span id="issuesCount" style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;">0</span></div>
+      <div class="card-title">🚩 سجلاتي الميدانية <span id="issuesCount" style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;">0</span></div>
       <div id="issuesList"></div>
     </div>
   </div>
 
-  <!-- 3) الزيارات -->
-  <div class="page" id="page-visits">
+  <!-- 3) التعاميم -->
+  <div class="page" id="page-broadcasts">
     <div class="card">
-      <div class="card-title">📋 الزيارات الميدانية</div>
-      <button class="btn block info" onclick="startVisit()" style="background:var(--blue); color:#fff;">➕ تسجيل زيارة جديدة</button>
-      <div id="visitsList" style="margin-top:14px;"></div>
+      <div class="card-title">📢 التعاميم الموجهة إليك</div>
+      <div id="broadcastsFullList"></div>
     </div>
   </div>
 
-  <!-- 4) الدوام -->
-  <div class="page" id="page-duty">
-    <div class="card">
-      <div class="card-title">👥 حالة الدوام اليوم</div>
-      <div id="dutyList"></div>
+  <!-- 4) المراسلة -->
+  <div class="page" id="page-chat">
+    <div class="card" style="padding:0; overflow:hidden;">
+      <div style="padding:14px 16px; border-bottom:1px solid var(--border); background:rgba(4,24,20,0.5); display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">💬</span>
+        <span style="font-weight:900; color:var(--gold-light); flex:1;">مراسلة الإدارة</span>
+      </div>
+      <div class="chat-container" style="border-radius:0; height:65vh; border:none;">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-box">
+          <input type="text" id="chatInput" placeholder="اكتب رسالتك للإدارة..." onkeypress="if(event.key === 'Enter') sendMessage()">
+          <button onclick="sendMessage()">إرسال</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -215,13 +198,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <div style="font-size:50px; margin-bottom:10px;">👤</div>
       <div style="font-size:20px; color:var(--gold-light); font-weight:900;" id="profileName">—</div>
       <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:4px;" id="profileSector">—</div>
-    </div>
-    <div class="card">
-      <div class="card-title">📊 إحصائياتي</div>
-      <div class="stats-grid">
-        <div class="stat-mini"><div class="num" id="pStatTotal">0</div><div class="lbl">إجمالي النشاطات</div></div>
-        <div class="stat-mini green"><div class="num" id="pStatResolved">0</div><div class="lbl">تم حلها</div></div>
-      </div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:2px;" id="profileCode">—</div>
     </div>
     <button class="btn danger block" onclick="confirmLogout()">🚪 تسجيل الخروج</button>
   </div>
@@ -229,9 +206,9 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
   <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
-    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">🚩</span><span>إشكالات</span></button>
-    <button class="nav-btn" data-page="visits" onclick="switchPage('visits')"><span class="nav-icon">📋</span><span>زيارات</span></button>
-    <button class="nav-btn" data-page="duty" onclick="switchPage('duty')"><span class="nav-icon">👥</span><span>الدوام</span></button>
+    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">🚩</span><span>سجلاتي</span></button>
+    <button class="nav-btn" data-page="broadcasts" onclick="switchPage('broadcasts')"><span class="nav-icon">📢</span><span>التعاميم</span></button>
+    <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>المراسلة</span></button>
     <button class="nav-btn" data-page="profile" onclick="switchPage('profile')"><span class="nav-icon">👤</span><span>حسابي</span></button>
   </div>
 </div>
@@ -248,81 +225,46 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   لوحة المشرف — v24.0 (إصلاح الدخول)
+   لوحة المشرف — v30.0 (شامل ومتصل بالإدارة)
    ═══════════════════════════════════════════════════════════ */
 
 const FIREBASE_PROJECT = "ems-supervisor";
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
-
-// مفتاح الجلسة الموحد (كما تم حفظه في index.html)
 const SESSION_KEY = "amb_user";
 
 let currentUser = null;
 let supervisorSector = "";
-let supervisorScope = "full";
 let supervisorCenters = [];
-let allIssues = [], myIssues = [], allVisits = [], myVisits = [], allShifts = [], myShifts = {};
+let allIssues = [], myIssues = [], allBroadcasts = [], myBroadcasts = [], allChats = [];
 
 function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function showToast(msg, type="success") { const c=document.getElementById("toastContainer"); const t=document.createElement("div"); t.className="toast "+type; t.textContent=(type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ")+msg; c.appendChild(t); setTimeout(()=>t.remove(),3000); }
-function getCurrentShiftByTime() { const now = new Date(); const m = now.getHours()*60 + now.getMinutes(); if (m >= 330 && m < 810) return "morning"; if (m >= 810 && m < 1290) return "evening"; return "night"; }
 function cleanCenter(n) { return (n || "").toString().replace("مركز إسعاف ", "").trim(); }
-function centerMatches(a, b) { if (!a || !b) return false; const ac = cleanCenter(a); const bc = cleanCenter(b); return ac === bc || ac.includes(bc) || bc.includes(ac); }
-function todayKey() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function timeAgo(ts) { const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; if (diff < 86400) return `قبل ${Math.floor(diff/3600)}س`; return `قبل ${Math.floor(diff/86400)}ي`; }
 
 function fromFS(v) { if(!v)return null; if("stringValue"in v)return v.stringValue; if("integerValue"in v)return parseInt(v.integerValue); if("booleanValue"in v)return v.booleanValue; if("mapValue"in v){const o={};for(const k in v.mapValue.fields||{})o[k]=fromFS(v.mapValue.fields[k]);return o;} return null; }
 function docToObj(d) { const o={}; if(!d.fields)return o; for(const k in d.fields)o[k]=fromFS(d.fields[k]); o._id=d.name.split("/").pop(); return o; }
 async function fsList(col) { const r=await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`,{cache:"no-store"}); if(!r.ok)throw new Error("HTTP "+r.status); const d=await r.json(); return (d.documents||[]).map(docToObj); }
 async function fsAdd(col, data) { const f={}; for(const k in data){ if(data[k]===null||data[k]===undefined)continue; if(typeof data[k]==="string")f[k]={stringValue:data[k]}; else if(typeof data[k]==="number")f[k]={integerValue:String(data[k])}; else if(typeof data[k]==="boolean")f[k]={booleanValue:data[k]}; } await fetch(`${FIRESTORE_URL}/${col}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:f})}); }
 
-/* ═══ الدخول ═══ */
-async function loginWithCode() {
-  const code = document.getElementById("codeInput").value.trim().toUpperCase();
-  const msg = document.getElementById("loginMsg");
-  if(!code) { msg.textContent = "أدخل الكود"; return; }
-  msg.textContent = "جاري التحقق...";
-  try {
-    const users = await fsList("access_code");
-    const found = users.find(u => u.code === code);
-    if(!found) { msg.textContent = "❌ الكود غير صحيح"; return; }
-    
-    currentUser = found;
-    localStorage.setItem(SESSION_KEY, JSON.stringify(found));
-    msg.textContent = "✅ مرحباً";
-    setTimeout(() => { document.getElementById("loginScreen").style.display="none"; prepareScope(); }, 500);
-  } catch(e) { msg.textContent = "⚠️ خطأ في الشبكة"; }
-}
-
-function prepareScope() {
-  document.getElementById("scopeName").textContent = currentUser.name || "مشرف";
-  document.getElementById("scopeSector").textContent = currentUser.sector || "—";
-  document.getElementById("scopeScreen").style.display = "flex";
-}
-
-function confirmScopeAndStart() {
-  document.getElementById("scopeScreen").style.display = "none";
-  document.getElementById("mainApp").classList.add("ready");
-  initApp();
-}
-
-function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem(SESSION_KEY); location.reload(); } }
-
 /* ═══ التشغيل ═══ */
 async function initApp() {
-  document.getElementById("currentUser").textContent = currentUser.name;
-  document.getElementById("welcomeName").textContent = currentUser.name;
-  document.getElementById("profileName").textContent = currentUser.name;
-  document.getElementById("heroAvatar").textContent = currentUser.name.charAt(0);
+  document.getElementById("currentUser").textContent = currentUser.name || "مشرف";
+  document.getElementById("welcomeName").textContent = currentUser.name || "مشرف";
+  document.getElementById("profileName").textContent = currentUser.name || "مشرف";
+  document.getElementById("profileCode").textContent = currentUser.code || "—";
+  document.getElementById("heroAvatar").textContent = (currentUser.name || "م").charAt(0);
   document.getElementById("profileSector").textContent = currentUser.sector || "—";
 
+  // جلب القطاعات
   try {
     const settings = await fsList("settings").catch(() => []);
     supervisorSector = currentUser.sector || "";
-    supervisorScope = currentUser.scope || "full";
     if (settings.length > 0 && settings[0].sectors) {
-      if (supervisorScope === "full") supervisorCenters = settings[0].sectors[supervisorSector] || [];
+      supervisorCenters = settings[0].sectors[supervisorSector] || [];
     }
-  } catch(e) {}
+    document.getElementById("welcomeSector").textContent = supervisorSector || "قطاع غير محدد";
+  } catch(e) { console.warn(e); }
 
   syncData();
   setInterval(syncData, 30000);
@@ -330,105 +272,103 @@ async function initApp() {
 
 async function syncData() {
   try {
-    const [issues, visits, shifts] = await Promise.all([
+    const [issues, bc, chat] = await Promise.all([
       fsList("issues").catch(() => []),
-      fsList("visits").catch(() => []),
-      fsList("shifts").catch(() => [])
+      fsList("broadcasts").catch(() => []),
+      fsList("messages").catch(() => [])
     ]);
 
     allIssues = issues;
-    myIssues = allIssues.filter(i => centerMatches(i.center, supervisorSector));
+    myIssues = allIssues.filter(i => i.supervisor === currentUser.name);
     
-    allVisits = visits;
-    myVisits = allVisits.filter(v => v.supervisor === currentUser.name);
+    allBroadcasts = bc;
+    myBroadcasts = allBroadcasts.filter(b => b.target === "الجميع" || b.target === supervisorSector || b.target === currentUser.name);
     
-    allShifts = shifts;
-    myShifts = {};
-    allShifts.forEach(s => {
-      if (s.date === todayKey() && centerMatches(s.centerName, supervisorSector)) {
-        myShifts[cleanCenter(s.centerName) + "_" + s.shiftType] = s;
-      }
-    });
+    allChats = chat;
+    renderChat();
 
     renderHome();
     renderIssues();
-    renderVisits();
-    renderDuty();
-    renderProfile();
+    renderBroadcasts();
   } catch(e) { console.warn(e); }
 }
-
-function manualRefresh() { showToast("جاري التحديث..."); syncData(); }
 
 /* ═══ الرندر ═══ */
 function renderHome() {
   document.getElementById("statOpenIssues").textContent = myIssues.filter(i => i.status !== "resolved" && !i.isPraise).length;
-  document.getElementById("statVisits").textContent = myVisits.length;
+  document.getElementById("statTotalIssues").textContent = myIssues.length;
 
-  const pulse = document.getElementById("centersPulse");
-  if (supervisorCenters.length === 0) { pulse.innerHTML = '<div style="text-align:center; padding:10px; opacity:0.5;">لا توجد مراكز</div>'; return; }
-  
-  pulse.innerHTML = supervisorCenters.map(c => {
-    const centerIssues = myIssues.filter(i => centerMatches(i.center, c) && i.status !== "resolved").length;
-    let color = "green"; if(centerIssues > 3) color = "red"; else if(centerIssues > 1) color = "amber";
-    return `<div class="item-card ${color}" onclick="switchPage('issues')">
-      <div class="item-info"><h4>🏥 ${esc(cleanCenter(c))}</h4></div>
-      <div style="background:var(--${color}); padding:4px 10px; border-radius:10px; font-size:12px; font-weight:900; color:#fff;">${centerIssues} إشكالية</div>
-    </div>`;
-  }).join("");
+  const bl = document.getElementById("broadcastsList");
+  if (myBroadcasts.length === 0) { bl.innerHTML = '<div style="text-align:center; padding:10px; opacity:0.5;">لا تعاميم</div>'; return; }
+  bl.innerHTML = myBroadcasts.slice(0,3).map(b => `
+    <div class="item-card blue" style="margin-bottom:8px;">
+      <div class="item-info"><h4>📢 ${esc(b.title)}</h4><p>${esc(b.description)}</p></div>
+    </div>
+  `).join("");
 }
 
 function renderIssues() {
   document.getElementById("issuesCount").textContent = myIssues.length;
   const list = document.getElementById("issuesList");
-  if (myIssues.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا إشكالات</div>'; return; }
+  if (myIssues.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا توجد سجلات</div>'; return; }
   
   list.innerHTML = myIssues.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(i => `
     <div class="item-card ${i.isPraise ? 'green' : (i.status === 'resolved' ? 'blue' : 'red')}">
       <div class="item-info">
-        <h4>${i.isPraise ? '⭐' : '🚩'} ${esc(i.issueType || i.praiseType)}</h4>
-        <p>🏥 ${esc(cleanCenter(i.center))} • 🕐 ${new Date(i.timestamp).toLocaleDateString('ar-OM')}</p>
+        <h4>${i.isPraise ? '⭐' : '🚩'} ${esc(i.issueType || i.praiseType || '—')}</h4>
+        <p>🏥 ${esc(cleanCenter(i.center))} | 🎯 ${esc(i.targetName)} | 🕐 ${timeAgo(i.timestamp)}</p>
       </div>
-      <div style="font-size:20px;">${i.status === 'resolved' ? '✅' : '⏳'}</div>
     </div>
   `).join("");
 }
 
-function renderVisits() {
-  const list = document.getElementById("visitsList");
-  if (myVisits.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا زيارات</div>'; return; }
-  list.innerHTML = myVisits.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(v => `
+function renderBroadcasts() {
+  const list = document.getElementById("broadcastsFullList");
+  if (myBroadcasts.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا تعاميم</div>'; return; }
+  list.innerHTML = myBroadcasts.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(b => `
     <div class="item-card">
       <div class="item-info">
-        <h4>📋 زيارة ${esc(cleanCenter(v.center))}</h4>
-        <p>التقييم: ${v.score}%</p>
+        <h4>📢 ${esc(b.title)}</h4>
+        <p>${esc(b.description)}</p>
+        <p style="font-size:10px; opacity:0.6; margin-top:4px;">🕐 ${timeAgo(b.timestamp)}</p>
       </div>
-      <div style="font-size:20px;">${v.score >= 90 ? '🟢' : v.score >= 70 ? '🟡' : '🔴'}</div>
     </div>
   `).join("");
 }
 
-function renderDuty() {
-  const currentKey = getCurrentShiftByTime();
-  const period = { morning: "🌅 صباحي", evening: "🌇 مسائي", night: "🌙 ليلي" }[currentKey];
-  const list = document.getElementById("dutyList");
+/* ═══ الدردشة ═══ */
+function renderChat() {
+  if (!currentUser) return;
+  const chatDiv = document.getElementById("chatMessages");
+  if (!chatDiv) return;
+  let msgs = allChats.filter(m => m.supervisor === currentUser.name).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
   
-  list.innerHTML = supervisorCenters.map(c => {
-    const shift = myShifts[cleanCenter(c) + "_" + currentKey];
-    const isOpen = shift && shift.status === "open";
-    return `<div class="item-card ${isOpen ? 'green' : 'red'}">
-      <div class="item-info">
-        <h4>🏥 ${esc(cleanCenter(c))}</h4>
-        <p>الشفت: ${period} | ${isOpen ? `الفريق: ${shift.paramedics?.length || 0}` : 'لم يفتح'}</p>
-      </div>
-      <div style="font-weight:900;">${isOpen ? '🟢 مفتوح' : '⚠️ مغلق'}</div>
+  if (msgs.length === 0) { chatDiv.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px;">لا رسائل. ابدأ المحادثة.</div>'; return; }
+  
+  chatDiv.innerHTML = msgs.map(m => {
+    const isMine = m.sender === currentUser.name;
+    return `<div class="message ${isMine ? 'mine' : 'theirs'}">
+      <div>${esc(m.text)}</div>
+      <span class="time">${timeAgo(m.timestamp)}</span>
     </div>`;
   }).join("");
+  chatDiv.scrollTop = chatDiv.scrollHeight;
 }
 
-function renderProfile() {
-  document.getElementById("pStatTotal").textContent = myIssues.length + myVisits.length;
-  document.getElementById("pStatResolved").textContent = myIssues.filter(i => i.status === 'resolved').length;
+async function sendMessage() {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = "";
+  
+  await fsAdd("messages", {
+    supervisor: currentUser.name,
+    sender: currentUser.name,
+    text: text,
+    timestamp: new Date().toISOString(),
+    read: false
+  });
+  syncData();
 }
 
 function switchPage(id) {
@@ -439,83 +379,123 @@ function switchPage(id) {
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ═══ إضافة إشكالية / إشادة ═══ */
-function startEntry(type) {
+/* ═══ تسجيل إشكالية / إشادة (ديناميكي) ═══ */
+async function startEntry(type) {
+  if (supervisorCenters.length === 0) { showToast("لا توجد مراكز مسندة", "danger"); return; }
+  
+  // جلب المسعفين من السحابة
+  const params = await fsList("paramedics").catch(() => []);
+  
   openModal(type === 'complaint' ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة", `
-    <select id="entryCenter">
-      ${supervisorCenters.map(c => `<option>${esc(c)}</option>`).join("")}
+    <label>🏥 المركز</label>
+    <select id="entryCenter" onchange="updateTargets('${type}')">
+      ${supervisorCenters.map(c => `<option value="${esc(c)}">${esc(cleanCenter(c))}</option>`).join("")}
     </select>
-    <input type="text" id="entryType" placeholder="النوع...">
-    <textarea id="entryDesc" placeholder="الوصف..." rows="3"></textarea>
+
+    <label>🎯 نوع الهدف</label>
+    <select id="entryTargetType" onchange="updateTargets('${type}')">
+      <option value="paramedic">👨‍🚒 مسعف</option>
+      <option value="center">🏥 المركز نفسه</option>
+      <option value="vehicle">🚑 مركبة</option>
+      <option value="stock">💊 مخزن طبي</option>
+    </select>
+
+    <label id="targetNameLabel">👤 اسم المسعف</label>
+    <select id="entryTargetName"></select>
+
+    <label>${type === 'complaint' ? '🚩 نوع الإشكالية' : '⭐ نوع الإشادة'}</label>
+    <input type="text" id="entryType" placeholder="اكتب النوع هنا...">
+
+    <label>📝 الوصف</label>
+    <textarea id="entryDesc" placeholder="اكتب التفاصيل..." rows="3"></textarea>
+
     <button class="btn ${type === 'complaint' ? 'danger' : 'success'} block" onclick="submitEntry('${type}')">💾 حفظ</button>
   `);
+
+  // تعبئة أولية
+  setTimeout(() => updateTargets(type, params), 100);
+}
+
+function updateTargets(type, paramData = null) {
+  const centerVal = document.getElementById("entryCenter").value;
+  const targetType = document.getElementById("entryTargetType").value;
+  const targetNameSelect = document.getElementById("entryTargetName");
+  const label = document.getElementById("targetNameLabel");
+
+  if (targetType === "paramedic") {
+    label.textContent = "👤 اسم المسعف";
+    const centerClean = cleanCenter(centerVal);
+    // جلب المسعفين التابعين للمركز
+    const loadParams = paramData || window._cachedParams || [];
+    const filtered = loadParams.filter(p => cleanCenter(p.centerName) === centerClean);
+    
+    if (filtered.length === 0) {
+      targetNameSelect.innerHTML = '<option value="">لا يوجد مسعفون في هذا المركز</option>';
+    } else {
+      targetNameSelect.innerHTML = filtered.map(p => `<option value="${esc(p.name)}">${esc(p.name)} (${esc(p.rank || '')})</option>`).join("");
+    }
+  } else if (targetType === "center") {
+    label.textContent = "🏥 المركز";
+    targetNameSelect.innerHTML = `<option value="${esc(centerVal)}">${esc(cleanCenter(centerVal))}</option>`;
+  } else if (targetType === "vehicle") {
+    label.textContent = "🚑 رقم المركبة";
+    targetNameSelect.innerHTML = '<option value="AMB-01">AMB-01</option><option value="AMB-02">AMB-02</option>';
+  } else if (targetType === "stock") {
+    label.textContent = "💊 المخزن";
+    targetNameSelect.innerHTML = '<option value="المخزن الطبي">المخزن الطبي</option>';
+  }
 }
 
 async function submitEntry(type) {
   const center = document.getElementById("entryCenter").value;
-  const issueType = document.getElementById("entryType").value;
+  const targetType = document.getElementById("entryTargetType").value;
+  const targetName = document.getElementById("entryTargetName").value;
+  const entryType = document.getElementById("entryType").value;
   const desc = document.getElementById("entryDesc").value;
-  if (!desc) { showToast("أدخل الوصف", "danger"); return; }
+
+  if (!entryType || !desc) { showToast("أكمل البيانات", "danger"); return; }
 
   await fsAdd("issues", {
-    center, centerName: center, issueType, description: desc,
-    supervisor: currentUser.name, sector: supervisorSector,
-    isPraise: type === 'praise', status: type === 'praise' ? 'resolved' : 'new',
+    center: center,
+    centerName: center,
+    targetType: targetType,
+    targetName: targetName,
+    issueType: type === 'complaint' ? entryType : null,
+    praiseType: type === 'praise' ? entryType : null,
+    description: desc,
+    supervisor: currentUser.name,
+    sector: supervisorSector,
+    isPraise: type === 'praise',
+    status: type === 'praise' ? 'resolved' : 'new',
     timestamp: new Date().toISOString()
   });
   
-  showToast("تم الحفظ"); closeModal(); syncData();
+  showToast("تم الحفظ بنجاح"); closeModal(); syncData();
 }
 
-/* ═══ زيارة ═══ */
-function startVisit() {
-  openModal("📋 تسجيل زيارة", `
-    <select id="visitCenter">
-      ${supervisorCenters.map(c => `<option>${esc(c)}</option>`).join("")}
-    </select>
-    <input type="number" id="visitScore" placeholder="التقييم (0-100)">
-    <textarea id="visitNotes" placeholder="الملاحظات..." rows="3"></textarea>
-    <button class="btn success block" onclick="submitVisit()">💾 حفظ</button>
-  `);
-}
-
-async function submitVisit() {
-  const center = document.getElementById("visitCenter").value;
-  const score = document.getElementById("visitScore").value;
-  const notes = document.getElementById("visitNotes").value;
-  
-  await fsAdd("visits", {
-    center, centerName: center, score: parseInt(score) || 0, notes,
-    supervisor: currentUser.name, sector: supervisorSector,
-    timestamp: new Date().toISOString()
-  });
-  
-  showToast("تم الحفظ"); closeModal(); syncData();
-}
-
-/* ═══ نافذة ═══ */
+/* ═══ أدوات ═══ */
 function openModal(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); }
 function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
+function manualRefresh() { showToast("تحديث..."); syncData(); }
+function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem(SESSION_KEY); location.href="index.html"; } }
 
-/* ═══ التشغيل التلقائي ═══ */
+/* ═══ التشغيل ═══ */
 (function() {
   const saved = localStorage.getItem(SESSION_KEY);
   if (saved) {
     try {
       currentUser = JSON.parse(saved);
-      // التحقق من أن المستخدم مشرف
-      if (currentUser && currentUser.type === "supervisor") {
-        document.getElementById("loginScreen").style.display = "none";
-        prepareScope();
+      if (currentUser && (currentUser.type === "supervisor" || currentUser.code?.startsWith("SUP"))) {
+        document.getElementById("mainApp").classList.add("ready");
+        initApp();
+        // كاش المسعفين
+        fsList("paramedics").then(p => window._cachedParams = p).catch(()=>{});
       } else {
-        localStorage.removeItem(SESSION_KEY);
-        document.getElementById("loginScreen").style.display = "flex";
+        window.location.href = "index.html";
       }
-    } catch(e) {
-      document.getElementById("loginScreen").style.display = "flex";
-    }
+    } catch(e) { window.location.href = "index.html"; }
   } else {
-    document.getElementById("loginScreen").style.display = "flex";
+    window.location.href = "index.html";
   }
 })();
 </script>
