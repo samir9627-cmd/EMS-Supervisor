@@ -2,70 +2,160 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الإدارة العامة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#041814">
+<title>غرفة التحكم العليا — الإدارة العامة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; }
+    :root { --gold:#c9a227; --gold-light:#e5c158; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
     body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; }
-    .topbar { background:var(--green); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
-    .topbar h2 { font-size:14px; color:var(--gold); }
-    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; }
-    .content { padding:15px; max-width:600px; margin:0 auto; }
-    .card { background:rgba(255,255,255,0.05); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; }
-    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; }
-    .form-group { margin-bottom:10px; }
-    .form-group label { display:block; font-size:12px; color:var(--gold); margin-bottom:4px; }
-    input, select { width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(201,162,39,0.3); border-radius:8px; color:#fff; font-size:14px; outline:none; }
-    select option { background:var(--bg); }
-    button.btn-save { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); margin-top:10px; }
-    .msg { text-align:center; font-size:12px; font-weight:bold; margin-top:10px; }
     
-    /* قائمة المستخدمين */
-    .user-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
-    .user-info h4 { font-size:14px; color:var(--gold); margin-bottom:4px; }
-    .user-info p { font-size:11px; color:rgba(255,255,255,0.6); }
-    .user-code { background:rgba(201,162,39,0.2); color:var(--gold); padding:4px 8px; border-radius:6px; font-weight:900; font-size:12px; letter-spacing:1px; }
+    /* الشريط العلوي */
+    .topbar { background:linear-gradient(135deg, var(--green), #041814); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; box-shadow:0 4px 15px rgba(0,0,0,0.5); }
+    .topbar h2 { font-size:16px; color:var(--gold); display:flex; align-items:center; gap:8px; }
+    .btn-logout { background:var(--red); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.2s; }
+    .btn-logout:active { transform:scale(0.95); }
+    
+    .content { padding:15px; max-width:800px; margin:0 auto; }
+    
+    /* التبويبات */
+    .tabs { display:flex; gap:8px; margin-bottom:15px; overflow-x:auto; padding-bottom:5px; scrollbar-width:none; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab-btn { padding:10px 18px; border-radius:20px; background:rgba(255,255,255,0.05); border:1px solid rgba(201,162,39,0.3); color:#fff; font-weight:bold; font-size:13px; cursor:pointer; white-space:nowrap; transition:0.2s; }
+    .tab-btn.active { background:var(--gold); color:var(--bg); border-color:var(--gold); }
+    
+    /* البطاقات */
+    .card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; display:none; animation:fadeIn 0.3s; }
+    .card.active { display:block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(-5px); } to { opacity:1; transform:translateY(0); } }
+    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; border-bottom:1px solid rgba(201,162,39,0.2); padding-bottom:10px; display:flex; align-items:center; gap:8px; }
+    
+    /* النماذج */
+    .form-group { margin-bottom:12px; }
+    .form-group label { display:block; font-size:12px; color:var(--gold); margin-bottom:4px; }
+    input, select, textarea { width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid rgba(201,162,39,0.3); border-radius:8px; color:#fff; font-size:14px; outline:none; }
+    select option { background:var(--bg); }
+    textarea { resize:vertical; min-height:80px; }
+    .btn-main { width:100%; padding:14px; border-radius:8px; border:none; font-size:14px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, #43a047, #69f0ae); color:var(--bg); margin-top:10px; transition:0.2s; }
+    .btn-main:active { transform:scale(0.98); }
+    
+    /* الجداول / القوائم */
+    .list-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+    .list-info h4 { font-size:14px; color:var(--gold); margin-bottom:4px; }
+    .list-info p { font-size:11px; color:rgba(255,255,255,0.6); }
+    .list-actions { display:flex; gap:8px; }
+    .btn-icon { background:transparent; border:1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 10px; border-radius:6px; cursor:pointer; font-size:12px; }
+    .btn-icon.edit { border-color:var(--blue); color:var(--blue); }
+    .btn-icon.delete { border-color:var(--red); color:var(--red); }
+    
+    /* KPI Dashboard */
+    .kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px; }
+    .kpi-box { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid rgba(201,162,39,0.3); border-radius:12px; padding:15px; text-align:center; }
+    .kpi-box .num { font-size:28px; font-weight:900; color:var(--gold); }
+    .kpi-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); }
+    
+    /* الأيزو */
+    .iso-badge { display:flex; align-items:center; gap:15px; background:linear-gradient(135deg, rgba(201,162,39,0.2), rgba(4,24,20,0.9)); padding:15px; border-radius:12px; border:1px solid var(--gold); margin-bottom:15px; }
+    .iso-badge img { width:60px; height:60px; object-fit:contain; }
+    .iso-text h4 { color:var(--gold); font-size:14px; }
+    .iso-text p { font-size:11px; color:#ccc; }
 </style>
 </head>
 <body>
+
 <div class="topbar">
-    <h2 id="nameDisplay">جاري التحميل...</h2>
+    <h2>🏛️ غرفة التحكم العليا</h2>
     <button class="btn-logout" onclick="logout()">خروج</button>
 </div>
 
 <div class="content">
-    <!-- نموذج توليد كود -->
-    <div class="card">
-        <h3>🏛️ توليد كود جديد</h3>
+    
+    <!-- التبويبات -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('dash')">📊 الإحصائيات</button>
+        <button class="tab-btn" onclick="switchTab('users')">👥 المستخدمون</button>
+        <button class="tab-btn" onclick="switchTab('broadcast')">📢 التعاميم</button>
+        <button class="tab-btn" onclick="switchTab('iso')">🏆 الأيزو 9001</button>
+    </div>
+
+    <!-- 1. الإحصائيات -->
+    <div class="card active" id="tab-dash">
+        <h3>📊 مؤشرات الأداء (KPI)</h3>
+        <div class="kpi-grid">
+            <div class="kpi-box"><div class="num" id="kpiUsers">0</div><div class="lbl">إجمالي المستخدمين</div></div>
+            <div class="kpi-box"><div class="num" id="kpiIssues">0</div><div class="lbl">إشكالات مسجلة</div></div>
+            <div class="kpi-box"><div class="num" id="kpiVisits">0</div><div class="lbl">زيارات ميدانية</div></div>
+            <div class="kpi-box"><div class="num" id="kpiBroadcasts">0</div><div class="lbl">تعاميم مرسلة</div></div>
+        </div>
+    </div>
+
+    <!-- 2. المستخدمون (CRUD) -->
+    <div class="card" id="tab-users">
+        <h3>👥 إدارة المستخدمين</h3>
+        
+        <input type="hidden" id="editUserId" value="">
+        
         <div class="form-group">
             <label>الاسم / المركز</label>
-            <input type="text" id="newName" placeholder="مثال: مركز بوشر">
+            <input type="text" id="userName" placeholder="مثال: مركز بوشر">
         </div>
         <div class="form-group">
             <label>نوع الحساب</label>
-            <select id="newType" onchange="generateCode()">
+            <select id="userType">
                 <option value="supervisor">مشرف ميداني</option>
                 <option value="ops">غرفة عمليات</option>
                 <option value="admin">إدارة</option>
             </select>
         </div>
         <div class="form-group">
-            <label>الكود التلقائي</label>
-            <input type="text" id="newCode" readonly style="text-align:center; color:var(--gold); font-weight:bold; font-size:16px;">
+            <label>الكود (تلقائي أو يدوي)</label>
+            <input type="text" id="userCode" placeholder="SUP-XXXX" style="text-align:center; color:var(--gold); font-weight:bold;">
         </div>
-        <button class="btn-save" onclick="saveNewUser()">💾 حفظ في Firebase</button>
-        <div id="msgBox" class="msg"></div>
+        <button class="btn-main" id="btnSaveUser" onclick="saveUser()">➕ إضافة مستخدم</button>
+        <button class="btn-main" id="btnCancelEdit" onclick="cancelEditUser()" style="background:#555; display:none;">إلغاء التعديل</button>
+        <div id="userMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
+
+        <hr style="border-color:rgba(255,255,255,0.1); margin:20px 0;">
+        <h3>📋 قائمة المستخدمين</h3>
+        <div id="usersList"><p style="text-align:center; color:#ccc;">جاري التحميل...</p></div>
     </div>
 
-    <!-- قائمة المستخدمين -->
-    <div class="card">
-        <h3>👥 المستخدمون المسجلون</h3>
-        <div id="usersList">
-            <p style="text-align:center; font-size:12px; color:#ccc;">جاري التحميل...</p>
+    <!-- 3. التعاميم -->
+    <div class="card" id="tab-broadcast">
+        <h3>📢 إرسال تعميم للمشرفين</h3>
+        <div class="form-group">
+            <label>عنوان التعميم</label>
+            <input type="text" id="bTitle" placeholder="مثال: تنبيه هام بخصوص المداومات">
+        </div>
+        <div class="form-group">
+            <label>نص التعميم</label>
+            <textarea id="bDesc" placeholder="اكتب نص التعميم هنا..."></textarea>
+        </div>
+        <button class="btn-main" onclick="sendBroadcast()">📤 إرسال التعميم</button>
+        <div id="bMsg" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
+        
+        <hr style="border-color:rgba(255,255,255,0.1); margin:20px 0;">
+        <h3>📜 التعاميم السابقة</h3>
+        <div id="broadcastsList"><p style="text-align:center; color:#ccc;">جاري التحميل...</p></div>
+    </div>
+
+    <!-- 4. الأيزو -->
+    <div class="card" id="tab-iso">
+        <h3>🏆 شهادة الأيزو 9001:2015</h3>
+        <div class="iso-badge">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/ISO_9001-2015.png/200px-ISO_9001-2015.png" onerror="this.src='https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg'">
+            <div class="iso-text">
+                <h4>نظام إدارة الجودة معتمد</h4>
+                <p>الإدارة العامة للإسعاف — جميع العمليات موثقة وفقاً لمعايير الجودة العالمية.</p>
+            </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px; font-size:12px; line-height:1.8;">
+            <p><b>سجل المراجعات:</b> تقارير الزيارات الميدانية تعتبر مراجعات داخلية موثقة.</p>
+            <p><b>الإجراءات التصحيحية:</b> يتم تتبع الإشكالات حتى إغلاقها بالكامل.</p>
         </div>
     </div>
+
 </div>
 
 <script>
@@ -77,30 +167,111 @@
     if (!sessionStr) window.location.href = "index.html";
     const currentUser = JSON.parse(sessionStr || "{}");
     if (currentUser.type !== "admin") window.location.href = "index.html";
-    
-    document.getElementById("nameDisplay").innerText = currentUser.name || "الإدارة";
 
     function logout() { localStorage.removeItem("amb_session"); window.location.href = "index.html"; }
 
-    // دالة قراءة القيم
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
     function getBool(field) { return (field && field.booleanValue !== undefined) ? field.booleanValue : true; }
-
-    // توليد الكود
-    function generateCode() {
-        const type = document.getElementById("newType").value;
-        const prefix = type === "admin" ? "ADM" : (type === "ops" ? "OPS" : "SUP");
-        document.getElementById("newCode").value = `${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
+    function docToObj(doc) {
+        const obj = {}; if (!doc.fields) return obj;
+        for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
+        obj._id = doc.name.split("/").pop(); return obj;
     }
 
-    // حفظ المستخدم الجديد
-    async function saveNewUser() {
-        const name = document.getElementById("newName").value.trim();
-        const type = document.getElementById("newType").value;
-        const code = document.getElementById("newCode").value;
-        const msg = document.getElementById("msgBox");
+    // التبويبات
+    function switchTab(tabId) {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // 1. الإحصائيات
+    async function loadKPIs() {
+        try {
+            const resUsers = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json());
+            const resActs = await fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json());
+            const resBroadcasts = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json());
+
+            document.getElementById('kpiUsers').innerText = resUsers.documents ? resUsers.documents.length : 0;
+            
+            let issues = 0, visits = 0;
+            if (resActs.documents) {
+                resActs.documents.forEach(d => {
+                    const t = getString(d.fields.type);
+                    if (t === 'issue') issues++;
+                    if (t === 'visit') visits++;
+                });
+            }
+            document.getElementById('kpiIssues').innerText = issues;
+            document.getElementById('kpiVisits').innerText = visits;
+            document.getElementById('kpiBroadcasts').innerText = resBroadcasts.documents ? resBroadcasts.documents.length : 0;
+
+        } catch(e) { console.log("KPI Error"); }
+    }
+
+    // 2. المستخدمون (CRUD)
+    async function loadUsers() {
+        const listDiv = document.getElementById("usersList");
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
+            const data = await res.json();
+            
+            if (!data.documents || data.documents.length === 0) {
+                listDiv.innerHTML = "<p style='text-align:center; color:#ccc;'>لا يوجد مستخدمون.</p>";
+                return;
+            }
+
+            listDiv.innerHTML = data.documents.map(doc => {
+                const obj = docToObj(doc);
+                let roleName = obj.type === 'admin' ? 'إدارة' : (obj.type === 'ops' ? 'عمليات' : 'مشرف');
+                return `
+                    <div class="list-item">
+                        <div class="list-info">
+                            <h4>${obj.name}</h4>
+                            <p>${roleName} | كود: ${obj.code}</p>
+                        </div>
+                        <div class="list-actions">
+                            <button class="btn-icon edit" onclick="editUser('${obj._id}', '${obj.name}', '${obj.type}', '${obj.code}')">تعديل</button>
+                            <button class="btn-icon delete" onclick="deleteUser('${obj._id}')">حذف</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        } catch(e) { listDiv.innerHTML = "<p style='text-align:center; color:#ff5252;'>خطأ في التحميل.</p>"; }
+    }
+
+    function editUser(id, name, type, code) {
+        document.getElementById('editUserId').value = id;
+        document.getElementById('userName').value = name;
+        document.getElementById('userType').value = type;
+        document.getElementById('userCode').value = code;
+        document.getElementById('btnSaveUser').innerText = "💾 حفظ التعديل";
+        document.getElementById('btnCancelEdit').style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEditUser() {
+        document.getElementById('editUserId').value = "";
+        document.getElementById('userName').value = "";
+        document.getElementById('userCode').value = "";
+        document.getElementById('btnSaveUser').innerText = "➕ إضافة مستخدم";
+        document.getElementById('btnCancelEdit').style.display = "none";
+        document.getElementById('userMsg').innerText = "";
+    }
+
+    async function saveUser() {
+        const id = document.getElementById('editUserId').value;
+        const name = document.getElementById('userName').value.trim();
+        const type = document.getElementById('userType').value;
+        let code = document.getElementById('userCode').value.trim().toUpperCase();
+        const msg = document.getElementById('userMsg');
 
         if (!name) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل الاسم"; return; }
+        if (!code) { 
+            const prefix = type === 'admin' ? 'ADM' : (type === 'ops' ? 'OPS' : 'SUP');
+            code = `${prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
+        }
 
         msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الحفظ...";
 
@@ -114,66 +285,81 @@
         };
 
         try {
-            const res = await fetch(`${FIRESTORE_URL}/access_code`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الحفظ بنجاح!";
-                document.getElementById("newName").value = "";
-                generateCode();
-                loadUsers(); // تحديث القائمة
+            if (id) {
+                // تعديل
+                await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
+                msg.style.color = "#69f0ae"; msg.innerText = "✅ تم التعديل بنجاح";
             } else {
-                msg.style.color = "#ff5252"; msg.innerText = "❌ فشل الحفظ";
+                // إضافة
+                await fetch(`${FIRESTORE_URL}/access_code`, { method: "POST", body: JSON.stringify(payload) });
+                msg.style.color = "#69f0ae"; msg.innerText = "✅ تمت الإضافة بنجاح";
             }
-        } catch (e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
+            cancelEditUser();
+            loadUsers();
+            loadKPIs();
+        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
     }
 
-    // تحميل المستخدمين
-    async function loadUsers() {
-        const listDiv = document.getElementById("usersList");
+    async function deleteUser(id) {
+        if (!confirm("هل أنت متأكد من حذف هذا المستخدم نهائياً؟")) return;
         try {
-            const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
-            const data = await res.json();
-
-            if (!data.documents || data.documents.length === 0) {
-                listDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا يوجد مستخدمون بعد.</p>";
-                return;
-            }
-
-            listDiv.innerHTML = data.documents.map(doc => {
-                const f = doc.fields;
-                const name = getString(f.name);
-                const code = getString(f.code);
-                const type = getString(f.type);
-                const active = getBool(f.active);
-
-                let roleName = "مشرف";
-                if (type === "admin") roleName = "إدارة";
-                if (type === "ops") roleName = "عمليات";
-
-                return `
-                    <div class="user-item" style="${active ? '' : 'opacity:0.5;'}">
-                        <div class="user-info">
-                            <h4>${name}</h4>
-                            <p>${roleName} ${active ? '(نشط)' : '(معطل)'}</p>
-                        </div>
-                        <div class="user-code">${code}</div>
-                    </div>
-                `;
-            }).join("");
-
-        } catch(e) {
-            listDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ff5252;'>خطأ في تحميل البيانات.</p>";
-        }
+            await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "DELETE" });
+            loadUsers();
+            loadKPIs();
+        } catch(e) { alert("خطأ في الحذف"); }
     }
 
-    // التشغيل عند فتح الصفحة
+    // 3. التعاميم
+    async function sendBroadcast() {
+        const title = document.getElementById('bTitle').value.trim();
+        const desc = document.getElementById('bDesc').value.trim();
+        const msg = document.getElementById('bMsg');
+        if (!title || !desc) { msg.style.color = "#ff5252"; msg.innerText = "⚠️ أدخل العنوان والوصف"; return; }
+
+        msg.style.color = "#e5c158"; msg.innerText = "⏳ جاري الإرسال...";
+        const payload = {
+            fields: {
+                title: { stringValue: title },
+                description: { stringValue: desc },
+                sender: { stringValue: currentUser.name },
+                timestamp: { stringValue: new Date().toISOString() }
+            }
+        };
+
+        try {
+            await fetch(`${FIRESTORE_URL}/broadcasts`, { method: "POST", body: JSON.stringify(payload) });
+            msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الإرسال بنجاح";
+            document.getElementById('bTitle').value = "";
+            document.getElementById('bDesc').value = "";
+            loadBroadcasts();
+            loadKPIs();
+        } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
+    }
+
+    async function loadBroadcasts() {
+        const listDiv = document.getElementById("broadcastsList");
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=50`, { cache: "no-store" });
+            const data = await res.json();
+            if (!data.documents) { listDiv.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد تعاميم.</p>"; return; }
+            
+            listDiv.innerHTML = data.documents.map(docToObj).reverse().map(b => `
+                <div class="list-item" style="border-right-color:var(--blue);">
+                    <div class="list-info">
+                        <h4>📢 ${b.title}</h4>
+                        <p>${b.description}</p>
+                        <p style="font-size:10px; opacity:0.5; margin-top:4px;">من: ${b.sender} | ${new Date(b.timestamp).toLocaleDateString('ar-OM')}</p>
+                    </div>
+                </div>
+            `).join("");
+        } catch(e) {}
+    }
+
+    // التشغيل
     window.onload = function() {
-        generateCode();
+        loadKPIs();
         loadUsers();
+        loadBroadcasts();
     };
 </script>
 </body>
