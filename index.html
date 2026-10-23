@@ -52,7 +52,6 @@
         msg.textContent = "";
         msg.style.color = "#ff5252";
 
-        // البحث عن الكود في قاعدة البيانات (Firestore)
         db.collection("access_code").where("code", "==", code).get()
           .then(snapshot => {
               if (snapshot.empty) {
@@ -61,19 +60,14 @@
                   return;
               }
               
-              // الكود موجود! جلب بيانات المستخدم
               const userData = snapshot.docs[0].data();
-              
-              // حفظ الجلسة في المتصفح
               localStorage.setItem("ems_session", JSON.stringify(userData));
               
               msg.style.color = "#69f0ae";
               msg.textContent = "✅ تم الدخول بنجاح...";
               
-              // التوجيه حسب نوع المستخدم
               setTimeout(() => {
                   if (userData.type === "admin") window.location.href = "./admin.html";
-                  else if (userData.type === "ops") window.location.href = "./ops.html";
                   else window.location.href = "./app.html";
               }, 1000);
           })
