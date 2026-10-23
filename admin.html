@@ -44,7 +44,7 @@
     
     /* النماذج */
     .form-group { margin-bottom:12px; }
-    .form-group label { display:block; font-size:12px; color:var(--gold); margin-bottom:6px; font-weight:bold; }
+    .form-group label { display:block; font-size:12px; color:var(--gold-light); margin-bottom:6px; font-weight:bold; }
     input, select, textarea { width:100%; padding:14px; background:rgba(0,0,0,0.4); border:1px solid rgba(151,141,91,0.3); border-radius:10px; color:#fff; font-size:14px; font-family:inherit; outline:none; transition:0.3s; }
     input:focus, select:focus, textarea:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(151,141,91,0.2); }
     select option { background:var(--bg); }
@@ -169,7 +169,7 @@
 </div>
 
 <script>
-    // ⚠️ ضع هنا اسم مشروع Firebase الخاص بك
+    // ⚠️ اسم المشروع والمجموعة
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
@@ -205,7 +205,7 @@
     async function loadKPIs() {
         try {
             const [resSup, resActs, resB] = await Promise.all([
-                fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`).then(r => r.json()),
+                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json())
             ]);
@@ -233,7 +233,7 @@
     async function loadSupervisors() {
         const el = document.getElementById("supervisorsList");
         try {
-            const res = await fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`, { cache: "no-store" });
+            const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
             let list = data.documents ? data.documents.map(docToObj) : [];
@@ -305,12 +305,13 @@
         };
 
         try {
+            // الحفظ في access_code بدون S
             if (id) {
-                await fetch(`${FIRESTORE_URL}/access_codes/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
+                await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "PATCH", body: JSON.stringify(payload) });
                 msg.style.color = "#69f0ae"; msg.innerText = "✅ تم التعديل بنجاح";
             } else {
                 payload.fields.createdAt = { stringValue: new Date().toISOString() };
-                await fetch(`${FIRESTORE_URL}/access_codes`, { method: "POST", body: JSON.stringify(payload) });
+                await fetch(`${FIRESTORE_URL}/access_code`, { method: "POST", body: JSON.stringify(payload) });
                 msg.style.color = "#69f0ae"; msg.innerText = "✅ تمت الإضافة بنجاح";
             }
             cancelEditSupervisor();
@@ -322,7 +323,7 @@
     async function deleteSupervisor(id) {
         if (!confirm("هل أنت متأكد من حذف هذا المشرف؟")) return;
         try {
-            await fetch(`${FIRESTORE_URL}/access_codes/${id}`, { method: "DELETE" });
+            await fetch(`${FIRESTORE_URL}/access_code/${id}`, { method: "DELETE" });
             loadSupervisors();
             loadKPIs();
         } catch(e) { alert("خطأ في الحذف"); }
