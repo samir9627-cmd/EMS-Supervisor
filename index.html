@@ -135,7 +135,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
         } catch (error) {
             // إذا فشل الدخول، نظهر الخطأ
             msg.style.color = "#ff5252"; 
-            msg.innerHTML = "❌ الكود غير صحيح أو غير مفعل"; 
+            msg.innerHTML = "❌ خطأ: " + error.message;
             btn.innerHTML = "<span>🔓</span> <span>دخول النظام</span>"; 
             btn.disabled = false;
             console.error(error);
