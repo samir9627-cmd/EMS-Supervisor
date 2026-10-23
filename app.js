@@ -1,19 +1,63 @@
 // ==========================================
-// 1. إدارة البيانات (Persistence)
+// 1. المتغيرات العامة والاتصال بالسحابة
 // ==========================================
-let database = JSON.parse(localStorage.getItem('adminData')) || [];
-let ADMIN_PASSWORD = localStorage.getItem('adminPassword') || "1234";
+let database = [];
+let ADMIN_PASSWORD = "1234"; // كلمة المرور الافتراضية
 
-// حفظ البيانات
-function saveToLocalStorage() {
-    localStorage.setItem('adminData', JSON.stringify(database));
+// دالة لجلب البيانات من السحابة عند فتح التطبيق
+async function initCloudData() {
+    if (!window.firebaseDB) {
+        setTimeout(initCloudData, 500); // انتظار تحميل Firebase
+        return;
+    }
+    
+    const { db, doc, getDoc, collection, getDocs } = window.firebaseDB;
+    try {
+        // 1. جلب كلمة المرور
+        const passDoc = await getDoc(doc(db, "settings", "password"));
+        if (passDoc.exists()) {
+            ADMIN_PASSWORD = passDoc.data().value;
+        } else {
+            await setDoc(doc(db, "settings", "password"), { value: "1234" }); // حفظ الافتراضية
+        }
+
+        // 2. جلب الهوية (الاسم والشعار)
+        const identityDoc = await getDoc(doc(db, "settings", "identity"));
+        if (identityDoc.exists()) {
+            localStorage.setItem('appName', identityDoc.data().appName);
+            localStorage.setItem('appLogo', identityDoc.data().appLogo);
+            loadIdentity(); // تحديث الواجهة
+        }
+
+        // 3. جلب السجلات
+        database = [];
+        const querySnapshot = await getDocs(collection(db, "records"));
+        querySnapshot.forEach((doc) => {
+            database.push({ ...doc.data(), id: doc.id }); // إضافة الـ ID
+        });
+
+        // تحديث الواجهات
+        renderTable();
+        renderAdminDashboard();
+        console.log("✅ تم تحميل البيانات من السحابة");
+        
+    } catch (error) {
+        console.error("❌ خطأ في جلب البيانات:", error);
+        showToast("فشل الاتصال بقاعدة البيانات", "danger");
+    }
 }
 
 // ==========================================
 // 2. تسجيل الدخول
 // ==========================================
-function checkLogin() {
+async function checkLogin() {
     const pass = document.getElementById('adminPassword').value;
+    
+    // إذا كانت كلمة المرور لم تجلب بعد، ننتظر قليلاً
+    if (ADMIN_PASSWORD === "1234" && !window.firebaseDB) {
+        await initCloudData();
+    }
+    
     if (pass === ADMIN_PASSWORD) {
         document.getElementById('loginScreen').style.display = 'none';
         sessionStorage.setItem('isAdmin', 'true');
@@ -25,7 +69,7 @@ function checkLogin() {
 }
 
 // ==========================================
-// 3. توليد الجدول الشهري (يشمل كل أيام الشهر)
+// 3. الجدول الشهري
 // ==========================================
 function generateMonthDays() {
     const today = new Date();
@@ -38,7 +82,6 @@ function generateMonthDays() {
         let date = new Date(year, month, i);
         let dayName = date.toLocaleDateString('ar-EG', { weekday: 'long' });
         let dateString = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
-        // أيام الويكند (الجمعة والسبت)
         let isWeekend = (dayName === 'الجمعة' || dayName === 'السبت');
         days.push({ day: i, name: dayName, date: dateString, isWeekend: isWeekend });
     }
@@ -51,7 +94,6 @@ function renderTable() {
     const days = generateMonthDays();
 
     days.forEach(day => {
-        // البحث عن سجل لهذا اليوم
         const record = database.find(r => r.date === day.date) || {};
         const tr = document.createElement('tr');
         if (day.isWeekend) tr.classList.add('weekend');
@@ -69,12 +111,12 @@ function renderTable() {
 }
 
 // ==========================================
-// 4. لوحة التحكم والإحصائيات
+// 4. الإضافة والتعديل والحذف (مربوط بالسحابة)
 // ==========================================
 function renderAdminDashboard() {
     renderRecordsList();
     updateStats();
-    loadIdentity(); // تحميل الشعار والاسم
+    loadIdentity();
 }
 
 function updateStats() {
@@ -83,8 +125,7 @@ function updateStats() {
     document.getElementById('statCommendations').innerText = database.filter(r => r.commendation).length;
 }
 
-// إضافة / تعديل البيانات
-document.getElementById('dataForm').addEventListener('submit', function(e) {
+document.getElementById('dataForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const editId = document.getElementById('editId').value;
     
@@ -96,24 +137,32 @@ document.getElementById('dataForm').addEventListener('submit', function(e) {
         notes: document.getElementById('notes').value.trim()
     };
 
-    if (editId) {
-        const index = database.findIndex(r => r.date === editId);
-        if(index > -1) database[index] = data;
-        showToast("تم تعديل البيانات بنجاح ✅");
-    } else {
-        const existingIndex = database.findIndex(r => r.date === data.date);
-        if(existingIndex > -1) {
-            database[existingIndex] = data; 
-        } else {
-            database.push(data); 
-        }
-        showToast("تمت الإضافة بنجاح ✅");
-    }
+    // استخدام التاريخ كـ ID فريد للسجل
+    const recordId = data.date; 
+    
+    if (!window.firebaseDB) return showToast("جاري الاتصال... حاول مجدداً", "danger");
+    const { db, doc, setDoc } = window.firebaseDB;
 
-    saveToLocalStorage();
-    resetForm();
-    renderTable();
-    renderAdminDashboard();
+    try {
+        // حفظ في السحابة (سيقوم بتحديث السجل إذا كان موجوداً أو إضافته إذا كان جديداً)
+        await setDoc(doc(db, "records", recordId), data);
+        
+        // تحديث المصفوفة المحلية
+        const existingIndex = database.findIndex(r => r.date === recordId);
+        if (existingIndex > -1) {
+            database[existingIndex] = { ...data, id: recordId };
+        } else {
+            database.push({ ...data, id: recordId });
+        }
+
+        showToast(editId ? "تم تعديل البيانات بنجاح ✅" : "تمت الإضافة بنجاح ✅");
+        resetForm();
+        renderTable();
+        renderAdminDashboard();
+    } catch (error) {
+        console.error(error);
+        showToast("حدث خطأ أثناء الحفظ", "danger");
+    }
 });
 
 function resetForm() {
@@ -124,7 +173,6 @@ function resetForm() {
     document.getElementById('submitBtn').innerText = "حفظ البيانات";
 }
 
-// عرض السجلات
 function renderRecordsList() {
     const container = document.getElementById('recordsContainer');
     container.innerHTML = '';
@@ -155,7 +203,6 @@ function renderRecordsList() {
     });
 }
 
-// تعديل وحذف
 function editRecord(date) {
     const record = database.find(r => r.date === date);
     if (record) {
@@ -171,13 +218,21 @@ function editRecord(date) {
     }
 }
 
-function deleteRecord(date) {
-    if (confirm('هل أنت متأكد من حذف هذا السجل نهائياً؟')) {
-        database = database.filter(r => r.date !== date);
-        saveToLocalStorage();
-        renderTable();
-        renderAdminDashboard();
-        showToast("تم الحذف بنجاح 🗑️", "danger");
+async function deleteRecord(date) {
+    if (confirm('هل أنت متأكد من حذف هذا السجل نهائياً من السحابة؟')) {
+        if (!window.firebaseDB) return;
+        const { db, doc, deleteDoc } = window.firebaseDB;
+        
+        try {
+            await deleteDoc(doc(db, "records", date));
+            database = database.filter(r => r.date !== date);
+            renderTable();
+            renderAdminDashboard();
+            showToast("تم الحذف بنجاح 🗑️", "danger");
+        } catch (error) {
+            console.error(error);
+            showToast("حدث خطأ أثناء الحذف", "danger");
+        }
     }
 }
 
@@ -193,7 +248,7 @@ function filterRecords() {
 // ==========================================
 // 5. الإعدادات (كلمة المرور والهوية)
 // ==========================================
-document.getElementById('passwordForm').addEventListener('submit', function(e) {
+document.getElementById('passwordForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const current = document.getElementById('currentPassword').value;
     const newP = document.getElementById('newPassword').value;
@@ -203,23 +258,37 @@ document.getElementById('passwordForm').addEventListener('submit', function(e) {
     if (newP !== confirmP) return showToast("كلمة المرور الجديدة غير متطابقة! ⚠️", "danger");
     if (newP.length < 4) return showToast("كلمة المرور قصيرة جداً! ⚠️", "danger");
 
-    ADMIN_PASSWORD = newP;
-    localStorage.setItem('adminPassword', newP);
-    this.reset();
-    showToast("تم تغيير كلمة المرور بنجاح! ✅");
+    if (!window.firebaseDB) return;
+    const { db, doc, setDoc } = window.firebaseDB;
+
+    try {
+        await setDoc(doc(db, "settings", "password"), { value: newP });
+        ADMIN_PASSWORD = newP;
+        this.reset();
+        showToast("تم تغيير كلمة المرور في السحابة بنجاح! ✅");
+    } catch (error) {
+        showToast("خطأ في تحديث كلمة المرور", "danger");
+    }
 });
 
-document.getElementById('identityForm').addEventListener('submit', function(e) {
+document.getElementById('identityForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const newName = document.getElementById('newAppName').value.trim();
-    const newLogo = document.getElementById('newLogoUrl').value.trim();
+    const newName = document.getElementById('newAppName').value.trim() || "الإدارة العامة";
+    const newLogo = document.getElementById('newLogoUrl').value.trim() || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-    if(newName) localStorage.setItem('appName', newName);
-    if(newLogo) localStorage.setItem('appLogo', newLogo);
+    if (!window.firebaseDB) return;
+    const { db, doc, setDoc } = window.firebaseDB;
 
-    loadIdentity();
-    this.reset();
-    showToast("تم تحديث هوية النظام بنجاح! 🎨");
+    try {
+        await setDoc(doc(db, "settings", "identity"), { appName: newName, appLogo: newLogo });
+        localStorage.setItem('appName', newName);
+        localStorage.setItem('appLogo', newLogo);
+        loadIdentity();
+        this.reset();
+        showToast("تم تحديث هوية النظام في السحابة! 🎨");
+    } catch (error) {
+        showToast("خطأ في تحديث الهوية", "danger");
+    }
 });
 
 function loadIdentity() {
@@ -232,7 +301,7 @@ function loadIdentity() {
 }
 
 // ==========================================
-// 6. الأدوات المساعدة (تنبيهات، تصدير، إلخ)
+// 6. أدوات مساعدة
 // ==========================================
 function showToast(message, type = "success") {
     const toast = document.getElementById('toast');
@@ -274,13 +343,11 @@ function toggleDarkMode() {
 // PWA
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
-
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
     installBtn.style.display = 'block';
 });
-
 function installPWA() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
@@ -291,11 +358,11 @@ function installPWA() {
     }
 }
 
-// التشغيل
+// تشغيل التطبيق
 window.onload = () => {
     document.getElementById('recordDate').valueAsDate = new Date();
-    renderTable();
-    loadIdentity();
+    initCloudData(); // الاتصال بالسحابة وجلب البيانات
+    
     if(sessionStorage.getItem('isAdmin') === 'true') {
         document.getElementById('loginScreen').style.display = 'none';
         renderAdminDashboard();
