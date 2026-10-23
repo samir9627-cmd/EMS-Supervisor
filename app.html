@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>لوحة المشرف الميداني — v30.0</title>
+<title>لوحة المشرف الميداني — v35.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal','Segoe UI',sans-serif; }
@@ -28,7 +28,6 @@ body { min-height:100vh; padding-bottom:calc(100px + var(--safe-bottom)); }
 body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-@keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
 
 #mainApp { display:none; }
 #mainApp.ready { display:block; }
@@ -48,7 +47,6 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .nav-btn { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; border-radius:10px; cursor:pointer; background:transparent; border:none; color:rgba(255,255,255,0.65); font-family:inherit; font-weight:700; font-size:9px; }
 .nav-btn .nav-icon { font-size:20px; line-height:1; }
 .nav-btn.active { background:linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color:var(--gold-light); }
-.nav-btn .badge { position:absolute; top:0; right:4px; background:var(--red); width:8px; height:8px; border-radius:50%; display:none; }
 
 /* الصفحات */
 .page { display:none; padding:16px; max-width:720px; margin:0 auto; }
@@ -67,15 +65,20 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .action-btn { padding:20px 14px; border-radius:18px; border:none; font-family:inherit; font-weight:900; font-size:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; }
 .action-btn.danger { background:linear-gradient(135deg, #e53935, #ff5252); }
 .action-btn.success { background:linear-gradient(135deg, #43a047, #69f0ae); color:#041814; }
+.action-btn.info { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
+.action-btn.purple { background:linear-gradient(135deg, #ab47bc, #ce93d8); color:#fff; }
 
 /* القوائم */
 .item-card { background:rgba(4,24,20,0.8); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
 .item-card.red { border-right-color:var(--red); }
 .item-card.green { border-right-color:var(--green-light); }
 .item-card.blue { border-right-color:var(--blue); }
+.item-card.amber { border-right-color:var(--amber); }
 .item-info { flex:1; min-width:0; }
 .item-info h4 { font-size:14px; font-weight:900; color:var(--gold-light); margin-bottom:4px; }
 .item-info p { font-size:11px; color:rgba(255,255,255,0.65); line-height:1.6; }
+.item-actions { display:flex; gap:6px; }
+.icon-btn-sm { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; background:rgba(255,255,255,0.1); color:#fff; }
 
 /* المدخلات */
 input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-family:inherit; font-weight:600; outline:none; margin-bottom:12px; }
@@ -146,11 +149,15 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
         <span style="font-size:32px;">⭐</span>
         <span>تسجيل إشادة</span>
       </button>
+      <button class="action-btn info" onclick="startVisit()" style="grid-column: span 2;">
+        <span style="font-size:32px;">📋</span>
+        <span>تسجيل زيارة مركز</span>
+      </button>
     </div>
 
     <div class="stats-grid">
       <div class="stat-mini" onclick="switchPage('issues')"><div class="num" id="statOpenIssues">0</div><div class="lbl">إشكالياتي المفتوحة</div></div>
-      <div class="stat-mini" onclick="switchPage('issues')"><div class="num" id="statTotalIssues">0</div><div class="lbl">إجمالي سجلاتي</div></div>
+      <div class="stat-mini" onclick="switchPage('visits')"><div class="num" id="statVisits">0</div><div class="lbl">زياراتي</div></div>
     </div>
 
     <div class="card">
@@ -167,15 +174,26 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     </div>
   </div>
 
-  <!-- 3) التعاميم -->
-  <div class="page" id="page-broadcasts">
+  <!-- 3) الزيارات وسجل القطاع -->
+  <div class="page" id="page-visits">
     <div class="card">
-      <div class="card-title">📢 التعاميم الموجهة إليك</div>
-      <div id="broadcastsFullList"></div>
+      <div class="card-title">📋 سجل زيارات القطاع</div>
+      <div id="visitsList"></div>
     </div>
   </div>
 
-  <!-- 4) المراسلة -->
+  <!-- 4) الدوام والمسعفين -->
+  <div class="page" id="page-duty">
+    <div class="card">
+      <div class="card-title">📅 جدول الدوام اليوم</div>
+      <div style="background:rgba(151,141,91,0.1); padding:10px; border-radius:10px; margin-bottom:12px;">
+        <div style="font-size:12px; color:var(--gold-light); font-weight:900;" id="supervisorShiftDisplay">—</div>
+      </div>
+      <div id="dutyList"></div>
+    </div>
+  </div>
+
+  <!-- 5) المراسلة -->
   <div class="page" id="page-chat">
     <div class="card" style="padding:0; overflow:hidden;">
       <div style="padding:14px 16px; border-bottom:1px solid var(--border); background:rgba(4,24,20,0.5); display:flex; align-items:center; gap:10px;">
@@ -185,31 +203,20 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <div class="chat-container" style="border-radius:0; height:65vh; border:none;">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-box">
-          <input type="text" id="chatInput" placeholder="اكتب رسالتك للإدارة..." onkeypress="if(event.key === 'Enter') sendMessage()">
+          <input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key === 'Enter') sendMessage()">
           <button onclick="sendMessage()">إرسال</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 5) حسابي -->
-  <div class="page" id="page-profile">
-    <div class="card" style="text-align:center;">
-      <div style="font-size:50px; margin-bottom:10px;">👤</div>
-      <div style="font-size:20px; color:var(--gold-light); font-weight:900;" id="profileName">—</div>
-      <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:4px;" id="profileSector">—</div>
-      <div style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:2px;" id="profileCode">—</div>
-    </div>
-    <button class="btn danger block" onclick="confirmLogout()">🚪 تسجيل الخروج</button>
-  </div>
-
   <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
     <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">🚩</span><span>سجلاتي</span></button>
-    <button class="nav-btn" data-page="broadcasts" onclick="switchPage('broadcasts')"><span class="nav-icon">📢</span><span>التعاميم</span></button>
-    <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>المراسلة</span></button>
-    <button class="nav-btn" data-page="profile" onclick="switchPage('profile')"><span class="nav-icon">👤</span><span>حسابي</span></button>
+    <button class="nav-btn" data-page="visits" onclick="switchPage('visits')"><span class="nav-icon">📋</span><span>الزيارات</span></button>
+    <button class="nav-btn" data-page="duty" onclick="switchPage('duty')"><span class="nav-icon">📅</span><span>الدوام</span></button>
+    <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>تواصل</span></button>
   </div>
 </div>
 
@@ -225,7 +232,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   لوحة المشرف — v30.0 (شامل ومتصل بالإدارة)
+   لوحة المشرف — v35.0 (الزيارات، السجل، الدوام، المراسلة)
    ═══════════════════════════════════════════════════════════ */
 
 const FIREBASE_PROJECT = "ems-supervisor";
@@ -235,12 +242,21 @@ const SESSION_KEY = "amb_user";
 let currentUser = null;
 let supervisorSector = "";
 let supervisorCenters = [];
-let allIssues = [], myIssues = [], allBroadcasts = [], myBroadcasts = [], allChats = [];
+let allIssues = [], myIssues = [], allVisits = [], sectorVisits = [];
+let allShifts = [], allBroadcasts = [], myBroadcasts = [], allChats = [];
 
 function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function showToast(msg, type="success") { const c=document.getElementById("toastContainer"); const t=document.createElement("div"); t.className="toast "+type; t.textContent=(type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ")+msg; c.appendChild(t); setTimeout(()=>t.remove(),3000); }
 function cleanCenter(n) { return (n || "").toString().replace("مركز إسعاف ", "").trim(); }
 function timeAgo(ts) { const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; if (diff < 86400) return `قبل ${Math.floor(diff/3600)}س`; return `قبل ${Math.floor(diff/86400)}ي`; }
+function todayKey() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+// دالة تحديد شفت المشرف (12 ساعة)
+function getSupervisorShift() {
+  const hour = new Date().getHours();
+  if (hour >= 6 && hour < 18) return { label: "نهار (6ص - 6م)", icon: "☀️" };
+  return { label: "ليل (6م - 6ص)", icon: "🌙" };
+}
 
 function fromFS(v) { if(!v)return null; if("stringValue"in v)return v.stringValue; if("integerValue"in v)return parseInt(v.integerValue); if("booleanValue"in v)return v.booleanValue; if("mapValue"in v){const o={};for(const k in v.mapValue.fields||{})o[k]=fromFS(v.mapValue.fields[k]);return o;} return null; }
 function docToObj(d) { const o={}; if(!d.fields)return o; for(const k in d.fields)o[k]=fromFS(d.fields[k]); o._id=d.name.split("/").pop(); return o; }
@@ -251,20 +267,16 @@ async function fsAdd(col, data) { const f={}; for(const k in data){ if(data[k]==
 async function initApp() {
   document.getElementById("currentUser").textContent = currentUser.name || "مشرف";
   document.getElementById("welcomeName").textContent = currentUser.name || "مشرف";
-  document.getElementById("profileName").textContent = currentUser.name || "مشرف";
-  document.getElementById("profileCode").textContent = currentUser.code || "—";
   document.getElementById("heroAvatar").textContent = (currentUser.name || "م").charAt(0);
-  document.getElementById("profileSector").textContent = currentUser.sector || "—";
+  document.getElementById("welcomeSector").textContent = currentUser.sector || "قطاع غير محدد";
 
-  // جلب القطاعات
   try {
     const settings = await fsList("settings").catch(() => []);
     supervisorSector = currentUser.sector || "";
     if (settings.length > 0 && settings[0].sectors) {
       supervisorCenters = settings[0].sectors[supervisorSector] || [];
     }
-    document.getElementById("welcomeSector").textContent = supervisorSector || "قطاع غير محدد";
-  } catch(e) { console.warn(e); }
+  } catch(e) {}
 
   syncData();
   setInterval(syncData, 30000);
@@ -272,8 +284,10 @@ async function initApp() {
 
 async function syncData() {
   try {
-    const [issues, bc, chat] = await Promise.all([
+    const [issues, visits, shifts, bc, chat] = await Promise.all([
       fsList("issues").catch(() => []),
+      fsList("visits").catch(() => []),
+      fsList("shifts").catch(() => []),
       fsList("broadcasts").catch(() => []),
       fsList("messages").catch(() => [])
     ]);
@@ -281,22 +295,28 @@ async function syncData() {
     allIssues = issues;
     myIssues = allIssues.filter(i => i.supervisor === currentUser.name);
     
+    allVisits = visits;
+    myVisits = allVisits.filter(v => v.supervisor === currentUser.name);
+    sectorVisits = allVisits.filter(v => v.sector === supervisorSector); // ربط زملاء القطاع
+    
+    allShifts = shifts;
     allBroadcasts = bc;
     myBroadcasts = allBroadcasts.filter(b => b.target === "الجميع" || b.target === supervisorSector || b.target === currentUser.name);
     
     allChats = chat;
-    renderChat();
 
     renderHome();
     renderIssues();
-    renderBroadcasts();
+    renderVisits();
+    renderDuty();
+    renderChat();
   } catch(e) { console.warn(e); }
 }
 
 /* ═══ الرندر ═══ */
 function renderHome() {
   document.getElementById("statOpenIssues").textContent = myIssues.filter(i => i.status !== "resolved" && !i.isPraise).length;
-  document.getElementById("statTotalIssues").textContent = myIssues.length;
+  document.getElementById("statVisits").textContent = myVisits.length;
 
   const bl = document.getElementById("broadcastsList");
   if (myBroadcasts.length === 0) { bl.innerHTML = '<div style="text-align:center; padding:10px; opacity:0.5;">لا تعاميم</div>'; return; }
@@ -322,52 +342,64 @@ function renderIssues() {
   `).join("");
 }
 
-function renderBroadcasts() {
-  const list = document.getElementById("broadcastsFullList");
-  if (myBroadcasts.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا تعاميم</div>'; return; }
-  list.innerHTML = myBroadcasts.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(b => `
-    <div class="item-card">
+function renderVisits() {
+  const list = document.getElementById("visitsList");
+  if (sectorVisits.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا توجد زيارات في القطاع</div>'; return; }
+  
+  list.innerHTML = sectorVisits.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(v => {
+    const isMine = v.supervisor === currentUser.name;
+    let color = v.evaluation === "ممتاز" ? "green" : (v.evaluation === "يحتاج تحسين" ? "red" : "amber");
+    return `<div class="item-card ${color}">
       <div class="item-info">
-        <h4>📢 ${esc(b.title)}</h4>
-        <p>${esc(b.description)}</p>
-        <p style="font-size:10px; opacity:0.6; margin-top:4px;">🕐 ${timeAgo(b.timestamp)}</p>
+        <h4>🏥 ${esc(cleanCenter(v.center))} <span style="font-size:10px;color:var(--gold-light);">(${esc(v.evaluation)})</span></h4>
+        <p>👤 ${isMine ? 'أنا' : esc(v.supervisor)} | 🕐 ${timeAgo(v.timestamp)}</p>
+        ${v.notes ? `<p style="background:rgba(0,0,0,0.3); padding:4px; border-radius:4px; margin-top:4px;">📝 ${esc(v.notes)}</p>` : ''}
       </div>
-    </div>
-  `).join("");
+    </div>`;
+  }).join("");
+}
+
+function renderDuty() {
+  const shift = getSupervisorShift();
+  document.getElementById("supervisorShiftDisplay").innerHTML = `${shift.icon} دوامك الحالي: ${shift.label}`;
+  
+  const list = document.getElementById("dutyList");
+  const todayShifts = allShifts.filter(s => s.date === todayKey() && supervisorCenters.some(c => cleanCenter(c) === cleanCenter(s.centerName)));
+  
+  if (todayShifts.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا توجد بيانات دوام اليوم</div>'; return; }
+  
+  list.innerHTML = supervisorCenters.map(c => {
+    const cShifts = todayShifts.filter(s => cleanCenter(s.centerName) === cleanCenter(c));
+    let shiftHtml = cShifts.length === 0 ? '<p style="opacity:0.5;">لا شفتات</p>' : cShifts.map(s => {
+      const period = { morning: "🌅 صباحي", evening: "🌇 مسائي", night: "🌙 ليلي" }[s.shiftType] || s.shiftType;
+      const isOpen = s.status === "open";
+      return `<div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px; padding:4px 8px; background:rgba(255,255,255,0.05); border-radius:6px;">
+        <span>${period}</span>
+        <span style="color:var(--${isOpen ? 'green-light' : 'red-light'});">${isOpen ? '🟢 مفتوح' : '🔴 مغلق'}</span>
+      </div>`;
+    }).join("");
+    return `<div class="item-card blue">
+      <div class="item-info"><h4>🏥 ${esc(cleanCenter(c))}</h4>${shiftHtml}</div>
+    </div>`;
+  }).join("");
 }
 
 /* ═══ الدردشة ═══ */
 function renderChat() {
-  if (!currentUser) return;
   const chatDiv = document.getElementById("chatMessages");
   if (!chatDiv) return;
   let msgs = allChats.filter(m => m.supervisor === currentUser.name).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
-  
-  if (msgs.length === 0) { chatDiv.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px;">لا رسائل. ابدأ المحادثة.</div>'; return; }
-  
+  if (msgs.length === 0) { chatDiv.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px;">لا رسائل</div>'; return; }
   chatDiv.innerHTML = msgs.map(m => {
     const isMine = m.sender === currentUser.name;
-    return `<div class="message ${isMine ? 'mine' : 'theirs'}">
-      <div>${esc(m.text)}</div>
-      <span class="time">${timeAgo(m.timestamp)}</span>
-    </div>`;
+    return `<div class="message ${isMine ? 'mine' : 'theirs'}"><div>${esc(m.text)}</div><span class="time">${timeAgo(m.timestamp)}</span></div>`;
   }).join("");
   chatDiv.scrollTop = chatDiv.scrollHeight;
 }
-
 async function sendMessage() {
-  const input = document.getElementById("chatInput");
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-  
-  await fsAdd("messages", {
-    supervisor: currentUser.name,
-    sender: currentUser.name,
-    text: text,
-    timestamp: new Date().toISOString(),
-    read: false
-  });
+  const input = document.getElementById("chatInput"), text = input.value.trim();
+  if (!text) return; input.value = "";
+  await fsAdd("messages", { supervisor: currentUser.name, sender: currentUser.name, text, timestamp: new Date().toISOString() });
   syncData();
 }
 
@@ -379,44 +411,35 @@ function switchPage(id) {
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ═══ تسجيل إشكالية / إشادة (ديناميكي) ═══ */
+/* ═══ تسجيل إشكالية / إشادة ═══ */
 async function startEntry(type) {
-  if (supervisorCenters.length === 0) { showToast("لا توجد مراكز مسندة", "danger"); return; }
-  
-  // جلب المسعفين من السحابة
+  if (supervisorCenters.length === 0) return showToast("لا توجد مراكز", "danger");
   const params = await fsList("paramedics").catch(() => []);
   
   openModal(type === 'complaint' ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة", `
     <label>🏥 المركز</label>
-    <select id="entryCenter" onchange="updateTargets('${type}')">
+    <select id="entryCenter" onchange="updateTargets('${type}', ${JSON.stringify(params).replace(/"/g, '&quot;')})">
       ${supervisorCenters.map(c => `<option value="${esc(c)}">${esc(cleanCenter(c))}</option>`).join("")}
     </select>
-
     <label>🎯 نوع الهدف</label>
-    <select id="entryTargetType" onchange="updateTargets('${type}')">
+    <select id="entryTargetType" onchange="updateTargets('${type}', ${JSON.stringify(params).replace(/"/g, '&quot;')})">
       <option value="paramedic">👨‍🚒 مسعف</option>
       <option value="center">🏥 المركز نفسه</option>
       <option value="vehicle">🚑 مركبة</option>
       <option value="stock">💊 مخزن طبي</option>
     </select>
-
     <label id="targetNameLabel">👤 اسم المسعف</label>
     <select id="entryTargetName"></select>
-
     <label>${type === 'complaint' ? '🚩 نوع الإشكالية' : '⭐ نوع الإشادة'}</label>
-    <input type="text" id="entryType" placeholder="اكتب النوع هنا...">
-
+    <input type="text" id="entryType" placeholder="اكتب النوع...">
     <label>📝 الوصف</label>
-    <textarea id="entryDesc" placeholder="اكتب التفاصيل..." rows="3"></textarea>
-
+    <textarea id="entryDesc" placeholder="التفاصيل..." rows="3"></textarea>
     <button class="btn ${type === 'complaint' ? 'danger' : 'success'} block" onclick="submitEntry('${type}')">💾 حفظ</button>
   `);
-
-  // تعبئة أولية
   setTimeout(() => updateTargets(type, params), 100);
 }
 
-function updateTargets(type, paramData = null) {
+function updateTargets(type, params) {
   const centerVal = document.getElementById("entryCenter").value;
   const targetType = document.getElementById("entryTargetType").value;
   const targetNameSelect = document.getElementById("entryTargetName");
@@ -424,23 +447,15 @@ function updateTargets(type, paramData = null) {
 
   if (targetType === "paramedic") {
     label.textContent = "👤 اسم المسعف";
-    const centerClean = cleanCenter(centerVal);
-    // جلب المسعفين التابعين للمركز
-    const loadParams = paramData || window._cachedParams || [];
-    const filtered = loadParams.filter(p => cleanCenter(p.centerName) === centerClean);
-    
-    if (filtered.length === 0) {
-      targetNameSelect.innerHTML = '<option value="">لا يوجد مسعفون في هذا المركز</option>';
-    } else {
-      targetNameSelect.innerHTML = filtered.map(p => `<option value="${esc(p.name)}">${esc(p.name)} (${esc(p.rank || '')})</option>`).join("");
-    }
+    const filtered = params.filter(p => cleanCenter(p.centerName) === cleanCenter(centerVal));
+    targetNameSelect.innerHTML = filtered.length === 0 ? '<option value="">لا يوجد مسعفون</option>' : filtered.map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join("");
   } else if (targetType === "center") {
     label.textContent = "🏥 المركز";
     targetNameSelect.innerHTML = `<option value="${esc(centerVal)}">${esc(cleanCenter(centerVal))}</option>`;
   } else if (targetType === "vehicle") {
-    label.textContent = "🚑 رقم المركبة";
+    label.textContent = "🚑 المركبة";
     targetNameSelect.innerHTML = '<option value="AMB-01">AMB-01</option><option value="AMB-02">AMB-02</option>';
-  } else if (targetType === "stock") {
+  } else {
     label.textContent = "💊 المخزن";
     targetNameSelect.innerHTML = '<option value="المخزن الطبي">المخزن الطبي</option>';
   }
@@ -452,25 +467,50 @@ async function submitEntry(type) {
   const targetName = document.getElementById("entryTargetName").value;
   const entryType = document.getElementById("entryType").value;
   const desc = document.getElementById("entryDesc").value;
-
-  if (!entryType || !desc) { showToast("أكمل البيانات", "danger"); return; }
+  if (!entryType || !desc) return showToast("أكمل البيانات", "danger");
 
   await fsAdd("issues", {
-    center: center,
-    centerName: center,
-    targetType: targetType,
-    targetName: targetName,
+    center, centerName: center, targetType, targetName,
     issueType: type === 'complaint' ? entryType : null,
     praiseType: type === 'praise' ? entryType : null,
-    description: desc,
-    supervisor: currentUser.name,
-    sector: supervisorSector,
-    isPraise: type === 'praise',
-    status: type === 'praise' ? 'resolved' : 'new',
+    description: desc, supervisor: currentUser.name, sector: supervisorSector,
+    isPraise: type === 'praise', status: type === 'praise' ? 'resolved' : 'new', timestamp: new Date().toISOString()
+  });
+  showToast("تم الحفظ"); closeModal(); syncData();
+}
+
+/* ═══ تسجيل زيارة ═══ */
+function startVisit() {
+  if (supervisorCenters.length === 0) return showToast("لا توجد مراكز", "danger");
+  openModal("📋 تسجيل زيارة ميدانية", `
+    <label>🏥 المركز</label>
+    <select id="visitCenter">
+      ${supervisorCenters.map(c => `<option value="${esc(c)}">${esc(cleanCenter(c))}</option>`).join("")}
+    </select>
+    <label>⭐ التقييم</label>
+    <select id="visitEval">
+      <option value="ممتاز">🟢 ممتاز</option>
+      <option value="جيد">🟡 جيد</option>
+      <option value="يحتاج تحسين">🔴 يحتاج تحسين</option>
+    </select>
+    <label>📝 الملاحظات</label>
+    <textarea id="visitNotes" placeholder="اكتب ملاحظات الزيارة..." rows="4"></textarea>
+    <button class="btn success block" onclick="submitVisit()">💾 حفظ الزيارة</button>
+  `);
+}
+
+async function submitVisit() {
+  const center = document.getElementById("visitCenter").value;
+  const evaluation = document.getElementById("visitEval").value;
+  const notes = document.getElementById("visitNotes").value;
+  if (!notes) return showToast("أدخل الملاحظات", "danger");
+
+  await fsAdd("visits", {
+    center, centerName: center, evaluation, notes,
+    supervisor: currentUser.name, sector: supervisorSector,
     timestamp: new Date().toISOString()
   });
-  
-  showToast("تم الحفظ بنجاح"); closeModal(); syncData();
+  showToast("تم حفظ الزيارة"); closeModal(); syncData();
 }
 
 /* ═══ أدوات ═══ */
@@ -488,8 +528,6 @@ function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem(S
       if (currentUser && (currentUser.type === "supervisor" || currentUser.code?.startsWith("SUP"))) {
         document.getElementById("mainApp").classList.add("ready");
         initApp();
-        // كاش المسعفين
-        fsList("paramedics").then(p => window._cachedParams = p).catch(()=>{});
       } else {
         window.location.href = "index.html";
       }
