@@ -9,7 +9,7 @@
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
     :root { --gold:#c9a227; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; --purple:#ab47bc; }
-    body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; }
+    body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; display:flex; flex-direction:column; }
     
     /* الشريط العلوي */
     .topbar { background:linear-gradient(135deg, var(--green), #041814); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; box-shadow:0 4px 15px rgba(0,0,0,0.5); }
@@ -17,7 +17,8 @@
     .btn-logout { background:var(--red); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.2s; }
     .btn-logout:active { transform:scale(0.95); }
     
-    .content { padding:15px; max-width:600px; margin:0 auto; }
+    /* المحتوى */
+    .content { padding:15px; max-width:600px; margin:0 auto; width:100%; flex:1; overflow-y:auto; }
     
     /* تنبيه التعاميم */
     .broadcast-alert { background:linear-gradient(135deg, rgba(41,182,246,0.15), rgba(4,24,20,0.9)); border:1px solid var(--blue); border-right:4px solid var(--blue); padding:12px; border-radius:8px; margin-bottom:15px; display:none; animation:slideDown 0.4s; }
@@ -34,6 +35,7 @@
     .action-btn .icon { font-size:32px; }
     .btn-issue { background:linear-gradient(135deg, #e53935, #ff5252); }
     .btn-visit { background:linear-gradient(135deg, #29b6f6, #64b5f6); }
+    .btn-chat { background:linear-gradient(135deg, #ab47bc, #ce93d8); }
     
     /* البطاقات */
     .card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; display:none; animation:fadeIn 0.3s; }
@@ -59,6 +61,17 @@
     .act-desc { font-size:12px; color:rgba(255,255,255,0.8); margin-bottom:10px; }
     .btn-print { width:auto; padding:8px 15px; border-radius:6px; border:1px solid var(--gold); background:transparent; color:var(--gold); font-size:11px; font-weight:bold; cursor:pointer; }
     
+    /* الشات */
+    .chat-container { display:flex; flex-direction:column; height:60vh; background:rgba(0,0,0,0.2); border-radius:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+    .chat-messages { flex:1; padding:10px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; }
+    .message { max-width:80%; padding:10px; border-radius:8px; font-size:13px; line-height:1.4; }
+    .message.mine { align-self:flex-end; background:var(--green); border-bottom-left-radius:0; }
+    .message.theirs { align-self:flex-start; background:rgba(255,255,255,0.1); border-bottom-right-radius:0; }
+    .message .time { font-size:9px; opacity:0.6; margin-top:4px; display:block; text-align:left; }
+    .chat-input-box { display:flex; padding:10px; background:rgba(0,0,0,0.3); border-top:1px solid rgba(255,255,255,0.1); }
+    .chat-input-box input { flex:1; margin:0; border-radius:8px 0 0 8px; border-left:none; }
+    .chat-input-box button { padding:0 15px; background:var(--gold); color:var(--bg); border:none; border-radius:0 8px 8px 0; font-weight:bold; cursor:pointer; }
+
     /* 📄 تنسيق الطباعة A4 */
     #printArea { display:none; }
     @media print {
@@ -108,6 +121,10 @@
             <span class="icon">📋</span>
             <span>تقرير زيارة</span>
         </button>
+        <button class="action-btn btn-chat" onclick="showForm('chat')" style="grid-column: span 2;">
+            <span class="icon">💬</span>
+            <span>المراسلة الداخلية (دعم فني)</span>
+        </button>
     </div>
 
     <!-- نموذج الإشكالية -->
@@ -149,6 +166,21 @@
         <div id="visitMsg" class="msg"></div>
     </div>
 
+    <!-- نموذج الشات -->
+    <div class="card" id="card-chat">
+        <h3>💬 غرفة الدعم الفني</h3>
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <p style="text-align:center; font-size:12px; color:#ccc; margin-top:20px;">جاري تحميل الرسائل...</p>
+            </div>
+            <div class="chat-input-box">
+                <input type="text" id="chatInput" placeholder="اكتب رسالتك للإدارة هنا..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button onclick="sendMessage()">إرسال</button>
+            </div>
+        </div>
+        <button class="btn-cancel" onclick="hideForms()" style="margin-top:15px;">رجوع</button>
+    </div>
+
     <!-- قائمة النشاطات -->
     <div class="card active" id="card-activities">
         <h3>📌 آخر النشاطات المسجلة</h3>
@@ -188,18 +220,83 @@
     function showForm(type) {
         document.getElementById("card-issue").classList.remove("active");
         document.getElementById("card-visit").classList.remove("active");
+        document.getElementById("card-chat").classList.remove("active");
         document.getElementById("card-activities").classList.remove("active");
         
         if (type === 'issue') document.getElementById("card-issue").classList.add("active");
         if (type === 'visit') document.getElementById("card-visit").classList.add("active");
+        if (type === 'chat') {
+            document.getElementById("card-chat").classList.add("active");
+            loadMessages();
+        }
     }
     function hideForms() {
         document.getElementById("card-issue").classList.remove("active");
         document.getElementById("card-visit").classList.remove("active");
+        document.getElementById("card-chat").classList.remove("active");
         document.getElementById("card-activities").classList.add("active");
     }
 
-    // حفظ إشكالية
+    // --- الشات (المراسلة) ---
+    async function loadMessages() {
+        const chatDiv = document.getElementById("chatMessages");
+        try {
+            const res = await fetch(`${FIRESTORE_URL}/messages?pageSize=100`, { cache: "no-store" });
+            const data = await res.json();
+            
+            if (!data.documents) {
+                chatDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد رسائل. ابدأ المحادثة.</p>";
+                return;
+            }
+
+            let msgs = data.documents.map(docToObj)
+                .filter(m => m.supervisor === currentUser.name)
+                .sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp)); // الأقدم أولاً
+
+            if (msgs.length === 0) {
+                chatDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد رسائل. ابدأ المحادثة.</p>";
+                return;
+            }
+
+            chatDiv.innerHTML = msgs.map(m => {
+                const isMine = m.sender === currentUser.name;
+                const time = new Date(m.timestamp).toLocaleTimeString('ar-OM', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="message ${isMine ? 'mine' : 'theirs'}">
+                        <div>${m.text}</div>
+                        <span class="time">${time}</span>
+                    </div>
+                `;
+            }).join("");
+            
+            chatDiv.scrollTop = chatDiv.scrollHeight; // النزول لأسفل
+
+        } catch(e) { chatDiv.innerHTML = "<p style='text-align:center; color:#ff5252;'>خطأ في تحميل الرسائل.</p>"; }
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        input.value = "";
+        const payload = {
+            fields: {
+                supervisor: { stringValue: currentUser.name },
+                sender: { stringValue: currentUser.name },
+                text: { stringValue: text },
+                timestamp: { stringValue: new Date().toISOString() }
+            }
+        };
+
+        try {
+            await fetch(`${FIRESTORE_URL}/messages`, { method: "POST", body: JSON.stringify(payload) });
+            loadMessages(); // تحديث المحادثة فوراً
+        } catch(e) { alert("فشل الإرسال"); }
+    }
+
+
+    // --- حفظ إشكالية ---
     async function submitIssue() {
         const type = document.getElementById("issueType").value;
         const desc = document.getElementById("issueDesc").value.trim();
@@ -225,7 +322,7 @@
         } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
     }
 
-    // حفظ زيارة
+    // --- حفظ زيارة ---
     async function submitVisit() {
         const score = document.getElementById("visitScore").value;
         const notes = document.getElementById("visitNotes").value.trim();
@@ -253,7 +350,7 @@
         } catch(e) { msg.style.color = "#ff5252"; msg.innerText = "❌ خطأ في الشبكة"; }
     }
 
-    // تحميل النشاطات
+    // --- تحميل النشاطات ---
     async function loadActivities() {
         const listDiv = document.getElementById("activitiesList");
         try {
@@ -289,34 +386,29 @@
         } catch(e) { listDiv.innerHTML = "<p style='text-align:center; color:#ff5252;'>خطأ في التحميل.</p>"; }
     }
 
-    // تحميل التعاميم
+    // --- تحميل التعاميم ---
     async function loadBroadcast() {
         try {
-            const res = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1`, { cache: "no-store" }); // جلب آخر تعميم فقط
+            const res = await fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1`, { cache: "no-store" });
             const data = await res.json();
 
             if (data.documents && data.documents.length > 0) {
                 const b = docToObj(data.documents[0]);
                 const broadcastBox = document.getElementById("broadcastBox");
-                
-                // عرض التعميم فقط إذا كان جديداً (لم يقرأه المشرف)
                 const readKey = "read_bc_" + b._id;
+                
                 if (!localStorage.getItem(readKey)) {
                     document.getElementById("bcText").innerText = b.description;
                     document.getElementById("bcMeta").innerText = "من: " + b.sender + " | " + new Date(b.timestamp).toLocaleDateString('ar-OM');
                     broadcastBox.classList.add("show");
-                    
-                    // حفظ أنه تم قراءته
                     localStorage.setItem(readKey, "true");
-                    
-                    // إخفاء التنبيه بعد 10 ثواني
                     setTimeout(() => { broadcastBox.classList.remove("show"); }, 10000);
                 }
             }
-        } catch(e) { console.log("Broadcast error"); }
+        } catch(e) {}
     }
 
-    // الطباعة
+    // --- الطباعة ---
     function printReport(id) {
         const act = window.myActsList.find(a => a._id === id);
         if (!act) return;
@@ -363,7 +455,7 @@
         window.print();
     }
 
-    // التشغيل
+    // --- التشغيل ---
     window.onload = function() { 
         loadActivities(); 
         loadBroadcast();
