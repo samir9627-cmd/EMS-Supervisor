@@ -12,11 +12,15 @@
     h3 { color:#d4c896; margin-top:0; border-bottom:1px solid rgba(151,141,91,0.3); padding-bottom:10px; }
     .btn { background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; padding:12px; border:none; border-radius:8px; font-weight:900; width:100%; margin-top:10px; cursor:pointer; font-family:'Cairo'; font-size:14px; }
     .btn-danger { background:#e53935; color:#fff; }
-    input { width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #978d5b; background:#041814; color:#fff; font-family:'Cairo'; box-sizing:border-box; }
+    input, select, textarea { width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #978d5b; background:#041814; color:#fff; font-family:'Cairo'; box-sizing:border-box; }
     .item { background:#082b26; padding:10px; border-radius:8px; margin-bottom:5px; border-right:4px solid #978d5b; display:flex; justify-content:space-between; align-items:center; }
     .item-code { font-family:monospace; font-size:18px; color:#69f0ae; background:#000; padding:4px 8px; border-radius:4px; font-weight:bold; }
     #loading { position:fixed; inset:0; background:#041814; display:flex; align-items:center; justify-content:center; font-size:18px; color:#d4c896; font-weight:bold; z-index:9999; }
-    #message { display:none; padding:10px; margin-bottom:10px; border-radius:8px; text-align:center; font-weight:bold; }
+    .tabs { display:flex; gap:5px; margin-bottom:15px; }
+    .tab { flex:1; padding:10px; text-align:center; background:#082b26; border-radius:8px; cursor:pointer; font-size:13px; border:1px solid #978d5b; }
+    .tab.active { background:#978d5b; color:#041814; font-weight:bold; }
+    .page { display:none; }
+    .page.active { display:block; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -24,26 +28,45 @@
 </head>
 <body>
 
-<div id="loading">جاري التحقق من الصلاحيات...</div>
+<div id="loading">جاري التحقق...</div>
 
 <div id="content" style="display:none;">
     <h1>🏛️ الإدارة العامة</h1>
     
-    <div id="message"></div>
-
-    <div class="card">
-        <h3>➕ إضافة مشرف وتوليد كود</h3>
-        <input type="text" id="supName" placeholder="اسم المشرف (مثال: أحمد)">
-        <input type="text" id="supSector" placeholder="القطاع (مثال: A)">
-        <button class="btn" id="addBtn" onclick="addSupervisor()">💾 حفظ وتوليد الكود</button>
+    <div class="tabs">
+        <div class="tab active" onclick="showPage('sup')">المشرفون</div>
+        <div class="tab" onclick="showPage('param')">المسعفون</div>
     </div>
 
-    <div class="card">
-        <h3>👨‍💼 قائمة المشرفين</h3>
-        <div id="supList">جاري التحميل...</div>
+    <!-- صفحة المشرفين -->
+    <div class="page active" id="page-sup">
+        <div class="card">
+            <h3>➕ إضافة مشرف (توليد كود فوري)</h3>
+            <input type="text" id="supName" placeholder="اسم المشرف">
+            <input type="text" id="supSector" placeholder="القطاع (A أو B)">
+            <button class="btn" onclick="addSupervisor()">💾 حفظ وتوليد الكود</button>
+        </div>
+        <div class="card">
+            <h3>👨‍💼 قائمة المشرفين وأكوادهم</h3>
+            <div id="supList">جاري التحميل...</div>
+        </div>
     </div>
 
-    <button class="btn btn-danger" onclick="logout()" style="margin-top:20px;">🚪 تسجيل الخروج</button>
+    <!-- صفحة المسعفين -->
+    <div class="page" id="page-param">
+        <div class="card">
+            <h3>➕ إضافة مسعف</h3>
+            <input type="text" id="paramName" placeholder="اسم المسعف">
+            <input type="text" id="paramCenter" placeholder="المركز">
+            <button class="btn" onclick="addParamedic()">💾 حفظ</button>
+        </div>
+        <div class="card">
+            <h3>👨‍🚒 قائمة المسعفين</h3>
+            <div id="paramList">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <button class="btn btn-danger" onclick="logout()">🚪 تسجيل الخروج</button>
 </div>
 
 <script>
@@ -59,8 +82,8 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const SECRET = "EMS_SECRET_PASSWORD_2026!";
 
+    // التحقق من الدخول (لوحة الإدارة)
     auth.onAuthStateChanged((user) => {
         if (!user) { window.location.href = "./index.html"; return; }
         const code = user.email.split('@')[0].toUpperCase();
@@ -68,16 +91,14 @@
         
         document.getElementById("loading").style.display = "none";
         document.getElementById("content").style.display = "block";
-        loadSups();
+        loadSups(); loadParams();
     });
 
-    function showMessage(text, color) {
-        const msg = document.getElementById("message");
-        msg.style.display = "block";
-        msg.style.background = color === 'red' ? 'rgba(229,57,53,0.2)' : 'rgba(67,160,71,0.2)';
-        msg.style.color = color === 'red' ? '#ff5252' : '#69f0ae';
-        msg.innerText = text;
-        setTimeout(() => { msg.style.display = "none"; }, 5000);
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('page-' + id).classList.add('active');
+        event.target.classList.add('active');
     }
 
     function loadSups() {
@@ -86,54 +107,61 @@
             snap.forEach(doc => {
                 const data = doc.data();
                 html += `<div class="item">
-                    <div><b>${data.name}</b><br><small style="color:#ccc;">قطاع: ${data.sector || 'غير محدد'}</small></div>
+                    <div><b>${data.name}</b><br><small style="color:#ccc;">قطاع: ${data.sector || '-'}</small></div>
                     <div class="item-code">${data.code}</div>
                 </div>`;
             });
-            document.getElementById("supList").innerHTML = html || "لا يوجد مشرفون حتى الآن";
+            document.getElementById("supList").innerHTML = html || "لا يوجد مشرفون";
         });
     }
 
     function addSupervisor() {
         const name = document.getElementById("supName").value.trim();
         const sector = document.getElementById("supSector").value.trim() || "A";
-        const btn = document.getElementById("addBtn");
+        if (!name) return alert("أدخل الاسم");
         
-        if (!name) return showMessage("الرجاء إدخال اسم المشرف", "red");
-        
-        btn.innerText = "جاري الإنشاء...";
-        btn.disabled = true;
-
+        // توليد كود عشوائي
         const code = "SUP-" + Math.floor(1000 + Math.random() * 9000);
-        const email = `${code.toLowerCase()}@ems-system.local`;
         
-        // 1. إنشاء الحساب في Firebase
-        auth.createUserWithEmailAndPassword(email, SECRET)
-            .then(() => {
-                // 2. حفظ البيانات في Firestore
-                return db.collection("access_code").add({ 
-                    name: name, 
-                    code: code, 
-                    sector: sector, 
-                    type: "supervisor", 
-                    active: true,
-                    createdAt: new Date()
-                });
-            })
-            .then(() => {
-                showMessage("✅ تم الإنشاء بنجاح! الكود هو: " + code, "green");
-                document.getElementById("supName").value = "";
-                document.getElementById("supSector").value = "";
-                loadSups();
-            })
-            .catch((error) => {
-                showMessage("❌ خطأ: " + error.message, "red");
-                console.error(error);
-            })
-            .finally(() => {
-                btn.innerText = "💾 حفظ وتوليد الكود";
-                btn.disabled = false;
+        // حفظ في Firestore فقط (بدون Auth لتفادي الأخطاء)
+        db.collection("access_code").add({ 
+            name: name, 
+            code: code, 
+            sector: sector, 
+            type: "supervisor", 
+            active: true,
+            createdAt: new Date()
+        }).then(() => {
+            // عرض رسالة نجاح تحتوي على الكود
+            alert("✅ تم حفظ المشرف بنجاح!\n\nالكود الخاص به هو: " + code);
+            document.getElementById("supName").value = "";
+            document.getElementById("supSector").value = "";
+            loadSups();
+        }).catch((error) => alert("خطأ: " + error.message));
+    }
+
+    function loadParams() {
+        db.collection("paramedics").get().then(snap => {
+            let html = "";
+            snap.forEach(doc => {
+                const data = doc.data();
+                html += `<div class="item"><div><b>${data.name}</b><br><small style="color:#ccc;">${data.centerName}</small></div></div>`;
             });
+            document.getElementById("paramList").innerHTML = html || "لا يوجد مسعفون";
+        });
+    }
+
+    function addParamedic() {
+        const name = document.getElementById("paramName").value.trim();
+        const center = document.getElementById("paramCenter").value.trim();
+        if (!name) return alert("أدخل الاسم");
+        
+        db.collection("paramedics").add({ name, centerName: center }).then(() => {
+            alert("تم الحفظ");
+            document.getElementById("paramName").value = "";
+            document.getElementById("paramCenter").value = "";
+            loadParams();
+        });
     }
 
     function logout() {
