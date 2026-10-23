@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>لوحة الإدارة</title>
+<title>لوحة الإدارة العامة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     body { margin:0; padding:20px; background:#041814; color:#fff; font-family:'Cairo', sans-serif; }
     .card { background:rgba(13,74,66,0.6); border:1px solid #978d5b; padding:20px; border-radius:15px; margin-bottom:15px; }
-    h1 { color:#d4c896; text-align:center; }
-    .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; text-align:center; }
-    .stat { background:#082b26; padding:15px; border-radius:10px; }
-    .stat h2 { color:#d4c896; margin:0; font-size:28px; }
-    .btn { background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; padding:10px; border:none; border-radius:8px; font-weight:900; width:100%; margin-top:10px; cursor:pointer; }
+    h1 { color:#d4c896; text-align:center; margin-bottom:20px; }
+    h3 { color:#d4c896; margin-top:0; border-bottom:1px solid rgba(151,141,91,0.3); padding-bottom:10px; }
+    .btn { background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; padding:12px; border:none; border-radius:8px; font-weight:900; width:100%; margin-top:10px; cursor:pointer; font-family:'Cairo'; font-size:14px; }
+    .btn-danger { background:#e53935; color:#fff; }
+    input { width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid #978d5b; background:#041814; color:#fff; font-family:'Cairo'; box-sizing:border-box; }
+    .item { background:#082b26; padding:10px; border-radius:8px; margin-bottom:5px; border-right:4px solid #978d5b; display:flex; justify-content:space-between; align-items:center; }
+    .item-code { font-family:monospace; font-size:18px; color:#69f0ae; background:#000; padding:4px 8px; border-radius:4px; font-weight:bold; }
     #loading { position:fixed; inset:0; background:#041814; display:flex; align-items:center; justify-content:center; font-size:18px; color:#d4c896; font-weight:bold; z-index:9999; }
+    #message { display:none; padding:10px; margin-bottom:10px; border-radius:8px; text-align:center; font-weight:bold; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -21,24 +24,26 @@
 </head>
 <body>
 
-<div id="loading">جاري تحميل لوحة الإدارة...</div>
+<div id="loading">جاري التحقق من الصلاحيات...</div>
 
 <div id="content" style="display:none;">
     <h1>🏛️ الإدارة العامة</h1>
+    
+    <div id="message"></div>
+
     <div class="card">
-        <div class="grid">
-            <div class="stat"><h2 id="countSups">0</h2><p>مشرفون</p></div>
-            <div class="stat"><h2 id="countParams">0</h2><p>مسعفون</p></div>
-            <div class="stat"><h2 id="countVehicles">0</h2><p>مركبات</p></div>
-            <div class="stat"><h2 id="countIssues">0</h2><p>إشكالات</p></div>
-        </div>
+        <h3>➕ إضافة مشرف وتوليد كود</h3>
+        <input type="text" id="supName" placeholder="اسم المشرف (مثال: أحمد)">
+        <input type="text" id="supSector" placeholder="القطاع (مثال: A)">
+        <button class="btn" id="addBtn" onclick="addSupervisor()">💾 حفظ وتوليد الكود</button>
     </div>
+
     <div class="card">
-        <h3>إضافة مشرف جديد</h3>
-        <input type="text" id="newSupName" placeholder="اسم المشرف" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #978d5b; background:#041814; color:#fff;">
-        <button class="btn" onclick="addSupervisor()">حفظ وإنشاء حساب</button>
+        <h3>👨‍💼 قائمة المشرفين</h3>
+        <div id="supList">جاري التحميل...</div>
     </div>
-    <button class="btn" style="background:#e53935; color:#fff;" onclick="logout()">🚪 تسجيل الخروج</button>
+
+    <button class="btn btn-danger" onclick="logout()" style="margin-top:20px;">🚪 تسجيل الخروج</button>
 </div>
 
 <script>
@@ -56,7 +61,6 @@
     const db = firebase.firestore();
     const SECRET = "EMS_SECRET_PASSWORD_2026!";
 
-    // التحقق من الدخول
     auth.onAuthStateChanged((user) => {
         if (!user) { window.location.href = "./index.html"; return; }
         const code = user.email.split('@')[0].toUpperCase();
@@ -64,30 +68,72 @@
         
         document.getElementById("loading").style.display = "none";
         document.getElementById("content").style.display = "block";
-        loadStats();
+        loadSups();
     });
 
-    function loadStats() {
-        db.collection("access_code").where("type", "==", "supervisor").get().then(snap => document.getElementById("countSups").innerText = snap.size);
-        db.collection("paramedics").get().then(snap => document.getElementById("countParams").innerText = snap.size);
-        db.collection("vehicles").get().then(snap => document.getElementById("countVehicles").innerText = snap.size);
-        db.collection("issues").get().then(snap => document.getElementById("countIssues").innerText = snap.size);
+    function showMessage(text, color) {
+        const msg = document.getElementById("message");
+        msg.style.display = "block";
+        msg.style.background = color === 'red' ? 'rgba(229,57,53,0.2)' : 'rgba(67,160,71,0.2)';
+        msg.style.color = color === 'red' ? '#ff5252' : '#69f0ae';
+        msg.innerText = text;
+        setTimeout(() => { msg.style.display = "none"; }, 5000);
+    }
+
+    function loadSups() {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(snap => {
+            let html = "";
+            snap.forEach(doc => {
+                const data = doc.data();
+                html += `<div class="item">
+                    <div><b>${data.name}</b><br><small style="color:#ccc;">قطاع: ${data.sector || 'غير محدد'}</small></div>
+                    <div class="item-code">${data.code}</div>
+                </div>`;
+            });
+            document.getElementById("supList").innerHTML = html || "لا يوجد مشرفون حتى الآن";
+        });
     }
 
     function addSupervisor() {
-        const name = document.getElementById("newSupName").value.trim();
-        if (!name) return alert("أدخل الاسم");
+        const name = document.getElementById("supName").value.trim();
+        const sector = document.getElementById("supSector").value.trim() || "A";
+        const btn = document.getElementById("addBtn");
         
+        if (!name) return showMessage("الرجاء إدخال اسم المشرف", "red");
+        
+        btn.innerText = "جاري الإنشاء...";
+        btn.disabled = true;
+
         const code = "SUP-" + Math.floor(1000 + Math.random() * 9000);
         const email = `${code.toLowerCase()}@ems-system.local`;
         
-        auth.createUserWithEmailAndPassword(email, SECRET).then(() => {
-            db.collection("access_code").add({ name, code, type: "supervisor", active: true }).then(() => {
-                alert("تم إنشاء الحساب! الكود: " + code);
-                document.getElementById("newSupName").value = "";
-                loadStats();
+        // 1. إنشاء الحساب في Firebase
+        auth.createUserWithEmailAndPassword(email, SECRET)
+            .then(() => {
+                // 2. حفظ البيانات في Firestore
+                return db.collection("access_code").add({ 
+                    name: name, 
+                    code: code, 
+                    sector: sector, 
+                    type: "supervisor", 
+                    active: true,
+                    createdAt: new Date()
+                });
+            })
+            .then(() => {
+                showMessage("✅ تم الإنشاء بنجاح! الكود هو: " + code, "green");
+                document.getElementById("supName").value = "";
+                document.getElementById("supSector").value = "";
+                loadSups();
+            })
+            .catch((error) => {
+                showMessage("❌ خطأ: " + error.message, "red");
+                console.error(error);
+            })
+            .finally(() => {
+                btn.innerText = "💾 حفظ وتوليد الكود";
+                btn.disabled = false;
             });
-        }).catch((error) => alert("خطأ: " + error.message));
     }
 
     function logout() {
