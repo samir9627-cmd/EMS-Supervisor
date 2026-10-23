@@ -8,10 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
-    :root { --gold:#978d5b; --gold-light:#d4c896; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; }
+    :root { --gold:#978d5b; --gold-light:#d4c896; --green:#0d4a42; --bg:#041814; --red:#e53935; --blue:#29b6f6; --amber:#fb8c00; }
     body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:80px; }
     body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
+    /* Topbar & Tabs */
     .topbar { background:linear-gradient(135deg, rgba(13,74,66,0.95), rgba(4,24,20,0.98)); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
     .topbar h1 { font-size:16px; color:var(--gold-light); font-weight:900; }
     .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; font-family:inherit; }
@@ -26,6 +27,7 @@
     .page.active { display:block; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
+    /* Cards & Forms */
     .card { background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:20px; margin-bottom:15px; backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
     .card h3 { color:var(--gold-light); font-size:15px; margin-bottom:15px; border-bottom:1px solid rgba(151,141,91,0.2); padding-bottom:10px; display:flex; align-items:center; gap:8px; }
     
@@ -42,6 +44,7 @@
     .btn-blue { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
     .btn-small { padding:8px 12px; font-size:12px; width:auto; margin:0; }
 
+    /* Lists */
     .list-item { background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:10px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
     .list-info h4 { font-size:14px; color:var(--gold-light); margin-bottom:4px; }
     .list-info p { font-size:11px; color:rgba(255,255,255,0.6); }
@@ -51,20 +54,24 @@
     .icon-btn.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
     .icon-btn.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
 
+    /* KPI */
     .kpi-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:15px; }
     .kpi-box { background:rgba(13,74,66,0.5); border:1px solid rgba(151,141,91,0.3); border-radius:12px; padding:15px; text-align:center; }
     .kpi-box .num { font-size:26px; font-weight:900; color:var(--gold-light); }
     .kpi-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px; }
 
-    /* جدول الدوام الشهري */
-    .schedule-table { width:100%; border-collapse:collapse; font-size:11px; }
+    /* Schedule */
+    .schedule-table { width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
     .schedule-table th, .schedule-table td { border:1px solid rgba(151,141,91,0.2); padding:6px; text-align:center; }
     .schedule-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); }
     .schedule-table td { background:rgba(0,0,0,0.3); }
     .schedule-table select { padding:4px; font-size:10px; margin:0; background:transparent; border:none; }
-    
-    .morning-shift { background:rgba(255,193,7,0.2) !important; }
-    .evening-shift { background:rgba(41,182,246,0.2) !important; }
+
+    /* Reports table */
+    .report-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .report-table th, .report-table td { border:1px solid rgba(151,141,91,0.2); padding:8px; text-align:center; }
+    .report-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); }
+    .report-table td { background:rgba(0,0,0,0.3); }
 </style>
 </head>
 <body>
@@ -96,6 +103,10 @@
             <h3>📊 نشاط المشرفين (آخر 7 أيام)</h3>
             <div id="activityChart" style="display:flex; align-items:flex-end; height:150px; gap:6px; padding:10px; border-bottom:2px solid var(--gold);"></div>
         </div>
+        <div class="card">
+            <h3>📡 نبض المراكز (Heatmap)</h3>
+            <div id="centersHeatmap" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;"></div>
+        </div>
     </div>
 
     <!-- 2. المشرفون -->
@@ -106,7 +117,7 @@
             <div class="form-group"><label>الاسم</label><input type="text" id="supName"></div>
             <div class="form-group"><label>القطاع</label><select id="supSector"><option>قطاع A</option><option>قطاع B</option></select></div>
             <div class="form-group"><label>الهاتف</label><input type="tel" id="supPhone"></div>
-            <div class="form-group"><label>الكود</label><input type="text" id="supCode" readonly></div>
+            <div class="form-group"><label>الكود (تلقائي)</label><input type="text" id="supCode" readonly style="text-align:center; font-weight:bold; color:var(--gold-light);"></div>
             <button class="btn btn-gold" onclick="saveSupervisor()">💾 حفظ</button>
             <button class="btn btn-blue" id="btnCancelSup" onclick="cancelEditSupervisor()" style="display:none;">إلغاء</button>
         </div>
@@ -147,25 +158,25 @@
         </div>
     </div>
 
-    <!-- 6. التقارير والتحليلات -->
+    <!-- 6. التقارير -->
     <div class="page" id="tab-reports">
         <div class="card">
-            <h3>📊 تقييم أداء المراكز (حسب إشكالات المشرفين)</h3>
+            <h3>📊 تقييم أداء المراكز</h3>
             <div id="centersReport"></div>
         </div>
     </div>
 
-    <!-- 7. البيانات الأساسية (Master Data) -->
+    <!-- 7. البيانات الأساسية -->
     <div class="page" id="tab-masterdata">
         <div class="card">
             <h3>🚩 أنواع الإشكالات</h3>
-            <div class="form-group"><input type="text" id="mdIssueType" placeholder="اسم النوع (مثال: تأخر استجابة)"></div>
+            <div class="form-group"><input type="text" id="mdIssueType" placeholder="اسم النوع"></div>
             <button class="btn btn-gold btn-small" onclick="addMasterData('issue_types')">➕ إضافة</button>
             <div id="issueTypesList" style="margin-top:10px;"></div>
         </div>
         <div class="card">
             <h3>⭐ أنواع الإشادات</h3>
-            <div class="form-group"><input type="text" id="mdPraiseType" placeholder="اسم النوع (مثال: أداء متميز)"></div>
+            <div class="form-group"><input type="text" id="mdPraiseType" placeholder="اسم النوع"></div>
             <button class="btn btn-gold btn-small" onclick="addMasterData('praise_types')">➕ إضافة</button>
             <div id="praiseTypesList" style="margin-top:10px;"></div>
         </div>
@@ -175,13 +186,14 @@
 <script>
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+    const CENTERS_LIST = ["مركز إسعاف دارسيت","مركز إسعاف بوشر","مركز إسعاف العامرات","مركز إسعاف قريات","مركز إسعاف الخوض 1","مركز إسعاف الخوض 2","مركز إسعاف العذيبة","مركز إسعاف الرسيل"];
 
     const sessionStr = localStorage.getItem("amb_user") || sessionStorage.getItem("amb_user");
     if (!sessionStr) window.location.href = "index.html";
     let currentUser = JSON.parse(sessionStr);
     if (currentUser.type !== "admin") window.location.href = "index.html";
 
-    let allSupervisors = [], allParameds = [], allVehicles = [], allIssues = [], allPraises = [], allMasterData = {};
+    let allSupervisors = [], allParameds = [], allVehicles = [], allIssues = [], allPraises = [];
 
     function logout() { localStorage.removeItem("amb_user"); sessionStorage.removeItem("amb_user"); window.location.href = "index.html"; }
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
@@ -202,7 +214,6 @@
         else if (id === 'masterdata') loadMasterData();
     }
 
-    // تحميل KPIs
     async function loadKPIs() {
         try {
             const [resSup, resIss, resPra] = await Promise.all([
@@ -232,6 +243,20 @@
                     <div style="width:100%;height:${h}%;background:linear-gradient(180deg,var(--gold-light),var(--gold));border-radius:4px 4px 0 0;"></div>
                 </div>`;
             }).join("");
+
+            const heatmap = document.getElementById("centersHeatmap");
+            heatmap.innerHTML = CENTERS_LIST.map(c => {
+                const iss = allIssues.filter(i => i.centerName === c).length;
+                const pra = allPraises.filter(p => p.centerName === c).length;
+                let color = "rgba(67,160,71,0.5)";
+                if (iss > 5) color = "rgba(229,57,53,0.5)";
+                else if (iss > 2) color = "rgba(251,140,0,0.5)";
+                return `<div style="background:${color}; border-radius:10px; padding:10px; text-align:center;">
+                    <div style="font-size:11px; font-weight:bold;">${c.replace("مركز إسعاف ", "")}</div>
+                    <div style="font-size:18px; font-weight:900; color:#fff;">${iss} / ${pra}</div>
+                    <div style="font-size:9px; opacity:0.8;">إشكالات / إشادات</div>
+                </div>`;
+            }).join("");
         } catch(e) {}
     }
 
@@ -240,7 +265,7 @@
         const el = document.getElementById("supervisorsList");
         el.innerHTML = allSupervisors.map(u => `
             <div class="list-item">
-                <div class="list-info"><h4>${u.name}</h4><p>${u.sector} | ${u.code}</p></div>
+                <div class="list-info"><h4>${u.name}</h4><p>${u.sector} | ${u.phone || "—"} | ${u.code}</p></div>
                 <div class="list-actions">
                     <button class="icon-btn copy" onclick="copyCode('${u.code}')">📋</button>
                     <button class="icon-btn edit" onclick="editSupervisor('${u._id}', '${u.name}', '${u.sector}', '${u.phone}', '${u.code}')">✏️</button>
@@ -282,15 +307,12 @@
         loadKPIs(); loadSupervisors();
     }
 
-    // المسعفون
+    // المسعفون والمركبات (تم اختصارها للتركيز على الأساسيات)
     async function loadParameds() {
         const res = await fetch(`${FIRESTORE_URL}/paramedics?pageSize=1000`).then(r => r.json());
         allParameds = res.documents ? res.documents.map(docToObj) : [];
         document.getElementById("paramedicsList").innerHTML = allParameds.map(p => `
-            <div class="list-item">
-                <div class="list-info"><h4>${p.name}</h4><p>${p.centerName} | ${p.rank}</p></div>
-                <div class="list-actions"><button class="icon-btn delete" onclick="deleteParamedic('${p._id}')">🗑️</button></div>
-            </div>
+            <div class="list-item"><div class="list-info"><h4>${p.name}</h4><p>${p.centerName} | ${p.rank}</p></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteParamedic('${p._id}')">🗑️</button></div></div>
         `).join("");
     }
     async function saveParamedic() {
@@ -306,16 +328,11 @@
         await fetch(`${FIRESTORE_URL}/paramedics/${id}`, { method: "DELETE" });
         loadParameds();
     }
-
-    // المركبات
     async function loadVehicles() {
         const res = await fetch(`${FIRESTORE_URL}/vehicles?pageSize=1000`).then(r => r.json());
         allVehicles = res.documents ? res.documents.map(docToObj) : [];
         document.getElementById("vehiclesList").innerHTML = allVehicles.map(v => `
-            <div class="list-item">
-                <div class="list-info"><h4>${v.plateNumber}</h4><p>${v.type} | ${v.centerName}</p></div>
-                <div class="list-actions"><button class="icon-btn delete" onclick="deleteVehicle('${v._id}')">🗑️</button></div>
-            </div>
+            <div class="list-item"><div class="list-info"><h4>${v.plateNumber}</h4><p>${v.type} | ${v.centerName}</p></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteVehicle('${v._id}')">🗑️</button></div></div>
         `).join("");
     }
     async function saveVehicle() {
@@ -332,19 +349,16 @@
         loadVehicles();
     }
 
-    // الدوام الشهري
+    // جدول الدوام
     function loadSchedule() {
         const monthInput = document.getElementById("scheduleMonth");
         if (!monthInput.value) monthInput.value = new Date().toISOString().slice(0,7);
         const [year, month] = monthInput.value.split("-");
         const daysInMonth = new Date(year, month, 0).getDate();
-        const sups = allSupervisors;
-        
         let html = `<table class="schedule-table"><thead><tr><th>المشرف</th>`;
         for (let d = 1; d <= daysInMonth; d++) html += `<th>${d}</th>`;
         html += `</tr></thead><tbody>`;
-        
-        sups.forEach(s => {
+        allSupervisors.forEach(s => {
             html += `<tr><td style="text-align:right;padding-right:8px;">${s.name}</td>`;
             for (let d = 1; d <= daysInMonth; d++) {
                 const key = `shift_${monthInput.value}_${s.code}_${d}`;
@@ -368,13 +382,12 @@
 
     // التقارير
     function loadReports() {
-        const centers = ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات", "مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"];
-        let html = `<table class="schedule-table"><thead><tr><th>المركز</th><th>إشكالات</th><th>إشادات</th><th>الحالة</th></tr></thead><tbody>`;
-        centers.forEach(c => {
+        let html = `<table class="report-table"><thead><tr><th>المركز</th><th>إشكالات</th><th>إشادات</th><th>الحالة</th></tr></thead><tbody>`;
+        CENTERS_LIST.forEach(c => {
             const cIssues = allIssues.filter(i => i.centerName === c).length;
             const cPraises = allPraises.filter(p => p.centerName === c).length;
-            const status = cIssues > 5 ? "🔴 ضغط" : cIssues > 2 ? "🟡 متوسط" : "🟢 ممتاز";
-            html += `<tr><td style="text-align:right;">${c}</td><td>${cIssues}</td><td>${cPraises}</td><td>${status}</td></tr>`;
+            const status = cIssues > 5 ? "🔴 ضغط عالي" : cIssues > 2 ? "🟡 متوسط" : "🟢 مستقر";
+            html += `<tr><td>${c.replace("مركز إسعاف ", "")}</td><td>${cIssues}</td><td>${cPraises}</td><td>${status}</td></tr>`;
         });
         html += `</tbody></table>`;
         document.getElementById("centersReport").innerHTML = html;
@@ -382,12 +395,12 @@
 
     // البيانات الأساسية
     async function loadMasterData() {
-        const [resIssTypes, resPraTypes] = await Promise.all([
+        const [resIss, resPra] = await Promise.all([
             fetch(`${FIRESTORE_URL}/issue_types?pageSize=1000`).then(r => r.json()),
             fetch(`${FIRESTORE_URL}/praise_types?pageSize=1000`).then(r => r.json())
         ]);
-        const issTypes = resIssTypes.documents ? resIssTypes.documents.map(docToObj) : [];
-        const praTypes = resPraTypes.documents ? resPraTypes.documents.map(docToObj) : [];
+        const issTypes = resIss.documents ? resIss.documents.map(docToObj) : [];
+        const praTypes = resPra.documents ? resPra.documents.map(docToObj) : [];
         document.getElementById("issueTypesList").innerHTML = issTypes.map(t => `<div class="list-item"><div class="list-info"><h4>${t.name}</h4></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteMasterData('issue_types', '${t._id}')">🗑️</button></div></div>`).join("");
         document.getElementById("praiseTypesList").innerHTML = praTypes.map(t => `<div class="list-item"><div class="list-info"><h4>${t.name}</h4></div><div class="list-actions"><button class="icon-btn delete" onclick="deleteMasterData('praise_types', '${t._id}')">🗑️</button></div></div>`).join("");
     }
