@@ -9,9 +9,8 @@
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
     :root { 
-        --gold:#c9a227; 
-        --gold-light:#e5c158; 
-        --gold-brand:#978d5b; /* لون الهوية الذي أرسلته */
+        --gold:#978d5b; /* لون الهوية */
+        --gold-light:#d4c896; 
         --green:#0d4a42; 
         --bg:#041814; 
         --red:#e53935; 
@@ -31,21 +30,21 @@
 
     /* شاشة التحميل */
     #loadingScreen { position:fixed; inset:0; z-index:9999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.5s; }
-    .loading-logo { width:120px; height:120px; border-radius:24px; border:3px solid var(--gold-brand); padding:5px; filter:drop-shadow(0 0 30px rgba(151,141,91,0.8)); animation:float 2s infinite; }
+    .loading-logo { width:120px; height:120px; border-radius:24px; border:3px solid var(--gold); padding:5px; filter:drop-shadow(0 0 30px rgba(151,141,91,0.8)); animation:float 2s infinite; }
     @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
     /* الهيدر */
     .header { text-align:center; margin-top:20px; margin-bottom:30px; z-index:1; }
     .logo-wrap { position:relative; display:inline-block; }
-    .logo { width:110px; height:110px; border-radius:22px; border:2px solid var(--gold-brand); background:var(--green); padding:5px; animation:float 3s infinite; }
-    h1 { color:var(--gold-brand); font-size:24px; margin-top:15px; font-weight:900; text-shadow:0 0 20px rgba(151,141,91,0.5); }
+    .logo { width:110px; height:110px; border-radius:22px; border:2px solid var(--gold); background:var(--green); padding:5px; animation:float 3s infinite; object-fit: contain; }
+    h1 { color:var(--gold-light); font-size:24px; margin-top:15px; font-weight:900; text-shadow:0 0 20px rgba(151,141,91,0.5); }
     .subtitle { color:rgba(255,255,255,0.6); font-size:12px; letter-spacing:2px; margin-top:5px; }
 
     /* صندوق الدخول الزجاجي */
     .login-box { width:100%; max-width:400px; background:rgba(13,74,66,0.4); backdrop-filter:blur(20px); padding:30px 25px; border-radius:24px; border:1px solid rgba(151,141,91,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.6); margin-bottom:25px; z-index:1; }
-    input { width:100%; padding:18px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-brand); font-size:22px; text-align:center; font-weight:900; outline:none; text-transform:uppercase; letter-spacing:3px; margin-bottom:20px; transition:0.3s; }
-    input:focus { border-color:var(--gold-brand); box-shadow:0 0 25px rgba(151,141,91,0.4); }
-    .btn-login { width:100%; padding:18px; border-radius:16px; border:none; font-size:17px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold-brand), var(--gold-light)); color:var(--bg); display:flex; justify-content:center; align-items:center; gap:10px; transition:0.3s; box-shadow:0 10px 25px rgba(151,141,91,0.3); }
+    input { width:100%; padding:18px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-light); font-size:22px; text-align:center; font-weight:900; outline:none; text-transform:uppercase; letter-spacing:3px; margin-bottom:20px; transition:0.3s; }
+    input:focus { border-color:var(--gold); box-shadow:0 0 25px rgba(151,141,91,0.4); }
+    .btn-login { width:100%; padding:18px; border-radius:16px; border:none; font-size:17px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); display:flex; justify-content:center; align-items:center; gap:10px; transition:0.3s; box-shadow:0 10px 25px rgba(151,141,91,0.3); }
     .btn-login:active { transform:scale(0.97); }
     .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:15px; min-height:20px; color:var(--red); }
     
@@ -53,17 +52,17 @@
     .stats-container { width:100%; max-width:400px; z-index:1; }
     .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .stat-card { background:rgba(255,255,255,0.03); backdrop-filter:blur(10px); border:1px solid rgba(151,141,91,0.15); padding:18px 15px; border-radius:16px; text-align:center; }
-    .stat-card .num { font-size:28px; font-weight:900; color:var(--gold-brand); line-height:1; }
+    .stat-card .num { font-size:28px; font-weight:900; color:var(--gold-light); line-height:1; }
     .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:6px; }
 
     /* نجوم الشهر */
-    .section-title { display:flex; justify-content:center; align-items:center; gap:10px; color:var(--gold-brand); font-size:15px; font-weight:900; margin:25px 0 15px; width:100%; max-width:400px; }
+    .section-title { display:flex; justify-content:center; align-items:center; gap:10px; color:var(--gold-light); font-size:15px; font-weight:900; margin:25px 0 15px; width:100%; max-width:400px; }
     .section-title::before, .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(151,141,91,0.3), transparent); }
     .star-card { display:grid; grid-template-columns:60px 1fr auto; gap:12px; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:12px; margin-bottom:10px; width:100%; max-width:400px; }
-    .star-photo { width:60px; height:60px; border-radius:12px; border:2px solid var(--gold-brand); background:var(--green); display:flex; align-items:center; justify-content:center; font-size:24px; object-fit:cover; }
-    .star-name { font-size:14px; font-weight:900; color:var(--gold-brand); }
+    .star-photo { width:60px; height:60px; border-radius:12px; border:2px solid var(--gold); background:var(--green); display:flex; align-items:center; justify-content:center; font-size:24px; object-fit:cover; }
+    .star-name { font-size:14px; font-weight:900; color:var(--gold-light); }
     .star-role { font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
-    .star-badge { font-size:28px; filter:drop-shadow(0 0 10px var(--gold-brand)); }
+    .star-badge { font-size:28px; filter:drop-shadow(0 0 10px var(--gold)); }
 
     @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 </style>
@@ -71,7 +70,7 @@
 <body>
     <div id="loadingScreen">
         <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="loading-logo">
-        <h1 style="color:var(--gold-brand); margin-top:20px;">جاري التحميل...</h1>
+        <h1 style="color:var(--gold); margin-top:20px;">جاري التحميل...</h1>
     </div>
 
     <div class="stars" id="starsContainer"></div>
@@ -85,7 +84,7 @@
     </div>
 
     <div class="login-box">
-        <h3 style="color:var(--gold-brand); text-align:center; margin-bottom:20px; font-size:15px;">🔐 بوابة الدخول الموحدة</h3>
+        <h3 style="color:var(--gold-light); text-align:center; margin-bottom:20px; font-size:15px;">🔐 بوابة الدخول الموحدة</h3>
         <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك">
         <button class="btn-login" id="loginBtn" onclick="login()">
             <span>🔓 دخول النظام</span>
@@ -108,7 +107,7 @@
     </div>
 
 <script>
-    // ⚠️ ضع هنا اسم مشروع Firebase الخاص بك
+    // ⚠️ تم تثبيت اسم المشروع الجديد والمجموعة بدون حرف S
     const FIREBASE_PROJECT = "ems-supervisor"; 
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
@@ -149,7 +148,8 @@
         btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.innerText = "";
         
         try {
-            const res = await fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`, { cache: "no-store" });
+            // القراءة من access_code (بدون S)
+            const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
             let foundUser = null;
@@ -173,12 +173,11 @@
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
             }
             
-            // حفظ الجلسة الموحدة
+            // حفظ الجلسة
             const sessionData = JSON.stringify(foundUser);
             localStorage.setItem("amb_user", sessionData);
             sessionStorage.setItem("amb_user", sessionData);
             
-            // التوجيه
             msg.style.color = "#69f0ae"; msg.innerText = "✅ تم الدخول بنجاح";
             
             setTimeout(() => {
@@ -188,7 +187,7 @@
             }, 500);
 
         } catch(e) { 
-            msg.innerText = "⚠️ خطأ في الاتصال بالشبكة"; 
+            msg.innerText = "⚠️ خطأ في الاتصال"; 
             btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; 
         }
     }
@@ -197,7 +196,7 @@
     async function loadStats() {
         try {
             const [resUsers, resActs, resBroadcasts] = await Promise.all([
-                fetch(`${FIRESTORE_URL}/access_codes?pageSize=1000`).then(r => r.json()),
+                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json()),
                 fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json())
             ]);
