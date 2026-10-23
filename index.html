@@ -3,66 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>نظام الإسعاف الذكي</title>
+<meta name="theme-color" content="#041814">
+<title>نظام الإسعاف الذكي — البوابة الرسمية</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-    body { background:#041814; color:#fff; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .logo { width:120px; height:120px; border-radius:20px; border:3px solid #c9a227; margin-bottom:20px; }
-    input { width:80%; max-width:300px; padding:15px; border-radius:10px; border:1px solid #c9a227; text-align:center; font-size:20px; margin-bottom:10px; }
-    button { width:80%; max-width:300px; padding:15px; border-radius:10px; border:none; background:#c9a227; color:#000; font-weight:bold; font-size:16px; cursor:pointer; }
-    .msg { margin-top:10px; color:red; font-size:14px; text-align:center; max-width:90%; }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
+    :root { --gold:#c9a227; --gold-light:#e5c158; --green:#0d4a42; --bg:#041814; --red:#e53935; }
+    body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; overflow-x:hidden; }
+    
+    /* خلفية زخرفية */
+    body::before {
+        content:''; position:fixed; inset:0; z-index:-1;
+        background: radial-gradient(circle at 15% 10%, rgba(201,162,39,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.4) 0%, transparent 50%);
+    }
+
+    /* الشعار */
+    .logo-wrap { text-align:center; margin-top:20px; margin-bottom:20px; animation:fadeIn 0.8s; }
+    .logo { width:110px; height:110px; border-radius:24px; border:2px solid var(--gold); padding:5px; background:var(--green); box-shadow:0 0 30px rgba(201,162,39,0.3); }
+    h1 { color:var(--gold-light); font-size:22px; margin-top:15px; font-weight:900; letter-spacing:1px; }
+    .subtitle { color:rgba(255,255,255,0.6); font-size:12px; margin-top:5px; }
+
+    /* صندوق الدخول */
+    .login-box { width:100%; max-width:400px; background:rgba(255,255,255,0.03); padding:25px; border-radius:20px; border:1px solid rgba(201,162,39,0.2); backdrop-filter:blur(10px); box-shadow:0 15px 40px rgba(0,0,0,0.5); margin-bottom:25px; animation:slideUp 0.6s; }
+    .login-box h3 { color:var(--gold); font-size:15px; margin-bottom:15px; text-align:center; }
+    .input-group { position:relative; margin-bottom:15px; }
+    input { width:100%; padding:16px; background:rgba(0,0,0,0.4); border:1px solid rgba(201,162,39,0.3); border-radius:12px; color:var(--gold-light); font-size:18px; text-align:center; font-weight:900; outline:none; text-transform:uppercase; letter-spacing:2px; transition:0.3s; }
+    input:focus { border-color:var(--gold); box-shadow:0 0 15px rgba(201,162,39,0.2); }
+    .btn-login { width:100%; padding:16px; border-radius:12px; border:none; font-size:16px; font-weight:900; cursor:pointer; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--bg); display:flex; justify-content:center; align-items:center; gap:10px; transition:0.2s; }
+    .btn-login:active { transform:scale(0.98); }
+    .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:10px; min-height:20px; color:var(--red); }
+    
+    /* مؤشر التحميل */
+    .loader { display:none; width:18px; height:18px; border:3px solid rgba(4,24,20,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* الإحصائيات */
+    .stats-container { width:100%; max-width:400px; animation:fadeIn 1s; }
+    .stats-container h4 { color:var(--gold); font-size:13px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .stat-card { background:linear-gradient(145deg, rgba(13,74,66,0.4), rgba(4,24,20,0.9)); border:1px solid rgba(201,162,39,0.15); padding:15px; border-radius:16px; text-align:center; position:relative; overflow:hidden; }
+    .stat-card::before { content:''; position:absolute; top:0; right:0; width:4px; height:100%; background:var(--gold); opacity:0.5; }
+    .stat-card .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
+    .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:6px; }
+    
+    /* التذييل */
+    .footer { margin-top:auto; padding:20px; font-size:10px; color:rgba(255,255,255,0.3); text-align:center; line-height:1.6; }
+
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
-    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo">
-    <h2 style="color:#c9a227; margin-bottom:20px;">نظام الإسعاف الذكي</h2>
-    <input type="text" id="codeInput" placeholder="أدخل الكود">
-    <button id="loginBtn" onclick="login()">دخول</button>
-    <div id="msgBox" class="msg"></div>
+
+    <div class="logo-wrap">
+        <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIj48cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzBkNGE0MiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjQwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+akTwvdGV4dD48L3N2Zz4='">
+        <h1>نظام الإسعاف الذكي</h1>
+        <div class="subtitle">هيئة الدفاع المدني والإسعاف — الإدارة العامة</div>
+    </div>
+
+    <div class="login-box">
+        <h3>🔐 بوابة الدخول الموحدة</h3>
+        <div class="input-group">
+            <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك" onkeypress="if(event.key==='Enter') login()">
+        </div>
+        <button class="btn-login" id="loginBtn" onclick="login()">
+            <span id="btnText">دخول النظام</span>
+            <span class="loader" id="btnLoader"></span>
+        </button>
+        <div id="msgBox" class="msg"></div>
+    </div>
+
+    <div class="stats-container">
+        <h4>📊 إحصائيات النظام المباشرة</h4>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="num" id="statIssues">0</div>
+                <div class="lbl">إشكالية ميدانية</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="statVisits">0</div>
+                <div class="lbl">تقرير زيارة</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="statUsers">0</div>
+                <div class="lbl">مستخدم مسجل</div>
+            </div>
+            <div class="stat-card">
+                <div class="num" id="statBroadcasts">0</div>
+                <div class="lbl">تعميم مرسل</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div>الإدارة العامة للإسعاف — نظام إدارة الجودة ISO 9001:2015</div>
+        <div>© 2026 — جميع الحقوق محفوظة</div>
+    </div>
 
 <script>
     const FIREBASE_PROJECT = "ems-supervisor";
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
+    function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
+    function getBool(field) { return (field && field.booleanValue !== undefined) ? field.booleanValue : true; }
+
+    // تسجيل الدخول
     async function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
+        const btnText = document.getElementById("btnText");
+        const loader = document.getElementById("btnLoader");
         
-        if (!code) { msg.innerText = "أدخل الكود"; return; }
-        btn.innerText = "جاري التحقق...";
+        if (!code) { msg.innerText = "⚠️ الرجاء إدخال الكود"; return; }
+        
+        btnText.innerText = "جاري التحقق...";
+        loader.style.display = "block";
+        btn.disabled = true;
+        msg.innerText = "";
         
         try {
             const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
             const data = await res.json();
             
             let foundUser = null;
-            if (data.documents) {
+            if (data.documents && data.documents.length > 0) {
                 for (let doc of data.documents) {
-                    if (doc.fields && doc.fields.code && doc.fields.code.stringValue.toUpperCase() === code) {
+                    if (!doc.fields || !doc.fields.code) continue;
+                    const docCode = getString(doc.fields.code).toUpperCase();
+                    
+                    if (docCode === code) {
+                        const active = getBool(doc.fields.active);
+                        if (!active) {
+                            msg.innerText = "⚠️ هذا الحساب معطل حالياً. راجع الإدارة.";
+                            resetBtn();
+                            return;
+                        }
                         foundUser = {
-                            name: doc.fields.name ? doc.fields.name.stringValue : "مستخدم",
-                            type: doc.fields.type ? doc.fields.type.stringValue : "supervisor",
-                            code: code
+                            name: getString(doc.fields.name),
+                            type: getString(doc.fields.type),
+                            code: docCode
                         };
                         break;
                     }
                 }
             }
             
-            if (!foundUser) { msg.innerText = "❌ الكود غير صحيح"; btn.innerText = "دخول"; return; }
+            if (!foundUser) { 
+                msg.innerText = "❌ الكود غير صحيح أو غير موجود"; 
+                resetBtn();
+                return; 
+            }
             
-            // حفظ الجلسة بشكل موحد
+            // حفظ الجلسة
             localStorage.setItem("amb_session", JSON.stringify(foundUser));
             
-            // التوجيه
+            // توجيه المستخدم
             if (foundUser.type === "admin") window.location.href = "admin.html";
             else if (foundUser.type === "ops") window.location.href = "ops.html";
             else window.location.href = "app.html";
 
-        } catch(e) { msg.innerText = "خطأ في الشبكة"; btn.innerText = "دخول"; }
+        } catch(e) { 
+            msg.innerText = "⚠️ خطأ في الاتصال بالشبكة"; 
+            resetBtn();
+        }
     }
+
+    function resetBtn() {
+        document.getElementById("btnText").innerText = "دخول النظام";
+        document.getElementById("btnLoader").style.display = "none";
+        document.getElementById("loginBtn").disabled = false;
+    }
+
+    // تحميل الإحصائيات
+    async function loadStats() {
+        try {
+            const [resUsers, resActs, resBroadcasts] = await Promise.all([
+                fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`).then(r => r.json()),
+                fetch(`${FIRESTORE_URL}/activities?pageSize=1000`).then(r => r.json()),
+                fetch(`${FIRESTORE_URL}/broadcasts?pageSize=1000`).then(r => r.json())
+            ]);
+
+            if (resUsers.documents) document.getElementById("statUsers").innerText = resUsers.documents.length;
+            if (resBroadcasts.documents) document.getElementById("statBroadcasts").innerText = resBroadcasts.documents.length;
+            
+            let issues = 0, visits = 0;
+            if (resActs.documents) {
+                resActs.documents.forEach(d => {
+                    const t = getString(d.fields.type);
+                    if (t === 'issue') issues++;
+                    if (t === 'visit') visits++;
+                });
+            }
+            document.getElementById("statIssues").innerText = issues;
+            document.getElementById("statVisits").innerText = visits;
+
+        } catch(e) { console.log("Stats error"); }
+    }
+
+    window.onload = function() { loadStats(); };
 </script>
 </body>
 </html>
