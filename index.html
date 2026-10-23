@@ -135,19 +135,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 
 .msg { text-align:center; font-size:13px; font-weight:700; margin-top:16px; min-height:22px; color:var(--red); position:relative; z-index:1; }
 
-/* أزرار الدخول الخاص */
-.special-access { width:100%; max-width:420px; display:grid; grid-template-columns:1fr 1fr; gap:14px; z-index:1; margin-bottom:30px; animation:fadeInUp 0.8s 0.4s both cubic-bezier(0.4,0,0.2,1); }
-.btn-special {
-  padding:16px 10px; border-radius:18px;
-  border:1px solid rgba(151,141,91,0.3);
-  background:#ffffff;
-  color:var(--text-dark); text-align:center; cursor:pointer; transition:0.3s;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.03);
-}
-.btn-special:active { transform:scale(0.96); border-color:var(--gold); box-shadow:0 8px 20px rgba(151,141,91,0.15); }
-.btn-special .icon { font-size:30px; }
-.btn-special .name { font-size:13px; font-weight:900; color:var(--gold-bright); }
+/* أزرار الدخول الخاص (لقد ألغيناها لأنها تعتمد على كلمات مرور، وتم استبدالها بنظام الأكواد الموحد) */
 
 /* نجوم الشهر */
 .section-title { display:flex; justify-content:center; align-items:center; gap:12px; color:var(--gold); font-size:16px; font-weight:900; margin:20px 0 20px; width:100%; max-width:420px; animation:fadeInUp 0.8s 0.6s both; }
@@ -183,9 +171,6 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
   .logo { width:180px; height:180px; border-radius:36px; }
   .logo-wrap::before { width:220px; height:220px; }
   .title { font-size:22px; }
-  .btn-special { padding:14px 8px; }
-  .btn-special .icon { font-size:24px; }
-  .btn-special .name { font-size:11px; }
   .star-card { grid-template-columns:50px 1fr auto; padding:10px; }
   .star-photo { width:50px; height:50px; font-size:22px; }
   .star-name { font-size:13px; }
@@ -221,22 +206,10 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
   <div class="input-group">
     <input type="text" id="codeInput" placeholder="أدخل الكود الخاص بك" autocomplete="off" autocapitalize="off" spellcheck="false">
   </div>
-  <button class="btn-login" id="loginBtn" onclick="loginWithCode()">
+  <button class="btn-login" id="loginBtn">
     <span>🔓</span> <span>دخول النظام</span>
   </button>
   <div id="msgBox" class="msg"></div>
-</div>
-
-<!-- أزرار الدخول الخاص -->
-<div class="special-access">
-  <div class="btn-special ops" onclick="openSpecialLogin('ops')">
-    <span class="icon">📡</span>
-    <span class="name">غرفة العمليات</span>
-  </div>
-  <div class="btn-special admin" onclick="openSpecialLogin('admin')">
-    <span class="icon">🏛️</span>
-    <span class="name">الإدارة العامة</span>
-  </div>
 </div>
 
 <!-- نجوم الشهر -->
@@ -250,138 +223,86 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
   هيئة الدفاع المدني والإسعاف — جميع الحقوق محفوظة &copy; 2026
 </div>
 
-<script>
-const FIREBASE_PROJECT = "ems-supervisor";
-const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
+<!-- ═══════════════════════════════════════════════════════════
+     منطق المصادقة الجديد (Firebase Auth)
+     ═══════════════════════════════════════════════════════════ -->
+<script type="module">
+    import { loginWithCode, checkAuthState } from './shared/auth.js';
 
-const SPECIAL_PASSWORDS = {
-  ops:   { password: "ops2025",        page: "ops.html",   name: "غرفة العمليات" },
-  admin: { password: "Samir96267",     page: "admin.html", name: "الإدارة العامة" }
-};
+    // إخفاء شاشة التحميل عند جاهزية الصفحة
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const ls = document.getElementById("loadingScreen");
+            if (ls) { ls.style.opacity = "0"; setTimeout(() => ls.remove(), 500); }
+            document.getElementById("codeInput").focus();
+        }, 1000);
+    });
 
-function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-function currentMonthKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
-function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) { const v = doc.fields[k]; if ("stringValue" in v) obj[k] = v.stringValue; else if ("integerValue" in v) obj[k] = parseInt(v.integerValue); else if ("booleanValue" in v) obj[k] = v.booleanValue; } obj._id = doc.name.split("/").pop(); return obj; }
-
-const starsContainer = document.getElementById("starsContainer");
-for (let i = 0; i < 30; i++) {
-  let s = document.createElement("div");
-  s.className = "star";
-  s.style.left = Math.random() * 100 + "%";
-  s.style.top = Math.random() * 100 + "%";
-  s.style.animationDelay = (Math.random() * 4) + "s";
-  starsContainer.appendChild(s);
-}
-
-setTimeout(() => {
-  let ls = document.getElementById("loadingScreen");
-  if (ls) { ls.style.opacity = "0"; setTimeout(() => ls.remove(), 500); }
-  document.getElementById("codeInput").focus();
-}, 1200);
-
-async function loginWithCode() {
-  const code = document.getElementById("codeInput").value.trim().toUpperCase();
-  const msg = document.getElementById("msgBox");
-  const btn = document.getElementById("loginBtn");
-  
-  if (!code) { msg.innerHTML = "⚠️ الرجاء إدخال الكود"; return; }
-  
-  btn.innerHTML = "⏳ جاري التحقق...";
-  btn.disabled = true;
-  msg.innerHTML = "";
-
-  try {
-    const res = await fetch(`${FIRESTORE_URL}/access_code?pageSize=1000`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Network error");
-    const data = await res.json();
-    
-    let foundUser = null;
-    if (data.documents) {
-      for (let doc of data.documents) {
-        const docCode = (doc.fields.code?.stringValue || "").toUpperCase();
-        if (docCode === code) { foundUser = docToObj(doc); break; }
-      }
+    // إنشاء نجوم الخلفية
+    const starsContainer = document.getElementById("starsContainer");
+    for (let i = 0; i < 30; i++) {
+        let s = document.createElement("div");
+        s.className = "star";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 100 + "%";
+        s.style.animationDelay = (Math.random() * 4) + "s";
+        starsContainer.appendChild(s);
     }
 
-    if (!foundUser) {
-      msg.innerHTML = "❌ الكود غير صحيح";
-      btn.innerHTML = "<span>🔓</span> <span>دخول النظام</span>";
-      btn.disabled = false;
-      return;
-    }
+    // دالة تسجيل الدخول بالكود
+    window.loginWithCodeUI = async function() {
+        const codeInput = document.getElementById("codeInput");
+        const msg = document.getElementById("msgBox");
+        const btn = document.getElementById("loginBtn");
+        const code = codeInput.value.trim().toUpperCase();
 
-    localStorage.setItem("amb_user", JSON.stringify(foundUser));
-    sessionStorage.setItem("amb_user", JSON.stringify(foundUser));
+        if (!code) { msg.innerHTML = "⚠️ الرجاء إدخال الكود"; return; }
+
+        btn.innerHTML = "⏳ جاري التحقق...";
+        btn.disabled = true;
+        msg.innerHTML = "";
+
+        const result = await loginWithCode(code);
+
+        if (result.success) {
+            msg.style.color = "#43a047";
+            msg.innerHTML = "✅ تم الدخول بنجاح";
+            
+            // التوجيه بناءً على بادئة الكود
+            setTimeout(() => {
+                if (code.startsWith("ADM")) {
+                    window.location.href = "admin.html";
+                } else if (code.startsWith("OPS")) {
+                    window.location.href = "ops.html";
+                } else {
+                    window.location.href = "app.html";
+                }
+            }, 800);
+        } else {
+            msg.style.color = "#ff5252";
+            msg.innerHTML = "❌ " + result.message;
+            btn.innerHTML = "<span>🔓</span> <span>دخول النظام</span>";
+            btn.disabled = false;
+        }
+    };
+
+    // ربط زر الدخول بالدالة الجديدة
+    document.getElementById("loginBtn").addEventListener("click", loginWithCodeUI);
     
-    msg.style.color = "#43a047";
-    msg.innerHTML = "✅ تم الدخول بنجاح";
+    // ربط زر Enter
+    document.getElementById("codeInput").addEventListener("keypress", e => {
+        if (e.key === "Enter") loginWithCodeUI();
+    });
 
-    setTimeout(() => {
-      if (foundUser.type === "admin") window.location.href = "admin.html";
-      else if (foundUser.type === "ops") window.location.href = "ops.html";
-      else window.location.href = "app.html";
-    }, 500);
-
-  } catch(e) {
-    msg.innerHTML = "⚠️ خطأ في الاتصال بالشبكة";
-    btn.innerHTML = "<span>🔓</span> <span>دخول النظام</span>";
-    btn.disabled = false;
-  }
-}
-
-function openSpecialLogin(type) {
-  const pwd = prompt(`🔐 الدخول إلى ${SPECIAL_PASSWORDS[type].name}\n\nالرجاء إدخال كلمة المرور:`);
-  if (pwd === null) return;
-  if (pwd === SPECIAL_PASSWORDS[type].password || pwd === "123456") {
-    const user = { type: type, name: SPECIAL_PASSWORDS[type].name };
-    localStorage.setItem("amb_user", JSON.stringify(user));
-    sessionStorage.setItem("amb_user", JSON.stringify(user));
-    window.location.href = SPECIAL_PASSWORDS[type].page;
-  } else {
-    alert("❌ كلمة المرور خاطئة");
-  }
-}
-
-async function loadFeaturedStars() {
-  const el = document.getElementById("starsMonthList");
-  try {
-    const res = await fetch(`${FIRESTORE_URL}/featured?pageSize=100`, { cache: "no-store" });
-    if (!res.ok) throw new Error("Network error");
-    const data = await res.json();
-    
-    const docs = (data.documents || []).map(docToObj);
-    const month = currentMonthKey();
-    const list = docs.filter(f => f.month === month).sort((a, b) => (b.score || 0) - (a.score || 0)).slice(0, 3);
-    
-    if (list.length === 0) {
-      el.innerHTML = '<div style="text-align:center; font-size:12px; color:var(--text-muted); padding:20px;">لا يوجد متميزون هذا الشهر</div>';
-      return;
-    }
-
-    el.innerHTML = list.map((f, idx) => {
-      const rankCls = idx === 0 ? "rank-1" : idx === 1 ? "rank-2" : "rank-3";
-      const badge = idx === 0 ? "🥇" : idx === 1 ? "🥈" : "🥉";
-      return `
-        <div class="star-card ${rankCls}">
-          ${f.photoUrl ? `<img src="${esc(f.photoUrl)}" class="star-photo" onerror="this.outerHTML='<div class=\\'star-photo\\'>👤</div>'">` : `<div class="star-photo">👤</div>`}
-          <div>
-            <div class="star-name">${esc(f.name || "—")}</div>
-            <div class="star-role">${esc(f.role || "")} ${f.centerName ? "• " + esc(f.centerName) : ""}</div>
-          </div>
-          <div class="star-badge">${badge}</div>
-        </div>
-      `;
-    }).join("");
-
-  } catch(e) {
-    el.innerHTML = '<div style="text-align:center; font-size:12px; color:#e53935;">خطأ في تحميل النجوم</div>';
-  }
-}
-
-document.getElementById("codeInput").addEventListener("keypress", e => {
-  if (e.key === "Enter") loginWithCode();
-});
-loadFeaturedStars();
+    // التحقق من حالة الدخول (لو كان المستخدم مسجل دخوله مسبقاً)
+    checkAuthState((code, user) => {
+        if (code) {
+            // إذا كان مسجل دخوله، وجهه مباشرة حسب البادئة
+            if (code.startsWith("ADM")) window.location.href = "admin.html";
+            else if (code.startsWith("OPS")) window.location.href = "ops.html";
+            else window.location.href = "app.html";
+        }
+    });
 </script>
 </body>
 </html>
