@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الإدارة العامة</title>
+    <title>نظام الإدارة العامة الشامل</title>
     
     <!-- مكتبات تصدير الإكسل و PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
-    <!-- إعدادات Firebase وربطها بملف app.js -->
+    <!-- إعدادات Firebase المحدثة ببياناتك -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ⚠️⚠️⚠️ هام جداً: استبدل هذا الكود بكود firebaseConfig الخاص بمشروعك من إعدادات Firebase ⚠️⚠️⚠️
+        // ✅ تم وضع بيانات مشروعك هنا
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
+            authDomain: "ems-supervisor.firebaseapp.com",
+            projectId: "ems-supervisor",
+            storageBucket: "ems-supervisor.firebasestorage.app",
+            messagingSenderId: "230655268524",
+            appId: "1:230655268524:web:5043a458af3d79989ff109"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -171,11 +171,10 @@
             <div id="recordsContainer" class="records-grid"></div>
         </div>
 
-        <!-- إعدادات النظام (الأمان والهوية) -->
+        <!-- إعدادات النظام -->
         <div class="admin-panel settings-panel">
             <h2 style="color: var(--danger);">⚙️ إعدادات النظام (للمسؤول فقط)</h2>
             <div class="settings-grid">
-                <!-- تغيير كلمة المرور -->
                 <div>
                     <h3>🔐 تغيير كلمة المرور</h3>
                     <form id="passwordForm">
@@ -194,8 +193,6 @@
                         <button type="submit" class="btn btn-danger" style="width: 100%;">تحديث كلمة المرور</button>
                     </form>
                 </div>
-
-                <!-- تغيير الشعار والاسم -->
                 <div>
                     <h3>🖼️ هوية النظام</h3>
                     <form id="identityForm">
