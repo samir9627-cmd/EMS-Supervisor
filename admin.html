@@ -4,41 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — غرفة التحكم v37.0</title>
+<title>مركز القيادة والتحكم — v39.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+/* ═══ الأساسيات ═══ */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 :root {
-  --gold:#978d5b; --gold-light:#d4c896; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
-  --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252;
-  --amber:#fb8c00; --blue:#29b6f6; --purple:#ab47bc; --border:rgba(151,141,91,0.3);
-  --surface:rgba(13,74,66,0.55); --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px);
+  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
+  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae;
+  --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726;
+  --blue:#29b6f6; --blue-light:#64b5f6;
+  --purple:#ab47bc; --purple-light:#ce93d8;
+  --border:rgba(151,141,91,0.3);
+  --surface:rgba(13,74,66,0.55); --surface-2:rgba(4,24,20,0.75);
+  --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
 html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
 body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
 body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
 @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* Loading */
-#loadingScreen { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--teal-deep); }
+/* ═══ شاشة التحميل ═══ */
+#loadingScreen { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--teal-deep); transition:opacity 0.4s; }
 .spinner { width:50px; height:50px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
+#loadingText { color:var(--gold-light); font-size:14px; font-weight:900; }
+
 #mainApp { display:none; }
 #mainApp.ready { display:block; }
 
-/* Topbar */
-.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
-.topbar-logo { width:44px; height:44px; border-radius:12px; }
+/* ═══ Topbar ═══ */
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5); }
+.topbar-logo { width:44px; height:44px; border-radius:12px; border:1px solid var(--border); padding:2px; object-fit:contain; }
 .topbar-info { flex:1; }
 .topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
-.topbar-info p { font-size:11px; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:6px; }
+.topbar-info p { font-size:11px; color:rgba(255,255,255,0.8); display:flex; align-items:center; gap:6px; margin-top:2px; }
 .status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); box-shadow:0 0 8px var(--green-light); }
 .icon-btn { width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.icon-btn.danger { background:rgba(198,40,40,0.4); }
+.icon-btn:active { transform:scale(0.95); }
+.icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
 
-/* Tabs */
+/* ═══ Tabs ═══ */
 .tabs-bar { position:sticky; top:calc(74px + var(--safe-top)); z-index:98; background:rgba(4,24,20,0.95); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
 .tabs-bar::-webkit-scrollbar { display:none; }
 .tabs-scroll { display:flex; gap:6px; padding:10px 12px; min-width:min-content; }
@@ -46,33 +57,40 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-color:var(--gold); font-weight:900; }
 .tab-btn .badge { background:var(--red); color:#fff; font-size:10px; padding:2px 6px; border-radius:10px; margin-right:4px; animation:pulseRed 2s infinite; }
 
-/* Pages */
+/* ═══ Pages & Cards ═══ */
 .page { display:none; padding:16px; max-width:900px; margin:0 auto; }
 .page.active { display:block; animation:slideUp 0.35s; }
-.card { background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px; }
+.card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px; }
 .card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; border-bottom:1px solid var(--border); padding-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
 .empty-state { text-align:center; padding:30px; color:rgba(255,255,255,0.4); font-size:13px; }
 
-/* Stats */
+/* ═══ Stats ═══ */
 .stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
 @media(min-width:600px){ .stats-grid { grid-template-columns:repeat(4, 1fr); } }
-.stat-mini { background:rgba(4,24,20,0.75); border:1px solid var(--border); border-radius:16px; padding:16px; text-align:center; cursor:pointer; }
-.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); }
+.stat-mini { background:rgba(4,24,20,0.75); border:1px solid var(--border); border-radius:16px; padding:16px; text-align:center; cursor:pointer; transition:0.2s; position:relative; overflow:hidden; }
+.stat-mini:active { transform:scale(0.97); }
+.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
 .stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:4px; }
 .stat-mini.alert .num { color:var(--red-light); animation:pulseRed 2s infinite; }
-.stat-mini.blue .num { color:var(--blue); }
+.stat-mini.green .num { color:var(--green-light); }
+.stat-mini.blue .num { color:var(--blue-light); }
+.stat-mini .icon-bg { position:absolute; top:10px; left:10px; font-size:28px; opacity:0.1; }
 
-/* Accordion */
+/* ═══ Accordion (المراكز) ═══ */
 .accordion { border:1px solid var(--border); border-radius:12px; margin-bottom:8px; overflow:hidden; background:rgba(0,0,0,0.2); }
 .accordion-header { padding:12px; font-weight:900; color:var(--gold-light); cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+.accordion-header:active { background:rgba(255,255,255,0.05); }
 .accordion-content { display:none; padding:10px; border-top:1px solid var(--border); }
 .accordion.open .accordion-content { display:block; }
+.accordion-arrow { transition:0.3s; font-size:10px; }
+.accordion.open .accordion-arrow { transform:rotate(180deg); }
 
-/* Items */
+/* ═══ Items (البطاقات) ═══ */
 .item-card { background:rgba(4,24,20,0.8); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:12px; padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
 .item-card.red { border-right-color:var(--red); }
 .item-card.green { border-right-color:var(--green-light); }
 .item-card.blue { border-right-color:var(--blue); }
+.item-card.amber { border-right-color:var(--amber); }
 .item-info { flex:1; }
 .item-info h4 { font-size:13px; color:var(--gold-light); font-weight:900; }
 .item-info p { font-size:11px; color:rgba(255,255,255,0.7); margin-top:4px; line-height:1.5; }
@@ -83,25 +101,26 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .icon-btn-sm.lock { background:rgba(255,193,7,0.2); color:#ffc107; }
 .icon-btn-sm.check { background:rgba(67,160,71,0.2); color:#69f0ae; }
 
-/* Inputs & Buttons */
+/* ═══ Inputs & Buttons ═══ */
 input, select, textarea { width:100%; padding:12px; background:rgba(0,0,0,0.4); border:1px solid var(--border); border-radius:8px; color:#fff; font-size:13px; margin-bottom:10px; font-family:inherit; outline:none; }
 input:focus, select:focus, textarea:focus { border-color:var(--gold); }
 .btn { padding:12px; border:none; border-radius:8px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; display:block; width:100%; text-align:center; margin-bottom:8px; }
+.btn:active { transform:scale(0.98); }
 .btn.small { padding:8px; font-size:11px; width:auto; display:inline-block; }
 .btn.danger { background:var(--red); color:#fff; }
 .btn.info { background:var(--blue); color:#fff; }
 .btn.success { background:var(--green); color:#fff; }
 
-/* Modal */
+/* ═══ Modal ═══ */
 .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.show { display:flex; }
 .modal-sheet { background:var(--teal-dark); border:2px solid var(--gold); border-radius:16px; width:100%; max-width:600px; max-height:90vh; padding:20px; overflow-y:auto; animation:slideUp 0.3s; }
 .modal-sheet h3 { color:var(--gold-light); text-align:center; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:10px; font-size:16px; }
 
-/* --- Duty Table (FIXED FOR MOBILE) --- */
+/* ═══ Duty Table (Mobile Perfect) ═══ */
 .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 8px; margin-top: 10px; position: relative; }
 .duty-table { width: max-content; min-width: 100%; border-collapse: collapse; font-size: 11px; }
-.duty-table th, .duty-table td { border: 1px solid var(--border); padding: 4px; text-align: center; min-width: 35px; }
+.duty-table th, .duty-table td { border: 1px solid var(--border); padding: 4px; text-align: center; min-width: 38px; }
 .duty-table th { background: rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 10; }
 .duty-table th.weekend { background: rgba(229,57,53,0.3); color: #ff8a80; }
 .duty-table td.name-col { text-align: right; font-weight: 900; white-space: nowrap; position: sticky; right: 0; background: var(--teal-dark); z-index: 5; box-shadow: -2px 0 5px rgba(0,0,0,0.5); padding: 4px 8px; }
@@ -113,7 +132,7 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
 .duty-table td.s-س { background: rgba(226,227,229,0.2); }
 .duty-table td.s-خ { background: rgba(245,194,199,0.3); }
 
-/* Chat */
+/* ═══ Chat ═══ */
 .chat-container { display:flex; flex-direction:column; height:55vh; background:rgba(0,0,0,0.2); border-radius:12px; border:1px solid var(--border); overflow:hidden; }
 .chat-messages { flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
 .message { max-width:85%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.5; }
@@ -123,33 +142,47 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
 .chat-input-box input { flex:1; margin:0; border-radius:8px 0 0 8px; border-left:none; }
 .chat-input-box button { padding:0 20px; background:var(--gold); color:var(--teal-deep); border:none; border-radius:0 8px 8px 0; font-weight:900; cursor:pointer; }
 
-/* Toast */
+/* ═══ Toast ═══ */
 .toast-container { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:90%; max-width:400px; }
 .toast { background:var(--teal); color:#fff; padding:12px 20px; border-radius:10px; border:1px solid var(--gold); text-align:center; font-size:13px; font-weight:bold; box-shadow:0 5px 15px rgba(0,0,0,0.5); animation:slideUp 0.3s; }
 .toast.danger { border-color:var(--red); }
 
-/* Print */
+/* ═══ Print Exact (A4 Landscape) ═══ */
 #printArea { display:none; }
 @media print {
-  @page { margin: 5mm; }
+  @page { size: A4 landscape; margin: 5mm; }
   body * { visibility:hidden; }
   #printArea, #printArea * { visibility:visible; }
   #printArea { position:absolute; left:0; top:0; width:100%; display:block; background:#fff; color:#000; }
 }
+.print-form { width:100%; max-width:287mm; margin:0 auto; background:#fff; color:#000; font-family:'Cairo',sans-serif; font-size:7.5pt; }
+.print-header { background:#1e4620; color:#fff; padding:5px 10px; border-radius:4px; display:grid; grid-template-columns:1fr auto 1fr; gap:6px; align-items:center; min-height:44px; }
+.print-header-side { text-align:center; font-size:7pt; font-weight:900; line-height:1.25; }
+.print-header-side .authority { font-size:8pt; color:#f5e9c8; }
+.print-header-side .dept { font-size:7pt; color:#e8d99f; }
+.print-header-side .en { font-size:4.5pt; color:#d4c896; font-family:monospace; }
+.print-header-logo { width:42px; height:42px; object-fit:contain; }
+.print-title { text-align:center; font-size:11pt; font-weight:900; color:#1e4620; margin:5px 0; padding:3px; border-top:2px solid #1e4620; border-bottom:2px solid #1e4620; background:#f5f2e6; }
 .print-table { width:100%; border-collapse:collapse; font-size:6pt; table-layout:fixed; }
-.print-table th, .print-table td { border:1px solid #000; padding:1px; text-align:center; }
-.print-table th { background:#1e4620; color:#fff; }
-.print-table th.name-col { width:45px; text-align:right; background:#eee; color:#000; }
-.print-table td.name-col { width:45px; text-align:right; background:#f9f9f9; }
+.print-table th, .print-table td { border:1px solid #000; padding:1px; text-align:center; word-break:break-all; }
+.print-table th { background:#1e4620; color:#fff; font-size:5.5pt; }
+.print-table th.name-col { width:45px; text-align:right; padding-right:2px; background:#eee; color:#000; font-weight:900; }
+.print-table td.name-col { width:45px; text-align:right; padding-right:2px; font-weight:bold; background:#f9f9f9; }
 .print-table .weekend { background:#fee; }
 .print-legend { display:flex; gap:5px; justify-content:center; margin:5px 0; font-size:6pt; }
 .print-legend span { padding:1px 4px; border:1px solid #000; border-radius:3px; }
+.print-signatures { display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; margin-top:10px; padding-top:6px; border-top:1px dashed #c9a227; }
+.print-signature { text-align:center; font-size:7pt; }
+.print-signature .role { font-weight:900; color:#1e4620; margin-bottom:2px; }
+.print-signature .line { border-top:1px solid #333; padding-top:2px; margin-top:16px; font-size:6pt; color:#666; }
+.print-footer { margin-top:6px; padding-top:3px; border-top:1px solid #c9a227; display:flex; justify-content:space-between; font-size:6pt; color:#666; }
 </style>
 </head>
 <body>
 
 <div id="loadingScreen">
   <div class="spinner"></div>
+  <div id="loadingText">جاري تحميل مركز القيادة...</div>
 </div>
 
 <div id="mainApp">
@@ -174,16 +207,16 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
     </div>
   </div>
 
-  <!-- 1. الرئيسية -->
+  <!-- 1. Dashboard -->
   <div class="page active" id="page-dashboard">
     <div class="stats-grid">
-      <div class="stat-mini" onclick="switchTab('activities')"><div class="num" id="dashIssues">0</div><div class="lbl">إشكالات</div></div>
-      <div class="stat-mini" onclick="switchTab('activities')"><div class="num" id="dashVisits">0</div><div class="lbl">زيارات</div></div>
-      <div class="stat-mini alert" onclick="switchTab('messages')"><div class="num" id="dashMessages">0</div><div class="lbl">رسائل</div></div>
-      <div class="stat-mini blue" onclick="switchTab('users')"><div class="num" id="dashUsers">0</div><div class="lbl">مشرفين</div></div>
+      <div class="stat-mini" onclick="switchTab('activities')"><span class="icon-bg">🚩</span><div class="num" id="dashIssues">0</div><div class="lbl">إشكالات</div></div>
+      <div class="stat-mini" onclick="switchTab('activities')"><span class="icon-bg">📋</span><div class="num" id="dashVisits">0</div><div class="lbl">زيارات</div></div>
+      <div class="stat-mini alert" onclick="switchTab('messages')"><span class="icon-bg">💬</span><div class="num" id="dashMessages">0</div><div class="lbl">رسائل جديدة</div></div>
+      <div class="stat-mini blue" onclick="switchTab('users')"><span class="icon-bg">👤</span><div class="num" id="dashUsers">0</div><div class="lbl">مشرفين</div></div>
     </div>
     <div class="card">
-      <div class="card-title">📡 نبض المراكز</div>
+      <div class="card-title">📡 نبض المراكز (اضغط للتفاصيل)</div>
       <div id="centersPulse"></div>
     </div>
     <div class="card">
@@ -192,51 +225,55 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
     </div>
   </div>
 
-  <!-- 2. النشاطات -->
+  <!-- 2. Activities -->
   <div class="page" id="page-activities">
     <div class="card">
       <div class="card-title">📋 سجل النشاطات <span id="actsCount" style="font-size:10px; opacity:0.6;">0</span></div>
       <div style="display:flex; gap:8px; margin-bottom:10px;">
         <select id="filterType" onchange="renderActivities()" style="flex:1;">
           <option value="all">الكل</option>
-          <option value="issue">إشكالات</option>
-          <option value="visit">زيارات</option>
+          <option value="issue">إشكالات فقط</option>
+          <option value="visit">زيارات فقط</option>
         </select>
+        <button class="btn small info" onclick="exportCSV()">📥 Excel</button>
       </div>
       <div id="activitiesList"></div>
     </div>
   </div>
 
-  <!-- 3. الرسائل -->
+  <!-- 3. Messages -->
   <div class="page" id="page-messages">
     <div class="card">
-      <div class="card-title">💬 الرسائل</div>
+      <div class="card-title">💬 مركز الرسائل</div>
       <div id="supervisorsChatList" style="display:flex; gap:8px; overflow-x:auto; margin-bottom:15px; padding-bottom:5px;"></div>
       <div class="chat-container" id="chatBox" style="display:none;">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-box">
-          <input type="text" id="chatInput" placeholder="اكتب ردك..." onkeypress="if(event.key === 'Enter') sendMessage()">
+          <input type="text" id="chatInput" placeholder="اكتب ردك هنا..." onkeypress="if(event.key === 'Enter') sendMessage()">
           <button onclick="sendMessage()">إرسال</button>
         </div>
       </div>
-      <div id="noChatSelected" style="text-align:center; padding:30px; color:rgba(255,255,255,0.4);">اختر مشرفاً للمحادثة</div>
+      <div id="noChatSelected" style="text-align:center; padding:30px; color:rgba(255,255,255,0.4);">اختر مشرفاً من القائمة أعلاه للمحادثة</div>
     </div>
   </div>
 
-  <!-- 4. الدوام -->
+  <!-- 4. Duty -->
   <div class="page" id="page-duty">
     <div class="card">
-      <div class="card-title">📅 جدول الدوام</div>
+      <div class="card-title">📅 جدول الدوام الشهري</div>
       <input type="month" id="dutyMonth" onchange="loadDutyTable()">
       <div style="display:flex; gap:8px;">
         <button class="btn success" onclick="saveDutyToCloud()">💾 حفظ</button>
-        <button class="btn info" onclick="openPrintModal()">🖨️ طباعة</button>
+        <button class="btn info" onclick="openPrintModal()">🖨️ طباعة حرة</button>
+      </div>
+      <div style="font-size:10px; margin:10px 0; opacity:0.8; display:flex; gap:10px; flex-wrap:wrap;">
+        <span><b>ص</b>=صباحي</span><span><b>م</b>=مسائي</span><span><b>د</b>=إداري</span><span><b>أ</b>=إجازة</span><span><b>س</b>=سنوية</span><span><b>خ</b>=أخرى</span>
       </div>
       <div class="table-responsive" id="dutyTableContainer"></div>
     </div>
   </div>
 
-  <!-- 5. المشرفون -->
+  <!-- 5. Users -->
   <div class="page" id="page-users">
     <div class="card">
       <div class="card-title">➕ إضافة مشرف</div>
@@ -244,7 +281,7 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
       <input type="text" id="newUserSector" placeholder="القطاع">
       <input type="text" id="newUserCenter" placeholder="المركز">
       <input type="text" id="newUserCode" readonly style="text-align:center; color:var(--gold);">
-      <button class="btn" onclick="addNewUser()">💾 إضافة</button>
+      <button class="btn" onclick="addNewUser()">💾 إضافة (كلمة المرور: 123456)</button>
     </div>
     <div class="card">
       <div class="card-title">📋 المشرفون</div>
@@ -252,7 +289,7 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
     </div>
   </div>
 
-  <!-- 6. البيانات -->
+  <!-- 6. Master -->
   <div class="page" id="page-master">
     <div class="card">
       <div class="card-title">🚩 أنواع الإشكالات</div>
@@ -260,9 +297,15 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
       <button class="btn small success" onclick="addMasterType('issue_types')">➕ إضافة</button>
       <div id="issueTypesList" style="margin-top:10px;"></div>
     </div>
+    <div class="card">
+      <div class="card-title">⭐ أنواع الإشادات</div>
+      <input type="text" id="newPraiseType" placeholder="اسم النوع">
+      <button class="btn small success" onclick="addMasterType('praise_types')">➕ إضافة</button>
+      <div id="praiseTypesList" style="margin-top:10px;"></div>
+    </div>
   </div>
 
-  <!-- 7. الإعدادات -->
+  <!-- 7. Settings -->
   <div class="page" id="page-settings">
     <div class="card">
       <div class="card-title">🔐 تغيير كلمة المرور</div>
@@ -270,9 +313,14 @@ input:focus, select:focus, textarea:focus { border-color:var(--gold); }
       <button class="btn" onclick="changePassword()">تحديث</button>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ التحكم الشامل</div>
-      <button class="btn danger" onclick="wipeData('activities')">🗑️ حذف النشاطات</button>
+      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة الخطر</div>
+      <button class="btn danger" onclick="wipeData('activities')">🗑️ حذف كل النشاطات</button>
+      <button class="btn danger" onclick="wipeData('messages')">🗑️ حذف كل الرسائل</button>
       <button class="btn danger" onclick="wipeData('all')">💥 تصفير شامل</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📜 سجل العمليات</div>
+      <div id="auditList" style="font-size:11px; max-height:300px; overflow-y:auto;"></div>
     </div>
   </div>
 </div>
@@ -292,58 +340,48 @@ const FIREBASE_PROJECT = "ems-supervisor";
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
 let currentUser = null;
-let allUsers = [], allActivities = [], allMessages = [], allDutyGrids = {}, issueTypes = [];
+let allUsers = [], allActivities = [], allMessages = [], allBroadcasts = [];
+let issueTypes = [], praiseTypes = [], allDutyGrids = {}, allAudit = [];
 let currentChatSupervisor = null;
+let isSyncing = false;
+
 const CENTERS_LIST = ["دارسيت", "بوشر", "العامرات", "قريات", "الخوض 1", "الخوض 2", "العذيبة", "الرسيل"];
 const SHIFT_KEYS = ['ص','م','د','أ','س','خ'];
+const SHIFT_CODES = { 'ص':'صباحي', 'م':'مسائي', 'د':'إداري', 'أ':'إجازة', 'س':'سنوية', 'خ':'أخرى' };
 
-async function sha256(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
+/* Helpers */
+async function sha256(text) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
 function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function todayKey() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function fmtDate(ts) { if(!ts) return "—"; return new Date(ts).toLocaleDateString('ar-OM'); }
 function timeAgo(ts) { if(!ts) return "—"; const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; if (diff < 86400) return `قبل ${Math.floor(diff/3600)}س`; return `قبل ${Math.floor(diff/86400)}ي`; }
+function showToast(msg, type="success") { const c = document.getElementById("toastContainer"); const t = document.createElement("div"); t.className = "toast " + type; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 3000); }
 
-function showToast(msg, type="success") {
-  const c = document.getElementById("toastContainer");
-  const t = document.createElement("div"); t.className = "toast " + type; t.textContent = msg;
-  c.appendChild(t); setTimeout(() => t.remove(), 3000);
-}
+/* Firebase */
+function fromFS(v) { if(!v)return null; if("stringValue"in v)return v.stringValue; if("integerValue"in v)return parseInt(v.integerValue); if("booleanValue"in v)return v.booleanValue; if("mapValue"in v){const o={};for(const k in v.mapValue.fields||{})o[k]=fromFS(v.mapValue.fields[k]);return o;} return null; }
+function docToObj(d) { const o={}; if(!d.fields)return o; for(const k in d.fields)o[k]=fromFS(d.fields[k]); o._id=d.name.split("/").pop(); return o; }
+function toFS(data) { const f={}; for(const k in data){ if(data[k]===null||data[k]===undefined)continue; if(typeof data[k]==="string")f[k]={stringValue:data[k]}; else if(typeof data[k]==="number")f[k]={integerValue:String(data[k])}; else if(typeof data[k]==="boolean")f[k]={booleanValue:data[k]}; else if(typeof data[k]==="object")f[k]={mapValue:{fields:toFS(data[k])}}; } return f; }
+async function fsList(col) { const r=await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`, {cache:"no-store"}); const d=await r.json(); return (d.documents||[]).map(docToObj); }
+async function fsAdd(col, data) { await fetch(`${FIRESTORE_URL}/${col}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:toFS(data)})}); }
+async function fsUpdate(col, id, data) { await fetch(`${FIRESTORE_URL}/${col}/${id}`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:toFS(data)})}); }
+async function fsDelete(col, id) { await fetch(`${FIRESTORE_URL}/${col}/${id}`,{method:"DELETE"}); }
 
-function fromFS(v) {
-  if (!v) return null;
-  if ("stringValue" in v) return v.stringValue;
-  if ("integerValue" in v) return parseInt(v.integerValue);
-  if ("doubleValue" in v) return parseFloat(v.doubleValue);
-  if ("booleanValue" in v) return v.booleanValue;
-  if ("mapValue" in v) { const o = {}; for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]); return o; }
-  return null;
-}
-function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) obj[k] = fromFS(doc.fields[k]); obj._id = doc.name.split("/").pop(); return obj; }
-function toFS(data) {
-  const fields = {}; for (const k in data) { if (data[k] === null || data[k] === undefined) continue; if (typeof data[k] === "string") fields[k] = { stringValue: data[k] }; else if (typeof data[k] === "number") fields[k] = { integerValue: String(data[k]) }; else if (typeof data[k] === "boolean") fields[k] = { booleanValue: data[k] }; else if (typeof data[k] === "object") fields[k] = { mapValue: { fields: toFS(data[k]) } }; } return fields;
-}
-async function fsList(col) { const r = await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`, { cache: "no-store" }); const d = await r.json(); return (d.documents || []).map(docToObj); }
-async function fsAdd(col, data) { await fetch(`${FIRESTORE_URL}/${col}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fields: toFS(data) }) }); }
-async function fsUpdate(col, id, data) { await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fields: toFS(data) }) }); }
-async function fsDelete(col, id) { await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" }); }
-
+/* Audit & Sync */
+async function logAction(action, details) { if(!currentUser) return; await fsAdd("audit_log", { actor: currentUser.name, action, details, timestamp: new Date().toISOString() }); }
 async function syncData() {
+  if (isSyncing) return; isSyncing = true;
   try {
-    const [u, act, msg, duty, it] = await Promise.all([
-      fsList("access_code"), fsList("activities"), fsList("messages"), fsList("duty_schedule"), fsList("issue_types")
+    const [u, act, msg, duty, it, pt, aud] = await Promise.all([
+      fsList("access_code"), fsList("activities"), fsList("messages"), fsList("duty_schedule"), fsList("issue_types"), fsList("praise_types"), fsList("audit_log")
     ]);
-    allUsers = u; allActivities = act; allMessages = msg; issueTypes = it;
+    allUsers = u; allActivities = act; allMessages = msg; issueTypes = it; praiseTypes = pt;
+    allAudit = aud.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0,30);
     allDutyGrids = {}; duty.forEach(d => { allDutyGrids[d.month] = d.grid || {}; });
     renderAll();
-    if(document.getElementById("page-messages").classList.contains("active")) loadSupervisorsForChat();
-    if(document.getElementById("page-activities").classList.contains("active")) renderActivities();
-    if(document.getElementById("page-master").classList.contains("active")) renderMaster();
-  } catch(e) { console.error(e); }
+  } catch(e) { console.error(e); } finally { isSyncing = false; }
 }
 
+/* UI */
 function switchTab(id) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -351,7 +389,9 @@ function switchTab(id) {
   document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
   if (id === "duty") loadDutyTable();
   if (id === "messages") loadSupervisorsForChat();
+  if (id === "users") renderUsers();
   if (id === "master") renderMaster();
+  if (id === "settings") renderAudit();
 }
 
 function renderAll() {
@@ -359,112 +399,100 @@ function renderAll() {
   document.getElementById("dashVisits").textContent = allActivities.filter(x => x.type === "visit").length;
   document.getElementById("dashUsers").textContent = allUsers.filter(u => u.type === "supervisor").length;
   document.getElementById("dashMessages").textContent = allMessages.filter(m => m.sender !== "الإدارة" && !m.read).length;
-  renderRecentActivities(); renderCentersPulse();
-}
-
-function renderRecentActivities() {
+  
   const recent = [...allActivities].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0, 5);
-  document.getElementById("recentActivities").innerHTML = recent.map(a => `
-    <div class="item-card ${a.type==='issue'?'red':'green'}" style="padding:10px;">
-      <div class="item-info"><h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 زيارة'}</h4><p>👤 ${esc(a.supervisor)} • 🕐 ${timeAgo(a.timestamp)}</p></div>
-    </div>
-  `).join("") || '<div class="empty-state">لا يوجد نشاطات</div>';
-}
-
-function renderCentersPulse() {
+  document.getElementById("recentActivities").innerHTML = recent.map(a => `<div class="item-card ${a.type==='issue'?'red':'green'}" style="padding:10px;"><div class="item-info"><h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 زيارة'}</h4><p>👤 ${esc(a.supervisor)} • 🕐 ${timeAgo(a.timestamp)}</p></div></div>`).join("") || '<div class="empty-state">لا يوجد نشاطات</div>';
+  
   document.getElementById("centersPulse").innerHTML = CENTERS_LIST.map(c => {
-    const centerName = "مركز إسعاف " + c;
-    const iss = allActivities.filter(i => i.center === centerName && i.type==="issue").length;
-    const vis = allActivities.filter(i => i.center === centerName && i.type==="visit").length;
-    return `<div class="accordion"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><span>🏥 ${c}</span><span>🚩 ${iss} | 📋 ${vis}</span></div><div class="accordion-content"><button class="btn small info" onclick="showCenterDetails('${centerName}')">التفاصيل</button></div></div>`;
+    const cName = "مركز إسعاف " + c;
+    const i = allActivities.filter(x => x.center === cName && x.type==="issue").length;
+    const v = allActivities.filter(x => x.center === cName && x.type==="visit").length;
+    return `<div class="accordion"><div class="accordion-header" onclick="this.parentElement.classList.toggle('open')"><span>🏥 ${c}</span><span style="font-size:11px; opacity:0.7;">🚩 ${i} | 📋 ${v} <span class="accordion-arrow">▼</span></span></div><div class="accordion-content"><div style="display:flex; justify-content:space-between; padding:5px 0; font-size:11px;"><span>🚩 الإشكالات:</span><span style="font-weight:900;">${i}</span></div><div style="display:flex; justify-content:space-between; padding:5px 0; font-size:11px;"><span>📋 الزيارات:</span><span style="font-weight:900;">${v}</span></div></div></div>`;
   }).join("");
 }
 
 function renderActivities() {
-  const filter = document.getElementById("filterType").value;
-  let list = allActivities;
-  if(filter === "issue") list = list.filter(x => x.type === "issue");
-  if(filter === "visit") list = list.filter(x => x.type === "visit");
+  const f = document.getElementById("filterType").value;
+  let list = allActivities; if(f !== "all") list = list.filter(x => x.type === f);
   list.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
   document.getElementById("actsCount").textContent = list.length;
   document.getElementById("activitiesList").innerHTML = list.map(a => `
     <div class="item-card ${a.type==='issue'?'red':'green'}">
-      <div class="item-info"><h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 تقرير زيارة'}</h4><p>👤 ${esc(a.supervisor)} • 🏥 ${esc(a.center||'—')}</p></div>
+      <div class="item-info"><h4>${a.type === 'issue' ? '🚩 ' + esc(a.issueType) : '📋 تقرير زيارة'}</h4><p>👤 ${esc(a.supervisor)} | 🏥 ${esc(a.center||'—')} | 🕐 ${fmtDate(a.timestamp)}</p></div>
       <button class="icon-btn-sm delete" onclick="deleteRecord('activities','${a._id}')">🗑️</button>
-    </div>
-  `).join("") || '<div class="empty-state">لا يوجد نشاطات</div>';
+    </div>`).join("") || '<div class="empty-state">لا يوجد نشاطات</div>';
 }
 
-function loadSupervisorsForChat() {
-  const sups = allUsers.filter(u => u.type === "supervisor");
-  document.getElementById("supervisorsChatList").innerHTML = sups.map(s => {
-    const unread = allMessages.filter(m => m.supervisor === s.name && m.sender !== "الإدارة" && !m.read).length;
-    return `<div class="item-card blue" style="min-width:120px; cursor:pointer; padding:8px;" onclick="openChat('${esc(s.name)}')"><div class="item-info"><h4>${esc(s.name)}</h4><p style="font-size:9px;">${unread>0 ? `<span style="color:var(--red);">${unread} جديدة</span>` : 'لا جديد'}</p></div></div>`;
-  }).join("");
+function renderUsers() {
+  document.getElementById("usersList").innerHTML = allUsers.filter(u=>u.type==="supervisor").map(u => `
+    <div class="item-card blue">
+      <div class="item-info"><h4>${esc(u.name)}</h4><p>🔑 ${esc(u.code)} | 🏢 ${esc(u.sector||'—')}</p></div>
+      <div class="item-actions">
+        <button class="icon-btn-sm lock" onclick="resetPassword('${u._id}','${esc(u.name)}')">🔑</button>
+        <button class="icon-btn-sm edit" onclick="openEditUser('${u._id}')">✏️</button>
+        <button class="icon-btn-sm delete" onclick="deleteRecord('access_code','${u._id}')">🗑️</button>
+      </div>
+    </div>`).join("");
 }
 
-function openChat(supName) {
-  currentChatSupervisor = supName;
-  document.getElementById("chatBox").style.display = "flex";
-  document.getElementById("noChatSelected").style.display = "none";
-  loadMessages();
+function renderMaster() {
+  document.getElementById("issueTypesList").innerHTML = issueTypes.map(t => `<div class="item-card red" style="padding:8px;"><div class="item-info"><h4>${esc(t.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteRecord('issue_types','${t._id}')">🗑️</button></div>`).join("");
+  document.getElementById("praiseTypesList").innerHTML = praiseTypes.map(t => `<div class="item-card green" style="padding:8px;"><div class="item-info"><h4>${esc(t.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteRecord('praise_types','${t._id}')">🗑️</button></div>`).join("");
+}
+function renderAudit() { document.getElementById("auditList").innerHTML = allAudit.map(a => `<div style="padding:5px; border-bottom:1px solid var(--border);"><b style="color:var(--gold);">${esc(a.actor)}</b>: ${esc(a.action)} - ${esc(a.details)}</div>`).join("") || "لا سجلات"; }
+
+/* Actions */
+async function addNewUser() {
+  const name = document.getElementById("newUserName").value.trim();
+  if(!name) return showToast("أدخل الاسم", "danger");
+  await fsAdd("access_code", { name, sector: document.getElementById("newUserSector").value, center: document.getElementById("newUserCenter").value, code: document.getElementById("newUserCode").value, type: "supervisor", active: true });
+  showToast("تمت الإضافة"); document.getElementById("newUserName").value = ""; document.getElementById("newUserCode").value = "SUP-" + Math.floor(1000+Math.random()*9000); syncData();
+}
+async function resetPassword(id, name) { if(confirm(`إعادة تعيين كلمة مرور (${name}) إلى 123456؟`)) { await fsUpdate("access_code", id, { passwordHash: "" }); showToast("تمت الإعادة"); } }
+async function deleteRecord(col, id) { if(confirm("تأكيد الحذف؟")) { await fsDelete(col, id); syncData(); } }
+async function addMasterType(col) { const val = document.getElementById(col==='issue_types'?"newIssueType":"newPraiseType").value.trim(); if(!val) return; await fsAdd(col, { name: val }); syncData(); }
+async function changePassword() { const pass = document.getElementById("pwNew").value; if(pass.length<6) return showToast("كلمة المرور قصيرة", "danger"); await fsUpdate("access_code", currentUser._id, { passwordHash: await sha256(pass.toLowerCase()) }); showToast("تم التحديث"); }
+function openEditUser(id) {
+  const u = allUsers.find(x=>x._id===id); if(!u) return;
+  openModal("تعديل مشرف", `
+    <input type="text" id="eName" value="${esc(u.name)}" placeholder="الاسم">
+    <input type="text" id="eSector" value="${esc(u.sector||'')}" placeholder="القطاع">
+    <input type="text" id="eCenter" value="${esc(u.center||'')}" placeholder="المركز">
+    <button class="btn success" onclick="saveEditUser('${id}')">💾 حفظ</button>
+  `);
+}
+async function saveEditUser(id) {
+  await fsUpdate("access_code", id, { name: document.getElementById("eName").value, sector: document.getElementById("eSector").value, center: document.getElementById("eCenter").value });
+  closeModal(); showToast("تم التعديل"); syncData();
 }
 
-async function loadMessages() {
-  const msgs = allMessages.filter(m => m.supervisor === currentChatSupervisor).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
-  const div = document.getElementById("chatMessages");
-  div.innerHTML = msgs.map(m => `<div class="message ${m.sender === "الإدارة" ? 'mine' : 'theirs'}"><div>${esc(m.text)}</div></div>`).join("");
-  div.scrollTop = div.scrollHeight;
-  for(let m of msgs.filter(m => m.sender !== "الإدارة" && !m.read)) await fsUpdate("messages", m._id, { read: true });
-}
-
-async function sendMessage() {
-  const input = document.getElementById("chatInput"); const text = input.value.trim();
-  if (!text || !currentChatSupervisor) return;
-  input.value = "";
-  await fsAdd("messages", { supervisor: currentChatSupervisor, sender: "الإدارة", text: text, timestamp: new Date().toISOString(), read: false });
-  syncData();
-}
-
-/* Duty Table Fixed */
+/* Duty Table (Fixed for Mobile) */
 function loadDutyTable() {
   const month = document.getElementById("dutyMonth").value;
-  const [y, m] = month.split("-").map(Number);
-  const days = new Date(y, m, 0).getDate();
+  const [y, m] = month.split("-").map(Number); const days = new Date(y, m, 0).getDate();
   const grid = allDutyGrids[month] || {};
-  let html = '<table class="duty-table"><thead><tr><th style="background:var(--teal-dark);">المشرف</th>';
-  for (let d = 1; d <= days; d++) {
-    const dow = new Date(y, m - 1, d).getDay();
-    const wk = (dow === 5 || dow === 6) ? 'class="weekend"' : '';
-    html += `<th ${wk}>${d}</th>`;
-  }
+  let html = '<table class="duty-table"><thead><tr><th class="name-col">المشرف</th>';
+  for (let d = 1; d <= days; d++) { const dow = new Date(y, m - 1, d).getDay(); html += `<th class="${(dow===5||dow===6)?'weekend':''}">${d}</th>`; }
   html += '</tr></thead><tbody>';
   allUsers.filter(u => u.type === "supervisor").forEach(s => {
     html += `<tr><td class="name-col">${esc(s.name)}</td>`;
     for (let d = 1; d <= days; d++) {
       const val = (grid[s.code] && grid[s.code][d]) ? grid[s.code][d] : "";
-      html += `<td class="${val ? 's-' + val : ''}"><select onchange="updateDutyCell('${month}','${s.code}',${d},this.value)"><option value=""></option>${SHIFT_KEYS.map(k => `<option value="${k}" ${val === k ? 'selected' : ''}>${k}</option>`).join("")}</select></td>`;
+      html += `<td class="${val ? 's-'+val : ''}"><select onchange="updateDutyCell('${month}','${s.code}',${d},this.value)"><option value=""></option>${SHIFT_KEYS.map(k => `<option value="${k}" ${val===k?'selected':''}>${k}</option>`).join("")}</select></td>`;
     }
     html += '</tr>';
   });
-  html += '</tbody></table>';
-  document.getElementById("dutyTableContainer").innerHTML = html;
+  document.getElementById("dutyTableContainer").innerHTML = html + '</tbody></table>';
 }
-
-function updateDutyCell(month, code, day, val) {
-  if (!allDutyGrids[month]) allDutyGrids[month] = {};
-  if (!allDutyGrids[month][code]) allDutyGrids[month][code] = {};
-  allDutyGrids[month][code][day] = val;
-}
-
+function updateDutyCell(month, code, day, val) { if(!allDutyGrids[month])allDutyGrids[month]={}; if(!allDutyGrids[month][code])allDutyGrids[month][code]={}; allDutyGrids[month][code][day] = val; }
 async function saveDutyToCloud() {
   const month = document.getElementById("dutyMonth").value; const grid = allDutyGrids[month] || {};
   const existing = await fsList("duty_schedule"); const record = existing.find(x => x.month === month);
-  if (record) await fsUpdate("duty_schedule", record._id, { grid });
-  else await fsAdd("duty_schedule", { month, grid });
-  showToast("✅ تم حفظ جدول الدوام!");
+  if (record) await fsUpdate("duty_schedule", record._id, { grid }); else await fsAdd("duty_schedule", { month, grid });
+  showToast("✅ تم الحفظ!");
 }
 
+/* Print Engine (The Ultimate Fix) */
 function openPrintModal() {
   openModal("خيارات الطباعة", `
     <p style="font-size:11px; margin-bottom:10px; text-align:center;">اختر اتجاه الطباعة.</p>
@@ -478,55 +506,49 @@ function triggerPrint(orientation) {
   const month = document.getElementById("dutyMonth").value; const [y, m] = month.split("-").map(Number);
   const days = new Date(y, m, 0).getDate(); const grid = allDutyGrids[month] || {};
   const monthNames = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-  let css = `@page { margin: 5mm; size: ${orientation}; }`;
-  let html = `<style>${css}</style><div class="print-header"><h2>هيئة الدفاع المدني والإسعاف</h2><p>جدول دوام ${monthNames[m-1]} ${y}</p></div>`;
-  html += '<table class="print-table"><tr><th class="name-col">المشرف</th>';
-  for (let d = 1; d <= days; d++) { const dow = new Date(y, m - 1, d).getDay(); html += `<th class="${(dow === 5 || dow === 6) ? 'weekend' : ''}">${d}</th>`; }
-  html += '</tr>';
-  allUsers.filter(u => u.type === "supervisor").forEach(s => {
+  
+  let html = `<div class="print-container">
+    <div class="print-header"><h2>هيئة الدفاع المدني والإسعاف</h2><p>جدول دوام المشرفين — شهر ${monthNames[m-1]} ${y}</p></div>
+    <table class="print-table"><tr><th class="name-col">المشرف</th>`;
+  for (let d = 1; d <= days; d++) { const dow = new Date(y, m - 1, d).getDay(); html += `<th class="${(dow===5||dow===6)?'weekend':''}">${d}</th>`; }
+  html += `</tr>`;
+  
+  allUsers.filter(u=>u.type==="supervisor").forEach(s => {
     html += `<tr><td class="name-col">${esc(s.name)}</td>`;
-    for (let d = 1; d <= days; d++) { const val = (grid[s.code] && grid[s.code][d]) ? grid[s.code][d] : ""; html += `<td class="${val ? 's-' + val : ''}">${val}</td>`; }
-    html += '</tr>';
+    for (let d = 1; d <= days; d++) { const val = (grid[s.code] && grid[s.code][d]) ? grid[s.code][d] : ""; html += `<td class="${val?'s-'+val:''}">${val}</td>`; }
+    html += `</tr>`;
   });
-  html += '</table>';
+  
+  html += `</table>
+    <div class="print-signatures">
+      <div>توقيع المشرف<br><br>..................</div>
+      <div>اعتماد المدير<br><br>..................</div>
+    </div>
+  </div>`;
+  
   document.getElementById("printArea").innerHTML = html;
   setTimeout(() => { window.print(); document.getElementById("printArea").innerHTML = ""; }, 300);
 }
 
-/* Users & Master */
-function renderUsers() {
-  document.getElementById("usersList").innerHTML = allUsers.filter(u=>u.type==="supervisor").map(u => `
-    <div class="item-card blue">
-      <div class="item-info"><h4>${esc(u.name)}</h4><p>🔑 ${esc(u.code)} | 🏢 ${esc(u.sector||'—')}</p></div>
-      <div class="item-actions">
-        <button class="icon-btn-sm lock" onclick="resetPassword('${u._id}','${esc(u.name)}')">🔑</button>
-        <button class="icon-btn-sm delete" onclick="deleteRecord('access_code','${u._id}')">🗑️</button>
-      </div>
-    </div>
-  `).join("");
+/* Chat & Modals */
+function loadSupervisorsForChat() {
+  document.getElementById("supervisorsChatList").innerHTML = allUsers.filter(u=>u.type==="supervisor").map(s => {
+    const unread = allMessages.filter(m => m.supervisor === s.name && m.sender !== "الإدارة" && !m.read).length;
+    return `<div class="item-card blue" style="min-width:120px; cursor:pointer;" onclick="openChat('${esc(s.name)}')"><div class="item-info"><h4>${esc(s.name)}</h4><p style="font-size:9px;">${unread>0?`<span style="color:var(--red);">${unread} جديدة</span>`:'لا جديد'}</p></div></div>`;
+  }).join("");
 }
-
-async function addNewUser() {
-  const name = document.getElementById("newUserName").value.trim();
-  if(!name) return showToast("أدخل اسم المشرف", "danger");
-  await fsAdd("access_code", { name, sector: document.getElementById("newUserSector").value, center: document.getElementById("newUserCenter").value, code: document.getElementById("newUserCode").value, type: "supervisor", active: true });
-  showToast("تمت الإضافة بنجاح"); document.getElementById("newUserName").value = ""; document.getElementById("newUserCode").value = "SUP-" + Math.floor(1000+Math.random()*9000); syncData();
+function openChat(supName) { currentChatSupervisor = supName; document.getElementById("chatBox").style.display = "flex"; document.getElementById("noChatSelected").style.display = "none"; loadMessages(); }
+async function loadMessages() {
+  const msgs = allMessages.filter(m => m.supervisor === currentChatSupervisor).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+  const div = document.getElementById("chatMessages");
+  div.innerHTML = msgs.map(m => `<div class="message ${m.sender==="الإدارة"?'mine':'theirs'}">${esc(m.text)}</div>`).join("");
+  div.scrollTop = div.scrollHeight;
+  for(let m of msgs.filter(m => m.sender !== "الإدارة" && !m.read)) await fsUpdate("messages", m._id, { read: true });
 }
-
-async function resetPassword(id, name) { if(confirm(`إعادة تعيين كلمة مرور (${name}) إلى 123456؟`)) { await fsUpdate("access_code", id, { passwordHash: "" }); showToast("تمت الإعادة"); } }
-async function deleteRecord(col, id) { if(confirm("تأكيد الحذف؟")) { await fsDelete(col, id); syncData(); } }
-
-function renderMaster() {
-  document.getElementById("issueTypesList").innerHTML = issueTypes.map(t => `<div class="item-card red" style="padding:8px; margin-bottom:4px;"><div class="item-info"><h4>${esc(t.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteRecord('issue_types','${t._id}')">🗑️</button></div>`).join("");
-}
-async function addMasterType(col) { const val = document.getElementById("newIssueType").value.trim(); if(!val) return; await fsAdd(col, { name: val }); document.getElementById("newIssueType").value = ""; syncData(); }
-async function changePassword() { const pass = document.getElementById("pwNew").value; if(pass.length<6) return showToast("كلمة المرور قصيرة", "danger"); const hash = await sha256(pass.toLowerCase()); await fsUpdate("access_code", currentUser._id, { passwordHash: hash }); showToast("تم التحديث"); }
-
-async function wipeData(type) {
-  if(!confirm("⚠️ هل أنت متأكد؟")) return; if(!confirm("تأكيد أخير!")) return;
-  let cols = type === 'activities' ? ['activities'] : ['activities', 'messages', 'duty_schedule'];
-  for(const col of cols) { const items = await fsList(col); for(const item of items) await fsDelete(col, item._id); }
-  showToast("✅ تم الحذف."); syncData();
+async function sendMessage() {
+  const text = document.getElementById("chatInput").value.trim(); if(!text || !currentChatSupervisor) return;
+  document.getElementById("chatInput").value = "";
+  await fsAdd("messages", { supervisor: currentChatSupervisor, sender: "الإدارة", text, timestamp: new Date().toISOString(), read: false }); syncData();
 }
 
 function openModal(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); }
@@ -538,15 +560,12 @@ window.onload = async () => {
   if (!savedUser) { window.location.href = "index.html"; return; }
   currentUser = JSON.parse(savedUser);
   if (currentUser.type !== "admin") { window.location.href = "index.html"; return; }
-  
   document.getElementById("userNameHeader").textContent = currentUser.name;
   document.getElementById("newUserCode").value = "SUP-" + Math.floor(1000+Math.random()*9000);
-  document.getElementById("dutyMonth").value = new Date().toISOString().slice(0, 7);
-  
+  document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
   await syncData();
   document.getElementById("loadingScreen").remove(); document.getElementById("mainApp").classList.add("ready");
-  switchTab("dashboard");
-  setInterval(syncData, 30000);
+  switchTab("dashboard"); setInterval(syncData, 30000);
 };
 </script>
 </body>
