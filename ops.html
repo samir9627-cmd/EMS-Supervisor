@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#041814">
-<title>غرفة العمليات</title>
+<title>غرفة العمليات — الشاشة المباشرة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
@@ -12,15 +12,16 @@
     body { background:var(--bg); color:#fff; min-height:100vh; padding-bottom:20px; }
     
     /* الشريط العلوي */
-    .topbar { background:var(--green); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; }
-    .topbar h2 { font-size:14px; color:var(--gold); }
-    .btn-logout { background:var(--red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer; }
+    .topbar { background:linear-gradient(135deg, var(--purple), #4a148c); padding:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--gold); position:sticky; top:0; z-index:100; box-shadow:0 4px 15px rgba(0,0,0,0.5); }
+    .topbar h2 { font-size:15px; color:#fff; display:flex; align-items:center; gap:8px; }
+    .btn-logout { background:var(--red); color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.2s; }
+    .btn-logout:active { transform:scale(0.95); }
     
-    .content { padding:15px; max-width:700px; margin:0 auto; }
+    .content { padding:15px; max-width:800px; margin:0 auto; }
     
-    /* مؤشرات سريعة */
-    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px; }
-    .stat-box { background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; border:1px solid rgba(201,162,39,0.2); text-align:center; }
+    /* المؤشرات السريعة */
+    .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+    .stat-box { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid rgba(201,162,39,0.3); border-radius:12px; padding:15px; text-align:center; }
     .stat-box .num { font-size:28px; font-weight:900; color:var(--gold); }
     .stat-box .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:4px; }
     .stat-box.issue { border-color:rgba(229,57,53,0.4); }
@@ -30,11 +31,11 @@
 
     /* قائمة الأحداث */
     .card { background:rgba(255,255,255,0.03); border:1px solid rgba(201,162,39,0.2); border-radius:16px; padding:15px; margin-bottom:15px; }
-    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; display:flex; align-items:center; gap:8px; }
+    .card h3 { color:var(--gold); margin-bottom:15px; font-size:15px; display:flex; align-items:center; gap:8px; border-bottom:1px solid rgba(201,162,39,0.2); padding-bottom:10px; }
     
-    .activity-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; animation:fadeIn 0.3s; }
-    .activity-item.issue { border-right-color:var(--red); }
-    .activity-item.visit { border-right-color:var(--blue); }
+    .activity-item { background:rgba(255,255,255,0.05); border-right:4px solid var(--gold); border-radius:8px; padding:12px; margin-bottom:10px; animation:fadeIn 0.4s; }
+    .activity-item.issue { border-right-color:var(--red); background:linear-gradient(90deg, rgba(229,57,53,0.1), transparent); }
+    .activity-item.visit { border-right-color:var(--blue); background:linear-gradient(90deg, rgba(41,182,246,0.1), transparent); }
     
     @keyframes fadeIn { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }
     
@@ -43,17 +44,21 @@
     .activity-item.issue .act-title { color:#ff8a80; }
     .activity-item.visit .act-title { color:#81d4fa; }
     
-    .act-date { font-size:10px; color:rgba(255,255,255,0.6); }
-    .act-supervisor { font-size:12px; color:var(--gold); margin-bottom:6px; }
-    .act-desc { font-size:12px; color:rgba(255,255,255,0.8); line-height:1.5; }
+    .act-date { font-size:10px; color:rgba(255,255,255,0.6); font-family:monospace; }
+    .act-supervisor { font-size:12px; color:var(--gold); margin-bottom:6px; display:flex; align-items:center; gap:5px; }
+    .act-desc { font-size:12px; color:rgba(255,255,255,0.9); line-height:1.5; background:rgba(0,0,0,0.2); padding:8px; border-radius:6px; }
     
-    .refresh-btn { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); padding:10px 25px; border-radius:20px; background:var(--gold); color:var(--bg); border:none; font-weight:900; font-size:12px; box-shadow:0 5px 15px rgba(0,0,0,0.5); cursor:pointer; }
+    .refresh-btn { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); padding:12px 30px; border-radius:30px; background:linear-gradient(135deg, var(--gold), #e5c158); color:var(--bg); border:none; font-weight:900; font-size:13px; box-shadow:0 5px 20px rgba(201,162,39,0.5); cursor:pointer; transition:0.2s; display:flex; align-items:center; gap:8px; }
+    .refresh-btn:active { transform:translateX(-50%) scale(0.95); }
+    .refresh-btn .spinner { display:none; width:14px; height:14px; border:2px solid var(--bg); border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite; }
+    .refresh-btn.loading .spinner { display:inline-block; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-    <h2 id="welcomeName">غرفة العمليات</h2>
+    <h2>📡 غرفة العمليات — الشاشة المباشرة</h2>
     <button class="btn-logout" onclick="logout()">خروج</button>
 </div>
 
@@ -62,7 +67,7 @@
     <div class="stats-grid">
         <div class="stat-box issue">
             <div class="num" id="statIssues">0</div>
-            <div class="lbl">إشكالية مسجلة</div>
+            <div class="lbl">إشكالية ميدانية</div>
         </div>
         <div class="stat-box visit">
             <div class="num" id="statVisits">0</div>
@@ -72,14 +77,17 @@
 
     <!-- سجل العمليات المباشر -->
     <div class="card">
-        <h3>📡 الشاشة المباشرة (آخر النشاطات)</h3>
+        <h3>📊 آخر النشاطات (مباشر)</h3>
         <div id="liveFeed">
             <p style="text-align:center; font-size:12px; color:#ccc;">جاري جلب البيانات...</p>
         </div>
     </div>
 </div>
 
-<button class="refresh-btn" onclick="loadOpsData()">🔄 تحديث البيانات</button>
+<button class="refresh-btn" id="refreshBtn" onclick="loadOpsData()">
+    <span>🔄 تحديث البيانات</span>
+    <span class="spinner"></span>
+</button>
 
 <script>
     const FIREBASE_PROJECT = "ems-supervisor";
@@ -90,13 +98,10 @@
     if (!sessionStr) window.location.href = "index.html";
     const currentUser = JSON.parse(sessionStr || "{}");
     if (currentUser.type !== "ops") window.location.href = "index.html";
-    
-    document.getElementById("welcomeName").innerText = currentUser.name || "العمليات";
 
     function logout() { localStorage.removeItem("amb_session"); window.location.href = "index.html"; }
 
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
-    
     function docToObj(doc) {
         const obj = {}; if (!doc.fields) return obj;
         for (const k in doc.fields) obj[k] = getString(doc.fields[k]);
@@ -105,6 +110,9 @@
 
     async function loadOpsData() {
         const feedDiv = document.getElementById("liveFeed");
+        const btn = document.getElementById("refreshBtn");
+        
+        btn.classList.add("loading");
         feedDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#e5c158;'>⏳ جاري التحديث...</p>";
 
         try {
@@ -113,6 +121,9 @@
 
             if (!data.documents || data.documents.length === 0) {
                 feedDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ccc;'>لا توجد نشاطات في النظام.</p>";
+                document.getElementById("statIssues").innerText = 0;
+                document.getElementById("statVisits").innerText = 0;
+                btn.classList.remove("loading");
                 return;
             }
 
@@ -126,8 +137,8 @@
             document.getElementById("statIssues").innerText = issuesCount;
             document.getElementById("statVisits").innerText = visitsCount;
 
-            // عرض آخر 30 نشاط
-            feedDiv.innerHTML = allActs.slice(0, 30).map(a => {
+            // عرض آخر 50 نشاط
+            feedDiv.innerHTML = allActs.slice(0, 50).map(a => {
                 const dateObj = new Date(a.timestamp);
                 const timeStr = dateObj.toLocaleTimeString('ar-OM', { hour: '2-digit', minute: '2-digit' });
                 const dateStr = dateObj.toLocaleDateString('ar-OM');
@@ -147,7 +158,7 @@
                     return `
                         <div class="activity-item visit">
                             <div class="act-header">
-                                <span class="act-title">📋 تقرير زيارة (تقييم: ${a.score}%)</span>
+                                <span class="act-title">📋 زيارة (تقييم: ${a.score}%)</span>
                                 <span class="act-date">${dateStr} - ${timeStr}</span>
                             </div>
                             <div class="act-supervisor">👤 المشرف: ${a.supervisor}</div>
@@ -159,6 +170,8 @@
 
         } catch(e) {
             feedDiv.innerHTML = "<p style='text-align:center; font-size:12px; color:#ff5252;'>خطأ في الاتصال بالشبكة.</p>";
+        } finally {
+            btn.classList.remove("loading");
         }
     }
 
