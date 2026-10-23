@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — غرفة التحكم v43.0</title>
+<title>الإدارة العامة — غرفة التحكم v44.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
@@ -135,11 +135,12 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 .modal-sheet h3 { color:var(--gold-light); font-size:17px; font-weight:900; text-align:center; padding-bottom:14px; border-bottom:1px solid rgba(151,141,91,0.2); margin-bottom:18px; }
 
 /* ═══ DUTY TABLE ═══ */
-.duty-table { width:100%; border-collapse:collapse; font-size:10px; }
+.table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 8px; margin-top: 10px; position: relative; }
+.duty-table { width: 100%; border-collapse:collapse; font-size:10px; }
 .duty-table th, .duty-table td { border:1px solid rgba(151,141,91,0.2); padding:4px; text-align:center; }
 .duty-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); font-weight:900; }
 .duty-table td { background:rgba(0,0,0,0.3); }
-.duty-table td select { padding:3px; margin:0; font-size:9px; background:transparent; border:none; min-width:32px; width:auto; }
+.duty-table td select { padding:3px; margin:0; font-size:9px; background:transparent; border:none; min-width:32px; width:auto; color:#fff;}
 
 /* ═══ TOAST ═══ */
 .toast-container { position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:calc(100% - 32px); max-width:420px; }
@@ -173,40 +174,23 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 /* ═══ PRINT A4 ═══ */
 #printArea { display:none; }
 @media print {
-  @page { size: A4; margin: 8mm; }
+  @page { margin: 5mm; }
   body * { visibility:hidden; }
   body { background:#fff !important; }
   #printArea { visibility:visible !important; display:block !important; position:absolute; left:0; top:0; width:100%; background:white !important; color:black !important; }
   #printArea * { visibility:visible !important; }
   .topbar, .tabs-bar, .modal-overlay, .toast-container { display:none !important; }
 }
-.print-form { width:100%; max-width:210mm; margin:0 auto; background:white; color:#000; font-family:'Cairo',sans-serif; font-size:9pt; padding:0; }
-.print-header { background:#1e4620; color:white; padding:8px 12px; border-radius:4px; display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; min-height:60px; }
-.print-header-side { text-align:center; font-size:8pt; font-weight:900; line-height:1.3; }
-.print-header-side .authority { font-size:9pt; color:#f5e9c8; margin-bottom:2px; }
-.print-header-side .dept { font-size:8pt; color:#e8d99f; }
-.print-header-side .en { font-size:5.5pt; color:#d4c896; margin-top:2px; font-family:monospace; }
-.print-header-logo { width:55px; height:55px; object-fit:contain; }
-.print-title { text-align:center; font-size:14pt; font-weight:900; color:#1e4620; margin:8px 0; padding:6px; border-top:2px solid #1e4620; border-bottom:2px solid #1e4620; background:#f5f2e6; }
-.print-meta { display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:6px 10px; background:#faf8ef; border:1px solid #c9a227; border-radius:4px; margin-bottom:8px; font-size:8pt; }
-.print-meta-item { display:flex; gap:4px; }
-.print-meta-item .label { font-weight:900; color:#1e4620; }
-.print-meta-item .value { font-weight:700; flex:1; border-bottom:1px dotted #999; padding:0 4px; }
-.print-section { border:1px solid #1e4620; border-radius:4px; margin-bottom:6px; overflow:hidden; }
-.print-section-title { background:#1e4620; color:white; padding:4px 10px; font-size:9pt; font-weight:900; }
-.print-section-body { padding:6px 10px; }
-.print-row { display:grid; grid-template-columns:1fr 1fr; gap:4px 12px; margin-bottom:3px; }
-.print-field { display:flex; gap:4px; font-size:8pt; padding:2px 0; border-bottom:1px dotted #ddd; }
-.print-field .label { font-weight:900; color:#1e4620; }
-.print-field .value { font-weight:700; flex:1; }
-.print-table { width:100%; border-collapse:collapse; margin:4px 0; font-size:8pt; }
-.print-table th { background:#1e4620; color:white; padding:4px 6px; border:1px solid #1e4620; font-weight:900; font-size:8pt; }
-.print-table td { padding:3px 6px; border:1px solid #bbb; background:white; color:#000; font-size:8pt; text-align:center; }
-.print-signatures { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:20px; padding-top:10px; border-top:1px dashed #c9a227; }
-.print-signature { text-align:center; font-size:8pt; }
-.print-signature .role { font-weight:900; color:#1e4620; margin-bottom:2px; }
-.print-signature .line { border-top:1px solid #333; padding-top:2px; margin-top:20px; font-size:7pt; color:#666; }
-.print-footer { margin-top:8px; padding-top:4px; border-top:1px solid #c9a227; display:flex; justify-content:space-between; font-size:7pt; color:#666; }
+.print-container { width:100%; font-family:'Cairo'; font-size:7pt; background:#fff; }
+.print-header { text-align:center; margin-bottom:10px; border-bottom:2px solid #000; padding-bottom:5px; }
+.print-header h2 { font-size:14pt; margin:0; }
+.print-header p { font-size:9pt; margin:2px 0; }
+.print-table { width:100%; border-collapse:collapse; font-size:6.5pt; table-layout:fixed; }
+.print-table th, .print-table td { border:1px solid #000; padding:2px; text-align:center; }
+.print-table th { background:#e0e0e0; color:#000; font-weight:bold; }
+.print-table td.name-col { width:60px; text-align:right; background:#f0f0f0; font-weight:bold; }
+.print-table .weekend { background:#f8d7da; }
+.print-signatures { display:flex; justify-content:space-between; margin-top:20px; font-size:9pt; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -216,7 +200,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
   <div class="login-box">
     <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" alt="الشعار" class="login-logo">
     <div class="login-title">الإدارة العامة</div>
-    <div class="login-subtitle">نظام الإسعاف الذكي v43.0</div>
+    <div class="login-subtitle">نظام الإسعاف الذكي v44.0</div>
     <input type="password" id="passInput" class="pass-input" placeholder="كلمة المرور" autocomplete="off">
     <button class="login-btn" onclick="loginWithPassword()">🔓 دخول</button>
     <div class="login-msg" id="loginMsg"></div>
@@ -353,8 +337,11 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <div class="card-title">📅 جدول الدوام الشهري</div>
       <label>الشهر</label>
       <input type="month" id="dutyMonth" onchange="loadDutyTable()">
-      <div style="overflow-x:auto;" id="dutyTableContainer"></div>
-      <button class="btn block" onclick="saveDuty()" style="margin-top:10px;">💾 حفظ</button>
+      <div class="table-responsive" id="dutyTableContainer"></div>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn block" onclick="saveDuty()">💾 حفظ</button>
+        <button class="btn info block" onclick="printDuty()">🖨️ طباعة حرة</button>
+      </div>
     </div>
   </div>
 
@@ -429,17 +416,26 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     </div>
   </div>
 
-  <!-- 12) Settings -->
+  <!-- 12) Settings (التحكم الشامل) -->
   <div class="page" id="page-settings">
     <div class="card">
-      <div class="card-title">⚙️ المعلومات</div>
-      <p style="font-size:12px;line-height:2;color:rgba(255,255,255,0.7);">
-        <b>الإصدار:</b> 43.0.0<br>
-        <b>Firebase:</b> ems-supervisor<br>
-        <b>المجموعة:</b> access_code
-      </p>
+      <div class="card-title">🔐 تغيير كلمة المرور</div>
+      <input type="password" id="pwNew" placeholder="كلمة المرور الجديدة">
+      <button class="btn block" onclick="changePassword()">💾 تحديث</button>
+      <div id="pwMsg" style="text-align:center; font-size:12px; color:var(--green); margin-top:5px;"></div>
     </div>
-    <button class="btn danger block" onclick="confirmLogout()">🚪 خروج</button>
+    <div class="card">
+      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة الخطر</div>
+      <p style="font-size:11px; margin-bottom:10px; opacity:0.7;">لا يمكن التراجع عن هذه الإجراءات.</p>
+      <button class="btn danger block" onclick="wipeData('activities')" style="margin-bottom:8px;">🗑️ حذف كل النشاطات</button>
+      <button class="btn danger block" onclick="wipeData('messages')" style="margin-bottom:8px;">🗑️ حذف كل الرسائل</button>
+      <button class="btn danger block" onclick="wipeData('all')">💥 تصفير شامل</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📜 سجل العمليات</div>
+      <div id="auditList" style="font-size:11px; max-height:200px; overflow-y:auto;"></div>
+    </div>
+    <button class="btn secondary block" onclick="confirmLogout()">🚪 خروج</button>
   </div>
 
 </div>
@@ -456,7 +452,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   الإدارة العامة — v43.0 (النسخة الشاملة والتصميم الأصلي)
+   الإدارة العامة — v44.0 (النسخة المطورة الشاملة)
    ═══════════════════════════════════════════════════════════ */
 
 const FIREBASE_PROJECT = "ems-supervisor";
@@ -492,30 +488,20 @@ async function loginWithPassword() {
   const msg = document.getElementById("loginMsg");
   if (!pass) { msg.textContent = "⚠️ أدخل كلمة المرور"; return; }
   
-  // 👇 حل ذكي: يقبل كلمة المرور الخاصة بك (Samir96267) أو الافتراضية (123456)
   const hashedNew = await sha256(pass.toLowerCase());
-  const hashedOld = await sha256(pass); // للنسخ القديمة
+  const hashedOld = await sha256(pass); 
   
-  if (hashedNew === "fd0b216fa1a8e6b1d9fb9c4cfc11ee5a2f6b3c15bb2f6b4b1c3a8b6e9c0b8f4e" || pass === "Samir96267" || pass === "123456") {
-    // تم التحقق (تم استخدام مقارنة مباشرة كاحتياط)
+  if (pass === "Samir96267" || pass === "123456") {
+    // تم التحقق المباشر للنسخ الاحتياطية
   } else {
-    // محاولة التحقق الفعلي من قاعدة البيانات
     try {
       const users = await fsList("access_code");
       const admin = users.find(u => u.type === "admin");
-      if (admin && admin.passwordHash === hashedNew) {
-         // صحيح
-      } else if (admin && admin.passwordHash === hashedOld) {
-         // صحيح (نسخة قديمة)
-      } else if (!admin || !admin.passwordHash) {
-         // لا يوجد باسورد محفوظ، نسمح بالافتراضي
-         if (pass !== "123456" && pass !== "Samir96267") { msg.textContent = "❌ كلمة المرور خاطئة"; return; }
-      } else {
-         msg.textContent = "❌ كلمة المرور خاطئة"; return;
-      }
-    } catch(e) {
-      if (pass !== "123456" && pass !== "Samir96267") { msg.textContent = "❌ كلمة المرور خاطئة"; return; }
-    }
+      if (admin && admin.passwordHash === hashedNew) { }
+      else if (admin && admin.passwordHash === hashedOld) { }
+      else if (!admin || !admin.passwordHash) { if (pass !== "123456" && pass !== "Samir96267") { msg.textContent = "❌ كلمة المرور خاطئة"; return; } } 
+      else { msg.textContent = "❌ كلمة المرور خاطئة"; return; }
+    } catch(e) { if (pass !== "123456" && pass !== "Samir96267") { msg.textContent = "❌ كلمة المرور خاطئة"; return; } }
   }
 
   adminUser = { name: "المدير العام", role: "admin", _id: "ADM" };
@@ -551,6 +537,7 @@ function renderCurrentTab() {
   else if (currentTab === "broadcasts") renderBroadcasts();
   else if (currentTab === "kpi") renderKPI();
   else if (currentTab === "master") renderMasterData();
+  else if (currentTab === "settings") renderAudit();
 }
 
 /* ═══ Dashboard ═══ */
@@ -637,14 +624,18 @@ function loadDutyTable() {
   const month = document.getElementById("dutyMonth").value; if (!month) return;
   const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
   if (allSupervisors.length === 0) { document.getElementById("dutyTableContainer").innerHTML = '<div class="empty"><span class="icon">👥</span>أضف مشرفين أولاً</div>'; return; }
-  let html = '<table class="duty-table"><thead><tr><th>م</th>';
-  for (let d = 1; d <= days; d++) html += `<th>${d}</th>`;
+  let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
+  for (let d = 1; d <= days; d++) {
+    const dow = new Date(year, m-1, d).getDay();
+    const isWk = (dow === 5 || dow === 6) ? ' style="background:rgba(229,57,53,0.3);"' : '';
+    html += `<th${isWk}>${d}</th>`;
+  }
   html += '</tr></thead><tbody>';
   allSupervisors.forEach(s => {
     html += `<tr><td style="text-align:right;padding:6px;font-weight:900;font-size:11px;">${esc(s.name)}</td>`;
     for (let d = 1; d <= days; d++) {
       const key = `shift_${month}_${s.code}_${d}`; const val = localStorage.getItem(key) || "";
-      html += `<td><select onchange="setShift('${month}','${esc(s.code)}',${d},this.value)"><option value="">—</option><option value="ص" ${val==="ص"?"selected":""}>ص</option><option value="م" ${val==="م"?"selected":""}>م</option></select></td>`;
+      html += `<td><select onchange="setShift('${month}','${esc(s.code)}',${d},this.value)"><option value="">—</option><option value="ص" ${val==="ص"?"selected":""}>ص</option><option value="م" ${val==="م"?"selected":""}>م</option><option value="د" ${val==="د"?"selected":""}>د</option><option value="أ" ${val==="أ"?"selected":""}>أ</option><option value="س" ${val==="س"?"selected":""}>س</option><option value="خ" ${val==="خ"?"selected":""}>خ</option></select></td>`;
     }
     html += '</tr>';
   });
@@ -652,7 +643,31 @@ function loadDutyTable() {
   document.getElementById("dutyTableContainer").innerHTML = html;
 }
 function setShift(month, code, day, val) { localStorage.setItem(`shift_${month}_${code}_${day}`, val); }
-function saveDuty() { showToast("تم الحفظ"); }
+function saveDuty() { showToast("تم حفظ الجدول محلياً"); }
+
+function printDuty() {
+  const month = document.getElementById("dutyMonth").value;
+  const [y, m] = month.split("-").map(Number); const days = new Date(y, m, 0).getDate();
+  const monthNames = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  let html = `<div class="print-container">
+    <div class="print-header"><h2>هيئة الدفاع المدني والإسعاف</h2><p>جدول دوام المشرفين — شهر ${monthNames[m-1]} ${y}</p></div>
+    <table class="print-table"><tr><th class="name-col">المشرف</th>`;
+  for (let d = 1; d <= days; d++) { const dow = new Date(y, m - 1, d).getDay(); html += `<th class="${(dow===5||dow===6)?'weekend':''}">${d}</th>`; }
+  html += `</tr>`;
+  allSupervisors.forEach(s => {
+    html += `<tr><td class="name-col">${esc(s.name)}</td>`;
+    for (let d = 1; d <= days; d++) { const val = localStorage.getItem(`shift_${month}_${s.code}_${d}`) || ""; html += `<td>${val}</td>`; }
+    html += `</tr>`;
+  });
+  html += `</table>
+    <div class="print-signatures">
+      <div>توقيع المشرف<br><br>..................</div>
+      <div>اعتماد المدير<br><br>..................</div>
+    </div>
+  </div>`;
+  document.getElementById("printArea").innerHTML = html;
+  setTimeout(() => { window.print(); document.getElementById("printArea").innerHTML = ""; }, 300);
+}
 
 /* ═══ Issues ═══ */
 function renderIssues() {
@@ -724,7 +739,39 @@ async function addMasterData(col) {
 }
 async function deleteMasterData(col, id) { if (!confirm("حذف؟")) return; await fsDelete(col, id); showToast("تم الحذف"); syncAll(); }
 
-/* ═══ Print PDF ═══ */
+/* ═══ Settings & Danger Zone ═══ */
+async function changePassword() {
+  const pass = document.getElementById("pwNew").value;
+  const msg = document.getElementById("pwMsg");
+  if (pass.length < 6) { msg.style.color = "var(--red)"; msg.textContent = "كلمة المرور قصيرة جداً"; return; }
+  const hash = await sha256(pass.toLowerCase());
+  await fsUpdate("access_code", "ADM", { passwordHash: hash });
+  msg.style.color = "var(--green)"; msg.textContent = "✅ تم تحديث كلمة المرور بنجاح";
+  document.getElementById("pwNew").value = "";
+  showToast("تم تحديث كلمة المرور");
+}
+
+async function wipeData(type) {
+  if (!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
+  if (!confirm("تأكيد أخير: سيتم الحذف نهائياً!")) return;
+  
+  let cols = [];
+  if (type === 'activities') cols = ['issues', 'praises'];
+  else if (type === 'messages') cols = ['messages'];
+  else cols = ['issues', 'praises', 'messages'];
+  
+  for (const col of cols) {
+    const items = await fsList(col);
+    for (const item of items) await fsDelete(col, item._id);
+  }
+  showToast("✅ تم الحذف بنجاح"); syncAll();
+}
+function renderAudit() {
+  const el = document.getElementById("auditList");
+  el.innerHTML = `<div style="padding:10px; text-align:center; opacity:0.5;">لا توجد سجلات متاحة حالياً</div>`;
+}
+
+/* ═══ Print Reports ═══ */
 function printReport(type) {
   const header = `<div class="print-header"><div class="print-header-side"><div class="authority">سلطنة عمان</div><div class="dept">هيئة الدفاع المدني والإسعاف</div><div class="en">CIVIL DEFENCE</div></div><img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="print-header-logo"><div class="print-header-side"><div class="authority">الإدارة العامة</div><div class="dept">للإسعاف</div><div class="en">GENERAL ADMINISTRATION</div></div></div>`;
   let title = "", body = "";
