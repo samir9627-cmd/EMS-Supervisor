@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>نظام الإسعاف الذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -14,6 +14,9 @@
     button { width:100%; padding:15px; border-radius:10px; border:none; background:linear-gradient(135deg, #978d5b, #d4c896); color:#041814; font-size:16px; font-weight:900; cursor:pointer; font-family:'Cairo'; }
     #msg { margin-top:15px; font-size:14px; color:#ff5252; min-height:20px; font-weight:bold; }
 </style>
+<!-- استدعاء Firebase كـ Compat (يعمل بدون Modules) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -25,10 +28,7 @@
     <div id="msg"></div>
 </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+<script>
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -38,11 +38,12 @@
       appId: "1:230655268524:web:5043a458af3d79989ff109"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // تهيئة Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const SECRET = "EMS_SECRET_PASSWORD_2026!";
 
-    window.login = async function() {
+    function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
         const msg = document.getElementById("msg");
         const btn = document.getElementById("loginBtn");
@@ -54,31 +55,30 @@
         msg.textContent = "";
         msg.style.color = "#ff5252";
 
-        try {
-            // تحويل الكود إلى إيميل وهمي
-            const email = `${code.toLowerCase().replace(/\s+/g, '')}@ems-system.local`;
-            await signInWithEmailAndPassword(auth, email, SECRET);
-            
-            msg.style.color = "#69f0ae";
-            msg.textContent = "✅ تم الدخول بنجاح، جاري التحويل...";
-            
-            // التوجيه
-            setTimeout(() => {
-                if (code.startsWith("ADM")) window.location.href = "./admin.html";
-                else if (code.startsWith("OPS")) window.location.href = "./ops.html";
-                else window.location.href = "./app.html";
-            }, 1000);
-
-        } catch (error) {
-            console.error(error);
-            msg.textContent = "❌ خطأ: " + error.message; // إظهار الخطأ الحقيقي
-            btn.textContent = "دخول";
-            btn.disabled = false;
-        }
-    };
+        // تحويل الكود إلى إيميل وهمي
+        const email = `${code.toLowerCase().replace(/\s+/g, '')}@ems-system.local`;
+        
+        auth.signInWithEmailAndPassword(email, SECRET)
+            .then(() => {
+                msg.style.color = "#69f0ae";
+                msg.textContent = "✅ تم الدخول بنجاح، جاري التحويل...";
+                
+                setTimeout(() => {
+                    if (code.startsWith("ADM")) window.location.href = "./admin.html";
+                    else if (code.startsWith("OPS")) window.location.href = "./ops.html";
+                    else window.location.href = "./app.html";
+                }, 1000);
+            })
+            .catch((error) => {
+                console.error(error);
+                msg.textContent = "❌ خطأ: " + error.message;
+                btn.textContent = "دخول";
+                btn.disabled = false;
+            });
+    }
 
     // الدخول التلقائي لو كان مسجلاً مسبقاً
-    onAuthStateChanged(auth, (user) => {
+    auth.onAuthStateChanged((user) => {
         if (user) {
             const code = user.email.split('@')[0].toUpperCase();
             if (code.startsWith("ADM")) window.location.href = "./admin.html";
