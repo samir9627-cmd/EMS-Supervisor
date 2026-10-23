@@ -8,16 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; -webkit-tap-highlight-color:transparent; }
-    :root { 
-        --gold:#978d5b; 
-        --gold-light:#d4c896; 
-        --green:#0d4a42; 
-        --bg:#041814; 
-        --red:#e53935; 
-    }
+    :root { --gold:#978d5b; --gold-light:#d4c896; --green:#0d4a42; --bg:#041814; --red:#e53935; }
     body { background:var(--bg); color:#fff; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; overflow-x:hidden; }
     
-    /* الخلفية السحرية */
     body::before {
         content:''; position:fixed; inset:0; z-index:-2;
         background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), 
@@ -28,28 +21,28 @@
     .star { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0.4; animation:twinkle 4s infinite; }
     @keyframes twinkle { 0%,100%{opacity:0.2; transform:scale(0.8);} 50%{opacity:0.9; transform:scale(1.4);} }
 
-    /* شاشة التحميل */
     #loadingScreen { position:fixed; inset:0; z-index:9999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.5s; }
     .loading-logo { width:120px; height:120px; border-radius:24px; border:3px solid var(--gold); padding:5px; filter:drop-shadow(0 0 30px rgba(151,141,91,0.8)); animation:float 2s infinite; }
     @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 
-    /* الهيدر */
     .header { text-align:center; margin-top:20px; margin-bottom:30px; z-index:1; }
     .logo-wrap { position:relative; display:inline-block; }
     .logo { width:110px; height:110px; border-radius:22px; border:2px solid var(--gold); background:var(--green); padding:5px; animation:float 3s infinite; object-fit: contain; }
     h1 { color:var(--gold-light); font-size:24px; margin-top:15px; font-weight:900; text-shadow:0 0 20px rgba(151,141,91,0.5); }
     .subtitle { color:rgba(255,255,255,0.6); font-size:12px; letter-spacing:2px; margin-top:5px; }
 
-    /* صندوق الدخول الزجاجي */
     .login-box { width:100%; max-width:400px; background:rgba(13,74,66,0.4); backdrop-filter:blur(20px); padding:30px 25px; border-radius:24px; border:1px solid rgba(151,141,91,0.3); box-shadow:0 20px 50px rgba(0,0,0,0.6); margin-bottom:25px; z-index:1; }
     
     .input-group { position:relative; margin-bottom:15px; }
-    input { width:100%; padding:18px; padding-left:50px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; color:var(--gold-light); font-size:18px; font-weight:900; outline:none; transition:0.3s; }
+    
+    input { 
+        width:100%; padding:18px; background:rgba(4,24,20,0.8); border:2px solid rgba(151,141,91,0.3); border-radius:16px; 
+        color:var(--gold-light); font-size:16px; font-weight:900; outline:none; transition:0.3s; text-align:right; 
+    }
     input:focus { border-color:var(--gold); box-shadow:0 0 25px rgba(151,141,91,0.4); }
     
-    /* حقول مخصصة */
-    #codeInput { text-align:center; text-transform:uppercase; letter-spacing:3px; padding-left:18px; }
-    #passInput { text-align:center; letter-spacing:5px; padding-left:50px; font-family:monospace; }
+    #codeInput { text-transform:uppercase; direction:ltr; text-align:right; }
+    #passInput { direction:rtl; text-align:right; padding-left:50px; font-family:inherit; }
     
     .toggle-pass { position:absolute; left:15px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--gold); font-size:20px; cursor:pointer; padding:5px; }
     
@@ -59,14 +52,12 @@
     
     .msg { text-align:center; font-size:13px; font-weight:bold; margin-top:15px; min-height:20px; color:var(--red); }
     
-    /* الإحصائيات */
     .stats-container { width:100%; max-width:400px; z-index:1; }
     .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .stat-card { background:rgba(255,255,255,0.03); backdrop-filter:blur(10px); border:1px solid rgba(151,141,91,0.15); padding:18px 15px; border-radius:16px; text-align:center; }
     .stat-card .num { font-size:28px; font-weight:900; color:var(--gold-light); line-height:1; }
     .stat-card .lbl { font-size:11px; color:rgba(255,255,255,0.6); margin-top:6px; }
 
-    /* نجوم الشهر */
     .section-title { display:flex; justify-content:center; align-items:center; gap:10px; color:var(--gold-light); font-size:15px; font-weight:900; margin:25px 0 15px; width:100%; max-width:400px; }
     .section-title::before, .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(151,141,91,0.3), transparent); }
     .star-card { display:grid; grid-template-columns:60px 1fr auto; gap:12px; align-items:center; background:rgba(255,255,255,0.03); border:1px solid rgba(151,141,91,0.2); border-radius:16px; padding:12px; margin-bottom:10px; width:100%; max-width:400px; }
@@ -74,8 +65,6 @@
     .star-name { font-size:14px; font-weight:900; color:var(--gold-light); }
     .star-role { font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px; }
     .star-badge { font-size:28px; filter:drop-shadow(0 0 10px var(--gold)); }
-
-    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
@@ -98,10 +87,12 @@
         <h3 style="color:var(--gold-light); text-align:center; margin-bottom:20px; font-size:15px;">🔐 بوابة الدخول الموحدة</h3>
         
         <div class="input-group">
-            <input type="text" id="codeInput" placeholder="كود المشرف (SUP-XXXX)" autocomplete="off">
+            <!-- عند كتابة الكود، سيتم فحصه فوراً -->
+            <input type="text" id="codeInput" placeholder="كود الدخول (SUP / ADM / OPS)" autocomplete="off" oninput="checkCodeType()">
         </div>
         
-        <div class="input-group">
+        <!-- حقل كلمة المرور مخفي افتراضياً، ويظهر فقط للإدارة والعمليات -->
+        <div class="input-group" id="passwordGroup" style="display:none;">
             <input type="password" id="passInput" placeholder="كلمة المرور" autocomplete="off">
             <button class="toggle-pass" id="togglePassBtn" onclick="togglePassword()">👁️</button>
         </div>
@@ -130,7 +121,6 @@
     const FIREBASE_PROJECT = "ems-supervisor"; 
     const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-    // إنشاء النجوم
     const starsContainer = document.getElementById("starsContainer");
     for(let i=0; i<50; i++) {
         let s = document.createElement("div");
@@ -141,14 +131,12 @@
         starsContainer.appendChild(s);
     }
 
-    // إخفاء شاشة التحميل
     setTimeout(() => {
         let ls = document.getElementById("loadingScreen");
         ls.style.opacity = "0";
         setTimeout(() => ls.remove(), 500);
     }, 1000);
 
-    // دوال مساعدة
     function getString(field) { return (field && field.stringValue) ? field.stringValue : ""; }
     function docToObj(doc) {
         const obj = {}; if (!doc.fields) return obj;
@@ -161,6 +149,22 @@
         return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    // 👇 الدالة الذكية: إذا كان الكود يبدأ بـ SUP (مشرف)، نخفي حقل الباسورد
+    function checkCodeType() {
+        const code = document.getElementById("codeInput").value.trim().toUpperCase();
+        const passGroup = document.getElementById("passwordGroup");
+        const passInput = document.getElementById("passInput");
+
+        if (code.startsWith("SUP")) {
+            passGroup.style.display = "none";
+            passInput.value = ""; // تصفير الباسورد
+        } else if (code.startsWith("ADM") || code.startsWith("OPS")) {
+            passGroup.style.display = "block";
+        } else {
+            passGroup.style.display = "none"; // إخفاء في الحالات الأخرى
+        }
+    }
+
     function togglePassword() {
         const p = document.getElementById("passInput");
         const b = document.getElementById("togglePassBtn");
@@ -168,14 +172,17 @@
         else { p.type = "password"; b.textContent = "👁️"; }
     }
 
-    // تسجيل الدخول
     async function login() {
         const code = document.getElementById("codeInput").value.trim().toUpperCase();
-        const pass = document.getElementById("passInput").value;
+        const passGroup = document.getElementById("passwordGroup");
+        const isSupervisor = (passGroup.style.display === "none");
+        const pass = isSupervisor ? "" : document.getElementById("passInput").value;
+        
         const msg = document.getElementById("msgBox");
         const btn = document.getElementById("loginBtn");
         
-        if (!code || !pass) { msg.innerText = "⚠️ أدخل الكود وكلمة المرور"; return; }
+        if (!code) { msg.innerText = "⚠️ أدخل الكود"; return; }
+        if (!isSupervisor && !pass) { msg.innerText = "⚠️ أدخل كلمة المرور"; return; }
         
         btn.innerHTML = "⏳ جاري التحقق..."; btn.disabled = true; msg.innerText = "";
         
@@ -204,14 +211,20 @@
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return; 
             }
 
-            // 👇 التعديل هنا: التحقق من كلمة المرور (غير حساس لحالة الأحرف)
+            // 👇 التحقق:
+            // 1. المشرف (SUP) لا يحتاج باسورد (نعطيه true مباشرة)
+            // 2. الإدارة والعمليات يحتاجون باسورد
             let isValid = false;
-            const hashedPass = await sha256(pass.toLowerCase());
             
-            if (foundUser.passwordHash) {
-                isValid = (foundUser.passwordHash === hashedPass);
+            if (foundUser.type === "supervisor" || isSupervisor) {
+                isValid = true; 
             } else {
-                isValid = (pass === "123456"); // كلمة المرور الافتراضية
+                const hashedPass = await sha256(pass.toLowerCase());
+                if (foundUser.passwordHash) {
+                    isValid = (foundUser.passwordHash === hashedPass);
+                } else {
+                    isValid = (pass === "123456"); 
+                }
             }
 
             if (!isValid) {
@@ -219,7 +232,6 @@
                 btn.innerHTML = "<span>🔓 دخول النظام</span>"; btn.disabled = false; return;
             }
             
-            // حفظ الجلسة
             const sessionData = JSON.stringify(foundUser);
             localStorage.setItem("amb_user", sessionData);
             sessionStorage.setItem("amb_user", sessionData);
@@ -238,7 +250,6 @@
         }
     }
 
-    // تحميل الإحصائيات
     async function loadStats() {
         try {
             const [resUsers, resActs, resBroadcasts] = await Promise.all([
@@ -264,7 +275,6 @@
         } catch(e) { console.log("Stats error"); }
     }
 
-    // تحميل نجوم الشهر
     async function loadFeatured() {
         const el = document.getElementById("starsMonthList");
         try {
@@ -301,6 +311,9 @@
     }
 
     window.onload = function() {
+        // فحص الكود أثناء الكتابة لإظهار/إخفاء الباسورد
+        document.getElementById("codeInput").addEventListener("input", checkCodeType);
+        
         document.getElementById("codeInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
         document.getElementById("passInput").addEventListener("keypress", e => { if (e.key === "Enter") login(); });
         loadStats();
