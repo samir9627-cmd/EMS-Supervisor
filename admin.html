@@ -126,4 +126,170 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <button class="btn block" onclick="saveSupervisor()" id="btnSaveSup">💾 حفظ وإنشاء حساب</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 المشرفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius
+      <div class="card-title">📋 المشرفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="supervisorsCount">0</span></div>
+      <div id="supervisorsList"><div class="empty"><span class="icon">👨‍💼</span>جاري التحميل...</div></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-paramedics">
+    <div class="card">
+      <div class="card-title">➕ إضافة مسعف</div>
+      <label>الاسم *</label><input type="text" id="pmName">
+      <label>المركز</label><select id="pmCenter"></select>
+      <label>الرتبة</label><input type="text" id="pmRank">
+      <button class="btn block" onclick="saveParamedic()">💾 حفظ</button>
+    </div>
+    <div class="card"><div class="card-title">📋 المسعفون</div><div id="paramedicsList"></div></div>
+  </div>
+
+  <div class="page" id="page-vehicles">
+    <div class="card">
+      <div class="card-title">➕ إضافة مركبة</div>
+      <label>اللوحة *</label><input type="text" id="vPlate">
+      <label>النوع</label><input type="text" id="vType">
+      <label>المركز</label><select id="vCenter"></select>
+      <button class="btn block" onclick="saveVehicle()">💾 حفظ</button>
+    </div>
+    <div class="card"><div class="card-title">📋 المركبات</div><div id="vehiclesList"></div></div>
+  </div>
+
+  <div class="page" id="page-issues"><div class="card"><div class="card-title">🚩 الإشكالات</div><div id="issuesList"></div></div></div>
+  <div class="page" id="page-praises"><div class="card"><div class="card-title">⭐ الإشادات</div><div id="praisesList"></div></div></div>
+
+  <div class="page" id="page-broadcasts">
+    <div class="card">
+      <div class="card-title">📢 إرسال تعميم</div>
+      <label>العنوان</label><input type="text" id="bTitle">
+      <label>النص</label><textarea id="bDesc" rows="3"></textarea>
+      <button class="btn block" onclick="sendBroadcast()">📤 إرسال</button>
+    </div>
+    <div class="card"><div class="card-title">📜 التعاميم السابقة</div><div id="broadcastsList"></div></div>
+  </div>
+
+  <div class="page" id="page-master">
+    <div class="card"><div class="card-title">🚩 إشكالات (مسعف)</div><input type="text" id="mdIssueParam"><button class="btn small success" onclick="addMasterData('issue_types_paramedic', 'mdIssueParam')">➕ إضافة</button><div id="issueTypesParamList"></div></div>
+    <div class="card"><div class="card-title">🚩 إشكالات (مركز)</div><input type="text" id="mdIssueCenter"><button class="btn small success" onclick="addMasterData('issue_types_center', 'mdIssueCenter')">➕ إضافة</button><div id="issueTypesCenterList"></div></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet"><h3 id="modalTitle">تفاصيل</h3><div id="modalBody"></div></div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<div id="printArea"></div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8", authDomain: "ems-supervisor.firebaseapp.com", projectId: "ems-supervisor", storageBucket: "ems-supervisor.firebasestorage.app", messagingSenderId: "230655268524", appId: "1:230655268524:web:5043a458af3d79989ff109" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const INTERNAL_SECRET = "EMS_SECRET_PASSWORD_2026!";
+    const CENTERS_LIST = ["مركز إسعاف دارسيت","مركز إسعاف بوشر","مركز إسعاف العامرات","مركز إسعاف قريات","مركز إسعاف الخوض 1","مركز إسعاف الخوض 2","مركز إسعاف العذيبة","مركز إسعاف الرسيل"];
+
+    let adminUser = null;
+    let allSupervisors = [], allParameds = [], allVehicles = [], allIssues = [], allPraises = [], allBroadcasts = [], allMasterData = {};
+    let currentTab = "dashboard";
+
+    function esc(s) { if (s === null || s === undefined) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+    function showToast(msg, type="success") { const c = document.getElementById("toastContainer"); const t = document.createElement("div"); t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg; c.appendChild(t); setTimeout(() => t.remove(), 2800); }
+    function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
+    
+    async function fsList(colName) { const snapshot = await getDocs(collection(db, colName)); return snapshot.docs.map(d => ({ _id: d.id, ...d.data() })); }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = "index.html"; return; }
+        const code = user.email.split('@')[0].toUpperCase();
+        if (!code.startsWith("ADM")) { await signOut(auth); window.location.href = "index.html"; return; }
+
+        adminUser = { code, email: user.email };
+        document.getElementById("currentUser").textContent = "المدير العام (" + code + ")";
+        document.getElementById("supCode").value = generateCode();
+        ["pmCenter", "vCenter"].forEach(id => { const sel = document.getElementById(id); if (sel) sel.innerHTML = CENTERS_LIST.map(c => `<option>${c}</option>`).join(""); });
+        document.getElementById("loadingOverlay").style.display = "none";
+        document.getElementById("mainApp").classList.add("ready");
+
+        syncAll();
+    });
+
+    async function syncAll() {
+        try {
+            allSupervisors = await fsList("access_code").then(l => l.filter(u => u.type === "supervisor"));
+            allParameds = await fsList("paramedics").catch(() => []);
+            allVehicles = await fsList("vehicles").catch(() => []);
+            allIssues = await fsList("issues").catch(() => []);
+            allPraises = await fsList("praises").catch(() => []);
+            allBroadcasts = await fsList("broadcasts").catch(() => []);
+            const m1 = await fsList("issue_types_paramedic").catch(() => []);
+            const m2 = await fsList("issue_types_center").catch(() => []);
+            allMasterData["issue_types_paramedic"] = m1; allMasterData["issue_types_center"] = m2;
+            renderCurrentTab();
+        } catch(e) { showToast("فشل تحديث البيانات", "danger"); }
+    }
+
+    window.switchTab = function(id) {
+        currentTab = id;
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.getElementById("page-" + id).classList.add("active");
+        document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
+        window.scrollTo({top:0,behavior:"smooth"}); renderCurrentTab();
+    };
+
+    function renderCurrentTab() {
+        if (currentTab === "dashboard") {
+            document.getElementById("dashSups").textContent = allSupervisors.length;
+            document.getElementById("dashParams").textContent = allParameds.length;
+            document.getElementById("dashVehicles").textContent = allVehicles.length;
+            document.getElementById("dashIssues").textContent = allIssues.length;
+        }
+        else if (currentTab === "supervisors") {
+            document.getElementById("supervisorsCount").textContent = allSupervisors.length;
+            document.getElementById("supervisorsList").innerHTML = allSupervisors.map(u => `<div class="item-card blue"><div class="item-info"><h4>👨‍💼 ${esc(u.name)}</h4><p>🏢 ${esc(u.sector)} | 🔑 ${esc(u.code)}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteSup('${esc(u._id)}')">🗑️</button></div></div>`).join("");
+        }
+        else if (currentTab === "paramedics") { document.getElementById("paramedicsList").innerHTML = allParameds.map(p => `<div class="item-card green"><div class="item-info"><h4>👨‍🚒 ${esc(p.name)}</h4><p>🏥 ${esc(p.centerName)}</p></div><button class="icon-btn-sm delete" onclick="deleteParamedic('${esc(p._id)}')">🗑️</button></div>`).join(""); }
+        else if (currentTab === "vehicles") { document.getElementById("vehiclesList").innerHTML = allVehicles.map(v => `<div class="item-card amber"><div class="item-info"><h4>🚑 ${esc(v.plateNumber)}</h4><p>🏥 ${esc(v.centerName)}</p></div><button class="icon-btn-sm delete" onclick="deleteVehicle('${esc(v._id)}')">🗑️</button></div>`).join(""); }
+        else if (currentTab === "issues") { document.getElementById("issuesList").innerHTML = allIssues.map(i => `<div class="item-card red"><div class="item-info"><h4>🚩 ${esc(i.issueType||i.praiseType)}</h4><p>👤 ${esc(i.supervisor)} | 🏥 ${esc(i.centerName)}</p></div></div>`).join(""); }
+        else if (currentTab === "praises") { document.getElementById("praisesList").innerHTML = allPraises.map(p => `<div class="item-card green"><div class="item-info"><h4>⭐ ${esc(p.praiseType)}</h4><p>👤 ${esc(p.supervisor)} | 🏥 ${esc(p.centerName)}</p></div></div>`).join(""); }
+        else if (currentTab === "broadcasts") { document.getElementById("broadcastsList").innerHTML = allBroadcasts.map(b => `<div class="item-card blue"><div class="item-info"><h4>📢 ${esc(b.title)}</h4><p>${esc(b.description)}</p></div></div>`).join(""); }
+        else if (currentTab === "master") {
+            document.getElementById("issueTypesParamList").innerHTML = (allMasterData["issue_types_paramedic"]||[]).map(t => `<div class="item-card" style="padding:8px; margin-bottom:4px;"><div class="item-info"><h4 style="font-size:12px;">${esc(t.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteMaster('issue_types_paramedic','${esc(t._id)}')">🗑️</button></div>`).join("");
+            document.getElementById("issueTypesCenterList").innerHTML = (allMasterData["issue_types_center"]||[]).map(t => `<div class="item-card" style="padding:8px; margin-bottom:4px;"><div class="item-info"><h4 style="font-size:12px;">${esc(t.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteMaster('issue_types_center','${esc(t._id)}')">🗑️</button></div>`).join("");
+        }
+    }
+
+    window.saveSupervisor = async function() {
+        const name = document.getElementById("supName").value.trim();
+        const code = document.getElementById("supCode").value.trim();
+        const btn = document.getElementById("btnSaveSup");
+        if (!name) return showToast("أدخل الاسم", "danger");
+        btn.innerHTML = "⏳ جاري الإنشاء..."; btn.disabled = true;
+        try {
+            await createUserWithEmailAndPassword(auth, `${code.toLowerCase()}@ems-system.local`, INTERNAL_SECRET);
+            await addDoc(collection(db, "access_code"), { name, sector: document.getElementById("supSector").value, phone: document.getElementById("supPhone").value, code, type: "supervisor", active: true, createdAt: new Date().toISOString() });
+            document.getElementById("supName").value = ""; document.getElementById("supPhone").value = ""; document.getElementById("supCode").value = generateCode();
+            showToast("تم إنشاء الحساب وحفظ المشرف"); syncAll();
+        } catch (error) { showToast("خطأ: قد يكون الكود مستخدم", "danger"); }
+        finally { btn.innerHTML = "💾 حفظ وإنشاء حساب"; btn.disabled = false; }
+    };
+
+    window.saveParamedic = async function() { const name = document.getElementById("pmName").value.trim(); if (!name) return showToast("أدخل الاسم", "danger"); await addDoc(collection(db, "paramedics"), { name, centerName: document.getElementById("pmCenter").value, rank: document.getElementById("pmRank").value }); document.getElementById("pmName").value = ""; showToast("تم الحفظ"); syncAll(); };
+    window.saveVehicle = async function() { const plate = document.getElementById("vPlate").value.trim(); if (!plate) return showToast("أدخل اللوحة", "danger"); await addDoc(collection(db, "vehicles"), { plateNumber: plate, type: document.getElementById("vType").value, centerName: document.getElementById("vCenter").value }); document.getElementById("vPlate").value = ""; showToast("تم الحفظ"); syncAll(); };
+    window.sendBroadcast = async function() { const title = document.getElementById("bTitle").value.trim(), desc = document.getElementById("bDesc").value.trim(); if (!title || !desc) return showToast("أكمل البيانات", "danger"); await addDoc(collection(db, "broadcasts"), { title, description: desc, sender: "الإدارة", timestamp: new Date().toISOString() }); document.getElementById("bTitle").value = ""; document.getElementById("bDesc").value = ""; showToast("تم الإرسال"); syncAll(); };
+    
+    window.addMasterData = async function(col, inputId) { const val = document.getElementById(inputId).value.trim(); if (!val) return; await addDoc(collection(db, col), { name: val }); document.getElementById(inputId).value = ""; showToast("تمت الإضافة"); syncAll(); };
+    window.deleteMaster = async function(col, id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, col, id)); syncAll(); } };
+    window.deleteSup = async function(id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, "access_code", id)); syncAll(); } };
+    window.deleteParamedic = async function(id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, "paramedics", id)); syncAll(); } };
+    window.deleteVehicle = async function(id) { if (confirm("حذف؟")) { await deleteDoc(doc(db, "vehicles", id)); syncAll(); } };
+
+    window.manualRefresh = function() { showToast("تحديث..."); syncAll(); };
+    window.confirmLogout = async function() { if (confirm("خروج؟")) { await signOut(auth); window.location.href = "index.html"; } };
+    window.closeModal = function() { document.getElementById("modalOverlay").classList.remove("show"); };
+</script>
+</body>
+</html>
