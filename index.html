@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>نظام الإسعاف الذكي — بوابة الدخول</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>نظام الإسعاف الذكي — البوابة</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
@@ -22,7 +26,7 @@
 html, body { background:var(--bg-white); color:var(--text-dark); font-weight:600; overflow-x:hidden; min-height:100vh; }
 body { display:flex; flex-direction:column; align-items:center; padding:20px; position:relative; }
 
-/* ═══ الخلفية السحرية البيضاء ═══ */
+/* الخلفية السحرية البيضاء */
 body::before {
   content:''; position:fixed; inset:0; z-index:-2;
   background:
@@ -45,7 +49,7 @@ body::after {
 .star { position:absolute; width:2px; height:2px; background:var(--gold); border-radius:50%; opacity:0.2; animation:twinkle 4s infinite; }
 @keyframes twinkle { 0%,100%{opacity:0.1; transform:scale(0.8);} 50%{opacity:0.5; transform:scale(1.5);} }
 
-/* ═══ شاشة التحميل ═══ */
+/* شاشة التحميل */
 #loadingScreen {
   position:fixed; inset:0; z-index:9999;
   background:#ffffff;
@@ -64,7 +68,7 @@ body::after {
 .loading-bar::after { content:''; display:block; width:50%; height:100%; background:linear-gradient(90deg, var(--gold), var(--gold-light)); animation:loadMove 1.5s infinite; box-shadow:0 0 20px rgba(151,141,91,0.6); }
 @keyframes loadMove { 0%{transform:translateX(-100%);} 100%{transform:translateX(200%);} }
 
-/* ═══ الهيدر ═══ */
+/* الهيدر */
 .header { text-align:center; margin-top:30px; margin-bottom:25px; animation:fadeInDown 0.8s cubic-bezier(0.4,0,0.2,1); }
 @keyframes fadeInDown { from{opacity:0; transform:translateY(-30px);} to{opacity:1; transform:translateY(0);} }
 
@@ -92,7 +96,7 @@ body::after {
 .subtitle { font-size:15px; color:var(--teal-dark); font-weight:700; letter-spacing:1px; }
 .brand { font-size:13px; color:var(--text-muted); margin-top:10px; font-weight:600; }
 
-/* ═══ بطاقة الدخول ═══ */
+/* بطاقة الدخول */
 .login-box {
   width:100%; max-width:420px;
   background:rgba(255,255,255,0.9);
@@ -131,7 +135,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 
 .msg { text-align:center; font-size:13px; font-weight:700; margin-top:16px; min-height:22px; color:var(--red); position:relative; z-index:1; }
 
-/* ═══ أزرار الدخول الخاص ═══ */
+/* أزرار الدخول الخاص */
 .special-access { width:100%; max-width:420px; display:grid; grid-template-columns:1fr 1fr; gap:14px; z-index:1; margin-bottom:30px; animation:fadeInUp 0.8s 0.4s both cubic-bezier(0.4,0,0.2,1); }
 .btn-special {
   padding:16px 10px; border-radius:18px;
@@ -145,7 +149,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 .btn-special .icon { font-size:30px; }
 .btn-special .name { font-size:13px; font-weight:900; color:var(--gold-bright); }
 
-/* ═══ نجوم الشهر ═══ */
+/* نجوم الشهر */
 .section-title { display:flex; justify-content:center; align-items:center; gap:12px; color:var(--gold); font-size:16px; font-weight:900; margin:20px 0 20px; width:100%; max-width:420px; animation:fadeInUp 0.8s 0.6s both; }
 .section-title::before, .section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, transparent, rgba(151,141,91,0.3), transparent); }
 
@@ -172,7 +176,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 .star-role { font-size:11px; color:var(--text-muted); margin-top:3px; }
 .star-badge { font-size:32px; filter:drop-shadow(0 4px 10px rgba(255,215,0,0.4)); }
 
-/* ═══ التذييل ═══ */
+/* التذييل */
 .footer { text-align:center; font-size:11px; color:var(--text-muted); padding-bottom:30px; z-index:1; line-height:1.8; letter-spacing:0.5px; }
 
 @media (max-width:400px) {
@@ -193,7 +197,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 
 <!-- شاشة التحميل -->
 <div id="loadingScreen">
-  <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="loading-logo" id="loadingLogo">
+  <img src="logo.png" class="loading-logo" id="loadingLogo" alt="شعار">
   <div class="loading-text">جاري التحميل...</div>
   <div class="loading-bar"></div>
 </div>
@@ -204,7 +208,7 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 <!-- الهيدر -->
 <div class="header">
   <div class="logo-wrap">
-    <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="logo" id="mainLogo">
+    <img src="logo.png" class="logo" id="mainLogo" alt="شعار الإدارة العامة">
   </div>
   <h1 class="title">نظام الإسعاف الذكي</h1>
   <div class="subtitle">المشرف الطبي الميداني</div>
@@ -247,24 +251,18 @@ input[type="text"]::placeholder { font-size:14px; letter-spacing:1px; font-famil
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════
-   الإعدادات الأساسية
-   ═══════════════════════════════════════════════════════════ */
 const FIREBASE_PROJECT = "ems-supervisor";
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 
-// كلمات المرور الافتراضية للإدارة والعمليات
 const SPECIAL_PASSWORDS = {
   ops:   { password: "ops2025",        page: "ops.html",   name: "غرفة العمليات" },
   admin: { password: "Samir96267",     page: "admin.html", name: "الإدارة العامة" }
 };
 
-/* ═══════════ أدوات مساعدة ═══════════ */
 function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function currentMonthKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
 function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) { const v = doc.fields[k]; if ("stringValue" in v) obj[k] = v.stringValue; else if ("integerValue" in v) obj[k] = parseInt(v.integerValue); else if ("booleanValue" in v) obj[k] = v.booleanValue; } obj._id = doc.name.split("/").pop(); return obj; }
 
-/* ═══════════ الخلفية ═══════════ */
 const starsContainer = document.getElementById("starsContainer");
 for (let i = 0; i < 30; i++) {
   let s = document.createElement("div");
@@ -275,14 +273,12 @@ for (let i = 0; i < 30; i++) {
   starsContainer.appendChild(s);
 }
 
-/* ═══════════ إخفاء التحميل ═══════════ */
 setTimeout(() => {
   let ls = document.getElementById("loadingScreen");
   if (ls) { ls.style.opacity = "0"; setTimeout(() => ls.remove(), 500); }
   document.getElementById("codeInput").focus();
 }, 1200);
 
-/* ═══════════ الدخول بالكود ═══════════ */
 async function loginWithCode() {
   const code = document.getElementById("codeInput").value.trim().toUpperCase();
   const msg = document.getElementById("msgBox");
@@ -314,14 +310,12 @@ async function loginWithCode() {
       return;
     }
 
-    // حفظ الجلسة
     localStorage.setItem("amb_user", JSON.stringify(foundUser));
     sessionStorage.setItem("amb_user", JSON.stringify(foundUser));
     
     msg.style.color = "#43a047";
     msg.innerHTML = "✅ تم الدخول بنجاح";
 
-    // التوجيه
     setTimeout(() => {
       if (foundUser.type === "admin") window.location.href = "admin.html";
       else if (foundUser.type === "ops") window.location.href = "ops.html";
@@ -335,7 +329,6 @@ async function loginWithCode() {
   }
 }
 
-/* ═══════════ الدخول الخاص ═══════════ */
 function openSpecialLogin(type) {
   const pwd = prompt(`🔐 الدخول إلى ${SPECIAL_PASSWORDS[type].name}\n\nالرجاء إدخال كلمة المرور:`);
   if (pwd === null) return;
@@ -349,7 +342,6 @@ function openSpecialLogin(type) {
   }
 }
 
-/* ═══════════ نجوم الشهر ═══════════ */
 async function loadFeaturedStars() {
   const el = document.getElementById("starsMonthList");
   try {
@@ -386,7 +378,6 @@ async function loadFeaturedStars() {
   }
 }
 
-/* ═══════════ التشغيل ═══════════ */
 document.getElementById("codeInput").addEventListener("keypress", e => {
   if (e.key === "Enter") loginWithCode();
 });
