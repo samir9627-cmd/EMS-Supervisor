@@ -4,27 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>لوحة المشرف الميداني — v35.0</title>
+<title>لوحة المشرف الميداني — v40.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal','Segoe UI',sans-serif; }
-
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 :root {
-  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
-  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
-  --green:#43a047; --green-light:#69f0ae;
-  --red:#e53935; --red-light:#ff5252;
-  --amber:#fb8c00; --amber-light:#ffa726;
-  --blue:#29b6f6; --blue-light:#64b5f6;
-  --purple:#ab47bc; --purple-light:#ce93d8;
-  --surface:rgba(13,74,66,0.55);
-  --border:rgba(151,141,91,0.3);
-  --safe-top:env(safe-area-inset-top, 0px);
-  --safe-bottom:env(safe-area-inset-bottom, 0px);
+  --gold:#978d5b; --gold-light:#d4c896; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726; --blue:#29b6f6; --blue-light:#64b5f6;
+  --border:rgba(151,141,91,0.3); --surface:rgba(13,74,66,0.55);
 }
-
-html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; overscroll-behavior-y:contain; }
-body { min-height:100vh; padding-bottom:calc(100px + var(--safe-bottom)); }
+html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
+body { min-height:100vh; padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
 body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
@@ -32,8 +23,7 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 #mainApp { display:none; }
 #mainApp.ready { display:block; }
 
-/* الشريط العلوي */
-.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + env(safe-area-inset-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
 .topbar-logo { width:44px; height:44px; border-radius:12px; object-fit:contain; background:transparent; }
 .topbar-info { flex:1; }
 .topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
@@ -42,47 +32,30 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
 
-/* التبويبات السفلية */
-.bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:200; background:linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top:2px solid var(--gold); padding:8px 4px calc(8px + var(--safe-bottom)); display:grid; grid-template-columns:repeat(5, 1fr); gap:2px; }
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:200; background:linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top:2px solid var(--gold); padding:8px 4px calc(8px + env(safe-area-inset-bottom)); display:grid; grid-template-columns:repeat(5, 1fr); gap:2px; }
 .nav-btn { display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 2px; border-radius:10px; cursor:pointer; background:transparent; border:none; color:rgba(255,255,255,0.65); font-family:inherit; font-weight:700; font-size:9px; }
 .nav-btn .nav-icon { font-size:20px; line-height:1; }
 .nav-btn.active { background:linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color:var(--gold-light); }
 
-/* الصفحات */
 .page { display:none; padding:16px; max-width:720px; margin:0 auto; }
 .page.active { display:block; animation:slideUp 0.35s; }
 .card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px; }
 .card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
 
-/* الإحصائيات */
-.stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
-.stat-mini { background:rgba(4,24,20,0.75); border:1px solid var(--border); border-radius:16px; padding:16px 14px; text-align:center; }
-.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
-.stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:5px; }
-
-/* الأزرار الرئيسية */
 .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
 .action-btn { padding:20px 14px; border-radius:18px; border:none; font-family:inherit; font-weight:900; font-size:14px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; color:#fff; }
 .action-btn.danger { background:linear-gradient(135deg, #e53935, #ff5252); }
 .action-btn.success { background:linear-gradient(135deg, #43a047, #69f0ae); color:#041814; }
 .action-btn.info { background:linear-gradient(135deg, #29b6f6, #64b5f6); color:#fff; }
-.action-btn.purple { background:linear-gradient(135deg, #ab47bc, #ce93d8); color:#fff; }
 
-/* القوائم */
 .item-card { background:rgba(4,24,20,0.8); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
 .item-card.red { border-right-color:var(--red); }
 .item-card.green { border-right-color:var(--green-light); }
-.item-card.blue { border-right-color:var(--blue); }
-.item-card.amber { border-right-color:var(--amber); }
 .item-info { flex:1; min-width:0; }
 .item-info h4 { font-size:14px; font-weight:900; color:var(--gold-light); margin-bottom:4px; }
 .item-info p { font-size:11px; color:rgba(255,255,255,0.65); line-height:1.6; }
-.item-actions { display:flex; gap:6px; }
-.icon-btn-sm { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; background:rgba(255,255,255,0.1); color:#fff; }
 
-/* المدخلات */
 input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-family:inherit; font-weight:600; outline:none; margin-bottom:12px; }
-input:focus, textarea:focus, select:focus { border-color:var(--gold); }
 select option { background:var(--teal-deep); color:#fff; }
 label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:7px; }
 
@@ -93,25 +66,13 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
 .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); display:none; align-items:flex-end; justify-content:center; }
 .modal-overlay.show { display:flex; }
-.modal-sheet { background:linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius:26px; border-top-right-radius:26px; border-top:3px solid var(--gold); width:100%; max-width:720px; max-height:92vh; padding:24px 18px calc(24px + var(--safe-bottom)); overflow-y:auto; animation:slideUp 0.35s; }
+.modal-sheet { background:linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius:26px; border-top-right-radius:26px; border-top:3px solid var(--gold); width:100%; max-width:720px; max-height:92vh; padding:24px 18px calc(24px + env(safe-area-inset-bottom)); overflow-y:auto; animation:slideUp 0.35s; }
 .modal-sheet h3 { color:var(--gold-light); font-size:17px; font-weight:900; text-align:center; padding-bottom:14px; border-bottom:1px solid var(--border); margin-bottom:18px; }
 
-/* التنبيهات */
 .toast-container { position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:calc(100% - 32px); max-width:420px; }
 .toast { background:linear-gradient(135deg, var(--teal), var(--teal-dark)); color:#fff; padding:12px 18px; border-radius:12px; border:1px solid var(--gold); font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.6); }
 .toast.success { border-color:var(--green-light); }
 .toast.danger { border-color:var(--red-light); }
-
-/* الدردشة */
-.chat-container { display:flex; flex-direction:column; height:60vh; background:rgba(0,0,0,0.3); border-radius:14px; border:1px solid var(--border); overflow:hidden; }
-.chat-messages { flex:1; padding:14px; overflow-y:auto; display:flex; flex-direction:column; gap:10px; }
-.message { max-width:80%; padding:10px 14px; border-radius:14px; font-size:13px; line-height:1.5; }
-.message.mine { align-self:flex-end; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-bottom-left-radius:2px; }
-.message.theirs { align-self:flex-start; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-bottom-right-radius:2px; }
-.message .time { font-size:9px; opacity:0.6; margin-top:4px; display:block; text-align:left; }
-.chat-input-box { display:flex; padding:10px; background:rgba(4,24,20,0.6); border-top:1px solid var(--border); }
-.chat-input-box input { flex:1; margin:0; border-radius:8px 0 0 8px; border-left:none; }
-.chat-input-box button { padding:0 20px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border:none; border-radius:0 8px 8px 0; font-weight:900; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -127,90 +88,44 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     <button class="icon-btn danger" onclick="confirmLogout()">🚪</button>
   </div>
 
-  <!-- 1) الرئيسية -->
+  <!-- الرئيسية -->
   <div class="page active" id="page-home">
-    <div class="card" style="background:linear-gradient(135deg, rgba(151,141,91,0.15), rgba(13,74,66,0.6)); border-color:var(--gold);">
-      <div style="display:flex; align-items:center; justify-content:space-between;">
-        <div>
-          <div style="font-size:12px; color:rgba(255,255,255,0.7);">مرحباً بك 👋</div>
-          <div style="font-size:20px; color:#fff; font-weight:900;" id="welcomeName">—</div>
-          <div style="font-size:12px; color:var(--gold-light); margin-top:4px;" id="welcomeSector">—</div>
-        </div>
-        <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900;" id="heroAvatar">👤</div>
-      </div>
-    </div>
-
     <div class="quick-actions">
-      <button class="action-btn danger" onclick="startEntry('complaint')">
-        <span style="font-size:32px;">🚩</span>
-        <span>تسجيل إشكالية</span>
-      </button>
-      <button class="action-btn success" onclick="startEntry('praise')">
-        <span style="font-size:32px;">⭐</span>
-        <span>تسجيل إشادة</span>
-      </button>
-      <button class="action-btn info" onclick="startVisit()" style="grid-column: span 2;">
-        <span style="font-size:32px;">📋</span>
-        <span>تسجيل زيارة مركز</span>
-      </button>
+      <button class="action-btn danger" onclick="startEntry('complaint')"><span style="font-size:32px;">🚩</span><span>تسجيل إشكالية</span></button>
+      <button class="action-btn success" onclick="startEntry('praise')"><span style="font-size:32px;">⭐</span><span>تسجيل إشادة</span></button>
+      <button class="action-btn info" onclick="startVisit()" style="grid-column: span 2;"><span style="font-size:32px;">📋</span><span>تسجيل زيارة مركز</span></button>
     </div>
-
-    <div class="stats-grid">
-      <div class="stat-mini" onclick="switchPage('issues')"><div class="num" id="statOpenIssues">0</div><div class="lbl">إشكالياتي المفتوحة</div></div>
-      <div class="stat-mini" onclick="switchPage('visits')"><div class="num" id="statVisits">0</div><div class="lbl">زياراتي</div></div>
-    </div>
-
     <div class="card">
-      <div class="card-title">📢 التعاميم الأخيرة</div>
-      <div id="broadcastsList"></div>
+      <div class="card-title">📢 التعاميم</div>
+      <div id="broadcastsList">لا تعاميم جديدة</div>
     </div>
   </div>
 
-  <!-- 2) الإشكالات -->
+  <!-- السجلات -->
   <div class="page" id="page-issues">
-    <div class="card">
-      <div class="card-title">🚩 سجلاتي الميدانية <span id="issuesCount" style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;">0</span></div>
-      <div id="issuesList"></div>
-    </div>
+    <div class="card"><div class="card-title">🚩 سجلاتي</div><div id="issuesList"></div></div>
   </div>
-
-  <!-- 3) الزيارات وسجل القطاع -->
+  
+  <!-- الزيارات -->
   <div class="page" id="page-visits">
-    <div class="card">
-      <div class="card-title">📋 سجل زيارات القطاع</div>
-      <div id="visitsList"></div>
-    </div>
+    <div class="card"><div class="card-title">📋 سجل زيارات القطاع</div><div id="visitsList"></div></div>
   </div>
 
-  <!-- 4) الدوام والمسعفين -->
+  <!-- الدوام -->
   <div class="page" id="page-duty">
-    <div class="card">
-      <div class="card-title">📅 جدول الدوام اليوم</div>
-      <div style="background:rgba(151,141,91,0.1); padding:10px; border-radius:10px; margin-bottom:12px;">
-        <div style="font-size:12px; color:var(--gold-light); font-weight:900;" id="supervisorShiftDisplay">—</div>
-      </div>
-      <div id="dutyList"></div>
-    </div>
+    <div class="card"><div class="card-title">📅 حالة الدوام</div><div id="dutyList"></div></div>
   </div>
 
-  <!-- 5) المراسلة -->
+  <!-- المراسلة -->
   <div class="page" id="page-chat">
-    <div class="card" style="padding:0; overflow:hidden;">
-      <div style="padding:14px 16px; border-bottom:1px solid var(--border); background:rgba(4,24,20,0.5); display:flex; align-items:center; gap:10px;">
-        <span style="font-size:20px;">💬</span>
-        <span style="font-weight:900; color:var(--gold-light); flex:1;">مراسلة الإدارة</span>
-      </div>
-      <div class="chat-container" style="border-radius:0; height:65vh; border:none;">
-        <div class="chat-messages" id="chatMessages"></div>
-        <div class="chat-input-box">
-          <input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key === 'Enter') sendMessage()">
-          <button onclick="sendMessage()">إرسال</button>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-title">💬 مراسلة الإدارة</div>
+      <div id="chatMessages" style="height:50vh; overflow-y:auto; background:rgba(0,0,0,0.2); padding:10px; border-radius:10px; margin-bottom:10px;"></div>
+      <input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key === 'Enter') sendMessage()">
+      <button class="btn block success" onclick="sendMessage()">📤 إرسال</button>
     </div>
   </div>
 
-  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav">
     <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
     <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">🚩</span><span>سجلاتي</span></button>
@@ -220,63 +135,45 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
   </div>
 </div>
 
-<!-- نافذة منبثقة -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal-sheet">
-    <h3 id="modalTitle">تفاصيل</h3>
-    <div id="modalBody"></div>
-  </div>
+  <div class="modal-sheet"><h3 id="modalTitle">تفاصيل</h3><div id="modalBody"></div></div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════
-   لوحة المشرف — v35.0 (الزيارات، السجل، الدوام، المراسلة)
-   ═══════════════════════════════════════════════════════════ */
-
 const FIREBASE_PROJECT = "ems-supervisor";
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
-const SESSION_KEY = "amb_user";
 
 let currentUser = null;
 let supervisorSector = "";
 let supervisorCenters = [];
-let allIssues = [], myIssues = [], allVisits = [], sectorVisits = [];
-let allShifts = [], allBroadcasts = [], myBroadcasts = [], allChats = [];
+let masterData = {};
+let allIssues = [], myIssues = [], allVisits = [], sectorVisits = [], allMessages = [], myMessages = [];
+
+const MASTER_KEYS = ["issue_paramedic","issue_center","issue_vehicle","issue_stock","praise_paramedic","praise_center","praise_vehicle","praise_stock"];
 
 function esc(s) { return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-function showToast(msg, type="success") { const c=document.getElementById("toastContainer"); const t=document.createElement("div"); t.className="toast "+type; t.textContent=(type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ")+msg; c.appendChild(t); setTimeout(()=>t.remove(),3000); }
+function showToast(msg, type="success") { const c=document.getElementById("toastContainer"); const t=document.createElement("div"); t.className="toast "+type; t.textContent=(type==="success"?"✅ ":"⚠️ ")+msg; c.appendChild(t); setTimeout(()=>t.remove(),3000); }
 function cleanCenter(n) { return (n || "").toString().replace("مركز إسعاف ", "").trim(); }
-function timeAgo(ts) { const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; if (diff < 86400) return `قبل ${Math.floor(diff/3600)}س`; return `قبل ${Math.floor(diff/86400)}ي`; }
-function todayKey() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-
-// دالة تحديد شفت المشرف (12 ساعة)
-function getSupervisorShift() {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 18) return { label: "نهار (6ص - 6م)", icon: "☀️" };
-  return { label: "ليل (6م - 6ص)", icon: "🌙" };
-}
+function timeAgo(ts) { const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; return `قبل ${Math.floor(diff/86400)}ي`; }
 
 function fromFS(v) { if(!v)return null; if("stringValue"in v)return v.stringValue; if("integerValue"in v)return parseInt(v.integerValue); if("booleanValue"in v)return v.booleanValue; if("mapValue"in v){const o={};for(const k in v.mapValue.fields||{})o[k]=fromFS(v.mapValue.fields[k]);return o;} return null; }
 function docToObj(d) { const o={}; if(!d.fields)return o; for(const k in d.fields)o[k]=fromFS(d.fields[k]); o._id=d.name.split("/").pop(); return o; }
 async function fsList(col) { const r=await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`,{cache:"no-store"}); if(!r.ok)throw new Error("HTTP "+r.status); const d=await r.json(); return (d.documents||[]).map(docToObj); }
 async function fsAdd(col, data) { const f={}; for(const k in data){ if(data[k]===null||data[k]===undefined)continue; if(typeof data[k]==="string")f[k]={stringValue:data[k]}; else if(typeof data[k]==="number")f[k]={integerValue:String(data[k])}; else if(typeof data[k]==="boolean")f[k]={booleanValue:data[k]}; } await fetch(`${FIRESTORE_URL}/${col}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({fields:f})}); }
 
-/* ═══ التشغيل ═══ */
 async function initApp() {
-  document.getElementById("currentUser").textContent = currentUser.name || "مشرف";
-  document.getElementById("welcomeName").textContent = currentUser.name || "مشرف";
-  document.getElementById("heroAvatar").textContent = (currentUser.name || "م").charAt(0);
-  document.getElementById("welcomeSector").textContent = currentUser.sector || "قطاع غير محدد";
-
-  try {
-    const settings = await fsList("settings").catch(() => []);
-    supervisorSector = currentUser.sector || "";
-    if (settings.length > 0 && settings[0].sectors) {
-      supervisorCenters = settings[0].sectors[supervisorSector] || [];
-    }
-  } catch(e) {}
+  document.getElementById("currentUser").textContent = currentUser.name;
+  
+  const settings = await fsList("settings").catch(() => []);
+  masterData = {};
+  MASTER_KEYS.forEach(k => masterData[k] = []);
+  if (settings.length > 0 && settings[0].master) masterData = settings[0].master;
+  
+  const sectors = settings[0]?.sectors || {};
+  supervisorSector = currentUser.sector;
+  supervisorCenters = sectors[supervisorSector] || [];
 
   syncData();
   setInterval(syncData, 30000);
@@ -284,123 +181,26 @@ async function initApp() {
 
 async function syncData() {
   try {
-    const [issues, visits, shifts, bc, chat] = await Promise.all([
-      fsList("issues").catch(() => []),
-      fsList("visits").catch(() => []),
-      fsList("shifts").catch(() => []),
-      fsList("broadcasts").catch(() => []),
-      fsList("messages").catch(() => [])
+    const [issues, visits, msgs] = await Promise.all([
+      fsList("issues").catch(() => []), fsList("visits").catch(() => []), fsList("messages").catch(() => [])
     ]);
-
-    allIssues = issues;
-    myIssues = allIssues.filter(i => i.supervisor === currentUser.name);
-    
-    allVisits = visits;
-    myVisits = allVisits.filter(v => v.supervisor === currentUser.name);
-    sectorVisits = allVisits.filter(v => v.sector === supervisorSector); // ربط زملاء القطاع
-    
-    allShifts = shifts;
-    allBroadcasts = bc;
-    myBroadcasts = allBroadcasts.filter(b => b.target === "الجميع" || b.target === supervisorSector || b.target === currentUser.name);
-    
-    allChats = chat;
-
-    renderHome();
-    renderIssues();
-    renderVisits();
-    renderDuty();
-    renderChat();
-  } catch(e) { console.warn(e); }
+    allIssues = issues; myIssues = allIssues.filter(i => i.supervisor === currentUser.name);
+    allVisits = visits; sectorVisits = allVisits.filter(v => v.sector === supervisorSector);
+    allMessages = msgs; myMessages = allMessages.filter(m => m.supervisor === currentUser.name);
+    renderAll();
+  } catch(e) {}
 }
 
-/* ═══ الرندر ═══ */
-function renderHome() {
-  document.getElementById("statOpenIssues").textContent = myIssues.filter(i => i.status !== "resolved" && !i.isPraise).length;
-  document.getElementById("statVisits").textContent = myVisits.length;
-
-  const bl = document.getElementById("broadcastsList");
-  if (myBroadcasts.length === 0) { bl.innerHTML = '<div style="text-align:center; padding:10px; opacity:0.5;">لا تعاميم</div>'; return; }
-  bl.innerHTML = myBroadcasts.slice(0,3).map(b => `
-    <div class="item-card blue" style="margin-bottom:8px;">
-      <div class="item-info"><h4>📢 ${esc(b.title)}</h4><p>${esc(b.description)}</p></div>
-    </div>
-  `).join("");
-}
-
-function renderIssues() {
-  document.getElementById("issuesCount").textContent = myIssues.length;
-  const list = document.getElementById("issuesList");
-  if (myIssues.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا توجد سجلات</div>'; return; }
+function renderAll() {
+  document.getElementById("issuesList").innerHTML = myIssues.map(i => `
+    <div class="item-card ${i.isPraise?'green':'red'}">
+      <div class="item-info"><h4>${esc(i.issueType||i.praiseType)}</h4><p>${esc(i.targetName)}</p></div>
+    </div>`).join("");
   
-  list.innerHTML = myIssues.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(i => `
-    <div class="item-card ${i.isPraise ? 'green' : (i.status === 'resolved' ? 'blue' : 'red')}">
-      <div class="item-info">
-        <h4>${i.isPraise ? '⭐' : '🚩'} ${esc(i.issueType || i.praiseType || '—')}</h4>
-        <p>🏥 ${esc(cleanCenter(i.center))} | 🎯 ${esc(i.targetName)} | 🕐 ${timeAgo(i.timestamp)}</p>
-      </div>
-    </div>
-  `).join("");
-}
+  document.getElementById("visitsList").innerHTML = sectorVisits.map(v => `
+    <div class="item-card blue"><div class="item-info"><h4>${esc(cleanCenter(v.center))}</h4><p>${esc(v.supervisor)}</p></div></div>`).join("");
 
-function renderVisits() {
-  const list = document.getElementById("visitsList");
-  if (sectorVisits.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا توجد زيارات في القطاع</div>'; return; }
-  
-  list.innerHTML = sectorVisits.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(v => {
-    const isMine = v.supervisor === currentUser.name;
-    let color = v.evaluation === "ممتاز" ? "green" : (v.evaluation === "يحتاج تحسين" ? "red" : "amber");
-    return `<div class="item-card ${color}">
-      <div class="item-info">
-        <h4>🏥 ${esc(cleanCenter(v.center))} <span style="font-size:10px;color:var(--gold-light);">(${esc(v.evaluation)})</span></h4>
-        <p>👤 ${isMine ? 'أنا' : esc(v.supervisor)} | 🕐 ${timeAgo(v.timestamp)}</p>
-        ${v.notes ? `<p style="background:rgba(0,0,0,0.3); padding:4px; border-radius:4px; margin-top:4px;">📝 ${esc(v.notes)}</p>` : ''}
-      </div>
-    </div>`;
-  }).join("");
-}
-
-function renderDuty() {
-  const shift = getSupervisorShift();
-  document.getElementById("supervisorShiftDisplay").innerHTML = `${shift.icon} دوامك الحالي: ${shift.label}`;
-  
-  const list = document.getElementById("dutyList");
-  const todayShifts = allShifts.filter(s => s.date === todayKey() && supervisorCenters.some(c => cleanCenter(c) === cleanCenter(s.centerName)));
-  
-  if (todayShifts.length === 0) { list.innerHTML = '<div style="text-align:center; padding:20px; opacity:0.5;">لا توجد بيانات دوام اليوم</div>'; return; }
-  
-  list.innerHTML = supervisorCenters.map(c => {
-    const cShifts = todayShifts.filter(s => cleanCenter(s.centerName) === cleanCenter(c));
-    let shiftHtml = cShifts.length === 0 ? '<p style="opacity:0.5;">لا شفتات</p>' : cShifts.map(s => {
-      const period = { morning: "🌅 صباحي", evening: "🌇 مسائي", night: "🌙 ليلي" }[s.shiftType] || s.shiftType;
-      const isOpen = s.status === "open";
-      return `<div style="display:flex; justify-content:space-between; font-size:11px; margin-top:4px; padding:4px 8px; background:rgba(255,255,255,0.05); border-radius:6px;">
-        <span>${period}</span>
-        <span style="color:var(--${isOpen ? 'green-light' : 'red-light'});">${isOpen ? '🟢 مفتوح' : '🔴 مغلق'}</span>
-      </div>`;
-    }).join("");
-    return `<div class="item-card blue">
-      <div class="item-info"><h4>🏥 ${esc(cleanCenter(c))}</h4>${shiftHtml}</div>
-    </div>`;
-  }).join("");
-}
-
-/* ═══ الدردشة ═══ */
-function renderChat() {
-  const chatDiv = document.getElementById("chatMessages");
-  if (!chatDiv) return;
-  let msgs = allChats.filter(m => m.supervisor === currentUser.name).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
-  if (msgs.length === 0) { chatDiv.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px;">لا رسائل</div>'; return; }
-  chatDiv.innerHTML = msgs.map(m => {
-    const isMine = m.sender === currentUser.name;
-    return `<div class="message ${isMine ? 'mine' : 'theirs'}"><div>${esc(m.text)}</div><span class="time">${timeAgo(m.timestamp)}</span></div>`;
-  }).join("");
-  chatDiv.scrollTop = chatDiv.scrollHeight;
-}
-async function sendMessage() {
-  const input = document.getElementById("chatInput"), text = input.value.trim();
-  if (!text) return; input.value = "";
-  await fsAdd("messages", { supervisor: currentUser.name, sender: currentUser.name, text, timestamp: new Date().toISOString() });
-  syncData();
+  document.getElementById("chatMessages").innerHTML = myMessages.map(m => `<div style="padding:8px; background:rgba(255,255,255,0.1); margin-bottom:6px; border-radius:8px;">${esc(m.text)}</div>`).join("");
 }
 
 function switchPage(id) {
@@ -408,33 +208,27 @@ function switchPage(id) {
   document.getElementById("page-" + id).classList.add("active");
   document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
   document.querySelector(`.nav-btn[data-page="${id}"]`).classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-/* ═══ تسجيل إشكالية / إشادة ═══ */
 async function startEntry(type) {
-  if (supervisorCenters.length === 0) return showToast("لا توجد مراكز", "danger");
   const params = await fsList("paramedics").catch(() => []);
-  
-  openModal(type === 'complaint' ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة", `
+  openModal(type==='complaint'?"🚩 إشكالية":"⭐ إشادة", `
     <label>🏥 المركز</label>
     <select id="entryCenter" onchange="updateTargets('${type}', ${JSON.stringify(params).replace(/"/g, '&quot;')})">
-      ${supervisorCenters.map(c => `<option value="${esc(c)}">${esc(cleanCenter(c))}</option>`).join("")}
+      ${supervisorCenters.map(c => `<option>${esc(c)}</option>`).join("")}
     </select>
-    <label>🎯 نوع الهدف</label>
+    <label>🎯 الهدف</label>
     <select id="entryTargetType" onchange="updateTargets('${type}', ${JSON.stringify(params).replace(/"/g, '&quot;')})">
-      <option value="paramedic">👨‍🚒 مسعف</option>
-      <option value="center">🏥 المركز نفسه</option>
-      <option value="vehicle">🚑 مركبة</option>
-      <option value="stock">💊 مخزن طبي</option>
+      <option value="paramedic">👨‍🚒 مسعف</option><option value="center">🏥 مركز</option>
+      <option value="vehicle">🚑 مركبة</option><option value="stock">💊 مخزن</option>
     </select>
-    <label id="targetNameLabel">👤 اسم المسعف</label>
+    <label>👤 الاسم</label>
     <select id="entryTargetName"></select>
-    <label>${type === 'complaint' ? '🚩 نوع الإشكالية' : '⭐ نوع الإشادة'}</label>
-    <input type="text" id="entryType" placeholder="اكتب النوع...">
+    <label>📌 النوع (من الإدارة)</label>
+    <select id="entryType"></select>
     <label>📝 الوصف</label>
-    <textarea id="entryDesc" placeholder="التفاصيل..." rows="3"></textarea>
-    <button class="btn ${type === 'complaint' ? 'danger' : 'success'} block" onclick="submitEntry('${type}')">💾 حفظ</button>
+    <textarea id="entryDesc" rows="3"></textarea>
+    <button class="btn ${type==='complaint'?'danger':'success'} block" onclick="submitEntry('${type}')">💾 حفظ</button>
   `);
   setTimeout(() => updateTargets(type, params), 100);
 }
@@ -442,23 +236,22 @@ async function startEntry(type) {
 function updateTargets(type, params) {
   const centerVal = document.getElementById("entryCenter").value;
   const targetType = document.getElementById("entryTargetType").value;
-  const targetNameSelect = document.getElementById("entryTargetName");
-  const label = document.getElementById("targetNameLabel");
-
+  const nameSelect = document.getElementById("entryTargetName");
+  
   if (targetType === "paramedic") {
-    label.textContent = "👤 اسم المسعف";
     const filtered = params.filter(p => cleanCenter(p.centerName) === cleanCenter(centerVal));
-    targetNameSelect.innerHTML = filtered.length === 0 ? '<option value="">لا يوجد مسعفون</option>' : filtered.map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join("");
+    nameSelect.innerHTML = filtered.map(p => `<option value="${esc(p.name)}">${esc(p.name)}</option>`).join("") || '<option>لا يوجد</option>';
   } else if (targetType === "center") {
-    label.textContent = "🏥 المركز";
-    targetNameSelect.innerHTML = `<option value="${esc(centerVal)}">${esc(cleanCenter(centerVal))}</option>`;
+    nameSelect.innerHTML = `<option value="${esc(centerVal)}">${esc(cleanCenter(centerVal))}</option>`;
   } else if (targetType === "vehicle") {
-    label.textContent = "🚑 المركبة";
-    targetNameSelect.innerHTML = '<option value="AMB-01">AMB-01</option><option value="AMB-02">AMB-02</option>';
+    nameSelect.innerHTML = '<option value="AMB-01">AMB-01</option>';
   } else {
-    label.textContent = "💊 المخزن";
-    targetNameSelect.innerHTML = '<option value="المخزن الطبي">المخزن الطبي</option>';
+    nameSelect.innerHTML = '<option value="المخزن">المخزن الطبي</option>';
   }
+
+  const masterKey = (type==='complaint'?'issue_':'praise_') + targetType;
+  const types = masterData[masterKey] || [];
+  document.getElementById("entryType").innerHTML = types.map(t => `<option>${esc(t)}</option>`).join("") || '<option>لا أنواع</option>';
 }
 
 async function submitEntry(type) {
@@ -467,74 +260,57 @@ async function submitEntry(type) {
   const targetName = document.getElementById("entryTargetName").value;
   const entryType = document.getElementById("entryType").value;
   const desc = document.getElementById("entryDesc").value;
-  if (!entryType || !desc) return showToast("أكمل البيانات", "danger");
+  if(!desc) return showToast("أدخل الوصف", "danger");
 
   await fsAdd("issues", {
     center, centerName: center, targetType, targetName,
-    issueType: type === 'complaint' ? entryType : null,
-    praiseType: type === 'praise' ? entryType : null,
+    issueType: type==='complaint'?entryType:null, praiseType: type==='praise'?entryType:null,
     description: desc, supervisor: currentUser.name, sector: supervisorSector,
-    isPraise: type === 'praise', status: type === 'praise' ? 'resolved' : 'new', timestamp: new Date().toISOString()
+    isPraise: type==='praise', status: type==='praise'?'resolved':'new', timestamp: new Date().toISOString()
   });
   showToast("تم الحفظ"); closeModal(); syncData();
 }
 
-/* ═══ تسجيل زيارة ═══ */
 function startVisit() {
-  if (supervisorCenters.length === 0) return showToast("لا توجد مراكز", "danger");
-  openModal("📋 تسجيل زيارة ميدانية", `
+  openModal("📋 تسجيل زيارة", `
     <label>🏥 المركز</label>
-    <select id="visitCenter">
-      ${supervisorCenters.map(c => `<option value="${esc(c)}">${esc(cleanCenter(c))}</option>`).join("")}
-    </select>
+    <select id="visitCenter">${supervisorCenters.map(c => `<option>${esc(c)}</option>`).join("")}</select>
     <label>⭐ التقييم</label>
-    <select id="visitEval">
-      <option value="ممتاز">🟢 ممتاز</option>
-      <option value="جيد">🟡 جيد</option>
-      <option value="يحتاج تحسين">🔴 يحتاج تحسين</option>
-    </select>
+    <select id="visitEval"><option>ممتاز</option><option>جيد</option><option>يحتاج تحسين</option></select>
     <label>📝 الملاحظات</label>
-    <textarea id="visitNotes" placeholder="اكتب ملاحظات الزيارة..." rows="4"></textarea>
-    <button class="btn success block" onclick="submitVisit()">💾 حفظ الزيارة</button>
+    <textarea id="visitNotes" rows="3"></textarea>
+    <button class="btn success block" onclick="submitVisit()">💾 حفظ</button>
   `);
 }
-
 async function submitVisit() {
   const center = document.getElementById("visitCenter").value;
-  const evaluation = document.getElementById("visitEval").value;
+  const evalVal = document.getElementById("visitEval").value;
   const notes = document.getElementById("visitNotes").value;
-  if (!notes) return showToast("أدخل الملاحظات", "danger");
-
-  await fsAdd("visits", {
-    center, centerName: center, evaluation, notes,
-    supervisor: currentUser.name, sector: supervisorSector,
-    timestamp: new Date().toISOString()
-  });
+  await fsAdd("visits", { center, centerName: center, evaluation: evalVal, notes, supervisor: currentUser.name, sector: supervisorSector, timestamp: new Date().toISOString() });
   showToast("تم حفظ الزيارة"); closeModal(); syncData();
 }
 
-/* ═══ أدوات ═══ */
+async function sendMessage() {
+  const input = document.getElementById("chatInput"); const text = input.value.trim();
+  if(!text) return; input.value = "";
+  await fsAdd("messages", { supervisor: currentUser.name, sender: currentUser.name, text, timestamp: new Date().toISOString() });
+  syncData();
+}
+
 function openModal(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); }
 function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
-function manualRefresh() { showToast("تحديث..."); syncData(); }
-function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem(SESSION_KEY); location.href="index.html"; } }
+function manualRefresh() { syncData(); }
+function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem("amb_user"); location.href="index.html"; } }
 
-/* ═══ التشغيل ═══ */
-(function() {
-  const saved = localStorage.getItem(SESSION_KEY);
-  if (saved) {
-    try {
-      currentUser = JSON.parse(saved);
-      if (currentUser && (currentUser.type === "supervisor" || currentUser.code?.startsWith("SUP"))) {
-        document.getElementById("mainApp").classList.add("ready");
-        initApp();
-      } else {
-        window.location.href = "index.html";
-      }
-    } catch(e) { window.location.href = "index.html"; }
-  } else {
-    window.location.href = "index.html";
-  }
+(async function() {
+  const saved = localStorage.getItem("amb_user");
+  if(saved) {
+    currentUser = JSON.parse(saved);
+    if(currentUser.type === "supervisor") {
+      document.getElementById("mainApp").classList.add("ready");
+      initApp();
+    } else location.href = "index.html";
+  } else location.href = "index.html";
 })();
 </script>
 </body>
