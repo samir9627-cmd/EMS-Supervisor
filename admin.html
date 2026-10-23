@@ -4,691 +4,207 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — غرفة التحكم v50.0</title>
+<title>الإدارة العامة — غرفة التحكم v63.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 
 :root {
-  --gold:#978d5b;
-  --gold-light:#d4c896;
-  --gold-bright:#e8dcaf;
-  --teal:#0d4a42;
-  --teal-dark:#082b26;
-  --teal-deep:#041814;
-  --green:#43a047;
-  --green-light:#69f0ae;
-  --red:#e53935;
-  --red-light:#ff5252;
-  --amber:#fb8c00;
-  --amber-light:#ffa726;
-  --blue:#29b6f6;
-  --blue-light:#64b5f6;
-  --purple:#ab47bc;
-  --purple-light:#ce93d8;
+  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
+  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae;
+  --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726;
+  --blue:#29b6f6; --blue-light:#64b5f6;
+  --purple:#ab47bc; --purple-light:#ce93d8;
   --surface:rgba(13,74,66,0.55);
   --border:rgba(151,141,91,0.3);
   --safe-top:env(safe-area-inset-top, 0px);
   --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
 
-html, body {
-  background: var(--teal-deep);
-  color: #fff;
-  font-weight: 600;
-  overflow-x: hidden;
-}
+html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
+body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
+body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
-body {
-  min-height: 100vh;
-  padding-bottom: calc(88px + var(--safe-bottom));
-}
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes spin { to { transform:rotate(360deg); } }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%),
-    radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%),
-    linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%);
-}
+/* LOGIN */
+#loginScreen { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; padding:24px; background:linear-gradient(135deg, #041814, #0d4a42, #082b26); }
+.login-box { text-align:center; max-width:440px; width:100%; padding:34px 24px; background:linear-gradient(145deg, rgba(13,74,66,0.65), rgba(4,24,20,0.95)); border:2px solid var(--border); border-radius:28px; box-shadow:0 25px 70px rgba(0,0,0,0.7); }
+.login-logo { width:130px; height:130px; object-fit:contain; border-radius:22px; padding:8px; border:2px solid rgba(151,141,91,0.5); animation:float 3s infinite; background:transparent; }
+.login-title { font-size:22px; color:var(--gold-light); font-weight:900; margin-top:20px; }
+.login-subtitle { font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:26px; letter-spacing:2px; }
+.pass-input { width:100%; padding:20px; background:rgba(4,24,20,0.85); border:2px solid var(--border); border-radius:16px; color:var(--gold-light); font-size:22px; font-weight:900; text-align:center; letter-spacing:6px; font-family:monospace; outline:none; margin-bottom:16px; }
+.pass-input:focus { border-color:var(--gold); }
+.login-btn { width:100%; padding:17px; border:none; border-radius:16px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:17px; font-weight:900; cursor:pointer; }
+.login-msg { margin-top:16px; font-size:13px; min-height:22px; font-weight:700; color:var(--red-light); }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
+#mainApp { display:none; }
+#mainApp.ready { display:block; }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+/* TOPBAR */
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); backdrop-filter:blur(20px); display:flex; align-items:center; gap:8px; }
+.topbar-logo { width:44px; height:44px; border-radius:12px; object-fit:contain; background:transparent; }
+.topbar-info { flex:1; }
+.topbar-info h1 { font-size:13px; color:var(--gold-light); font-weight:900; }
+.topbar-info p { font-size:10px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; margin-top:3px; }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); }
+.icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+/* TABS */
+.tabs-bar { position:sticky; top:calc(74px + var(--safe-top)); z-index:98; background:rgba(4,24,20,0.95); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; }
+.tabs-bar::-webkit-scrollbar { display:none; }
+.tabs-scroll { display:flex; gap:6px; padding:10px 12px; min-width:min-content; }
+.tab-btn { flex-shrink:0; padding:9px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:22px; color:rgba(255,255,255,0.75); font-weight:700; font-size:12px; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:6px; }
+.tab-btn.active { background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); border-color:var(--gold); }
 
-/* ═══════════════════════════════════════════
-   شاشة الدخول
-   ═══════════════════════════════════════════ */
-#loginScreen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #041814, #0d4a42, #082b26);
-}
+/* PAGE */
+.page { display:none; padding:16px; max-width:900px; margin:0 auto; }
+.page.active { display:block; animation:slideUp 0.35s; }
+.card { background:linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border:1px solid var(--border); border-radius:18px; padding:18px; margin-bottom:14px; }
+.card-title { font-size:14px; color:var(--gold-light); font-weight:900; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid rgba(151,141,91,0.15); display:flex; align-items:center; gap:8px; }
 
-.login-box {
-  text-align: center;
-  max-width: 440px;
-  width: 100%;
-  padding: 34px 24px;
-  background: linear-gradient(145deg, rgba(13,74,66,0.65), rgba(4,24,20,0.95));
-  border: 2px solid var(--border);
-  border-radius: 28px;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.7);
-}
+.stats-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-bottom:14px; }
+.stats-grid.four { grid-template-columns:repeat(2, 1fr); }
+@media (min-width:600px) { .stats-grid.four { grid-template-columns:repeat(4, 1fr); } }
+.stat-mini { background:linear-gradient(145deg, rgba(4,24,20,0.75), rgba(13,74,66,0.4)); border:1px solid var(--border); border-radius:16px; padding:16px 14px; position:relative; overflow:hidden; }
+.stat-mini .stat-icon { position:absolute; top:10px; left:10px; font-size:26px; opacity:0.35; }
+.stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
+.stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:5px; }
 
-.login-logo {
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  border-radius: 22px;
-  padding: 8px;
-  border: 2px solid rgba(151,141,91,0.5);
-  animation: float 3s infinite;
-}
+.btn { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn.secondary { background:rgba(255,255,255,0.08); color:#fff; border:1px solid var(--border); }
+.btn.danger { background:linear-gradient(135deg, var(--red), var(--red-light)); color:#fff; }
+.btn.info { background:linear-gradient(135deg, var(--blue), var(--blue-light)); color:#fff; }
+.btn.success { background:linear-gradient(135deg, var(--green), var(--green-light)); color:#041814; }
+.btn.small { padding:8px 14px; font-size:11px; }
+.btn.block { width:100%; }
 
-.login-title {
-  font-size: 24px;
-  color: var(--gold-light);
-  font-weight: 900;
-  margin-top: 20px;
-}
+input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-weight:600; outline:none; margin-bottom:12px; }
+input:focus, textarea:focus, select:focus { border-color:var(--gold); }
+select option { background:var(--teal-deep); color:#fff; }
+label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:7px; }
 
-.login-subtitle {
-  font-size: 12px;
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 26px;
-  letter-spacing: 2px;
-}
+.item-card { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+.item-card.blue { border-right-color:var(--blue); }
+.item-card.green { border-right-color:var(--green-light); }
+.item-card.red { border-right-color:var(--red); }
+.item-card.amber { border-right-color:var(--amber); }
+.item-info { flex:1; min-width:0; }
+.item-info h4 { font-size:14px; font-weight:900; color:var(--gold-light); margin-bottom:4px; }
+.item-info p { font-size:11px; color:rgba(255,255,255,0.65); line-height:1.6; }
+.item-actions { display:flex; gap:6px; }
+.icon-btn-sm { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.icon-btn-sm.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
+.icon-btn-sm.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
+.icon-btn-sm.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
 
-.pass-input {
-  width: 100%;
-  padding: 20px;
-  background: rgba(4,24,20,0.85);
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  color: var(--gold-light);
-  font-size: 22px;
-  font-weight: 900;
-  text-align: center;
-  letter-spacing: 6px;
-  font-family: monospace;
-  outline: none;
-  margin-bottom: 16px;
-}
+.empty { text-align:center; padding:40px 20px; color:rgba(255,255,255,0.4); font-size:13px; }
+.empty .icon { font-size:52px; display:block; margin-bottom:12px; opacity:0.5; }
 
-.pass-input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(151,141,91,0.2);
-}
+.modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); display:none; align-items:flex-end; justify-content:center; }
+.modal-overlay.show { display:flex; }
+.modal-sheet { background:linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius:26px; border-top-right-radius:26px; border-top:3px solid var(--gold); width:100%; max-width:780px; max-height:92vh; padding:24px 18px calc(24px + var(--safe-bottom)); overflow-y:auto; animation:slideUp 0.35s; }
+.modal-sheet::before { content:''; display:block; width:42px; height:4px; background:rgba(255,255,255,0.3); border-radius:3px; margin:-12px auto 16px; }
+.modal-sheet h3 { color:var(--gold-light); font-size:17px; font-weight:900; text-align:center; padding-bottom:14px; border-bottom:1px solid rgba(151,141,91,0.2); margin-bottom:18px; }
 
-.login-btn {
-  width: 100%;
-  padding: 17px;
-  border: none;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
-  color: var(--teal-deep);
-  font-size: 17px;
-  font-weight: 900;
-  cursor: pointer;
-}
+.duty-table { width:100%; border-collapse:collapse; font-size:10px; }
+.duty-table th, .duty-table td { border:1px solid rgba(151,141,91,0.2); padding:4px; text-align:center; }
+.duty-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); font-weight:900; }
+.duty-table td { background:rgba(0,0,0,0.3); }
+.duty-table th.weekend { background:rgba(229,57,53,0.3); color:#ff8a80; }
+.duty-table td select { padding:3px; margin:0; font-size:10px; background:transparent; border:none; min-width:36px; width:auto; }
 
-.login-msg {
-  margin-top: 16px;
-  font-size: 13px;
-  min-height: 22px;
-  font-weight: 700;
-  color: var(--red-light);
-}
+.toast-container { position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:calc(100% - 32px); max-width:420px; }
+.toast { background:linear-gradient(135deg, var(--teal), var(--teal-dark)); color:#fff; padding:12px 18px; border-radius:12px; border:1px solid var(--gold); font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.6); }
+.toast.success { border-color:var(--green-light); }
+.toast.danger { border-color:var(--red-light); }
 
-/* ═══════════════════════════════════════════
-   التطبيق الرئيسي
-   ═══════════════════════════════════════════ */
-#mainApp {
-  display: none;
-}
+.chart-bars { display:flex; align-items:flex-end; height:130px; gap:6px; padding:10px 4px 0; border-bottom:2px solid rgba(151,141,91,0.2); }
+.chart-bar-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+.chart-bar { width:100%; max-width:40px; background:linear-gradient(180deg, var(--gold-light), var(--gold)); border-radius:6px 6px 0 0; min-height:4px; }
+.chart-bar-value { font-size:10px; color:var(--gold-light); font-weight:900; }
+.chart-bar-label { font-size:9px; color:rgba(255,255,255,0.65); }
 
-#mainApp.ready {
-  display: block;
-}
+.pulse-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; }
+@media (min-width:600px) { .pulse-grid { grid-template-columns:repeat(4, 1fr); } }
+.pulse-card { background:rgba(0,0,0,0.4); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,0.1); }
+.pulse-card:active { transform:scale(0.97); }
+.pulse-card.red { background:rgba(229,57,53,0.25); border-color:rgba(229,57,53,0.5); }
+.pulse-card.amber { background:rgba(251,140,0,0.25); border-color:rgba(251,140,0,0.5); }
+.pulse-card.green { background:rgba(67,160,71,0.25); border-color:rgba(67,160,71,0.5); }
+.pulse-card h4 { font-size:12px; font-weight:900; margin-bottom:4px; }
+.pulse-card .num { font-size:18px; font-weight:900; color:#fff; }
+.pulse-card .sub { font-size:9px; opacity:0.8; margin-top:2px; }
 
-/* ═══════════════════════════════════════════
-   الشريط العلوي
-   ═══════════════════════════════════════════ */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: calc(12px + var(--safe-top)) 16px 12px;
-  background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95));
-  border-bottom: 2px solid var(--gold);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.kpi-row { display:flex; align-items:center; gap:10px; padding:12px; background:rgba(0,0,0,0.3); border-radius:12px; margin-bottom:8px; }
+.kpi-rank { width:32px; height:32px; border-radius:50%; background:var(--gold); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-weight:900; flex-shrink:0; }
+.kpi-rank.top1 { background:linear-gradient(135deg,#ffd700,#ffb300); }
+.kpi-rank.top2 { background:linear-gradient(135deg,#c0c0c0,#9e9e9e); }
+.kpi-rank.top3 { background:linear-gradient(135deg,#cd7f32,#a0522d); color:#fff; }
+.kpi-info { flex:1; }
+.kpi-info h4 { font-size:13px; color:var(--gold-light); font-weight:900; margin-bottom:2px; }
+.kpi-info p { font-size:10px; opacity:0.65; }
+.kpi-score { font-size:24px; font-weight:900; min-width:50px; text-align:center; }
+.kpi-grade-A { color:#69f0ae; }
+.kpi-grade-B { color:#ffd54f; }
+.kpi-grade-C { color:#ffa726; }
+.kpi-grade-D { color:#ff5252; }
 
-.topbar-logo {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  object-fit: contain;
-}
+.warning-bar { padding:10px 14px; background:linear-gradient(90deg, rgba(251,140,0,0.2), rgba(251,140,0,0.05)); border-right:4px solid var(--amber); border-radius:10px; font-size:12px; color:#ffcc80; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.warning-bar.info { background:linear-gradient(90deg, rgba(41,182,246,0.2), rgba(41,182,246,0.05)); border-right-color:var(--blue); color:#81d4fa; }
 
-.topbar-info {
-  flex: 1;
-}
-
-.topbar-info h1 {
-  font-size: 13px;
-  color: var(--gold-light);
-  font-weight: 900;
-}
-
-.topbar-info p {
-  font-size: 10px;
-  color: rgba(255,255,255,0.7);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 3px;
-}
-
-.status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--green-light);
-  box-shadow: 0 0 8px var(--green-light);
-}
-
-.icon-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.06);
-  color: #fff;
-  font-size: 17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.icon-btn.danger {
-  background: rgba(198,40,40,0.4);
-  border-color: var(--red-light);
-}
-
-/* ═══════════════════════════════════════════
-   التبويبات
-   ═══════════════════════════════════════════ */
-.tabs-bar {
-  position: sticky;
-  top: calc(74px + var(--safe-top));
-  z-index: 98;
-  background: rgba(4,24,20,0.95);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.tabs-bar::-webkit-scrollbar {
-  display: none;
-}
-
-.tabs-scroll {
-  display: flex;
-  gap: 6px;
-  padding: 10px 12px;
-  min-width: min-content;
-}
-
-.tab-btn {
-  flex-shrink: 0;
-  padding: 9px 16px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  color: #fff;
-  font-size: 12px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.tab-btn.active {
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
-  color: var(--teal-deep);
-  font-weight: 900;
-}
-
-/* ═══════════════════════════════════════════
-   الصفحات
-   ═══════════════════════════════════════════ */
-.page {
-  display: none;
-  padding: 16px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.page.active {
-  display: block;
-  animation: slideUp 0.35s;
-}
-
-.card {
-  background: rgba(13,74,66,0.55);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 16px;
-  margin-bottom: 14px;
-}
-
-.card-title {
-  font-size: 14px;
-  color: var(--gold-light);
-  font-weight: 900;
-  margin-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* ═══════════════════════════════════════════
-   الإحصائيات
-   ═══════════════════════════════════════════ */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.stat-mini {
-  background: rgba(4,24,20,0.75);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px 14px;
-  text-align: center;
-}
-
-.stat-mini .num {
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--gold-light);
-}
-
-.stat-mini .lbl {
-  font-size: 11px;
-  color: rgba(255,255,255,0.7);
-  margin-top: 5px;
-}
-
-/* ═══════════════════════════════════════════
-   البطاقات
-   ═══════════════════════════════════════════ */
-.item-card {
-  background: rgba(4,24,20,0.8);
-  border: 1px solid var(--border);
-  border-right: 4px solid var(--gold);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-
-.item-card.blue { border-right-color: var(--blue); }
-.item-card.green { border-right-color: var(--green-light); }
-.item-card.red { border-right-color: var(--red); }
-.item-card.amber { border-right-color: var(--amber); }
-
-.item-info {
-  flex: 1;
-}
-
-.item-info h4 {
-  font-size: 13px;
-  color: var(--gold-light);
-  font-weight: 900;
-}
-
-.item-info p {
-  font-size: 11px;
-  color: rgba(255,255,255,0.7);
-  margin-top: 4px;
-  line-height: 1.5;
-}
-
-.item-actions {
-  display: flex;
-  gap: 6px;
-}
-
-.icon-btn-sm {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-
-.icon-btn-sm.delete {
-  background: rgba(229,57,53,0.2);
-  color: #ff5252;
-}
-
-/* ═══════════════════════════════════════════
-   المدخلات والأزرار
-   ═══════════════════════════════════════════ */
-input, select, textarea {
-  width: 100%;
-  padding: 12px;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: #fff;
-  font-size: 13px;
-  margin-bottom: 10px;
-  outline: none;
-}
-
-label {
-  display: block;
-  font-size: 12px;
-  color: rgba(255,255,255,0.85);
-  font-weight: 700;
-  margin-bottom: 7px;
-}
-
-.btn {
-  padding: 12px 16px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
-  color: var(--teal-deep);
-  font-size: 13px;
-  font-weight: 900;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.btn.danger {
-  background: linear-gradient(135deg, var(--red), var(--red-light));
-  color: #fff;
-}
-
-.btn.info {
-  background: linear-gradient(135deg, var(--blue), var(--blue-light));
-  color: #fff;
-}
-
-.btn.success {
-  background: linear-gradient(135deg, var(--green), var(--green-light));
-  color: #041814;
-}
-
-.btn.small {
-  padding: 8px 14px;
-  font-size: 11px;
-}
-
-.btn.block {
-  width: 100%;
-}
-
-/* ═══════════════════════════════════════════
-   النوافذ والتنبيهات
-   ═══════════════════════════════════════════ */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.modal-overlay.show {
-  display: flex;
-}
-
-.modal-sheet {
-  background: linear-gradient(145deg, var(--teal), var(--teal-dark));
-  border-top-left-radius: 26px;
-  border-top-right-radius: 26px;
-  border-top: 3px solid var(--gold);
-  width: 100%;
-  max-width: 720px;
-  max-height: 92vh;
-  padding: 24px 18px calc(24px + var(--safe-bottom));
-  overflow-y: auto;
-}
-
-.modal-sheet h3 {
-  color: var(--gold-light);
-  font-size: 17px;
-  font-weight: 900;
-  text-align: center;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 18px;
-}
-
-.toast-container {
-  position: fixed;
-  top: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  pointer-events: none;
-  width: calc(100% - 32px);
-  max-width: 420px;
-}
-
-.toast {
-  background: linear-gradient(135deg, var(--teal), var(--teal-dark));
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: 1px solid var(--gold);
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-}
-
-.toast.success { border-color: var(--green-light); }
-.toast.danger { border-color: var(--red-light); }
-
-/* ═══════════════════════════════════════════
-   الطباعة
-   ═══════════════════════════════════════════ */
-#printArea {
-  display: none;
-}
-
+/* ═══════════════════════════════════════════════════════════
+   إعدادات الطباعة (تم تخصيصها لتدعم A4 أفقي وطولي)
+   ═══════════════════════════════════════════════════════════ */
+#printArea { display:none; }
 @media print {
-  @page {
-    size: A4 landscape;
-    margin: 5mm;
-  }
-  body * {
-    visibility: hidden;
-  }
-  body {
-    background: #fff !important;
-  }
-  #printArea {
-    visibility: visible !important;
-    display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: white !important;
-    color: black !important;
-  }
-  #printArea * {
-    visibility: visible !important;
-  }
-  .topbar, .tabs-bar, .modal-overlay, .toast-container {
-    display: none !important;
-  }
+  /* الورقة الطولية للتقارير العادية */
+  @page { size: A4 portrait; margin: 5mm; }
+  body * { visibility:hidden; }
+  body { background:#fff !important; }
+  #printArea { visibility:visible !important; display:block !important; position:absolute; left:0; top:0; width:100%; background:white !important; color:black !important; }
+  #printArea * { visibility:visible !important; }
+  .topbar, .tabs-bar, .modal-overlay, .toast-container { display:none !important; }
 }
 
-.print-form {
-  width: 100%;
-  max-width: 287mm;
-  margin: 0 auto;
-  background: white;
-  color: #000;
-  font-family: 'Cairo', sans-serif;
-  font-size: 8pt;
-}
+/* فئة خاصة لورقة الدوام لفرض الطباعة الأفقية */
+.landscape-page { @page { size: A4 landscape !important; margin: 3mm; } }
 
-.print-header {
-  background: #978d5b;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 8px;
-  align-items: center;
-  min-height: 70px;
-  margin-bottom: 15px;
-}
+.print-form { width:100%; max-width:190mm; margin:0 auto; background:white; color:#000; font-family:'Cairo',sans-serif; font-size:9pt; }
+.print-header { background:#978d5b; color:white; padding:6px 12px; border-radius:6px; display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; min-height:70px; margin-bottom:15px; }
+.print-header-side { text-align:center; font-size:8.5pt; font-weight:900; line-height:1.3; }
+.print-header-side .authority { font-size:9pt; color:#ffffff; margin-bottom:2px; }
+.print-header-side .dept { font-size:8pt; color:#f0f0f0; }
+.print-header-logo { width:70px !important; height:70px !important; object-fit:contain; background:transparent !important; border:none !important; }
 
-.print-header-side {
-  text-align: center;
-  font-size: 9pt;
-  font-weight: 900;
-  line-height: 1.3;
-  color: #fff;
-}
+.print-title { text-align:center; font-size:12pt; font-weight:900; color:#1e4620; margin:8px 0; padding:4px; border-top:2px solid #1e4620; border-bottom:2px solid #1e4620; background:#f5f2e6; }
 
-.print-header-logo {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-}
+/* جدول الطباعة المضغوط */
+.print-table { width:100%; border-collapse:collapse; margin:4px 0; font-size:5.5pt; table-layout:fixed; }
+.print-table th { background:#978d5b; color:white; padding:1px; border:1px solid #000; font-weight:900; font-size:5.5pt; word-break:break-all; }
+.print-table td { padding:1px; border:1px solid #000; background:white; color:#000; font-size:5.5pt; text-align:center; }
+.print-table .weekend { background:#fee !important; color:#c00; }
 
-.print-title {
-  text-align: center;
-  font-size: 14pt;
-  font-weight: 900;
-  color: #1e4620;
-  margin: 8px 0;
-  padding: 6px;
-  border-top: 2px solid #1e4620;
-  border-bottom: 2px solid #1e4620;
-  background: #f5f2e6;
-}
-
-.print-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 4px 0;
-  font-size: 6.5pt;
-  table-layout: fixed;
-}
-
-.print-table th {
-  background: #978d5b;
-  color: white;
-  padding: 2px;
-  border: 1px solid #000;
-  font-weight: 900;
-}
-
-.print-table td {
-  padding: 2px;
-  border: 1px solid #000;
-  background: white;
-  color: #000;
-  text-align: center;
-}
-
-.print-signatures {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 20px;
-  padding-top: 10px;
-  border-top: 1px dashed #c9a227;
-}
-
-.print-signature {
-  text-align: center;
-  font-size: 8pt;
-}
-
-.print-signature .role {
-  font-weight: 900;
-  color: #1e4620;
-  margin-bottom: 2px;
-}
-
-.print-signature .line {
-  border-top: 1px solid #333;
-  padding-top: 2px;
-  margin-top: 20px;
-  font-size: 7pt;
-  color: #666;
-}
-
-.print-footer {
-  margin-top: 8px;
-  padding-top: 4px;
-  border-top: 1px solid #c9a227;
-  display: flex;
-  justify-content: space-between;
-  font-size: 7pt;
-  color: #666;
-}
+.print-signatures { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:15px; padding-top:8px; border-top:1px dashed #c9a227; }
+.print-signature { text-align:center; font-size:7pt; }
+.print-signature .role { font-weight:900; color:#1e4620; margin-bottom:2px; }
+.print-signature .line { border-top:1px solid #333; padding-top:2px; margin-top:15px; font-size:6pt; color:#666; }
+.print-footer { margin-top:8px; padding-top:4px; border-top:1px solid #c9a227; display:flex; justify-content:space-between; font-size:7pt; color:#666; }
 </style>
 </head>
 <body>
 
 <div id="loginScreen">
   <div class="login-box">
-    <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="login-logo">
+    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" alt="الشعار" class="login-logo" id="loginLogoImg">
     <div class="login-title">الإدارة العامة</div>
-    <div class="login-subtitle">نظام الإسعاف الذكي v50.0</div>
+    <div class="login-subtitle">نظام الإسعاف الذكي v63.1</div>
     <input type="password" id="passInput" class="pass-input" placeholder="كلمة المرور" autocomplete="off">
     <button class="login-btn" onclick="loginWithPassword()">🔓 دخول</button>
     <div class="login-msg" id="loginMsg"></div>
@@ -697,7 +213,7 @@ label {
 
 <div id="mainApp">
   <div class="topbar">
-    <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="topbar-logo">
+    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo" id="topbarLogoImg">
     <div class="topbar-info">
       <h1>الإدارة العامة</h1>
       <p><span class="status-dot"></span><span id="currentUser">مسؤول</span></p>
@@ -708,7 +224,7 @@ label {
 
   <div class="tabs-bar">
     <div class="tabs-scroll">
-      <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 الرئيسية</button>
+      <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 لوحة القيادة</button>
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
@@ -718,6 +234,7 @@ label {
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
       <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات المشرف</button>
       <button class="tab-btn" data-tab="kpi" onclick="switchTab('kpi')">🏆 KPI</button>
+      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📈 التقارير</button>
       <button class="tab-btn" data-tab="master" onclick="switchTab('master')">📋 البيانات</button>
       <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">⚙️ الإعدادات</button>
     </div>
@@ -725,28 +242,50 @@ label {
 
   <!-- 1) Dashboard -->
   <div class="page active" id="page-dashboard">
-    <div class="stats-grid">
-      <div class="stat-mini blue"><div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div></div>
-      <div class="stat-mini green"><div class="num" id="dashParams">0</div><div class="lbl">المسعفون</div></div>
-      <div class="stat-mini amber"><div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div></div>
-      <div class="stat-mini red"><div class="num" id="dashIssues">0</div><div class="lbl">الإشكالات</div></div>
+    <div class="stats-grid four">
+      <div class="stat-mini blue"><span class="stat-icon">👨‍💼</span><div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div></div>
+      <div class="stat-mini green"><span class="stat-icon">👨‍🚒</span><div class="num" id="dashParams">0</div><div class="lbl">المسعفون</div></div>
+      <div class="stat-mini amber"><span class="stat-icon">🚑</span><div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div></div>
+      <div class="stat-mini red"><span class="stat-icon">🚩</span><div class="num" id="dashIssues">0</div><div class="lbl">الإشكالات</div></div>
+    </div>
+    <div class="stats-grid four">
+      <div class="stat-mini green"><span class="stat-icon">⭐</span><div class="num" id="dashPraises">0</div><div class="lbl">الإشادات</div></div>
+      <div class="stat-mini blue"><span class="stat-icon">📢</span><div class="num" id="dashBroadcasts">0</div><div class="lbl">التعاميم</div></div>
+      <div class="stat-mini purple"><span class="stat-icon">📅</span><div class="num" id="dashToday">0</div><div class="lbl">نشاط اليوم</div></div>
+      <div class="stat-mini red"><span class="stat-icon">⚠️</span><div class="num" id="dashOpenIssues">0</div><div class="lbl">غير محلولة</div></div>
     </div>
     <div class="card">
-      <div class="card-title">📡 نبض المراكز</div>
-      <div id="centersPulse" style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;"></div>
+      <div class="card-title">📊 نشاط المشرفين (آخر 7 أيام)</div>
+      <div class="chart-bars" id="weeklyChart"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📡 نبض المراكز <span class="hint" style="margin-right:auto;font-size:10px;opacity:0.6;">اضغط مركزاً للتفاصيل</span></div>
+      <div class="pulse-grid" id="centersPulse"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">👨‍🚒 نبض المسعفين (حسب المركز)</div>
+      <div id="paramedicsPulse" style="display:flex; flex-direction:column; gap:8px;"></div>
     </div>
   </div>
 
   <!-- 2) Supervisors -->
   <div class="page" id="page-supervisors">
     <div class="card">
-      <div class="card-title">➕ إضافة مشرف</div>
-      <input type="text" id="supName" placeholder="الاسم">
-      <input type="text" id="supSector" placeholder="القطاع (A أو B)">
+      <div class="card-title">➕ إضافة / تعديل مشرف</div>
+      <input type="hidden" id="editSupId">
+      <label>الاسم *</label><input type="text" id="supName">
+      <label>القطاع</label><select id="supSector"><option>قطاع A</option><option>قطاع B</option></select>
+      <label>الهاتف</label><input type="tel" id="supPhone">
+      <label>الكود</label><input type="text" id="supCode" readonly style="text-align:center;font-weight:bold;color:var(--gold-light);">
       <button class="btn block" onclick="saveSupervisor()">💾 حفظ</button>
+      <button class="btn secondary block" id="btnCancelSup" onclick="cancelEditSupervisor()" style="display:none;margin-top:8px;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 المشرفون</div>
+      <div class="card-title">📋 المشرفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="supervisorsCount">0</span></div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button class="btn small" onclick="printReport('supervisors')">🖨️ طباعة PDF</button>
+        <button class="btn small success" onclick="exportCSV('supervisors')">📥 Excel</button>
+      </div>
       <div id="supervisorsList"></div>
     </div>
   </div>
@@ -755,13 +294,17 @@ label {
   <div class="page" id="page-paramedics">
     <div class="card">
       <div class="card-title">➕ إضافة مسعف</div>
-      <input type="text" id="pmName" placeholder="اسم المسعف">
-      <select id="pmCenter"></select>
-      <input type="text" id="pmRank" placeholder="الرتبة">
+      <label>الاسم *</label><input type="text" id="pmName">
+      <label>المركز</label><select id="pmCenter"></select>
+      <label>الرتبة</label><input type="text" id="pmRank">
       <button class="btn block" onclick="saveParamedic()">💾 حفظ</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 المسعفون</div>
+      <div class="card-title">📋 المسعفون <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="paramedsCount">0</span></div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button class="btn small" onclick="printReport('paramedics')">🖨️ طباعة PDF</button>
+        <button class="btn small success" onclick="exportCSV('paramedics')">📥 Excel</button>
+      </div>
       <div id="paramedicsList"></div>
     </div>
   </div>
@@ -770,76 +313,134 @@ label {
   <div class="page" id="page-vehicles">
     <div class="card">
       <div class="card-title">➕ إضافة مركبة</div>
-      <input type="text" id="vPlate" placeholder="رقم اللوحة">
-      <input type="text" id="vType" placeholder="النوع">
-      <select id="vCenter"></select>
+      <label>اللوحة *</label><input type="text" id="vPlate">
+      <label>النوع</label><input type="text" id="vType">
+      <label>المركز</label><select id="vCenter"></select>
       <button class="btn block" onclick="saveVehicle()">💾 حفظ</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 المركبات</div>
+      <div class="card-title">📋 المركبات <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="vehiclesCount">0</span></div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button class="btn small" onclick="printReport('vehicles')">🖨️ طباعة PDF</button>
+        <button class="btn small success" onclick="exportCSV('vehicles')">📥 Excel</button>
+      </div>
       <div id="vehiclesList"></div>
     </div>
   </div>
 
-  <!-- 5) Duty & Print -->
+  <!-- 5) Duty -->
   <div class="page" id="page-duty">
     <div class="card">
-      <div class="card-title">📅 جدول الدوام</div>
-      <input type="month" id="dutyMonth" onchange="loadDutyTable()">
-      <button class="btn info block" onclick="printDuty()" style="margin-top:10px;">🖨️ طباعة الجدول (أفقي)</button>
+      <div class="card-title">📅 جدول الدوام الشهري</div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <input type="month" id="dutyMonth" onchange="loadDutyTable()" style="margin-bottom:0;flex:1;">
+        <button class="btn small" onclick="printDutyTable('landscape')" style="flex-shrink:0; background:var(--blue);">🖨️ طباعة (أفقي)</button>
+      </div>
+      <div class="warning-bar info"><span>ℹ️</span><span><b>ص</b> صباحي • <b>م</b> مسائي • <b>أ</b> إجازة • <b>د</b> إداري • <b>س</b> سنوية • <b>خ</b> أخرى</span></div>
       <div style="overflow-x:auto;" id="dutyTableContainer"></div>
+      <button class="btn block" onclick="saveDuty()" style="margin-top:10px;">💾 حفظ</button>
     </div>
   </div>
 
   <!-- 6) Issues -->
   <div class="page" id="page-issues">
-    <div class="card"><div class="card-title">🚩 الإشكالات</div><div id="issuesList"></div></div>
+    <div class="card">
+      <div class="card-title">🚩 الإشكالات <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="issuesCount">0</span></div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button class="btn small" onclick="printReport('issues')">🖨️ طباعة PDF</button>
+        <button class="btn small success" onclick="exportCSV('issues')">📥 Excel</button>
+      </div>
+      <div id="issuesList"></div>
+    </div>
   </div>
 
   <!-- 7) Praises -->
   <div class="page" id="page-praises">
-    <div class="card"><div class="card-title">⭐ الإشادات</div><div id="praisesList"></div></div>
+    <div class="card">
+      <div class="card-title">⭐ الإشادات <span style="margin-right:auto;background:var(--gold);color:var(--teal-deep);padding:2px 10px;border-radius:12px;font-size:11px;font-weight:900;" id="praisesCount">0</span></div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button class="btn small" onclick="printReport('praises')">🖨️ طباعة PDF</button>
+        <button class="btn small success" onclick="exportCSV('praises')">📥 Excel</button>
+      </div>
+      <div id="praisesList"></div>
+    </div>
   </div>
 
   <!-- 8) Broadcasts -->
   <div class="page" id="page-broadcasts">
     <div class="card">
       <div class="card-title">📢 إرسال تعميم</div>
-      <input type="text" id="bTitle" placeholder="العنوان">
-      <textarea id="bDesc" rows="3" placeholder="النص"></textarea>
+      <label>العنوان</label><input type="text" id="bTitle">
+      <label>النص</label><textarea id="bDesc" rows="4"></textarea>
       <button class="btn block" onclick="sendBroadcast()">📤 إرسال</button>
     </div>
-    <div class="card"><div class="card-title">📜 التعاميم</div><div id="broadcastsList"></div></div>
+    <div class="card">
+      <div class="card-title">📜 التعاميم السابقة</div>
+      <div id="broadcastsList"></div>
+    </div>
   </div>
 
   <!-- 9) Notes -->
   <div class="page" id="page-notes">
-    <div class="card"><div class="card-title">📝 ملاحظات المشرفين</div><div id="notesList"></div></div>
+    <div class="card">
+      <div class="card-title">📝 ملاحظات المشرفين</div>
+      <div id="notesList"></div>
+    </div>
   </div>
 
   <!-- 10) KPI -->
   <div class="page" id="page-kpi">
-    <div class="card"><div class="card-title">🏆 تقييم KPI</div><div id="kpiList"></div></div>
+    <div class="card">
+      <div class="card-title">🏆 تقييم الأداء KPI</div>
+      <div id="kpiList"></div>
+    </div>
   </div>
 
-  <!-- 11) Master (الأنواع) -->
+  <!-- 11) Reports -->
+  <div class="page" id="page-reports">
+    <div class="card">
+      <div class="card-title">📈 التقارير</div>
+      <button class="btn block" onclick="printReport('supervisors')" style="margin-bottom:8px;">👨‍💼 تقرير المشرفين</button>
+      <button class="btn block" onclick="printReport('paramedics')" style="margin-bottom:8px;">👨‍🚒 تقرير المسعفين</button>
+      <button class="btn block" onclick="printReport('vehicles')" style="margin-bottom:8px;">🚑 تقرير المركبات</button>
+      <button class="btn block" onclick="printReport('issues')" style="margin-bottom:8px;">🚩 تقرير الإشكالات</button>
+      <button class="btn block" onclick="printReport('praises')" style="margin-bottom:8px;">⭐ تقرير الإشادات</button>
+    </div>
+  </div>
+
+  <!-- 12) Master -->
   <div class="page" id="page-master">
-    <div class="card"><div class="card-title">🚩 إشكالات المسعفين</div><input type="text" id="mdParamIssue"><button class="btn small success" onclick="addMaster('issue_paramedic','mdParamIssue')">➕</button><div id="listParamIssue" style="margin-top:10px;"></div></div>
-    <div class="card"><div class="card-title">🏥 إشكالات المراكز</div><input type="text" id="mdCenterIssue"><button class="btn small success" onclick="addMaster('issue_center','mdCenterIssue')">➕</button><div id="listCenterIssue" style="margin-top:10px;"></div></div>
-    <div class="card"><div class="card-title">🚑 إشكالات المركبات</div><input type="text" id="mdVehicleIssue"><button class="btn small success" onclick="addMaster('issue_vehicle','mdVehicleIssue')">➕</button><div id="listVehicleIssue" style="margin-top:10px;"></div></div>
-    <div class="card"><div class="card-title">💊 إشكالات المخزن</div><input type="text" id="mdStockIssue"><button class="btn small success" onclick="addMaster('issue_stock','mdStockIssue')">➕</button><div id="listStockIssue" style="margin-top:10px;"></div></div>
-    
-    <div class="card"><div class="card-title">⭐ إشادات المسعفين</div><input type="text" id="mdParamPraise"><button class="btn small success" onclick="addMaster('praise_paramedic','mdParamPraise')">➕</button><div id="listParamPraise" style="margin-top:10px;"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات المراكز</div><input type="text" id="mdCenterPraise"><button class="btn small success" onclick="addMaster('praise_center','mdCenterPraise')">➕</button><div id="listCenterPraise" style="margin-top:10px;"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات المركبات</div><input type="text" id="mdVehiclePraise"><button class="btn small success" onclick="addMaster('praise_vehicle','mdVehiclePraise')">➕</button><div id="listVehiclePraise" style="margin-top:10px;"></div></div>
-    <div class="card"><div class="card-title">⭐ إشادات المخزن</div><input type="text" id="mdStockPraise"><button class="btn small success" onclick="addMaster('praise_stock','mdStockPraise')">➕</button><div id="listStockPraise" style="margin-top:10px;"></div></div>
+    <div class="card"><div class="card-title">🚩 إشكالات (مسعف)</div><input type="text" id="mdIssueParam"><button class="btn small" onclick="addMasterData('issue_types_paramedic', 'mdIssueParam')">➕</button><div id="issueTypesParamList"></div></div>
+    <div class="card"><div class="card-title">🚩 إشكالات (مركز)</div><input type="text" id="mdIssueCenter"><button class="btn small" onclick="addMasterData('issue_types_center', 'mdIssueCenter')">➕</button><div id="issueTypesCenterList"></div></div>
+    <div class="card"><div class="card-title">🚩 إشكالات (مركبة)</div><input type="text" id="mdIssueVehicle"><button class="btn small" onclick="addMasterData('issue_types_vehicle', 'mdIssueVehicle')">➕</button><div id="issueTypesVehicleList"></div></div>
+    <div class="card"><div class="card-title">🚩 إشكالات (مخزن)</div><input type="text" id="mdIssueStock"><button class="btn small" onclick="addMasterData('issue_types_stock', 'mdIssueStock')">➕</button><div id="issueTypesStockList"></div></div>
+    <div class="card"><div class="card-title">⭐ إشادات (مسعف)</div><input type="text" id="mdPraiseParam"><button class="btn small" onclick="addMasterData('praise_types_paramedic', 'mdPraiseParam')">➕</button><div id="praiseTypesParamList"></div></div>
+    <div class="card"><div class="card-title">⭐ إشادات (مركز)</div><input type="text" id="mdPraiseCenter"><button class="btn small" onclick="addMasterData('praise_types_center', 'mdPraiseCenter')">➕</button><div id="praiseTypesCenterList"></div></div>
+    <div class="card"><div class="card-title">⭐ إشادات (مركبة)</div><input type="text" id="mdPraiseVehicle"><button class="btn small" onclick="addMasterData('praise_types_vehicle', 'mdPraiseVehicle')">➕</button><div id="praiseTypesVehicleList"></div></div>
+    <div class="card"><div class="card-title">⭐ إشادات (مخزن)</div><input type="text" id="mdPraiseStock"><button class="btn small" onclick="addMasterData('praise_types_stock', 'mdPraiseStock')">➕</button><div id="praiseTypesStockList"></div></div>
   </div>
 
-  <!-- 12) Settings -->
+  <!-- 13) Settings -->
   <div class="page" id="page-settings">
-    <div class="card"><div class="card-title">🔐 تغيير كلمة المرور</div><input type="password" id="pwNew"><button class="btn block" onclick="changePassword()">💾 تحديث</button></div>
-    <div class="card"><div class="card-title" style="color:var(--red-light);">⚠️ تصفير</div><button class="btn danger block" onclick="wipeData()">🗑️ حذف كل النشاطات</button></div>
+    <div class="card">
+      <div class="card-title">🔐 تغيير كلمة المرور</div>
+      <input type="password" id="pwNew" placeholder="كلمة المرور الجديدة">
+      <button class="btn block" onclick="changePassword()">💾 تحديث</button>
+      <div id="pwMsg" style="text-align:center; font-size:12px; color:var(--green); margin-top:5px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🖼️ الشعار</div>
+      <label>رابط الشعار (URL)</label>
+      <input type="url" id="logoUrl" placeholder="https://..." onchange="changeLogo()">
+      <p style="font-size:10px; opacity:0.6;">سيتم حفظه تلقائياً عند الخروج من الحقل.</p>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--red-light);">⚠️ تصفير</div>
+      <button class="btn danger block" onclick="wipeData('activities')" style="margin-bottom:8px;">🗑️ حذف الإشكالات والإشادات</button>
+      <button class="btn danger block" onclick="wipeData('all')">💥 تصفير شامل</button>
+    </div>
   </div>
+
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
@@ -854,145 +455,90 @@ label {
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   الإدارة العامة — v50.0 (الجزء الثاني)
+   الإدارة العامة — v63.1 (النسخة المحسّنة)
    ═══════════════════════════════════════════════════════════ */
 
 const FIREBASE_PROJECT = "ems-supervisor";
 const FIRESTORE_URL = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT}/databases/(default)/documents`;
 const SESSION_KEY = "amb_user";
+const CENTERS_LIST = ["مركز إسعاف دارسيت","مركز إسعاف بوشر","مركز إسعاف العامرات","مركز إسعاف قريات","مركز إسعاف الخوض 1","مركز إسعاف الخوض 2","مركز إسعاف العذيبة","مركز إسعاف الرسيل"];
+const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "إجازة أخرى" };
 
-let currentUser = null;
-let allSupervisors = [];
-let allParameds = [];
-let allVehicles = [];
-let allIssues = [];
-let allPraises = [];
-let allBroadcasts = [];
-let allNotes = [];
-let masterData = {};
+let adminUser = null;
+let allSupervisors = [], allParameds = [], allVehicles = [];
+let allIssues = [], allPraises = [], allBroadcasts = [], allNotes = [];
+let allMasterData = {};
+let currentTab = "dashboard", isSyncing = false;
 
-const CENTERS_LIST = [
-  "مركز إسعاف دارسيت",
-  "مركز إسعاف بوشر",
-  "مركز إسعاف العامرات",
-  "مركز إسعاف قريات",
-  "مركز إسعاف الخوض 1",
-  "مركز إسعاف الخوض 2",
-  "مركز إسعاف العذيبة",
-  "مركز إسعاف الرسيل"
-];
+async function sha256(text) { const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text)); return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''); }
+function esc(s) { if (s === null || s === undefined) return ""; return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+function showToast(msg, type="success") { const c = document.getElementById("toastContainer"); const t = document.createElement("div"); t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg; c.appendChild(t); setTimeout(() => t.remove(), 2800); }
+function vibrate(p = 30) { try { if (navigator.vibrate) navigator.vibrate(p); } catch(e) {} }
+function fmtDate(ts) { if (!ts) return "—"; return new Date(ts).toLocaleDateString("ar-OM"); }
+function timeAgo(ts) { if (!ts) return "—"; const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000); if (diff < 60) return "الآن"; if (diff < 3600) return `قبل ${Math.floor(diff/60)}د`; if (diff < 86400) return `قبل ${Math.floor(diff/3600)}س`; return `قبل ${Math.floor(diff/86400)}ي`; }
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+function generateCode() { return "SUP-" + Math.floor(1000 + Math.random() * 9000); }
 
-/* ═══════════════════════════════════════════
-   دوال مساعدة
-   ═══════════════════════════════════════════ */
-function esc(s) {
-  if (s === null || s === undefined) return "";
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+function fromFS(v) { if (!v) return null; if ("stringValue" in v) return v.stringValue; if ("integerValue" in v) return parseInt(v.integerValue); if ("booleanValue" in v) return v.booleanValue; if ("nullValue" in v) return null; if ("arrayValue" in v) return (v.arrayValue.values || []).map(fromFS); if ("mapValue" in v) { const o = {}; for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]); return o; } return null; }
+function docToObj(doc) { const obj = {}; if (!doc.fields) return obj; for (const k in doc.fields) obj[k] = fromFS(doc.fields[k]); obj._id = doc.name.split("/").pop(); return obj; }
+async function fsFetch(url, opts={}) { const c = new AbortController(); const t = setTimeout(() => c.abort(), 15000); try { const r = await fetch(url, { ...opts, signal: c.signal, cache: "no-store" }); clearTimeout(t); return r; } catch(e) { clearTimeout(t); throw e; } }
+async function fsList(col) { const r = await fsFetch(`${FIRESTORE_URL}/${col}?pageSize=1000`); if (!r.ok) throw new Error("HTTP " + r.status); const d = await r.json(); return (d.documents || []).map(docToObj); }
+async function fsAdd(col, data) { const fields = {}; for (const k in data) { if (data[k] === null || data[k] === undefined) continue; if (typeof data[k] === "string") fields[k] = { stringValue: data[k] }; else if (typeof data[k] === "number") fields[k] = { integerValue: String(data[k]) }; else if (typeof data[k] === "boolean") fields[k] = { booleanValue: data[k] }; } const r = await fsFetch(`${FIRESTORE_URL}/${col}`, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({fields}) }); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }
+async function fsUpdate(col, id, data) { const fields = {}; for (const k in data) { if (data[k] === null || data[k] === undefined) continue; if (typeof data[k] === "string") fields[k] = { stringValue: data[k] }; else if (typeof data[k] === "number") fields[k] = { integerValue: String(data[k]) }; else if (typeof data[k] === "boolean") fields[k] = { booleanValue: data[k] }; } await fsFetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "PATCH", headers: {"Content-Type":"application/json"}, body: JSON.stringify({fields}) }); }
+async function fsDelete(col, id) { await fsFetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" }); }
 
-function showToast(msg, type = "success") {
-  const c = document.getElementById("toastContainer");
-  const t = document.createElement("div");
-  t.className = "toast " + type;
-  t.textContent = (type === "success" ? "✅ " : type === "danger" ? "⚠️ " : "ℹ️ ") + msg;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
-}
-
-function cleanCenter(n) {
-  return (n || "").toString().replace("مركز إسعاف ", "").trim();
-}
-
-function timeAgo(ts) {
-  if (!ts) return "—";
-  const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
-  if (diff < 60) return "الآن";
-  if (diff < 3600) return `قبل ${Math.floor(diff / 60)} د`;
-  if (diff < 86400) return `قبل ${Math.floor(diff / 3600)} س`;
-  return `قبل ${Math.floor(diff / 86400)} ي`;
-}
-
-function todayKey() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-/* ═══════════════════════════════════════════
-   Firebase REST API
-   ═══════════════════════════════════════════ */
-function fromFS(v) {
-  if (!v) return null;
-  if ("stringValue" in v) return v.stringValue;
-  if ("integerValue" in v) return parseInt(v.integerValue);
-  if ("booleanValue" in v) return v.booleanValue;
-  if ("mapValue" in v) {
-    const o = {};
-    for (const k in v.mapValue.fields || {}) o[k] = fromFS(v.mapValue.fields[k]);
-    return o;
+async function loginWithPassword() {
+  const pass = document.getElementById("passInput").value.trim();
+  const msg = document.getElementById("loginMsg");
+  if (!pass) { msg.textContent = "⚠️ أدخل كلمة المرور"; return; }
+  
+  const hashedNew = await sha256(pass.toLowerCase());
+  const hashedOld = await sha256(pass); 
+  
+  if (pass === "Samir96267" || pass === "123456" || pass === "admin2025") {
+    // تم التحقق المباشر
+  } else {
+    try {
+      const users = await fsList("access_code");
+      const admin = users.find(u => u.type === "admin");
+      if (admin && admin.passwordHash === hashedNew) { }
+      else if (admin && admin.passwordHash === hashedOld) { }
+      else if (!admin || !admin.passwordHash) { if (pass !== "123456" && pass !== "Samir96267") { msg.textContent = "❌ كلمة المرور خاطئة"; return; } } 
+      else { msg.textContent = "❌ كلمة المرور خاطئة"; return; }
+    } catch(e) { if (pass !== "123456" && pass !== "Samir96267") { msg.textContent = "❌ كلمة المرور خاطئة"; return; } }
   }
-  return null;
-}
 
-function docToObj(d) {
-  const o = {};
-  if (!d.fields) return o;
-  for (const k in d.fields) o[k] = fromFS(d.fields[k]);
-  o._id = d.name.split("/").pop();
-  return o;
+  adminUser = { name: "المدير العام", role: "admin", _id: "ADM" };
+  localStorage.setItem(SESSION_KEY, JSON.stringify(adminUser));
+  msg.style.color = "var(--green-light)"; msg.textContent = "✅ مرحباً";
+  setTimeout(() => { document.getElementById("loginScreen").style.display = "none"; document.getElementById("mainApp").classList.add("ready"); initApp(); }, 400);
 }
+function confirmLogout() { if (confirm("خروج؟")) { localStorage.removeItem(SESSION_KEY); location.reload(); } }
 
-async function fsList(col) {
-  const r = await fetch(`${FIRESTORE_URL}/${col}?pageSize=1000`, { cache: "no-store" });
-  if (!r.ok) throw new Error("HTTP " + r.status);
-  const d = await r.json();
-  return (d.documents || []).map(docToObj);
-}
-
-async function fsAdd(col, data) {
-  const f = {};
-  for (const k in data) {
-    if (data[k] === null || data[k] === undefined) continue;
-    if (typeof data[k] === "string") f[k] = { stringValue: data[k] };
-    else if (typeof data[k] === "number") f[k] = { integerValue: String(data[k]) };
-    else if (typeof data[k] === "boolean") f[k] = { booleanValue: data[k] };
-  }
-  await fetch(`${FIRESTORE_URL}/${col}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fields: f })
+function initApp() {
+  document.getElementById("supCode").value = generateCode();
+  document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
+  ["pmCenter", "vCenter", "noteCenter"].forEach(id => {
+    const sel = document.getElementById(id);
+    if (sel) sel.innerHTML = CENTERS_LIST.map(c => `<option>${c}</option>`).join("");
   });
-}
-
-async function fsUpdate(col, id, data) {
-  const f = {};
-  for (const k in data) {
-    if (data[k] === null || data[k] === undefined) continue;
-    if (typeof data[k] === "string") f[k] = { stringValue: data[k] };
-    else if (typeof data[k] === "number") f[k] = { integerValue: String(data[k]) };
-    else if (typeof data[k] === "boolean") f[k] = { booleanValue: data[k] };
+  
+  // تحميل الشعار المحفوظ
+  const savedLogo = localStorage.getItem("custom_logo");
+  if (savedLogo) {
+    document.getElementById("topbarLogoImg").src = savedLogo;
+    document.getElementById("loginLogoImg").src = savedLogo;
+    document.getElementById("logoUrl").value = savedLogo;
   }
-  await fetch(`${FIRESTORE_URL}/${col}/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fields: f })
-  });
+
+  syncAll();
+  setInterval(syncAll, 30000);
 }
 
-async function fsDelete(col, id) {
-  await fetch(`${FIRESTORE_URL}/${col}/${id}`, { method: "DELETE" });
-}
-
-/* ═══════════════════════════════════════════
-   المزامنة (Sync)
-   ═══════════════════════════════════════════ */
-async function syncData() {
+async function syncAll() {
+  if (isSyncing) return; isSyncing = true;
   try {
-    const [users, params, vehicles, issues, praises, bc, notes, settings] = await Promise.all([
+    const [sup, par, veh, iss, pra, bro, notes, ...masterResults] = await Promise.all([
       fsList("access_code").then(l => l.filter(u => u.type === "supervisor")),
       fsList("paramedics").catch(() => []),
       fsList("vehicles").catch(() => []),
@@ -1000,458 +546,538 @@ async function syncData() {
       fsList("praises").catch(() => []),
       fsList("broadcasts").catch(() => []),
       fsList("notes").catch(() => []),
-      fsList("settings").catch(() => [])
+      fsList("issue_types_paramedic").catch(() => []),
+      fsList("issue_types_center").catch(() => []),
+      fsList("issue_types_vehicle").catch(() => []),
+      fsList("issue_types_stock").catch(() => []),
+      fsList("praise_types_paramedic").catch(() => []),
+      fsList("praise_types_center").catch(() => []),
+      fsList("praise_types_vehicle").catch(() => []),
+      fsList("praise_types_stock").catch(() => [])
     ]);
-
-    allSupervisors = users;
-    allParameds = params;
-    allVehicles = vehicles;
-    allIssues = issues;
-    allPraises = praises;
-    allBroadcasts = bc;
-    allNotes = notes;
-
-    masterData = {};
-    ["issue_paramedic", "issue_center", "issue_vehicle", "issue_stock", "praise_paramedic", "praise_center", "praise_vehicle", "praise_stock"].forEach(k => masterData[k] = []);
-
-    if (settings.length > 0 && settings[0].master) {
-      masterData = settings[0].master;
-    } else {
-      // حقن البيانات الأساسية تلقائياً
-      masterData = {
-        issue_paramedic: ["تأخر في الاستجابة", "عدم الالتزام بالزي", "نقص في المعدات", "إهمال في التوثيق"],
-        issue_center: ["نقص في المستهلكات", "عطل في الاتصال", "إهمال في النظافة"],
-        issue_vehicle: ["عطل ميكانيكي", "إطارات غير صالحة", "مشكلة في الإضاءة"],
-        issue_stock: ["نقص في الأدوية", "انتهاء صلاحية", "سوء تخزين"],
-        praise_paramedic: ["سرعة استجابة", "احترافية عالية", "تعامل ممتاز مع المريض"],
-        praise_center: ["نظافة ممتازة", "تنظيم إداري", "جاهزية تامة"],
-        praise_vehicle: ["نظافة المركبة", "جاهزية فورية", "صيانة دورية"],
-        praise_stock: ["جرد دقيق", "تنظيم ممتاز", "حفظ سليم"]
-      };
-      await fsAdd("settings", { master: masterData });
-    }
-
-    renderAll();
-  } catch (e) {
-    console.warn("Sync Error:", e);
-  }
+    allSupervisors = sup; allParameds = par; allVehicles = veh;
+    allIssues = iss; allPraises = pra; allBroadcasts = bro; allNotes = notes;
+    const masterKeys = ["issue_types_paramedic","issue_types_center","issue_types_vehicle","issue_types_stock","praise_types_paramedic","praise_types_center","praise_types_vehicle","praise_types_stock"];
+    masterKeys.forEach((k, i) => { allMasterData[k] = masterResults[i]; });
+    renderCurrentTab();
+  } catch(e) { console.warn(e); }
+  finally { isSyncing = false; }
 }
 
-/* ═══════════════════════════════════════════
-   الرندر (Render)
-   ═══════════════════════════════════════════ */
-function renderAll() {
+function manualRefresh() { showToast("تحديث..."); syncAll(); }
+
+function switchTab(id) {
+  currentTab = id;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  const pg = document.getElementById("page-" + id); if (pg) pg.classList.add("active");
+  const tb = document.querySelector(`.tab-btn[data-tab="${id}"]`); if (tb) tb.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"}); vibrate(15); renderCurrentTab();
+}
+
+function renderCurrentTab() {
+  if (currentTab === "dashboard") renderDashboard();
+  else if (currentTab === "supervisors") renderSupervisors();
+  else if (currentTab === "paramedics") renderParameds();
+  else if (currentTab === "vehicles") renderVehicles();
+  else if (currentTab === "duty") loadDutyTable();
+  else if (currentTab === "issues") renderIssues();
+  else if (currentTab === "praises") renderPraises();
+  else if (currentTab === "broadcasts") renderBroadcasts();
+  else if (currentTab === "notes") renderNotes();
+  else if (currentTab === "kpi") renderKPI();
+  else if (currentTab === "master") renderMasterData();
+}
+
+/* ═══ Dashboard ═══ */
+function renderDashboard() {
   const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
-  set("dashSups", allSupervisors.length);
-  set("dashParams", allParameds.length);
-  set("dashVehicles", allVehicles.length);
-  set("dashIssues", allIssues.length);
+  set("dashSups", allSupervisors.length); set("dashParams", allParameds.length); set("dashVehicles", allVehicles.length);
+  set("dashIssues", allIssues.length); set("dashPraises", allPraises.length); set("dashBroadcasts", allBroadcasts.length);
+  set("dashToday", [...allIssues, ...allPraises].filter(i => (i.timestamp||"").slice(0,10) === todayKey()).length);
+  set("dashOpenIssues", allIssues.filter(i => i.status !== "resolved").length);
+
+  const days = [0,0,0,0,0,0,0]; const names = ["أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+  const now = new Date();
+  [...allIssues, ...allPraises].forEach(item => { const diff = Math.floor((now - new Date(item.timestamp)) / 86400000); if (diff >= 0 && diff < 7) days[6-diff]++; });
+  const max = Math.max(...days, 1);
+  document.getElementById("weeklyChart").innerHTML = days.map((c, i) => {
+    const d = new Date(Date.now() - (6-i)*86400000);
+    const h = Math.max(10, (c/max)*100);
+    return `<div class="chart-bar-item"><div class="chart-bar-value">${c}</div><div class="chart-bar" style="height:${h}%;"></div><div class="chart-bar-label">${names[d.getDay()]}</div></div>`;
+  }).join("");
 
   document.getElementById("centersPulse").innerHTML = CENTERS_LIST.map(c => {
-    const cIss = allIssues.filter(i => cleanCenter(i.center) === cleanCenter(c) && !i.isPraise).length;
-    const cPra = allPraises.filter(p => cleanCenter(p.center) === cleanCenter(c)).length;
-    return `<div style="background:rgba(151,141,91,0.15); padding:10px; border-radius:10px; text-align:center;">
-      <div style="font-size:11px; font-weight:900; color:var(--gold-light);">${esc(cleanCenter(c))}</div>
-      <div style="font-size:14px; font-weight:900; margin-top:4px;">🚩 ${cIss} | ⭐ ${cPra}</div>
+    const iss = allIssues.filter(i => i.centerName === c).length;
+    const pra = allPraises.filter(p => p.centerName === c).length;
+    let cls = "green";
+    if (iss > 5) cls = "red"; else if (iss > 2) cls = "amber";
+    return `<div class="pulse-card ${cls}" onclick="showCenterDetails('${esc(c)}')">
+      <h4>🏥 ${esc(c.replace("مركز إسعاف ", ""))}</h4>
+      <div class="num">${iss} / ${pra}</div>
+      <div class="sub">إشكالات / إشادات</div>
     </div>`;
   }).join("");
 
-  renderSupervisors();
-  renderParameds();
-  renderVehicles();
-  renderIssues();
-  renderPraises();
-  renderBroadcasts();
-  renderNotes();
-  renderMasterData();
+  document.getElementById("paramedicsPulse").innerHTML = CENTERS_LIST.map(c => {
+    const params = allParameds.filter(p => p.centerName === c);
+    const openIss = allIssues.filter(i => i.centerName === c && i.status !== "resolved").length;
+    return `<div class="item-card ${openIss > 3 ? 'red' : 'green'}" onclick="showCenterDetails('${esc(c)}')">
+      <div class="item-info">
+        <h4>🏥 ${esc(c.replace("مركز إسعاف ", ""))}</h4>
+        <p>👨‍🚒 ${params.length} مسعف | 🚩 ${openIss} إشكالية مفتوحة</p>
+      </div>
+      <div style="font-size:24px;">👉</div>
+    </div>`;
+  }).join("");
 }
 
-function switchTab(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById("page-" + id).classList.add("active");
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+function showCenterDetails(centerName) {
+  const params = allParameds.filter(p => p.centerName === centerName);
+  const vehicles = allVehicles.filter(v => v.centerName === centerName);
+  const issues = allIssues.filter(i => i.centerName === centerName);
+  const notes = allNotes.filter(n => n.centerName === centerName);
+
+  const html = `
+    <div style="text-align:center;padding:16px;background:linear-gradient(135deg,rgba(151,141,91,0.15),rgba(13,74,66,0.5));border-radius:14px;margin-bottom:14px;">
+      <div style="font-size:38px;">🏥</div>
+      <div style="font-size:18px;color:var(--gold-light);font-weight:900;margin-top:6px;">${esc(centerName)}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
+      <div style="background:rgba(41,182,246,0.15);padding:10px;border-radius:10px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:#64b5f6;">${params.length}</div>
+        <div style="font-size:10px;opacity:0.7;">👨‍🚒 مسعفون</div>
+      </div>
+      <div style="background:rgba(251,140,0,0.15);padding:10px;border-radius:10px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:#ffa726;">${vehicles.length}</div>
+        <div style="font-size:10px;opacity:0.7;">🚑 مركبات</div>
+      </div>
+    </div>
+    <div class="card-title" style="border:none;padding:0;margin-bottom:8px;">👨‍🚒 المسعفون</div>
+    ${params.length === 0 ? '<div style="text-align:center;padding:15px;color:#ccc;font-size:12px;">لا يوجد مسعفون</div>' : params.map(p => `<div style="padding:8px 10px;background:rgba(0,0,0,0.3);border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;"><span>${esc(p.name)}</span><span style="font-size:11px;opacity:0.7;">${esc(p.rank||"")}</span></div>`).join("")}
+    <div class="card-title" style="border:none;padding:0;margin:14px 0 8px;">🚑 المركبات</div>
+    ${vehicles.length === 0 ? '<div style="text-align:center;padding:15px;color:#ccc;font-size:12px;">لا يوجد مركبات</div>' : vehicles.map(v => `<div style="padding:8px 10px;background:rgba(0,0,0,0.3);border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;"><span>🚑 ${esc(v.plateNumber)}</span><span style="font-size:11px;opacity:0.7;">${esc(v.type||"")}</span></div>`).join("")}
+    ${notes.length > 0 ? `
+    <div class="card-title" style="border:none;padding:0;margin:14px 0 8px;">📝 ملاحظات المشرفين</div>
+    ${notes.map(n => `<div style="padding:10px;background:rgba(0,0,0,0.3);border-right:3px solid var(--gold);border-radius:8px;margin-bottom:6px;"><div style="font-size:11px;color:var(--gold-light);font-weight:900;margin-bottom:4px;">👨‍💼 ${esc(n.supervisor)}</div><div style="font-size:12px;">${esc(n.text)}</div></div>`).join("")}
+    ` : ""}
+  `;
+  openModal("🏥 " + centerName, html);
 }
 
-/* ═══════════════════════════════════════════
-   المشرفون
-   ═══════════════════════════════════════════ */
-async function saveSupervisor() {
-  const name = document.getElementById("supName").value.trim();
-  const sector = document.getElementById("supSector").value.trim();
-  if (!name) return showToast("أدخل الاسم", "danger");
-  await fsAdd("access_code", {
-    name,
-    sector,
-    code: "SUP-" + Math.floor(1000 + Math.random() * 9000),
-    type: "supervisor"
-  });
-  document.getElementById("supName").value = "";
-  document.getElementById("supSector").value = "";
-  showToast("تمت الإضافة");
-  syncData();
-}
-
+/* ═══ Supervisors ═══ */
 function renderSupervisors() {
-  document.getElementById("supervisorsList").innerHTML = allSupervisors.map(u => `
+  const el = document.getElementById("supervisorsList");
+  const cnt = document.getElementById("supervisorsCount");
+  if (cnt) cnt.textContent = allSupervisors.length;
+  if (allSupervisors.length === 0) { el.innerHTML = '<div class="empty"><span class="icon">👨‍💼</span>لا يوجد مشرفون</div>'; return; }
+  el.innerHTML = allSupervisors.map(u => `
     <div class="item-card blue">
       <div class="item-info">
         <h4>👨‍💼 ${esc(u.name)}</h4>
-        <p>🏢 ${esc(u.sector || "—")} | 🔑 ${esc(u.code || "—")}</p>
+        <p>🏢 ${esc(u.sector||"—")} | 📱 ${esc(u.phone||"—")} | 🔑 ${esc(u.code||"—")}</p>
       </div>
-      <button class="icon-btn-sm delete" onclick="deleteRecord('access_code','${u._id}')">🗑️</button>
+      <div class="item-actions">
+        <button class="icon-btn-sm copy" onclick="copyCode('${esc(u.code)}')">📋</button>
+        <button class="icon-btn-sm edit" onclick="editSupervisor('${esc(u._id)}','${esc(u.name)}','${esc(u.sector||"")}','${esc(u.phone||"")}','${esc(u.code||"")}')">✏️</button>
+        <button class="icon-btn-sm delete" onclick="deleteSupervisor('${esc(u._id)}')">🗑️</button>
+      </div>
     </div>
   `).join("");
 }
+function copyCode(code) { navigator.clipboard.writeText(code); showToast("نسخ: " + code); }
+function editSupervisor(id, name, sector, phone, code) {
+  document.getElementById("editSupId").value = id;
+  document.getElementById("supName").value = name;
+  document.getElementById("supSector").value = sector;
+  document.getElementById("supPhone").value = phone;
+  document.getElementById("supCode").value = code;
+  document.getElementById("btnCancelSup").style.display = "block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function cancelEditSupervisor() {
+  document.getElementById("editSupId").value = "";
+  document.getElementById("supName").value = "";
+  document.getElementById("supPhone").value = "";
+  document.getElementById("supCode").value = generateCode();
+  document.getElementById("btnCancelSup").style.display = "none";
+}
+async function saveSupervisor() {
+  const id = document.getElementById("editSupId").value;
+  const name = document.getElementById("supName").value.trim();
+  const sector = document.getElementById("supSector").value;
+  const phone = document.getElementById("supPhone").value.trim();
+  let code = document.getElementById("supCode").value.trim() || generateCode();
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
+  const data = { name, sector, phone, code, type: "supervisor", active: true };
+  if (id) await fsUpdate("access_code", id, data);
+  else await fsAdd("access_code", { ...data, createdAt: new Date().toISOString() });
+  cancelEditSupervisor(); showToast("تم الحفظ"); syncAll();
+}
+async function deleteSupervisor(id) { if (!confirm("حذف؟")) return; await fsDelete("access_code", id); showToast("تم الحذف"); syncAll(); }
 
-/* ═══════════════════════════════════════════
-   المسعفون
-   ═══════════════════════════════════════════ */
+/* ═══ Paramedics ═══ */
+function renderParameds() {
+  const el = document.getElementById("paramedicsList");
+  const cnt = document.getElementById("paramedsCount");
+  if (cnt) cnt.textContent = allParameds.length;
+  if (allParameds.length === 0) { el.innerHTML = '<div class="empty"><span class="icon">👨‍🚒</span>لا يوجد مسعفون</div>'; return; }
+  const grouped = {};
+  allParameds.forEach(p => {
+    const c = p.centerName || "غير محدد";
+    if (!grouped[c]) grouped[c] = [];
+    grouped[c].push(p);
+  });
+  let html = "";
+  Object.keys(grouped).sort().forEach(center => {
+    html += `<div style="margin-bottom:14px;">
+      <div style="font-size:12px;color:var(--gold-light);font-weight:900;padding:6px 10px;background:rgba(151,141,91,0.15);border-radius:8px;margin-bottom:6px;">🏥 ${esc(center.replace("مركز إسعاف ",""))} (${grouped[center].length})</div>
+      ${grouped[center].map(p => `<div class="item-card green"><div class="item-info"><h4>👨‍🚒 ${esc(p.name)}</h4><p>🎖️ ${esc(p.rank||"—")}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteParamedic('${esc(p._id)}')">🗑️</button></div></div>`).join("")}
+    </div>`;
+  });
+  el.innerHTML = html;
+}
 async function saveParamedic() {
   const name = document.getElementById("pmName").value.trim();
   const center = document.getElementById("pmCenter").value;
   const rank = document.getElementById("pmRank").value.trim();
-  if (!name) return showToast("أدخل الاسم", "danger");
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
   await fsAdd("paramedics", { name, centerName: center, rank });
   document.getElementById("pmName").value = "";
   document.getElementById("pmRank").value = "";
-  showToast("تمت الإضافة");
-  syncData();
+  showToast("تم الحفظ"); syncAll();
 }
+async function deleteParamedic(id) { if (!confirm("حذف؟")) return; await fsDelete("paramedics", id); showToast("تم الحذف"); syncAll(); }
 
-function renderParameds() {
-  document.getElementById("paramedicsList").innerHTML = allParameds.map(p => `
-    <div class="item-card green">
-      <div class="item-info">
-        <h4>👨‍🚒 ${esc(p.name)}</h4>
-        <p>🏥 ${esc(cleanCenter(p.centerName))} | 🎖️ ${esc(p.rank || "—")}</p>
-      </div>
-      <button class="icon-btn-sm delete" onclick="deleteRecord('paramedics','${p._id}')">🗑️</button>
-    </div>
-  `).join("");
+/* ═══ Vehicles ═══ */
+function renderVehicles() {
+  const el = document.getElementById("vehiclesList");
+  const cnt = document.getElementById("vehiclesCount");
+  if (cnt) cnt.textContent = allVehicles.length;
+  if (allVehicles.length === 0) { el.innerHTML = '<div class="empty"><span class="icon">🚑</span>لا يوجد مركبات</div>'; return; }
+  const grouped = {};
+  allVehicles.forEach(v => {
+    const c = v.centerName || "غير محدد";
+    if (!grouped[c]) grouped[c] = [];
+    grouped[c].push(v);
+  });
+  let html = "";
+  Object.keys(grouped).sort().forEach(center => {
+    html += `<div style="margin-bottom:14px;">
+      <div style="font-size:12px;color:var(--gold-light);font-weight:900;padding:6px 10px;background:rgba(151,141,91,0.15);border-radius:8px;margin-bottom:6px;">🏥 ${esc(center.replace("مركز إسعاف ",""))} (${grouped[center].length})</div>
+      ${grouped[center].map(v => `<div class="item-card amber"><div class="item-info"><h4>🚑 ${esc(v.plateNumber)}</h4><p>🚗 ${esc(v.type||"—")}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteVehicle('${esc(v._id)}')">🗑️</button></div></div>`).join("")}
+    </div>`;
+  });
+  el.innerHTML = html;
 }
-
-/* ═══════════════════════════════════════════
-   المركبات
-   ═══════════════════════════════════════════ */
 async function saveVehicle() {
   const plate = document.getElementById("vPlate").value.trim();
   const type = document.getElementById("vType").value.trim();
   const center = document.getElementById("vCenter").value;
-  if (!plate) return showToast("أدخل اللوحة", "danger");
+  if (!plate) { showToast("أدخل اللوحة", "danger"); return; }
   await fsAdd("vehicles", { plateNumber: plate, type, centerName: center });
   document.getElementById("vPlate").value = "";
   document.getElementById("vType").value = "";
-  showToast("تمت الإضافة");
-  syncData();
+  showToast("تم الحفظ"); syncAll();
 }
+async function deleteVehicle(id) { if (!confirm("حذف؟")) return; await fsDelete("vehicles", id); showToast("تم الحذف"); syncAll(); }
 
-function renderVehicles() {
-  document.getElementById("vehiclesList").innerHTML = allVehicles.map(v => `
-    <div class="item-card amber">
-      <div class="item-info">
-        <h4>🚑 ${esc(v.plateNumber)}</h4>
-        <p>🚗 ${esc(v.type || "—")} | 🏥 ${esc(cleanCenter(v.centerName))}</p>
-      </div>
-      <button class="icon-btn-sm delete" onclick="deleteRecord('vehicles','${v._id}')">🗑️</button>
-    </div>
-  `).join("");
-}
-
-/* ═══════════════════════════════════════════
-   الإشكالات والإشادات
-   ═══════════════════════════════════════════ */
-function renderIssues() {
-  document.getElementById("issuesList").innerHTML = allIssues.map(i => `
-    <div class="item-card red">
-      <div class="item-info">
-        <h4>🚩 ${esc(i.issueType)}</h4>
-        <p>👤 ${esc(i.supervisor)} | 🏥 ${esc(cleanCenter(i.center))} | 🎯 ${esc(i.targetName)}</p>
-      </div>
-    </div>
-  `).join("");
-}
-
-function renderPraises() {
-  document.getElementById("praisesList").innerHTML = allPraises.map(p => `
-    <div class="item-card green">
-      <div class="item-info">
-        <h4>⭐ ${esc(p.praiseType)}</h4>
-        <p>👤 ${esc(p.supervisor)} | 🏥 ${esc(cleanCenter(p.center))} | 🎯 ${esc(p.targetName)}</p>
-      </div>
-    </div>
-  `).join("");
-}
-
-/* ═══════════════════════════════════════════
-   التعاميم والملاحظات
-   ═══════════════════════════════════════════ */
-async function sendBroadcast() {
-  const title = document.getElementById("bTitle").value.trim();
-  const desc = document.getElementById("bDesc").value.trim();
-  if (!title || !desc) return showToast("أكمل البيانات", "danger");
-  await fsAdd("broadcasts", { title, description: desc, sender: "الإدارة", timestamp: new Date().toISOString() });
-  document.getElementById("bTitle").value = "";
-  document.getElementById("bDesc").value = "";
-  showToast("تم الإرسال");
-  syncData();
-}
-
-function renderBroadcasts() {
-  document.getElementById("broadcastsList").innerHTML = allBroadcasts.map(b => `
-    <div class="item-card blue">
-      <div class="item-info">
-        <h4>📢 ${esc(b.title)}</h4>
-        <p>${esc(b.description)}</p>
-      </div>
-    </div>
-  `).join("");
-}
-
-function renderNotes() {
-  document.getElementById("notesList").innerHTML = allNotes.map(n => `
-    <div class="item-card">
-      <div class="item-info">
-        <h4>📝 ملاحظة من ${esc(n.supervisor)}</h4>
-        <p>${esc(n.text)}</p>
-      </div>
-    </div>
-  `).join("");
-}
-
-/* ═══════════════════════════════════════════
-   البيانات الأساسية (الأنواع)
-   ═══════════════════════════════════════════ */
-function renderMasterData() {
-  const map = {
-    issue_paramedic: "listParamIssue", 
-    issue_center: "listCenterIssue",
-    issue_vehicle: "listVehicleIssue", 
-    issue_stock: "listStockIssue",
-    praise_paramedic: "listParamPraise", 
-    praise_center: "listCenterPraise",
-    praise_vehicle: "listVehiclePraise", 
-    praise_stock: "listStockPraise"
-  };
-  
-  for (let key in map) {
-    const el = document.getElementById(map[key]);
-    if (!el) continue;
-    const items = masterData[key] || [];
-    el.innerHTML = items.map((item, idx) => `
-      <div class="item-card" style="margin-bottom:4px;">
-        <div class="item-info"><h4>${esc(item)}</h4></div>
-        <button class="icon-btn-sm delete" onclick="removeMaster('${key}', ${idx})">🗑️</button>
-      </div>
-    `).join("") || '<div style="text-align:center; opacity:0.5; font-size:11px; padding:10px;">لا أنواع</div>';
-  }
-}
-
-async function addMaster(key, inputId) {
-  const val = document.getElementById(inputId).value.trim();
-  if (!val) return;
-  
-  if (!masterData[key]) masterData[key] = [];
-  masterData[key].push(val);
-  
-  const settings = await fsList("settings");
-  if (settings.length > 0) {
-    await fsUpdate("settings", settings[0]._id, { master: masterData });
-  } else {
-    await fsAdd("settings", { master: masterData });
-  }
-  
-  document.getElementById(inputId).value = "";
-  showToast("تمت الإضافة");
-  syncData();
-}
-
-async function removeMaster(key, idx) {
-  if (!confirm("حذف هذا النوع؟")) return;
-  masterData[key].splice(idx, 1);
-  const settings = await fsList("settings");
-  if (settings.length > 0) {
-    await fsUpdate("settings", settings[0]._id, { master: masterData });
-  }
-  showToast("تم الحذف");
-  syncData();
-}
-
-/* ═══════════════════════════════════════════
-   جدول الدوام والطباعة
-   ═══════════════════════════════════════════ */
+/* ═══ Duty (Fixed Landscape Print) ═══ */
 function loadDutyTable() {
   const month = document.getElementById("dutyMonth").value;
   if (!month) return;
-  
-  const [y, m] = month.split("-").map(Number);
-  const days = new Date(y, m, 0).getDate();
-  
-  let html = '<table style="width:100%; border-collapse:collapse; font-size:11px;">';
-  html += '<tr><th style="background:var(--gold); padding:6px; color:#000;">المشرف</th>';
-  
+  const [year, m] = month.split("-");
+  const days = new Date(year, m, 0).getDate();
+  if (allSupervisors.length === 0) { document.getElementById("dutyTableContainer").innerHTML = '<div class="empty">أضف مشرفين أولاً</div>'; return; }
+  let html = '<table class="duty-table"><thead><tr><th>م</th>';
   for (let d = 1; d <= days; d++) {
-    html += `<th style="background:rgba(151,141,91,0.2); padding:4px;">${d}</th>`;
+    const dow = new Date(year, m-1, d).getDay();
+    const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : '';
+    html += `<th${wk}>${d}</th>`;
   }
-  html += '</tr>';
-  
+  html += '</tr></thead><tbody>';
   allSupervisors.forEach(s => {
-    html += `<tr><td style="padding:4px; font-weight:900; border:1px solid var(--border);">${esc(s.name)}</td>`;
+    html += `<tr><td style="text-align:right;padding:6px;font-weight:900;font-size:10px;">${esc(s.name)}</td>`;
     for (let d = 1; d <= days; d++) {
-      html += `<td style="border:1px solid var(--border);">·</td>`;
+      const key = `shift_${month}_${s.code}_${d}`;
+      const val = localStorage.getItem(key) || "";
+      html += `<td><select onchange="setShift('${month}','${esc(s.code)}',${d},this.value)"><option value="">—</option>${Object.keys(DUTY_CODES).map(c => `<option value="${c}" ${val===c?"selected":""}>${c}</option>`).join("")}</select></td>`;
     }
     html += '</tr>';
   });
-  
-  html += '</table>';
+  html += '</tbody></table>';
   document.getElementById("dutyTableContainer").innerHTML = html;
 }
+function setShift(month, code, day, val) { localStorage.setItem(`shift_${month}_${code}_${day}`, val); }
+function saveDuty() { showToast("تم حفظ الجدول"); vibrate(30); }
 
-function printDuty() {
+function printDutyTable() {
   const month = document.getElementById("dutyMonth").value;
-  if (!month) return showToast("اختر الشهر أولاً", "danger");
+  const [year, m] = month.split("-");
+  const days = new Date(year, m, 0).getDate();
   
-  const html = `<div class="print-form">
-    <div class="print-header">
-      <div class="print-header-side">سلطنة عمان<br>هيئة الدفاع المدني</div>
-      <img src="https://cdn.imagetourls.com/uploads/tyImg/XlLOezQJ.png" class="print-header-logo">
-      <div class="print-header-side">الإدارة العامة<br>للإسعاف</div>
-    </div>
-    <div class="print-title">جدول دوام المشرفين — ${month}</div>
-    <table class="print-table"><tr><th>المشرف</th><th>1</th><th>2</th><th>3</th><th>...</th><th>31</th></tr><tr><td>مثال</td><td>✓</td><td></td><td>✓</td><td></td><td></td></tr></table>
-    <div class="print-footer"><div>${new Date().toLocaleString('ar-OM')}</div></div>
-  </div>`;
+  let table = '<table class="print-table"><thead><tr><th>المشرف</th>';
+  for (let d = 1; d <= days; d++) {
+    const dow = new Date(year, m-1, d).getDay();
+    const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : '';
+    table += `<th${wk}>${d}</th>`;
+  }
+  table += '</tr></thead><tbody>';
+  allSupervisors.forEach(s => {
+    table += `<tr><td style="text-align:right;font-weight:900;font-size:6pt;">${esc(s.name)}</td>`;
+    for (let d = 1; d <= days; d++) table += `<td>${localStorage.getItem(`shift_${month}_${s.code}_${d}`) || "—"}</td>`;
+    table += '</tr>';
+  });
+  table += '</tbody></table>';
   
+  const savedLogo = localStorage.getItem("custom_logo") || "https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg";
+  
+  const header = `<div class="print-header"><div class="print-header-side"><div class="authority">سلطنة عمان</div><div class="dept">هيئة الدفاع المدني والإسعاف</div></div><img src="${savedLogo}" class="print-header-logo"><div class="print-header-side"><div class="authority">الإدارة العامة</div><div class="dept">للإسعاف</div></div></div>`;
+  const html = `<div class="print-form">${header}<div class="print-title">جدول دوام شهر ${month}</div><div class="print-section"><div class="print-section-title">📅 الدوام</div><div class="print-section-body">${table}</div></div></div>`;
+  
+  // تطبيق الكلاس الخاص بالطباعة الأفقية على منطقة الطباعة
+  document.getElementById("printArea").className = "landscape-page";
   document.getElementById("printArea").innerHTML = html;
-  setTimeout(() => { window.print(); }, 300);
+  
+  setTimeout(() => { 
+    window.print(); 
+    setTimeout(() => { 
+      document.getElementById("printArea").innerHTML = ""; 
+      document.getElementById("printArea").className = ""; // إزالة الكلاس
+    }, 1000); 
+  }, 300);
 }
 
-/* ═══════════════════════════════════════════
-   الإعدادات
-   ═══════════════════════════════════════════ */
+/* ═══ Issues ═══ */
+function renderIssues() {
+  const el = document.getElementById("issuesList");
+  const cnt = document.getElementById("issuesCount");
+  if (cnt) cnt.textContent = allIssues.length;
+  if (allIssues.length === 0) { el.innerHTML = '<div class="empty"><span class="icon">🚩</span>لا إشكالات</div>'; return; }
+  el.innerHTML = allIssues.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(i => {
+    const isResolved = i.status === "resolved";
+    const badge = isResolved ? '<span style="background:var(--green); color:#fff; padding:2px 6px; border-radius:4px; font-size:9px;">محلولة</span>' : '<span style="background:var(--red); color:#fff; padding:2px 6px; border-radius:4px; font-size:9px;">مفتوحة</span>';
+    return `<div class="item-card ${isResolved ? 'green' : 'red'}">
+      <div class="item-info">
+        <h4>🚩 ${esc(i.issueType||"—")} ${badge}</h4>
+        <p>👨‍💼 ${esc(i.supervisor||"—")} • 🏥 ${esc(i.centerName||"—")} • 🕐 ${timeAgo(i.timestamp)}</p>
+        ${i.description ? `<p style="background:rgba(0,0,0,0.3); padding:5px; border-radius:4px; font-size:10px;">📝 ${esc(i.description)}</p>` : ''}
+      </div>
+      <div class="item-actions">
+        ${!isResolved ? `<button class="icon-btn-sm edit" style="background:var(--green); color:#fff;" onclick="resolveIssue('${esc(i._id)}')">✔️</button>` : ''}
+        <button class="icon-btn-sm delete" onclick="deleteIssue('${esc(i._id)}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+async function deleteIssue(id) { if (!confirm("حذف؟")) return; await fsDelete("issues", id); showToast("تم الحذف"); syncAll(); }
+async function resolveIssue(id) {
+  if(!confirm("تأكيد أن المشكلة تم حلها؟")) return;
+  await fsUpdate("issues", id, { status: "resolved" });
+  showToast("تم تتبع الحل بنجاح"); syncAll();
+}
+
+/* ═══ Praises ═══ */
+function renderPraises() {
+  const el = document.getElementById("praisesList");
+  const cnt = document.getElementById("praisesCount");
+  if (cnt) cnt.textContent = allPraises.length;
+  if (allPraises.length === 0) { el.innerHTML = '<div class="empty"><span class="icon">⭐</span>لا إشادات</div>'; return; }
+  el.innerHTML = allPraises.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(p => `<div class="item-card green"><div class="item-info"><h4>⭐ ${esc(p.praiseType||"—")}</h4><p>👨‍💼 ${esc(p.supervisor||"—")} • 🏥 ${esc(p.centerName||"—")} • ${timeAgo(p.timestamp)}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deletePraise('${esc(p._id)}')">🗑️</button></div></div>`).join("");
+}
+async function deletePraise(id) { if (!confirm("حذف؟")) return; await fsDelete("praises", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ Broadcasts ═══ */
+async function sendBroadcast() {
+  const title = document.getElementById("bTitle").value.trim();
+  const desc = document.getElementById("bDesc").value.trim();
+  if (!title || !desc) { showToast("أكمل", "danger"); return; }
+  await fsAdd("broadcasts", { title, description: desc, sender: "الإدارة", timestamp: new Date().toISOString() });
+  document.getElementById("bTitle").value = ""; document.getElementById("bDesc").value = "";
+  showToast("تم الإرسال"); syncAll();
+}
+function renderBroadcasts() {
+  const el = document.getElementById("broadcastsList");
+  if (allBroadcasts.length === 0) { el.innerHTML = '<div class="empty">لا تعاميم</div>'; return; }
+  el.innerHTML = allBroadcasts.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(b => `<div class="item-card"><div class="item-info"><h4>📢 ${esc(b.title)}</h4><p>${esc(b.description)}</p><p style="font-size:9px;opacity:0.5;">${timeAgo(b.timestamp)}</p></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteBroadcast('${esc(b._id)}')">🗑️</button></div></div>`).join("");
+}
+async function deleteBroadcast(id) { if (!confirm("حذف؟")) return; await fsDelete("broadcasts", id); showToast("تم الحذف"); syncAll(); }
+
+/* ═══ Notes (Admin Reply) ═══ */
+async function saveNoteReply() {
+  const id = document.getElementById("replyNoteId").value;
+  const reply = document.getElementById("replyText").value.trim();
+  if (!reply) { showToast("أدخل الرد", "danger"); return; }
+  await fsUpdate("notes", id, { adminReply: reply, replyTimestamp: new Date().toISOString() });
+  closeModal(); showToast("تم إرسال الرد"); syncAll();
+}
+function renderNotes() {
+  const el = document.getElementById("notesList");
+  if (allNotes.length === 0) { el.innerHTML = '<div class="empty">لا ملاحظات من المشرفين</div>'; return; }
+  el.innerHTML = allNotes.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(n => {
+    const hasReply = n.adminReply && n.adminReply.trim() !== "";
+    return `<div class="item-card blue" style="flex-direction:column; align-items:flex-start;">
+      <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
+        <b style="color:var(--gold-light);">👨‍💼 ${esc(n.supervisor)}</b>
+        <span style="font-size:10px; opacity:0.5;">${timeAgo(n.timestamp)}</span>
+      </div>
+      <p style="font-size:13px; margin-bottom:10px;">${esc(n.text)}</p>
+      ${hasReply ? `<div style="background:rgba(67,160,71,0.15); border-right:3px solid var(--green); padding:8px; border-radius:6px; width:100%; font-size:12px;"><b>الإدارة:</b> ${esc(n.adminReply)}</div>` : `<button class="btn small" onclick="openReply('${esc(n._id)}','${esc(n.supervisor)}')">↩️ الرد والتعليق</button>`}
+    </div>`;
+  }).join("");
+}
+function openReply(id, supName) {
+  openModal("الرد على " + supName, `
+    <input type="hidden" id="replyNoteId" value="${id}">
+    <label>الرد / التعليق</label>
+    <textarea id="replyText" rows="3" placeholder="اكتب الرد..."></textarea>
+    <button class="btn success block" onclick="saveNoteReply()">💾 إرسال الرد</button>
+  `);
+}
+
+/* ═══ KPI ═══ */
+function computeKPI(sup) {
+  const myIss = allIssues.filter(i => i.supervisor === sup.name).length;
+  const myPra = allPraises.filter(p => p.supervisor === sup.name).length;
+  let score = 70 + Math.min(myPra * 5, 30) - Math.min(myIss * 2, 20);
+  score = Math.max(0, Math.min(100, score));
+  let grade = "D", cls = "kpi-grade-D";
+  if (score >= 90) { grade = "A"; cls = "kpi-grade-A"; }
+  else if (score >= 75) { grade = "B"; cls = "kpi-grade-B"; }
+  else if (score >= 60) { grade = "C"; cls = "kpi-grade-C"; }
+  return { score, grade, cls, issues: myIss, praises: myPra };
+}
+function renderKPI() {
+  const el = document.getElementById("kpiList");
+  if (allSupervisors.length === 0) { el.innerHTML = '<div class="empty">لا مشرفون</div>'; return; }
+  const list = allSupervisors.map(s => ({ sup: s, kpi: computeKPI(s) })).sort((a,b) => b.kpi.score - a.kpi.score);
+  el.innerHTML = list.map((item, i) => {
+    const rankCls = i === 0 ? "top1" : i === 1 ? "top2" : i === 2 ? "top3" : "";
+    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i+1);
+    return `<div class="kpi-row"><div class="kpi-rank ${rankCls}">${medal}</div><div class="kpi-info"><h4>${esc(item.sup.name)}</h4><p>${item.kpi.issues} إشكالية • ${item.kpi.praises} إشادة</p></div><div class="kpi-score ${item.kpi.cls}">${item.kpi.score}</div></div>`;
+  }).join("");
+}
+
+/* ═══ Master Data ═══ */
+const MASTER_MAP = {
+  issue_types_paramedic: { label: "إشكالات (مسعف)", listId: "issueTypesParamList", inputId: "mdIssueParam" },
+  issue_types_center: { label: "إشكالات (مركز)", listId: "issueTypesCenterList", inputId: "mdIssueCenter" },
+  issue_types_vehicle: { label: "إشكالات (مركبة)", listId: "issueTypesVehicleList", inputId: "mdIssueVehicle" },
+  issue_types_stock: { label: "إشكالات (مخزن)", listId: "issueTypesStockList", inputId: "mdIssueStock" },
+  praise_types_paramedic: { label: "إشادات (مسعف)", listId: "praiseTypesParamList", inputId: "mdPraiseParam" },
+  praise_types_center: { label: "إشادات (مركز)", listId: "praiseTypesCenterList", inputId: "mdPraiseCenter" },
+  praise_types_vehicle: { label: "إشادات (مركبة)", listId: "praiseTypesVehicleList", inputId: "mdPraiseVehicle" },
+  praise_types_stock: { label: "إشادات (مخزن)", listId: "praiseTypesStockList", inputId: "mdPraiseStock" }
+};
+function renderMasterData() {
+  Object.entries(MASTER_MAP).forEach(([col, config]) => {
+    const list = allMasterData[col] || [];
+    const el = document.getElementById(config.listId);
+    if (!el) return;
+    el.innerHTML = list.length === 0 ? '<div style="text-align:center;padding:10px;color:#ccc;font-size:11px;">لا عناصر</div>' : list.map(t => `<div class="item-card" style="border-right-color:${col.includes('praise')?'var(--green-light)':'var(--red)'}; margin-bottom:4px; padding:8px;"><div class="item-info"><h4 style="font-size:12px;">${esc(t.name)}</h4></div><div class="item-actions"><button class="icon-btn-sm delete" onclick="deleteMasterData('${col}','${esc(t._id)}')">🗑️</button></div></div>`).join("");
+  });
+}
+async function addMasterData(col, inputId) {
+  const input = document.getElementById(inputId);
+  const name = input.value.trim();
+  if (!name) { showToast("أدخل الاسم", "danger"); return; }
+  await fsAdd(col, { name });
+  input.value = "";
+  showToast("تمت الإضافة"); syncAll();
+}
+async function deleteMasterData(col, id) {
+  if (!confirm("حذف؟")) return;
+  await fsDelete(col, id); showToast("تم الحذف"); syncAll();
+}
+
+/* ═══ Settings & Danger Zone ═══ */
 async function changePassword() {
-  const pass = document.getElementById("pwNew").value.trim();
-  if (pass.length < 6) return showToast("كلمة المرور قصيرة جداً", "danger");
-  
+  const pass = document.getElementById("pwNew").value;
+  const msg = document.getElementById("pwMsg");
+  if (pass.length < 6) { msg.style.color = "var(--red)"; msg.textContent = "كلمة المرور قصيرة جداً"; return; }
   const hash = await sha256(pass.toLowerCase());
   await fsUpdate("access_code", "ADM", { passwordHash: hash });
-  showToast("✅ تم تحديث كلمة المرور");
+  msg.style.color = "var(--green)"; msg.textContent = "✅ تم تحديث كلمة المرور بنجاح";
   document.getElementById("pwNew").value = "";
+  showToast("تم تحديث كلمة المرور");
 }
 
-async function sha256(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+function changeLogo() {
+  const url = document.getElementById("logoUrl").value.trim();
+  if (url) {
+    localStorage.setItem("custom_logo", url);
+    document.getElementById("topbarLogoImg").src = url;
+    document.getElementById("loginLogoImg").src = url;
+    showToast("تم تحديث الشعار");
+  }
 }
 
-async function wipeData() {
-  if (!confirm("⚠️ هل أنت متأكد؟")) return;
+async function wipeData(type) {
+  if (!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
   if (!confirm("تأكيد أخير: سيتم الحذف نهائياً!")) return;
   
-  let cols = ['issues', 'praises', 'notes'];
+  let cols = [];
+  if (type === 'activities') cols = ['issues', 'praises'];
+  else cols = ['issues', 'praises', 'notes'];
+  
   for (const col of cols) {
     const items = await fsList(col);
-    for (const item of items) {
-      await fsDelete(col, item._id);
-    }
+    for (const item of items) await fsDelete(col, item._id);
   }
-  showToast("✅ تم الحذف بنجاح");
-  syncData();
+  showToast("✅ تم الحذف بنجاح"); syncAll();
 }
 
-/* ═══════════════════════════════════════════
-   أدوات عامة
-   ═══════════════════════════════════════════ */
-function openModal(title, body) {
-  document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modalBody").innerHTML = body;
-  document.getElementById("modalOverlay").classList.add("show");
-}
-
-function closeModal() {
-  document.getElementById("modalOverlay").classList.remove("show");
-}
-
-function manualRefresh() {
-  showToast("تحديث...");
-  syncData();
-}
-
-function confirmLogout() {
-  if (confirm("خروج؟")) {
-    localStorage.removeItem(SESSION_KEY);
-    location.href = "index.html";
+/* ═══ Print (A4 Portrait Reports) ═══ */
+function printReport(type) {
+  const savedLogo = localStorage.getItem("custom_logo") || "https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg";
+  const header = `<div class="print-header"><div class="print-header-side"><div class="authority">سلطنة عمان</div><div class="dept">هيئة الدفاع المدني والإسعاف</div></div><img src="${savedLogo}" class="print-header-logo"><div class="print-header-side"><div class="authority">الإدارة العامة</div><div class="dept">للإسعاف</div></div></div>`;
+  let title = "", body = "";
+  if (type === "supervisors") {
+    title = "تقرير المشرفين";
+    body = `<table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>القطاع</th><th>الهاتف</th><th>الكود</th></tr></thead><tbody>${allSupervisors.map((s,i) => `<tr><td>${i+1}</td><td>${esc(s.name)}</td><td>${esc(s.sector||"")}</td><td>${esc(s.phone||"")}</td><td>${esc(s.code||"")}</td></tr>`).join("")}</tbody></table>`;
+  } else if (type === "paramedics") {
+    title = "تقرير المسعفين";
+    body = `<table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>المركز</th><th>الرتبة</th></tr></thead><tbody>${allParameds.map((p,i) => `<tr><td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(p.centerName)}</td><td>${esc(p.rank||"")}</td></tr>`).join("")}</tbody></table>`;
+  } else if (type === "vehicles") {
+    title = "تقرير المركبات";
+    body = `<table class="print-table"><thead><tr><th>#</th><th>اللوحة</th><th>النوع</th><th>المركز</th></tr></thead><tbody>${allVehicles.map((v,i) => `<tr><td>${i+1}</td><td>${esc(v.plateNumber)}</td><td>${esc(v.type||"")}</td><td>${esc(v.centerName)}</td></tr>`).join("")}</tbody></table>`;
+  } else if (type === "issues") {
+    title = "تقرير الإشكالات";
+    body = `<table class="print-table"><thead><tr><th>#</th><th>المشرف</th><th>المركز</th><th>النوع</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody>${allIssues.map((i,idx) => `<tr><td>${idx+1}</td><td>${esc(i.supervisor||"")}</td><td>${esc(i.centerName||"")}</td><td>${esc(i.issueType||"")}</td><td>${i.status==='resolved'?'محلولة':'مفتوحة'}</td><td>${fmtDate(i.timestamp)}</td></tr>`).join("")}</tbody></table>`;
+  } else if (type === "praises") {
+    title = "تقرير الإشادات";
+    body = `<table class="print-table"><thead><tr><th>#</th><th>المشرف</th><th>المركز</th><th>النوع</th><th>التاريخ</th></tr></thead><tbody>${allPraises.map((p,idx) => `<tr><td>${idx+1}</td><td>${esc(p.supervisor||"")}</td><td>${esc(p.centerName||"")}</td><td>${esc(p.praiseType||"")}</td><td>${fmtDate(p.timestamp)}</td></tr>`).join("")}</tbody></table>`;
   }
-}
-
-async function deleteRecord(col, id) {
-  if (!confirm("حذف؟")) return;
-  await fsDelete(col, id);
-  showToast("تم الحذف");
-  syncData();
-}
-
-/* ═══════════════════════════════════════════
-   تسجيل الدخول
-   ═══════════════════════════════════════════ */
-async function loginWithPassword() {
-  const pass = document.getElementById("passInput").value.trim();
-  const msg = document.getElementById("loginMsg");
+  const html = `<div class="print-form">${header}<div class="print-title">${title}</div><div class="print-section"><div class="print-section-title">${title}</div><div class="print-section-body">${body}</div></div><div class="print-signatures"><div class="print-signature"><div class="role">المُعِد</div><div class="line">التوقيع</div></div><div class="print-signature"><div class="role">المدير</div><div class="line">التوقيع</div></div><div class="print-signature"><div class="role">الاعتماد</div><div class="line">التوقيع</div></div></div><div class="print-footer"><div>🕐 ${new Date().toLocaleString('ar-OM')}</div></div></div>`;
   
-  if (!pass) {
-    msg.textContent = "أدخل كلمة المرور";
-    return;
+  document.getElementById("printArea").className = ""; // الورقة الطولية
+  document.getElementById("printArea").innerHTML = html;
+  setTimeout(() => { window.print(); setTimeout(() => { document.getElementById("printArea").innerHTML = ""; }, 1000); }, 400);
+}
+
+function exportCSV(type) {
+  let rows = [['#', 'البيانات']];
+  if (type === 'supervisors') {
+    rows = [['#','الاسم','القطاع','الهاتف','الكود']];
+    allSupervisors.forEach((s,i) => rows.push([i+1, s.name, s.sector||'', s.phone||'', s.code||'']));
+  } else if (type === 'issues') {
+    rows = [['#','المشرف','المركز','النوع','الحالة','التاريخ']];
+    allIssues.forEach((it,i) => rows.push([i+1, it.supervisor||'', it.centerName||'', it.issueType||'', it.status==='resolved'?'محلولة':'مفتوحة', fmtDate(it.timestamp)]));
   }
-  
-  // التحقق من كلمة المرور (samir96267 أو 123456)
-  if (pass !== "Samir96267" && pass !== "samir96267" && pass !== "123456") {
-    msg.textContent = "❌ كلمة المرور خاطئة";
-    return;
-  }
-  
-  currentUser = { name: "المدير العام", type: "admin" };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-  
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("mainApp").classList.add("ready");
-  document.getElementById("currentUser").textContent = currentUser.name;
-  
-  await syncData();
-  setInterval(syncData, 30000);
+  const csv = '\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\r\n');
+  const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${type}.csv`; link.click();
 }
 
-/* ═══════════════════════════════════════════
-   التشغيل التلقائي
-   ═══════════════════════════════════════════ */
-(async function() {
+/* ═══ Modal ═══ */
+function openModal(title, body) { document.getElementById("modalTitle").textContent = title; document.getElementById("modalBody").innerHTML = body; document.getElementById("modalOverlay").classList.add("show"); }
+function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
+
+/* ═══ Bootstrap ═══ */
+(function() {
   const saved = localStorage.getItem(SESSION_KEY);
-  if (saved) {
-    try {
-      currentUser = JSON.parse(saved);
-      if (currentUser && currentUser.type === "admin") {
-        document.getElementById("loginScreen").style.display = "none";
-        document.getElementById("mainApp").classList.add("ready");
-        document.getElementById("currentUser").textContent = currentUser.name;
-        document.getElementById("dutyMonth").value = new Date().toISOString().slice(0, 7);
-        
-        await syncData();
-        setInterval(syncData, 30000);
-      }
-    } catch(e) {
-      localStorage.removeItem(SESSION_KEY);
-    }
-  }
-  
-  // تعبئة القوائم المنسدلة
-  const pmCenter = document.getElementById("pmCenter");
-  const vCenter = document.getElementById("vCenter");
-  if (pmCenter && vCenter) {
-    CENTERS_LIST.forEach(c => {
-      pmCenter.innerHTML += `<option>${c}</option>`;
-      vCenter.innerHTML += `<option>${c}</option>`;
-    });
-  }
+  if (saved) { try { const u = JSON.parse(saved); if (u && u.role === "admin") { adminUser = u; document.getElementById("loginScreen").style.display = "none"; document.getElementById("mainApp").classList.add("ready"); setTimeout(initApp, 100); } } catch(e) {} }
+  document.getElementById("passInput").addEventListener("keypress", e => { if (e.key === "Enter") loginWithPassword(); });
 })();
 </script>
 </body>
