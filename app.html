@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>المشرف الميداني — الإصدار النهائي</title>
+<title>المشرف الميداني — النظام المتكامل</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -15,114 +15,83 @@
   --amber: #fb8c00; --amber-light: #ffa726;
   --blue: #29b6f6; --blue-light: #64b5f6;
   --border: rgba(151,141,91,0.3);
-  --surface: rgba(13,74,66,0.55);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
 body { min-height: 100vh; padding-bottom: calc(100px + var(--safe-bottom)); }
-body::before { content: ''; position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
+body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
-@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(1.1); opacity:0.7;} }
-
-#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.spinner { width:50px; height:50px; border:5px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
 #mainApp { display: none; } #mainApp.ready { display: block; }
 
-.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 10px; backdrop-filter: blur(10px); }
-.topbar-logo { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; background: transparent; filter: drop-shadow(0 0 8px rgba(151,141,91,0.6)); }
+.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; }
+.topbar-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; }
 .topbar-info { flex: 1; }
-.topbar-info h1 { font-size: 15px; color: var(--gold-light); font-weight: 900; }
-.topbar-info p { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
-.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); box-shadow: 0 0 10px var(--green-light); }
-.status-dot.offline { background: var(--red-light); box-shadow: 0 0 10px var(--red-light); }
-.clock { font-size: 11px; font-family: monospace; color: var(--gold-light); background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 6px; }
-.icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-.icon-btn:active { transform: scale(0.9); }
+.topbar-info h1 { font-size: 14px; color: var(--gold-light); font-weight: 900; }
+.topbar-info p { font-size: 10px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-light); box-shadow: 0 0 8px var(--green-light); }
+.icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.icon-btn.danger { background: rgba(198,40,40,0.4); border-color: var(--red-light); }
 
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 8px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; backdrop-filter: blur(20px); }
-.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border-radius: 12px; cursor: pointer; background: transparent; border: none; color: rgba(255,255,255,0.6); font-family: inherit; font-weight: 700; font-size: 10px; transition: 0.3s; }
-.nav-btn .nav-icon { font-size: 22px; transition: 0.3s; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 4px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+.nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border-radius: 10px; cursor: pointer; background: transparent; border: none; color: rgba(255,255,255,0.65); font-family: inherit; font-weight: 700; font-size: 9px; }
+.nav-btn .nav-icon { font-size: 20px; line-height: 1; }
 .nav-btn.active { background: linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color: var(--gold-light); }
 
-.page { display: none; padding: 16px; max-width: 800px; margin: 0 auto; animation: fadeIn 0.4s ease-out; }
-.page.active { display: block; }
+.page { display: none; padding: 16px; max-width: 720px; margin: 0 auto; }
+.page.active { display: block; animation: slideUp 0.35s; }
+.card { background: rgba(13,74,66,0.55); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
+.card-title { font-size: 14px; color: var(--gold-light); font-weight: 900; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-.card { background: linear-gradient(145deg, var(--surface), rgba(4,24,20,0.9)); border: 1px solid var(--border); border-radius: 20px; padding: 18px; margin-bottom: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-.card-title { font-size: 15px; color: var(--gold-light); font-weight: 900; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(151,141,91,0.2); display: flex; align-items: center; gap: 8px; }
-
-.welcome-card { background: linear-gradient(135deg, rgba(151,141,91,0.2), rgba(13,74,66,0.6)); border: 2px solid var(--gold); border-radius: 20px; padding: 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; box-shadow: 0 0 20px rgba(151,141,91,0.15); }
-.welcome-text h1 { font-size: 20px; color: #fff; font-weight: 900; margin-bottom: 4px; }
-.welcome-text p { font-size: 12px; color: var(--gold-light); }
-.mil-badge { background: rgba(0,0,0,0.5); border: 1px solid var(--gold); color: var(--gold-light); padding: 6px 12px; border-radius: 8px; font-family: monospace; font-size: 14px; font-weight: 900; }
-
-.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.action-btn { padding: 20px 14px; border-radius: 18px; border: none; font-family: inherit; font-weight: 900; font-size: 15px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-.action-btn:active { transform: scale(0.95); }
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.action-btn { padding: 20px 14px; border-radius: 18px; border: none; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; }
 .action-btn.danger { background: linear-gradient(135deg, #e53935, #ff5252); }
 .action-btn.success { background: linear-gradient(135deg, #43a047, #69f0ae); color: #041814; }
 .action-btn.info { background: linear-gradient(135deg, #29b6f6, #64b5f6); color: #fff; grid-column: span 2; }
-.action-btn.warning { background: linear-gradient(135deg, #fb8c00, #ffa726); color: #041814; grid-column: span 2; margin-bottom: 16px; }
 
-.item-card { background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
-.item-card.green { border-right-color: var(--green-light); background: rgba(67,160,71,0.1); }
-.item-card.red { border-right-color: var(--red-light); background: rgba(229,57,53,0.1); }
-.item-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 900; color: var(--gold-light); }
-.item-desc { font-size: 12px; color: #ccc; line-height: 1.5; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; }
-.item-footer { display: flex; justify-content: space-between; font-size: 10px; opacity: 0.7; margin-top: 4px; }
+.item-card { background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.item-card.red { border-right-color: var(--red); }
+.item-card.green { border-right-color: var(--green-light); }
+.item-card.blue { border-right-color: var(--blue); }
+.item-info { flex: 1; min-width: 0; }
+.item-info h4 { font-size: 14px; font-weight: 900; color: var(--gold-light); margin-bottom: 4px; }
+.item-info p { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.6; }
 
-input, select, textarea { width: 100%; padding: 14px; background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; font-family: inherit; font-weight: 600; outline: none; margin-bottom: 14px; transition: 0.3s; }
-input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(151,141,91,0.2); }
-label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px; }
+input, select, textarea { width: 100%; padding: 12px 14px; background: rgba(4,24,20,0.7); border: 1px solid var(--border); border-radius: 11px; color: #fff; font-size: 13px; font-family: inherit; font-weight: 600; outline: none; margin-bottom: 12px; }
+input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+select option { background: var(--teal-deep); color: #fff; }
+label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 700; margin-bottom: 7px; }
 
-.icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
-.select-icon { background: rgba(4,24,20,0.8); border: 2px solid var(--border); border-radius: 14px; padding: 14px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-.select-icon .icon { font-size: 26px; margin-bottom: 6px; }
-.select-icon .label { font-size: 10px; font-weight: 900; color: rgba(255,255,255,0.7); }
-.select-icon.active { border-color: var(--gold); background: rgba(151,141,91,0.2); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(151,141,91,0.3); }
-.select-icon.active .label { color: var(--gold-light); }
-
-.chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; perspective: 1000px; }
-.chip-3d { padding: 10px 16px; border-radius: 12px; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)); border: 1px solid rgba(255,255,255,0.15); font-size: 12px; cursor: pointer; transition: all 0.3s ease; font-weight: 700; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-.chip-3d:active { transform: scale(0.95); }
-.chip-3d.selected { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; box-shadow: 0 8px 15px rgba(151,141,91,0.5), inset 0 2px 5px rgba(255,255,255,0.5); transform: translateY(-3px) rotateX(10deg); }
-.chip-3d.selected::before { content: '✓'; font-weight: 900; }
-
-.btn { padding: 14px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; }
-.btn:active { transform: scale(0.97); }
+.btn { padding: 12px 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn.danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
 .btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #041814; }
-.btn.secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--border); }
+.btn.block { width: 100%; }
 
-.input-with-btn { position: relative; margin-bottom: 14px; }
-.input-with-btn textarea { margin-bottom: 0; padding-left: 50px; }
-.mic-btn { position: absolute; bottom: 10px; left: 10px; width: 38px; height: 38px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: var(--teal-deep); font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(41,182,246,0.4); }
-.mic-btn.recording { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; animation: pulse 1s infinite; }
-
-.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(5px); }
+.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; }
 .modal-overlay.show { display: flex; }
-.modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 800px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; animation: fadeIn 0.35s; }
-.modal-sheet h3 { color: var(--gold-light); font-size: 18px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
+.modal-sheet h3 { color: var(--gold-light); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
-.toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
-.toast { background: linear-gradient(135deg, var(--teal), var(--teal-dark)); color: #fff; padding: 14px 18px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 10px; animation: fadeIn 0.3s; }
+.toast-container { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
+.toast { background: linear-gradient(135deg, var(--teal), var(--teal-dark)); color: #fff; padding: 12px 18px; border-radius: 12px; border: 1px solid var(--gold); font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
 .toast.success { border-color: var(--green-light); }
 .toast.danger { border-color: var(--red-light); }
 
-.modal-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 10px; }
-
-.chat-container { display: flex; flex-direction: column; height: 60vh; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.chat-container { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
 .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-.message { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
+.message { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
 .message.mine { align-self: flex-end; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-bottom-left-radius: 2px; }
 .message.theirs { align-self: flex-start; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-bottom-right-radius: 2px; }
 .message .time { font-size: 9px; opacity: 0.6; margin-top: 4px; display: block; text-align: left; }
-.chat-input-box { display: flex; padding: 10px; background: rgba(4,24,20,0.8); border-top: 1px solid var(--border); }
-.chat-input-box input { flex: 1; margin: 0; border-radius: 10px 0 0 10px; border-left: none; background: #000; }
-.chat-input-box button { padding: 0 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border: none; border-radius: 0 10px 10px 0; font-weight: 900; cursor: pointer; }
+.chat-input-box { display: flex; padding: 10px; background: rgba(4,24,20,0.6); border-top: 1px solid var(--border); }
+.chat-input-box input { flex: 1; margin: 0; border-radius: 8px 0 0 8px; border-left: none; }
+.chat-input-box button { padding: 0 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border: none; border-radius: 0 8px 8px 0; font-weight: 900; cursor: pointer; }
+
+#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -131,31 +100,37 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="color:var(--gold-light); font-weight:900;">جاري تحميل النظام...</div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري تحميل التطبيق...</div>
 </div>
 
 <div id="mainApp">
   <div class="topbar">
-    <!-- الشعار الجديد -->
-    <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" class="topbar-logo" alt="الشعار" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/National_emblem_of_Oman.svg/200px-National_emblem_of_Oman.svg.png'">
+    <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" class="topbar-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/National_emblem_of_Oman.svg/200px-National_emblem_of_Oman.svg.png'">
     <div class="topbar-info">
-      <h1>المشرف الميداني</h1>
-      <p><span class="status-dot" id="statusDot"></span><span id="currentUser">—</span></p>
+      <h1>لوحة المشرف الميداني</h1>
+      <p><span class="status-dot"></span><span id="currentUser">—</span></p>
     </div>
-    <div class="clock" id="clockDisplay">00:00</div>
-    <button class="icon-btn" onclick="toggleSOS()" style="border-color:var(--red); color:var(--red);">🚨</button>
+    <button class="icon-btn" onclick="manualRefresh()">🔄</button>
+    <button class="icon-btn danger" onclick="confirmLogout()">🚪</button>
   </div>
 
+  <!-- 1. الرئيسية -->
   <div class="page active" id="page-home">
-    <div class="welcome-card">
-      <div class="welcome-text">
-        <h1 id="welcomeName">مرحباً</h1>
-        <p id="welcomeSector">القطاع</p>
+    <div class="card" style="background:linear-gradient(135deg, rgba(151,141,91,0.15), rgba(13,74,66,0.6)); border-color:var(--gold);">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.7);">مرحباً بك 👋</div>
+          <div style="font-size:20px; color:#fff; font-weight:900;" id="welcomeName">—</div>
+          <div style="font-size:12px; color:var(--gold-light); margin-top:4px;" id="welcomeSector">—</div>
+        </div>
+        <div style="width:50px; height:50px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:900;" id="heroAvatar">👤</div>
       </div>
-      <div class="mil-badge" id="heroAvatar">#0000</div>
     </div>
 
-    <button class="btn warning" onclick="openShiftHandover()" style="margin-bottom: 16px; font-size: 15px; background:linear-gradient(135deg, #fb8c00, #ffa726); color:#041814;">🔄 استلام / تسليم الدوام</button>
+    <div class="card">
+      <div class="card-title">📅 دوامي اليوم</div>
+      <div id="myDuty" style="font-size:16px; font-weight:900; color:var(--gold-light); text-align:center; padding:10px;">جاري التحميل...</div>
+    </div>
 
     <div class="quick-actions">
       <button class="action-btn danger" onclick="startEntry('complaint')"><span style="font-size:32px;">🚩</span><span>تسجيل إشكالية</span></button>
@@ -164,21 +139,20 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
 
     <div class="card">
-      <div class="card-title">📢 التعاميم السابقة</div>
+      <div class="card-title">📢 التعاميم</div>
       <div id="broadcastsList">جاري التحميل...</div>
     </div>
   </div>
 
+  <!-- 2. السجلات -->
   <div class="page" id="page-issues">
-    <div class="card">
-      <div class="card-title">📋 مجتمع المشرفين (آخر 72 ساعة)</div>
-      <div id="communityList">جاري التحميل...</div>
-    </div>
+    <div class="card"><div class="card-title">📋 سجلاتي</div><div id="issuesList">جاري التحميل...</div></div>
   </div>
 
+  <!-- 3. الدردشة -->
   <div class="page" id="page-chat">
     <div class="card" style="padding:10px;">
-      <div class="card-title" style="margin-bottom:5px;">💬 غرفة عمليات المشرفين</div>
+      <div class="card-title" style="margin-bottom:5px;">💬 غرفة العمليات</div>
       <div class="chat-container">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-box">
@@ -189,19 +163,19 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 4. حسابي -->
   <div class="page" id="page-profile">
      <div class="card" style="text-align:center;">
         <h2 style="color:var(--gold-light); font-size:20px;" id="profName">—</h2>
         <p style="color:#ccc; font-size:12px; margin-top:5px;" id="profSector">—</p>
-        <div class="mil-badge" style="display:inline-block; margin-top:10px;" id="profAvatar">#0000</div>
+        <div style="display:inline-block; margin-top:10px; padding:6px 12px; background:rgba(0,0,0,0.5); border:1px solid var(--gold); border-radius:8px; font-family:monospace; font-size:14px; font-weight:900; color:var(--gold-light);" id="profCode">—</div>
      </div>
-     <button class="btn secondary" onclick="logout()" style="margin-top:20px;">🚪 تسجيل الخروج</button>
+     <button class="btn secondary block" onclick="confirmLogout()" style="margin-top:20px;">🚪 تسجيل الخروج</button>
   </div>
 
   <div class="bottom-nav">
     <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
-    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">📋</span><span>المجتمع</span></button>
-    <button class="nav-btn" data-page="new" onclick="switchPage('new')"><span class="nav-icon" style="font-size:28px; color:var(--gold-light);">➕</span><span>إضافة</span></button>
+    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">📋</span><span>سجلاتي</span></button>
     <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>التواصل</span></button>
     <button class="nav-btn" data-page="profile" onclick="switchPage('profile')"><span class="nav-icon">👤</span><span>حسابي</span></button>
   </div>
@@ -228,25 +202,21 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     const session = localStorage.getItem("ems_session");
     if (!session) { window.location.href = "./index.html"; }
     const user = JSON.parse(session);
+    if (user.type === "admin" || user.type === "ops") { window.location.href = "./index.html"; }
 
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").innerText = user.name;
     document.getElementById("welcomeName").innerText = user.name;
     document.getElementById("welcomeSector").innerText = user.sector || "قطاع غير محدد";
-    document.getElementById("heroAvatar").innerText = user.code || "—";
+    document.getElementById("heroAvatar").innerText = (user.name || "م").charAt(0);
     document.getElementById("profName").innerText = user.name;
     document.getElementById("profSector").innerText = user.sector || "غير محدد";
-    document.getElementById("profAvatar").innerText = user.code || "—";
+    document.getElementById("profCode").innerText = user.code || "—";
 
-    let cachedParamedics = [], cachedVehicles = [];
+    let cachedMaster = { issue: {}, praise: {} };
     let currentLocation = { lat: null, lng: null };
     let selectedIssueTypes = [];
-
-    setInterval(() => {
-        const d = new Date();
-        document.getElementById("clockDisplay").innerText = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    }, 1000);
 
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
@@ -255,95 +225,95 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     function showToast(msg, type="success") {
-        const c = document.getElementById("toastContainer");
-        const t = document.createElement("div");
-        t.className = "toast " + type;
-        t.innerHTML = `<span>${type==='success'?'✅':'⚠️'}</span> <span>${msg}</span>`;
-        c.appendChild(t);
-        setTimeout(() => t.remove(), 4000);
+        const c = document.getElementById("toastContainer"); const t = document.createElement("div");
+        t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
+        c.appendChild(t); setTimeout(() => t.remove(), 3000);
     }
 
     function switchPage(id) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        let targetId = id === "new" ? "home" : id;
-        document.getElementById("page-" + targetId).classList.add("active");
+        document.getElementById(id ? "page-" + id : "page-home").classList.add("active");
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-        const btn = document.querySelector(`.nav-btn[data-page="${id}"]`);
-        if(btn) btn.classList.add("active");
-        if(id === "new") startEntry('complaint');
+        document.querySelector(`.nav-btn[data-page="${id}"]`).classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
     }
 
     async function loadData() {
         try {
-            const [broadcasts, issues, params, vehicles] = await Promise.all([
-                db.collection("broadcasts").get(),
-                db.collection("issues").get(),
-                db.collection("paramedics").get(),
-                db.collection("vehicles").get()
-            ]);
-
-            let bcHtml = "";
-            broadcasts.forEach(d => {
-                const data = d.data();
-                bcHtml += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`;
-            });
-            document.getElementById("broadcastsList").innerHTML = bcHtml || "لا تعاميم";
-
-            cachedParamedics = []; params.forEach(d => cachedParamedics.push(d.data()));
-            cachedVehicles = []; vehicles.forEach(d => cachedVehicles.push(d.data()));
-            
-            let communityHtml = "";
-            const now = new Date().getTime();
-            issues.forEach(d => {
-                const data = d.data();
-                if(data.targetName && data.description) {
-                    const issueTime = data.timestamp ? data.timestamp.toDate().getTime() : now;
-                    const diffHours = (now - issueTime) / (1000 * 60 * 60);
-                    if (diffHours <= 72) {
-                        const isSolved = data.status === 'resolved';
-                        const statusText = isSolved ? '✅ محلولة' : '🔴 معلقة';
-                        const timeText = data.timestamp ? data.timestamp.toDate().toLocaleTimeString('ar-OM') : '';
-                        communityHtml += `<div class="item-card ${isSolved ? 'green' : 'red'}">
-                            <div class="item-header"><span>${statusText} | ${data.targetName}</span><span>${timeText}</span></div>
-                            <div class="item-desc">${data.description}</div>
-                            <div class="item-footer"><span>👤 ${data.supervisor}</span><span>🏥 ${data.centerName || data.targetName}</span></div>
-                        </div>`;
-                    }
+            // تحميل أنواع البلاغات
+            for (const cat of ["issue", "praise"]) {
+                for (const target of ["paramedic", "center", "vehicle", "stock"]) {
+                    const col = `${cat}_types_${target}`;
+                    const snap = await db.collection(col).get();
+                    cachedMaster[cat][target] = snap.docs.map(d => d.data().name);
                 }
+            }
+            // تحميل التعاميم
+            db.collection("broadcasts").get().then(s => {
+                let html = "";
+                s.forEach(d => { const data = d.data(); html += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`; });
+                document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
             });
-            document.getElementById("communityList").innerHTML = communityHtml || "<div style='text-align:center; padding:20px; opacity:0.6;'>لا سجلات حديثة.</div>";
+            // تحميل سجلاتي
+            db.collection("issues").where("supervisor", "==", user.name).get().then(s => {
+                let html = "";
+                s.forEach(d => {
+                    const data = d.data();
+                    const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-OM') : '';
+                    html += `<div class="item-card ${data.isPraise ? 'green' : 'red'}"><div class="item-info"><h4>${data.isPraise ? '⭐' : '🚩'} ${data.issueType || '-'}</h4><p>${data.targetName || '-'} | ${time}</p></div></div>`;
+                });
+                document.getElementById("issuesList").innerHTML = html || "لا يوجد سجلات";
+            });
+            // تحميل الدوام
+            loadMyDuty();
+            // تحميل الدردشة
             loadChat();
         } catch(e) { console.warn(e); }
     }
 
+    function loadMyDuty() {
+        const today = new Date();
+        const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+        const todayDay = today.getDate();
+        
+        db.collection("duty_schedule").doc(`${monthStr}_${user.code}`).get().then(doc => {
+            const el = document.getElementById("myDuty");
+            if (doc.exists) {
+                const shifts = doc.data().shifts || {};
+                const code = shifts[todayDay] || "";
+                const names = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "إداري", "س": "سنوية", "خ": "أخرى" };
+                el.innerText = code ? `${code} - ${names[code]}` : "لم يتم تحديد الدوام بعد";
+            } else {
+                el.innerText = "لا يوجد دوام مسجل";
+            }
+        }).catch(() => { document.getElementById("myDuty").innerText = "لا يوجد دوام"; });
+    }
+
     function startEntry(type) {
         const isComplaint = type === 'complaint';
+        const master = cachedMaster[isComplaint ? 'issue' : 'praise'];
         selectedIssueTypes = [];
-        
+
         document.getElementById("modalTitle").innerText = isComplaint ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة";
         document.getElementById("modalBody").innerHTML = `
-            <label>🎯 ما هو هدف التقييم؟</label>
-            <div class="icon-grid">
-                <div class="select-icon active" id="icon-paramedic" onclick="selectTarget('paramedic', '${type}')"><span class="icon">👨‍🚒</span><span class="label">مسعف</span></div>
-                <div class="select-icon" id="icon-center" onclick="selectTarget('center', '${type}')"><span class="icon">🏥</span><span class="label">مركز</span></div>
-                <div class="select-icon" id="icon-vehicle" onclick="selectTarget('vehicle', '${type}')"><span class="icon">🚑</span><span class="label">مركبة</span></div>
-                <div class="select-icon" id="icon-stock" onclick="selectTarget('stock', '${type}')"><span class="icon">💊</span><span class="label">مخزن</span></div>
-            </div>
-
+            <label>🎯 الهدف</label>
+            <select id="entryTargetType" onchange="updateTargets('${type}')">
+                <option value="paramedic">👨‍🚒 مسعف</option>
+                <option value="center">🏥 مركز</option>
+                <option value="vehicle">🚑 مركبة</option>
+                <option value="stock">💊 مخزن</option>
+            </select>
+            
             <div id="targetSelectionArea"></div>
 
-            <label>📌 نوع الإجراء (اختيار متعدد)</label>
+            <label>📌 النوع (اختيار متعدد)</label>
             <div class="chips-wrap" id="actionTypesChips"></div>
 
-            <label>الوصف</label>
-            <div class="input-with-btn">
-                <textarea id="entryDesc" rows="3" placeholder="اكتب التفاصيل..."></textarea>
-                <button class="mic-btn" id="micBtn" onclick="toggleVoice('entryDesc', this)">🎤</button>
-            </div>
-            
-            <button class="btn secondary" style="margin-bottom:5px; padding:10px; font-size:12px;" onclick="getLocation()">📍 تحديد موقعي (GPS)</button>
-            <div id="gpsStatus" style="font-size:11px; color:var(--gold-light); margin-bottom:15px; text-align:center;"></div>
+            <label>📝 الوصف</label>
+            <textarea id="entryDesc" rows="3" placeholder="اكتب التفاصيل..."></textarea>
+
+            <label>📎 التوصيات (اختياري)</label>
+            <textarea id="entryRecommendation" rows="2" placeholder="كيف يمكن حل هذه المشكلة؟"></textarea>
 
             <div class="modal-actions">
                 <button class="btn ${isComplaint ? 'danger' : 'success'}" onclick="submitEntry('${type}')">💾 حفظ</button>
@@ -351,151 +321,93 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
             </div>
         `;
         document.getElementById("modalOverlay").classList.add("show");
-        selectTarget('paramedic', type);
+        updateTargets(type);
     }
 
-    let currentTargetType = 'paramedic';
-    function selectTarget(targetType, type) {
-        currentTargetType = targetType;
-        ['paramedic', 'center', 'vehicle', 'stock'].forEach(t => { const el = document.getElementById('icon-' + t); if(el) el.classList.remove('active'); });
-        document.getElementById('icon-' + targetType).classList.add('active');
-
-        let html = "";
-        if (targetType === 'paramedic') {
-            html = `<label>🏥 اختر المركز أولاً</label><select id="entryCenter" onchange="updateParamedicDropdown(this.value)"><option value="">-- اختر المركز --</option><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option></select><label>👨‍🚒 اختر المسعف</label><select id="entryTargetName"><option value="">-- اختر المركز --</option></select>`;
-        } else if (targetType === 'center') {
-            html = `<label>اختر المركز</label><select id="entryTargetName"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option></select>`;
-        } else if (targetType === 'vehicle') {
-            html = `<label>اختر المركبة</label><select id="entryTargetName">${cachedVehicles.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") || '<option>لا يوجد</option>'}</select>`;
+    function updateTargets(type) {
+        const targetType = document.getElementById("entryTargetType").value;
+        const area = document.getElementById("targetSelectionArea");
+        const isComplaint = type === 'complaint';
+        const master = cachedMaster[isComplaint ? 'issue' : 'praise'];
+        const chips = document.getElementById("actionTypesChips");
+        
+        let targetHtml = "";
+        if (targetType === "paramedic") {
+            targetHtml = `
+                <label>🏥 المركز</label>
+                <select id="entryCenter">
+                    <option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option>
+                    <option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option>
+                </select>
+                <label>👨‍🚒 اسم المسعف</label>
+                <input type="text" id="entryTargetName" placeholder="اسم المسعف">
+            `;
+        } else if (targetType === "center") {
+            targetHtml = `
+                <label>🏥 المركز</label>
+                <select id="entryTargetName">
+                    <option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option>
+                    <option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option>
+                </select>
+            `;
+        } else if (targetType === "vehicle") {
+            targetHtml = `<label>🚑 رقم المركبة</label><input type="text" id="entryTargetName" placeholder="رقم اللوحة">`;
         } else {
-            html = `<label>اختر المخزن</label><select id="entryTargetName"><option>المخزن الطبي الرئيسي</option></select>`;
+            targetHtml = `<label>💊 المخزن</label><select id="entryTargetName"><option>المخزن الطبي الرئيسي</option></select>`;
         }
-        document.getElementById("targetSelectionArea").innerHTML = html;
-        renderActionTypes(targetType, type);
-    }
-
-    function updateParamedicDropdown(centerName) {
-        const select = document.getElementById("entryTargetName");
-        if (!centerName) { select.innerHTML = '<option value="">-- اختر المركز --</option>'; return; }
-        const filtered = cachedParamedics.filter(p => p.centerName === centerName);
-        select.innerHTML = filtered.map(p => `<option value="${p.name}">${p.name}</option>`).join("") || '<option>لا يوجد</option>';
-    }
-
-    function renderActionTypes(targetType, type) {
-        const el = document.getElementById("actionTypesChips");
-        let items = [];
-        if (targetType === 'paramedic') items = type === 'complaint' ? ["⏰ تأخر استجابة", "📋 توثيق ناقص", "🤝 تعامل غير احترافي"] : ["🏅 أداء متميز", "⚡ سرعة استجابة"];
-        else if (targetType === 'center') items = type === 'complaint' ? ["🧼 نظافة المركز", "🏗️ صيانة مطلوبة"] : ["✨ إدارة ممتازة"];
-        else if (targetType === 'vehicle') items = type === 'complaint' ? ["🔧 صيانة مطلوبة", "🧰 تجهيزات ناقصة"] : ["🚑 جاهزية تامة"];
-        else items = type === 'complaint' ? ["📦 نقص كمية", "📅 قرب انتهاء الصلاحية"] : ["📦 مخزون ممتاز"];
-
-        el.innerHTML = items.map(t => `<div class="chip-3d" onclick="toggleChip(this, '${t}')">${t}</div>`).join("");
+        area.innerHTML = targetHtml;
+        
+        const types = (master[targetType] || []);
+        chips.innerHTML = types.map(t => `<div class="chip-3d" onclick="toggleChip(this, '${t}')" style="display:inline-block; padding:8px 14px; border-radius:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); margin:4px; cursor:pointer; font-size:12px;">${t}</div>`).join("") || '<span style="opacity:0.5; font-size:11px;">لا يوجد أنواع مسجلة</span>';
     }
 
     function toggleChip(el, val) {
         el.classList.toggle("selected");
-        if (el.classList.contains("selected")) { selectedIssueTypes.push(val); if(navigator.vibrate) navigator.vibrate(20); }
-        else { selectedIssueTypes = selectedIssueTypes.filter(x => x !== val); }
-    }
-
-    let isListening = false;
-    let recognitionInstance = null;
-    function toggleVoice(targetId, btn) {
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SR) {
-            return alert("متصفحك لا يدعم الكتابة بالصوت. جرب متصفح Chrome أو Safari.");
+        if (el.classList.contains("selected")) {
+            el.style.background = "linear-gradient(135deg, var(--gold), var(--gold-light))";
+            el.style.color = "var(--teal-deep)";
+            el.style.fontWeight = "900";
+            selectedIssueTypes.push(val);
+        } else {
+            el.style.background = "rgba(255,255,255,0.05)";
+            el.style.color = "#fff";
+            el.style.fontWeight = "600";
+            selectedIssueTypes = selectedIssueTypes.filter(x => x !== val);
         }
-
-        if (isListening) { 
-            isListening = false; btn.classList.remove("recording"); btn.innerText = "🎤"; 
-            if(recognitionInstance) recognitionInstance.stop();
-            return; 
-        }
-        
-        alert("سيتم طلب إذن المايك الآن. يرجى الضغط على 'سماح' (Allow) عند ظهور النافذة.");
-        
-        const recognition = new SR();
-        recognitionInstance = recognition;
-        recognition.lang = 'ar-OM';
-        recognition.continuous = true;
-        recognition.interimResults = false;
-        
-        recognition.onstart = () => { isListening = true; btn.classList.add("recording"); btn.innerText = "🔴"; };
-        recognition.onresult = (event) => {
-            const text = event.results[event.results.length - 1][0].transcript;
-            const el = document.getElementById(targetId);
-            if(el) el.value += " " + text;
-        };
-        recognition.onerror = (e) => { 
-            alert("تعذر الاستماع: " + e.error + "\nيرجى التأكد من إعطاء الصلاحية للمتصفح."); 
-            isListening = false; btn.classList.remove("recording"); btn.innerText = "🎤"; 
-        };
-        recognition.onend = () => { isListening = false; btn.classList.remove("recording"); btn.innerText = "🎤"; };
-        recognition.start();
-    }
-
-    function getLocation() {
-        const statusEl = document.getElementById("gpsStatus");
-        statusEl.innerText = "📍 جاري تحديد الموقع... (سيظهر تنبيه للسماح)";
-        statusEl.style.color = "var(--gold-light)";
-        
-        if (!navigator.geolocation) {
-            statusEl.innerText = "❌ جهازك لا يدعم الموقع";
-            statusEl.style.color = "var(--red-light)";
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                statusEl.innerText = `✅ تم تحديد الموقع (±${Math.round(pos.coords.accuracy)} متر)`;
-                statusEl.style.color = "var(--green-light)";
-            },
-            (err) => {
-                let msg = "❌ فشل التحديد. ";
-                if (err.code === 1) msg += "الرجاء السماح بالوصول للموقع من إعدادات المتصفح.";
-                else if (err.code === 2) msg += "الإشارة ضعيفة، جرب الخروج لمكان مفتوح.";
-                else msg += "انتهت المهلة.";
-                statusEl.innerText = msg;
-                statusEl.style.color = "var(--red-light)";
-                alert(msg); // تنبيه إجباري للهاتف
-            },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-        );
     }
 
     function submitEntry(type) {
-        const targetName = document.getElementById("entryTargetName").value;
-        const desc = document.getElementById("entryDesc").value.trim();
-        const center = document.getElementById("entryCenter") ? document.getElementById("entryCenter").value : "";
+        const targetName = document.getElementById("entryTargetName")?.value || "-";
+        const desc = document.getElementById("entryDesc")?.value.trim() || "";
+        const rec = document.getElementById("entryRecommendation")?.value.trim() || "";
+        const targetType = document.getElementById("entryTargetType").value;
 
-        if (!targetName) return showToast("اختر الهدف", "danger");
-        if (!desc) return showToast("الوصف مطلوب", "danger");
-        if (selectedIssueTypes.length === 0) return showToast("اختر نوع الإجراء", "danger");
+        if (!desc) return showToast("أدخل الوصف", "danger");
+        if (selectedIssueTypes.length === 0) return showToast("اختر نوع البلاغ", "danger");
 
+        const isPraise = type === 'praise';
         db.collection("issues").add({
-            type: type, isPraise: type === 'praise',
-            targetType: currentTargetType, targetName: targetName, centerName: center,
-            issueTypes: selectedIssueTypes, description: desc,
-            supervisor: user.name, sector: user.sector, status: 'new', timestamp: new Date(),
+            type: type, isPraise: isPraise,
+            targetType: targetType, targetName: targetName,
+            issueType: isPraise ? selectedIssueTypes.join(" • ") : null,
+            praiseType: isPraise ? selectedIssueTypes.join(" • ") : null,
+            description: desc,
+            recommendation: rec,
+            supervisor: user.name, sector: user.sector,
+            status: 'new', timestamp: new Date(),
             location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
-        }).then(() => { showToast("تم الحفظ بنجاح"); closeModal(); loadData(); }).catch(err => showToast("خطأ: " + err.message, "danger"));
+        }).then(() => { showToast("تم الحفظ"); closeModal(); loadData(); });
     }
 
     function startVisit() {
-        document.getElementById("modalTitle").innerText = "📋 تسجيل زيارة مركز";
+        document.getElementById("modalTitle").innerText = "📋 تسجيل زيارة";
         document.getElementById("modalBody").innerHTML = `
             <label>المركز</label>
-            <select id="visitCenter"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option></select>
-            <label>ملاحظات الزيارة</label>
-            <div class="input-with-btn">
-                <textarea id="visitNotes" rows="4" placeholder="اكتب ملاحظاتك..."></textarea>
-                <button class="mic-btn" onclick="toggleVoice('visitNotes', this)">🎤</button>
-            </div>
-            <div class="modal-actions">
-                <button class="btn success" onclick="submitVisit()">💾 حفظ</button>
-                <button class="btn secondary" onclick="closeModal()">إغلاق</button>
-            </div>
+            <select id="visitCenter"><option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option><option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option></select>
+            <label>ملاحظات</label>
+            <textarea id="visitNotes" rows="4"></textarea>
+            <button class="btn success block" onclick="submitVisit()">💾 حفظ</button>
+            <button class="btn secondary block" onclick="closeModal()">إغلاق</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
     }
@@ -503,35 +415,11 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     function submitVisit() {
         const center = document.getElementById("visitCenter").value;
         const notes = document.getElementById("visitNotes").value.trim();
-        if (!notes) return showToast("الملاحظات مطلوبة", "danger");
+        if (!notes) return showToast("أدخل الملاحظات", "danger");
         db.collection("issues").add({
             type: 'visit', isPraise: false, centerName: center, description: notes,
-            supervisor: user.name, sector: user.sector, status: 'new', timestamp: new Date(),
-            location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
-        }).then(() => { showToast("تم حفظ الزيارة"); closeModal(); loadData(); });
-    }
-
-    function openShiftHandover() {
-        document.getElementById("modalTitle").innerText = "🔄 استلام / تسليم الدوام";
-        document.getElementById("modalBody").innerHTML = `
-            <div class="input-with-btn">
-                <textarea id="handoverNotes" rows="4" placeholder="ملاحظاتك للمشرف القادم..."></textarea>
-                <button class="mic-btn" onclick="toggleVoice('handoverNotes', this)">🎤</button>
-            </div>
-            <div class="modal-actions">
-                <button class="btn warning" onclick="submitHandover()">✅ تأكيد الاستلام</button>
-                <button class="btn secondary" onclick="closeModal()">إغلاق</button>
-            </div>
-        `;
-        document.getElementById("modalOverlay").classList.add("show");
-    }
-
-    function submitHandover() {
-        const notes = document.getElementById("handoverNotes").value.trim();
-        if (!notes) return showToast("أدخل ملاحظات", "danger");
-        db.collection("handovers").add({ supervisor: user.name, notes: notes, timestamp: new Date() }).then(() => {
-            showToast("تم تسجيل الدوام"); closeModal(); 
-        });
+            supervisor: user.name, sector: user.sector, status: 'new', timestamp: new Date()
+        }).then(() => { showToast("تم الحفظ"); closeModal(); loadData(); });
     }
 
     function loadChat() {
@@ -556,9 +444,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection("messages").add({ sender: user.name, text: text, timestamp: new Date() });
     }
 
+    function manualRefresh() { showToast("تحديث..."); loadData(); }
     function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
-    function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
-    function toggleSOS() { if(confirm("🚨 هل أنت في خطر؟ سيتم إرسال تنبيه.")) { showToast("تم إرسال الاستغاثة!", "danger"); } }
+    function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; } }
 
     loadData();
 </script>
