@@ -8,7 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
-:root { --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814; --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252; --amber:#fb8c00; --blue:#29b6f6; --purple:#ab47bc; --surface:rgba(13,74,66,0.55); --border:rgba(151,141,91,0.3); --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px); }
+:root {
+  --gold:#978d5b; --gold-light:#d4c896; --gold-bright:#e8dcaf;
+  --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814;
+  --green:#43a047; --green-light:#69f0ae;
+  --red:#e53935; --red-light:#ff5252;
+  --amber:#fb8c00; --amber-light:#ffa726;
+  --blue:#29b6f6; --blue-light:#64b5f6;
+  --surface:rgba(13,74,66,0.55); --border:rgba(151,141,91,0.3);
+  --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
 html, body { background:var(--teal-deep); color:#fff; font-weight:600; overflow-x:hidden; }
 body { min-height:100vh; padding-bottom:calc(88px + var(--safe-bottom)); }
 body::before { content:''; position:fixed; inset:0; z-index:-1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
@@ -18,12 +27,12 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 #mainApp { display:none; } #mainApp.ready { display:block; }
 
 /* الشريط العلوي */
-.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; }
+.topbar { position:sticky; top:0; z-index:100; padding:calc(12px + var(--safe-top)) 16px 12px; background:linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom:2px solid var(--gold); display:flex; align-items:center; gap:8px; backdrop-filter:blur(20px); }
 .topbar-logo { width:44px; height:44px; border-radius:12px; object-fit:contain; background:#fff; padding:2px; }
 .topbar-info { flex:1; }
 .topbar-info h1 { font-size:14px; color:var(--gold-light); font-weight:900; }
 .topbar-info p { font-size:10px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; margin-top:3px; }
-.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); box-shadow:0 0 8px var(--green-light); }
+.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green-light); }
 .icon-btn { width:42px; height:42px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,0.06); color:#fff; font-size:17px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 .icon-btn.danger { background:rgba(198,40,40,0.4); border-color:var(--red-light); }
 
@@ -49,34 +58,49 @@ body::before { content:''; position:fixed; inset:0; z-index:-1; background: radi
 .stat-mini .num { font-size:26px; font-weight:900; color:var(--gold-light); line-height:1; }
 .stat-mini .lbl { font-size:11px; color:rgba(255,255,255,0.7); margin-top:5px; }
 
-/* الأزرار والمدخلات */
+/* الأزرار */
 .btn { padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); font-size:13px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; }
+.btn.secondary { background:rgba(255,255,255,0.08); color:#fff; border:1px solid var(--border); }
 .btn.danger { background:linear-gradient(135deg, var(--red), var(--red-light)); color:#fff; }
-.btn.success { background:linear-gradient(135deg, var(--green), var(--green-light)); color:#041814; }
-.btn.info { background:linear-gradient(135deg, var(--blue), #64b5f6); color:#fff; }
+.btn.info { background:linear-gradient(135deg, var(--blue), var(--blue-light)); color:#fff; }
+.btn.success { background:linear-gradient(135deg, var(--green), var(--green-light)); color:#041814); }
 .btn.small { padding:8px 14px; font-size:11px; }
 .btn.block { width:100%; }
 
-input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-weight:600; outline:none; margin-bottom:12px; font-family:'Cairo'; }
+/* المدخلات */
+input, select, textarea { width:100%; padding:12px 14px; background:rgba(4,24,20,0.7); border:1px solid var(--border); border-radius:11px; color:#fff; font-size:13px; font-weight:600; outline:none; margin-bottom:12px; }
 input:focus, textarea:focus, select:focus { border-color:var(--gold); }
+select option { background:var(--teal-deep); color:#fff; }
 label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight:700; margin-bottom:7px; }
 
 /* البطاقات */
 .item-card { background:linear-gradient(145deg, rgba(13,74,66,0.6), rgba(4,24,20,0.9)); border:1px solid var(--border); border-right:4px solid var(--gold); border-radius:14px; padding:14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px; }
-.item-card.blue { border-right-color:var(--blue); } .item-card.green { border-right-color:var(--green-light); } .item-card.red { border-right-color:var(--red); } .item-card.amber { border-right-color:var(--amber); }
-.item-info { flex:1; min-width::0rg; }
-.item-info h4ba { font-size:14(px; font-weight:41900; color:var(--gold-light); margin-bottom:4px; }
+.item-card.blue { border-right-color:var(--blue); }
+.item-card.green { border-right-color:var(--green-light); }
+.item-card.red { border-right-color:var(--red); }
+.item-card.amber { border-right-color:var(--amber); }
+.item-info { flex:1; min-width:0; }
+.item-info h4 { font-size:14px; font-weight:900; color:var(--gold-light); margin-bottom:4px; }
 .item-info p { font-size:11px; color:rgba(255,255,255,0.65); line-height:1.6; }
 .item-actions { display:flex; gap:6px; }
 .icon-btn-sm { width:32px; height:32px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px; }
-.icon-btn-sm.edit { background,182,246,0.2); color:#64b5f6; }
+.icon-btn-sm.edit { background:rgba(41,182,246,0.2); color:#64b5f6; }
 .icon-btn-sm.delete { background:rgba(229,57,53,0.2); color:#ff5252; }
 .icon-btn-sm.copy { background:rgba(151,141,91,0.2); color:var(--gold-light); }
 
 /* التنبيهات */
 .toast-container { position:fixed; top:90px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; width:calc(100% - 32px); max-width:420px; }
 .toast { background:linear-gradient(135deg, var(--teal), var(--teal-dark)); color:#fff; padding:12px 18px; border-radius:12px; border:1px solid var(--gold); font-size:13px; font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.6); }
-.toast.success { border-color:var(--green-light); } .toast.danger { border-color:var(--red-light); }
+.toast.success { border-color:var(--green-light); }
+.toast.danger { border-color:var(--red-light); }
+
+/* جدول الدوام */
+.duty-table { width:100%; border-collapse:collapse; font-size:10px; }
+.duty-table th, .duty-table td { border:1px solid rgba(151,141,91,0.2); padding:4px; text-align:center; }
+.duty-table th { background:rgba(13,74,66,0.8); color:var(--gold-light); font-weight:900; }
+.duty-table td { background:rgba(0,0,0,0.3); }
+.duty-table th.weekend { background:rgba(229,57,53,0.3); color:#ff8a80; }
+.duty-table td select { padding:3px; margin:0; font-size:10px; background:transparent; border:none; min-width:36px; width:auto; }
 
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
@@ -88,12 +112,12 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="color:var(--gold-light); font-weight:900;">جاري التحقق من الصلاحيات...</div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري تحميل النظام...</div>
 </div>
 
 <div id="mainApp">
   <div class="topbar">
-    <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo">
+    <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" class="topbar-logo" alt="الشعار" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/National_emblem_of_Oman.svg/200px-National_emblem_of_Oman.svg.png'">
     <div class="topbar-info">
       <h1>الإدارة العامة</h1>
       <p><span class="status-dot"></span><span id="currentUser">المدير العام</span></p>
@@ -108,12 +132,14 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
+      <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')">📅 الدوام</button>
       <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 الإشكالات</button>
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
+      <button class="tab-btn" data-tab="master" onclick="switchTab('master')">⚙️ البيانات</button>
     </div>
   </div>
 
-  <!-- 1. لوحة القيادة -->
+  <!-- لوحة القيادة -->
   <div class="page active" id="page-dashboard">
     <div class="stats-grid four">
       <div class="stat-mini blue"><span class="stat-icon">👨‍💼</span><div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div></div>
@@ -121,16 +147,12 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
       <div class="stat-mini amber"><span class="stat-icon">🚑</span><div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div></div>
       <div class="stat-mini red"><span class="stat-icon">🚩</span><div class="num" id="dashIssues">0</div><div class="lbl">الإشكالات</div></div>
     </div>
-    <div class="card">
-      <div class="card-title">📡 آخر الإشكالات الواردة</div>
-      <div id="dashFeed">جاري التحميل...</div>
-    </div>
   </div>
 
-  <!-- 2. المشرفون -->
+  <!-- المشرفون -->
   <div class="page" id="page-supervisors">
     <div class="card">
-      <div class="card-title">➕ إضافة مشرف (توليد كود فوري)</div>
+      <div class="card-title">➕ إضافة مشرف</div>
       <input type="text" id="supName" placeholder="اسم المشرف">
       <select id="supSector">
         <option value="قطاع A">قطاع A</option>
@@ -144,7 +166,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     </div>
   </div>
 
-  <!-- 3. المسعفون -->
+  <!-- المسعفون -->
   <div class="page" id="page-paramedics">
     <div class="card">
       <div class="card-title">➕ إضافة مسعف</div>
@@ -158,7 +180,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     </div>
   </div>
 
-  <!-- 4. المركبات -->
+  <!-- المركبات -->
   <div class="page" id="page-vehicles">
     <div class="card">
       <div class="card-title">➕ إضافة مركبة</div>
@@ -172,7 +194,19 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     </div>
   </div>
 
-  <!-- 5. الإشكالات -->
+  <!-- الدوام -->
+  <div class="page" id="page-duty">
+    <div class="card">
+      <div class="card-title">📅 جدول الدوام الشهري</div>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <input type="month" id="dutyMonth" onchange="loadDutyTable()" style="margin-bottom:0;flex:1;">
+        <button class="btn small" onclick="printDutyTable()" style="flex-shrink:0; background:var(--blue);">🖨️ طباعة</button>
+      </div>
+      <div style="overflow-x:auto;" id="dutyTableContainer"></div>
+    </div>
+  </div>
+
+  <!-- الإشكالات -->
   <div class="page" id="page-issues">
     <div class="card">
       <div class="card-title">🚩 الإشكالات والإشادات</div>
@@ -180,7 +214,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     </div>
   </div>
 
-  <!-- 6. التعاميم -->
+  <!-- التعاميم -->
   <div class="page" id="page-broadcasts">
     <div class="card">
       <div class="card-title">📢 إرسال تعميم</div>
@@ -191,6 +225,16 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     <div class="card">
       <div class="card-title">📜 التعاميم السابقة</div>
       <div id="bcList"></div>
+    </div>
+  </div>
+
+  <!-- البيانات الأساسية -->
+  <div class="page" id="page-master">
+    <div class="card">
+      <div class="card-title">⚙️ أنواع الإشكالات (للمشرف)</div>
+      <input type="text" id="masterIssue" placeholder="نوع الإشكالية (مثال: نقص أدوية)">
+      <button class="btn small success" onclick="addMaster('issue_types')">➕ إضافة</button>
+      <div id="listMasterIssues" style="margin-top:10px;"></div>
     </div>
   </div>
 </div>
@@ -219,6 +263,9 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").textContent = user.name || "المدير العام";
+    
+    // تعيين الشهر الحالي للدوام
+    document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
 
     function showToast(msg, type="success") {
         const c = document.getElementById("toastContainer");
@@ -236,10 +283,11 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
         document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
         loadData();
+        if (id === 'duty') loadDutyTable();
     }
 
     function loadData() {
-        loadStats(); loadSups(); loadParams(); loadVehicles(); loadIssues(); loadBroadcasts();
+        loadStats(); loadSups(); loadParams(); loadVehicles(); loadIssues(); loadBroadcasts(); loadMaster();
     }
 
     function loadStats() {
@@ -255,7 +303,7 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
             s.forEach(d => {
                 const data = d.data();
                 html += `<div class="item-card blue">
-                    <div class="item-info"><h4>👨‍💼 ${data.name}</h4><p>القطاع: ${data.sector || '-'}</p></div>
+                    <div class="item-info"><h4>👨‍💼 ${data.name}</h4><p>قطاع: ${data.sector || '-'}</p></div>
                     <div class="item-actions">
                         <button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${data.code}'); showToast('تم النسخ: ${data.code}')">${data.code}</button>
                         <button class="icon-btn-sm delete" onclick="deleteDoc('access_code', '${d.id}')">🗑️</button>
@@ -310,7 +358,6 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
                 }
             });
             document.getElementById("issuesList").innerHTML = html || "لا يوجد إشكالات";
-            document.getElementById("dashFeed").innerHTML = html || "لا يوجد نشاطات";
         }).catch(()=>{});
     }
 
@@ -328,6 +375,21 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
         }).catch(()=>{});
     }
 
+    function loadMaster() {
+        db.collection("issue_types").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card" style="padding:8px; margin-bottom:4px;">
+                    <div class="item-info"><h4 style="font-size:12px;">${data.name}</h4></div>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issue_types', '${d.id}')">🗑️</button>
+                </div>`;
+            });
+            document.getElementById("listMasterIssues").innerHTML = html || "لا يوجد أنواع";
+        }).catch(()=>{});
+    }
+
+    // الإضافة
     function addSupervisor() {
         const name = document.getElementById("supName").value.trim();
         const sector = document.getElementById("supSector").value;
@@ -368,6 +430,15 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
         });
     }
 
+    function addMaster(col) {
+        const input = document.getElementById("masterIssue");
+        const name = input.value.trim();
+        if (!name) return showToast("أدخل النوع", "danger");
+        db.collection(col).add({ name }).then(() => {
+            showToast("تمت الإضافة"); input.value = ""; loadData();
+        });
+    }
+
     function deleteDoc(col, id) {
         if (confirm("هل أنت متأكد من الحذف؟")) {
             db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); loadData(); });
@@ -376,6 +447,65 @@ label { display:block; font-size:12px; color:rgba(255,255,255,0.85); font-weight
 
     function manualRefresh() { showToast("تحديث..."); loadData(); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
+
+    // ==========================================
+    // نظام الدوام السحابي (Firestore)
+    // ==========================================
+    const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "إجازة أخرى" };
+
+    function loadDutyTable() {
+        const month = document.getElementById("dutyMonth").value;
+        if (!month) return;
+        const [year, m] = month.split("-");
+        const days = new Date(year, m, 0).getDate();
+        
+        db.collection("access_code").where("type", "==", "supervisor").get().then(snap => {
+            if (snap.empty) { document.getElementById("dutyTableContainer").innerHTML = '<div class="empty">لا يوجد مشرفون</div>'; return; }
+            
+            let html = '<table class="duty-table"><thead><tr><th>م</th>';
+            for (let d = 1; d <= days; d++) {
+                const dow = new Date(year, m-1, d).getDay();
+                const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : '';
+                html += `<th${wk}>${d}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+
+            db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
+                const dutyData = {};
+                dutySnap.forEach(d => { dutyData[d.data().supervisorCode] = d.data().shifts || {}; });
+
+                snap.forEach(doc => {
+                    const s = doc.data();
+                    const shifts = dutyData[s.code] || {};
+                    html += `<tr><td style="text-align:right;padding:6px;font-weight:900;font-size:10px;">${s.name}</td>`;
+                    for (let d = 1; d <= days; d++) {
+                        const val = shifts[d] || "";
+                        html += `<td><select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)"><option value="">—</option>${Object.keys(DUTY_CODES).map(c => `<option value="${c}" ${val===c?"selected":""}>${c}</option>`).join("")}</select></td>`;
+                    }
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                document.getElementById("dutyTableContainer").innerHTML = html;
+            });
+        });
+    }
+
+    async function updateDuty(month, code, name, day, val) {
+        const docId = `${month}_${code}`;
+        const docRef = db.collection("duty_schedule").doc(docId);
+        try {
+            const doc = await docRef.get();
+            let shifts = doc.exists ? (doc.data().shifts || {}) : {};
+            shifts[day] = val;
+            await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() });
+            showToast("تم حفظ الدوام في السحابة");
+        } catch(e) { showToast("خطأ في الحفظ: " + e.message, "danger"); }
+    }
+
+    function printDutyTable() {
+        showToast("جاري التحضير للطباعة...", "info");
+        setTimeout(() => window.print(), 1000);
+    }
 
     loadData();
 </script>
