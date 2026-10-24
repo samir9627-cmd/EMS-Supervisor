@@ -4,13 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>الإدارة العامة — النظام المتكامل V25</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>الإدارة العامة — النظام المتكامل V27</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-/* ═══════════ المتغيرات ═══════════ */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 :root {
   --gold: #978d5b; --gold-light: #d4c896; --gold-bright: #f5e6b3;
@@ -20,158 +16,80 @@
   --amber: #fb8c00; --amber-light: #ffa726;
   --blue: #29b6f6; --blue-light: #64b5f6;
   --border: rgba(151,141,91,0.3);
-  --card-bg: rgba(13,74,66,0.3);
-  --text: #fff;
-  --text-dim: rgba(255,255,255,0.7);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
-
-/* 🎨 Light Mode */
-body.light {
-  --teal-deep: #f5f1e8;
-  --teal-dark: #e8e0d0;
-  --teal: #d4c896;
-  --card-bg: rgba(255,255,255,0.85);
-  --text: #082b26;
-  --text-dim: rgba(8,43,38,0.7);
-  --border: rgba(151,141,91,0.4);
-  --gold-light: #6b6030;
-  --gold-bright: #978d5b;
-}
-
-html, body { background: var(--teal-deep); color: var(--text); font-weight: 600; overflow-x: hidden; }
-body { min-height: 100vh; padding-bottom: calc(88px + var(--safe-bottom)); transition: background 0.4s; }
+html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
+body { min-height: 100vh; padding-bottom: calc(88px + var(--safe-bottom)); }
 body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
-body.light::before { background: linear-gradient(180deg, #f5f1e8 0%, #e8e0d0 50%, #f5f1e8 100%); }
 
-/* ═══════════ الأنيميشن ═══════════ */
 @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 @keyframes spin { to { transform:rotate(360deg); } }
-@keyframes shimmer { 0%{background-position:-468px 0;} 100%{background-position:468px 0;} }
-@keyframes gradientShift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-@keyframes slideIn { from{transform:translateX(400px);opacity:0;} to{transform:translateX(0);opacity:1;} }
-@keyframes sparklineGrow { from{transform:scaleY(0);} to{transform:scaleY(1);} }
-
 #mainApp { display:none; } #mainApp.ready { display:block; }
 
-/* ═══════════ الشريط العلوي ═══════════ */
-.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: rgba(4,24,20,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-body.light .topbar { background: rgba(245,241,232,0.9); }
-.topbar-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: #fff; padding: 3px; box-shadow: 0 0 20px rgba(151,141,91,0.4); }
-.topbar-info { flex: 1; min-width:0; }
-.topbar-info h1 { font-size: 16px; color: var(--gold-light); font-weight: 900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.topbar-info p { font-size: 11px; color: var(--text-dim); margin-top: 2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text); font-size: 17px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink:0; }
-.icon-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: rgba(4,24,20,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.topbar-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: #fff; padding: 3px; }
+.topbar-info { flex: 1; }
+.topbar-info h1 { font-size: 16px; color: var(--gold-light); font-weight: 900; }
+.topbar-info p { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+.icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: #fff; font-size: 17px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .icon-btn.danger { background: rgba(229,57,53,0.3); border-color: var(--red-light); }
-body.light .icon-btn { background: rgba(0,0,0,0.05); }
 
-/* ═══════════ التبويبات ═══════════ */
 .tabs-bar { position: sticky; top: calc(70px + var(--safe-top)); z-index: 98; background: rgba(4,24,20,0.9); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
-body.light .tabs-bar { background: rgba(245,241,232,0.95); }
 .tabs-bar::-webkit-scrollbar { display: none; }
 .tabs-scroll { display: flex; gap: 8px; padding: 10px 16px; min-width: max-content; }
-.tab-btn { flex-shrink: 0; padding: 8px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(151,141,91,0.2); border-radius: 20px; color: var(--text-dim); font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
-.tab-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; box-shadow: 0 4px 12px rgba(151,141,91,0.3); }
-.tab-btn .badge-count { background: var(--red); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 900; }
+.tab-btn { flex-shrink: 0; padding: 8px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(151,141,91,0.2); border-radius: 20px; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
+.tab-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; }
 
-/* ═══════════ الصفحات ═══════════ */
 .page { display: none; padding: 16px; max-width: 900px; margin: 0 auto; animation: slideUp 0.4s ease-out; }
 .page.active { display: block; }
 
-/* ═══════════ البطاقات ═══════════ */
-.card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 16px; transition: 0.3s; }
-body.light .card { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.card-title { font-size: 15px; color: var(--gold-light); font-weight: 900; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(151,141,91,0.2); display: flex; justify-content: space-between; align-items: center; gap:10px; }
+.card { background: rgba(13,74,66,0.3); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 16px; }
+.card-title { font-size: 15px; color: var(--gold-light); font-weight: 900; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(151,141,91,0.2); display: flex; justify-content: space-between; align-items: center; }
 
-/* ═══════════ الإحصائيات + Sparkline ═══════════ */
 .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
 @media (min-width:600px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
-.stat-mini { position:relative; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)); border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; overflow:hidden; transition:0.3s; }
-.stat-mini:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(151,141,91,0.2); }
-.stat-mini .num { font-size: 28px; font-weight: 900; color: var(--gold-light); position:relative; z-index:2; }
-.stat-mini .lbl { font-size: 11px; color: var(--text-dim); margin-top: 5px; position:relative; z-index:2; }
-.stat-mini .sparkline { position:absolute; bottom:0; left:0; right:0; height:30px; opacity:0.3; }
-.stat-mini .sparkline svg { width:100%; height:100%; }
-.stat-mini .sparkline polyline { stroke: var(--gold-bright); stroke-width:2; fill:none; }
-.stat-mini .sparkline polygon { fill: var(--gold-bright); opacity:0.3; }
+.stat-mini { background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)); border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; }
+.stat-mini .num { font-size: 28px; font-weight: 900; color: var(--gold-light); }
+.stat-mini .lbl { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; }
 
-/* ═══════════ النشاط الحي ═══════════ */
-.activity-item { display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; background:rgba(0,0,0,0.1); margin-bottom:6px; animation:slideUp 0.3s; }
-body.light .activity-item { background:rgba(0,0,0,0.03); }
-.activity-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; animation:pulse 2s infinite; }
-
-/* ═══════════ المدخلات ═══════════ */
-input, select, textarea { width: 100%; padding: 14px; background: rgba(4,24,20,0.6); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 14px; transition:0.2s; font-family:inherit; }
-body.light input, body.light select, body.light textarea { background: rgba(255,255,255,0.8); }
-input:focus, select:focus, textarea:focus { border-color: var(--gold); box-shadow:0 0 0 3px rgba(151,141,91,0.2); }
+input, select, textarea { width: 100%; padding: 14px; background: rgba(4,24,20,0.6); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; font-weight: 600; outline: none; margin-bottom: 14px; }
+input:focus, select:focus, textarea:focus { border-color: var(--gold); }
 label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px; }
 
-/* ═══════════ الأزرار ═══════════ */
-.btn { padding: 12px 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition:0.2s; font-family:inherit; }
-.btn:hover { transform:translateY(-1px); box-shadow:0 4px 15px rgba(151,141,91,0.4); }
-.btn:active { transform:translateY(0); }
-.btn:disabled { opacity:0.5; cursor:not-allowed; transform:none !important; }
+.btn { padding: 12px 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn.block { width: 100%; }
 .btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); }
 .btn.danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
-.btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: var(--text); }
+.btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; }
 .btn.small { padding: 8px 14px; font-size: 11px; }
-body.light .btn.secondary { background: rgba(0,0,0,0.05); }
 
-/* ═══════════ عناصر القائمة ═══════════ */
-.item-card { background: rgba(13,74,66,0.4); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; transition:0.2s; }
-body.light .item-card { background: rgba(255,255,255,0.7); }
-.item-card:hover { transform:translateX(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-.item-info { flex: 1; min-width:0; }
-.item-info h4 { font-size: 14px; font-weight: 900; color: var(--text); margin-bottom: 4px; overflow:hidden; text-overflow:ellipsis; }
-.item-info p { font-size: 11px; color: var(--text-dim); }
-.item-actions { display: flex; gap: 6px; flex-shrink:0; }
-.icon-btn-sm { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition:0.2s; }
-.icon-btn-sm:hover { transform:scale(1.1); }
+.item-card { background: rgba(13,74,66,0.4); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.item-info { flex: 1; }
+.item-info h4 { font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.item-info p { font-size: 11px; color: rgba(255,255,255,0.6); }
+.item-actions { display: flex; gap: 6px; }
+.icon-btn-sm { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; }
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red-light); }
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue-light); }
 .icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold-light); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
 
-/* ═══════════ Skeleton Loading ═══════════ */
-.skeleton { background: linear-gradient(90deg, rgba(151,141,91,0.1) 0%, rgba(151,141,91,0.25) 50%, rgba(151,141,91,0.1) 100%); background-size: 468px 100%; animation: shimmer 1.5s infinite linear; border-radius: 8px; height: 60px; margin-bottom: 10px; }
-
-/* ═══════════ التنبيهات ═══════════ */
 .toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
-.toast { background: rgba(13,74,66,0.95); backdrop-filter: blur(10px); color: #fff; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; text-align: center; animation: slideIn 0.4s; }
+.toast { background: rgba(13,74,66,0.95); backdrop-filter: blur(10px); color: #fff; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; text-align: center; }
 .toast.success { border-color: var(--green-light); }
 .toast.danger { border-color: var(--red-light); }
-.toast.info { border-color: var(--blue-light); }
 
-/* ═══════════ Loading ═══════════ */
-#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; transition: opacity 0.4s; }
+#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:50px; height:50px; border:4px solid rgba(151,141,91,0.2); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
 
-/* ═══════════ جدول الدوام ═══════════ */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); }
-body.light .duty-table-wrapper { background: rgba(255,255,255,0.6); }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
 .duty-table th { background: var(--teal-dark); color: var(--gold-light); position: sticky; top: 0; z-index: 10; }
-body.light .duty-table th { background: var(--teal-dark); color: #6b6030; }
 .duty-table td:first-child, .duty-table th:first-child { position: sticky; right: 0; background: var(--teal-dark); z-index: 20; min-width: 160px; text-align: right; font-weight: 900; color: var(--gold-light); box-shadow: -2px 0 5px rgba(0,0,0,0.5); }
-body.light .duty-table td:first-child { background: var(--teal-dark); color: #6b6030; }
 .duty-table th.weekend { background: rgba(229,57,53,0.4); color: #fff; }
-.duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold-light); font-weight: 900; text-align: center; -webkit-appearance: none; cursor:pointer; }
-body.light .duty-table select { color: #6b6030; }
-.duty-table td.saving { background: rgba(251,140,0,0.2) !important; animation:pulse 1s infinite; }
+.duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold-light); font-weight: 900; text-align: center; -webkit-appearance: none; }
 
-/* ═══════════ البحث ═══════════ */
-.search-input { position:relative; }
-.search-input input { padding-right: 42px; }
-.search-input::before { content:'🔍'; position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:16px; opacity:0.5; pointer-events:none; }
-
-/* ═══════════ اختصارات لوحة المفاتيح ═══════════ */
-.kbd { display:inline-block; padding:2px 6px; background:rgba(255,255,255,0.1); border:1px solid var(--border); border-radius:4px; font-size:10px; font-family:monospace; }
-
-/* ═══════════ الطباعة ═══════════ */
 #printArea { display: none; }
 @media print {
   body * { visibility: hidden; }
@@ -188,15 +106,6 @@ body.light .duty-table select { color: #6b6030; }
   .print-table td { padding: 8px; border: 1px solid #ddd; text-align: center; color: #333; }
   .print-footer { margin-top: 30px; padding-top: 15px; border-top: 1px dashed #978d5b; text-align: center; font-size: 10px; color: #666; }
 }
-
-/* ═══════════ Mini Modal (بحث سريع) ═══════════ */
-#quickSearchModal { display:none; position:fixed; inset:0; z-index:5000; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); align-items:flex-start; justify-content:center; padding-top:15vh; }
-#quickSearchModal.open { display:flex; }
-.quick-search-box { width:90%; max-width:600px; background:var(--teal-dark); border:2px solid var(--gold); border-radius:16px; padding:20px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
-.quick-search-box input { font-size:16px; margin-bottom:12px; }
-.quick-search-results { max-height:400px; overflow-y:auto; }
-.quick-result { padding:10px; border-radius:8px; cursor:pointer; margin-bottom:4px; }
-.quick-result:hover { background:rgba(151,141,91,0.2); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -204,8 +113,8 @@ body.light .duty-table select { color: #6b6030; }
 <body>
 
 <div id="loadingOverlay">
-  <div class="spinner"></div>
-  <div style="color:var(--gold-light); font-weight:900;">جاري تهيئة النظام V25...</div>
+    <div class="spinner"></div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري تهيئة النظام المتكامل...</div>
 </div>
 
 <div id="mainApp">
@@ -215,22 +124,21 @@ body.light .duty-table select { color: #6b6030; }
       <h1 id="systemName">الإدارة العامة</h1>
       <p><span id="currentUser">المدير العام</span></p>
     </div>
-    <button class="icon-btn" onclick="toggleTheme()" title="تبديل المظهر" id="themeBtn">🌙</button>
-    <button class="icon-btn" onclick="openQuickSearch()" title="بحث سريع (Ctrl+K)">🔍</button>
-    <button class="icon-btn danger" onclick="logout()" title="خروج">🚪</button>
+    <button class="icon-btn" onclick="manualRefresh()">🔄</button>
+    <button class="icon-btn danger" onclick="logout()">🚪</button>
   </div>
 
   <div class="tabs-bar">
-    <div class="tabs-scroll" id="tabsScroll">
+    <div class="tabs-scroll">
       <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 القيادة</button>
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
       <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')">📅 الدوام</button>
-      <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 البلاغات <span class="badge-count" id="issuesBadge" style="display:none;"></span></button>
-      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات</button>
+      <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 البلاغات</button>
+      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات المشرفين</button>
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
-      <button class="tab-btn" data-tab="types" onclick="switchTab('types')">⚙️ الأساسية</button>
+      <button class="tab-btn" data-tab="types" onclick="switchTab('types')">⚙️ البيانات الأساسية</button>
       <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📈 التقارير</button>
       <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">🔧 الإعدادات</button>
     </div>
@@ -239,90 +147,65 @@ body.light .duty-table select { color: #6b6030; }
   <!-- 1. لوحة القيادة -->
   <div class="page active" id="page-dashboard">
     <div class="stats-grid">
-      <div class="stat-mini">
-        <div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div>
-        <div class="sparkline"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,25 20,20 40,22 60,15 80,18 100,10"/></svg></div>
-      </div>
-      <div class="stat-mini">
-        <div class="num" id="dashParams">0</div><div class="lbl">المسعفون</div>
-        <div class="sparkline"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,20 20,22 40,18 60,20 80,15 100,12"/></svg></div>
-      </div>
-      <div class="stat-mini">
-        <div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div>
-        <div class="sparkline"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,22 20,18 40,20 60,17 80,14 100,15"/></svg></div>
-      </div>
-      <div class="stat-mini">
-        <div class="num" id="dashIssues">0</div><div class="lbl">البلاغات</div>
-        <div class="sparkline"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="0,15 20,18 40,12 60,20 80,10 100,8"/></svg></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">🔔 النشاط الحي</div>
-      <div id="activityFeed"><div class="skeleton"></div></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">🕒 آخر البلاغات</div>
-      <div id="dashLatest"></div>
+      <div class="stat-mini"><div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div></div>
+      <div class="stat-mini"><div class="num" id="dashParams">0</div><div class="lbl">المسعفون</div></div>
+      <div class="stat-mini"><div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div></div>
+      <div class="stat-mini"><div class="num" id="dashIssues">0</div><div class="lbl">البلاغات</div></div>
     </div>
   </div>
 
   <!-- 2. المشرفون -->
   <div class="page" id="page-supervisors">
     <div class="card">
-      <div class="card-title" id="supFormTitle">➕ إضافة مشرف</div>
+      <div class="card-title">➕ إضافة / تعديل مشرف</div>
       <input type="hidden" id="supEditId">
-      <input type="text" id="supName" placeholder="اسم المشرف" maxlength="60">
-      <input type="text" id="supMilitaryId" placeholder="الرقم العسكري" maxlength="20">
+      <input type="text" id="supName" placeholder="اسم المشرف">
+      <input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
       <select id="supSector"><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
-      <input type="text" id="supCodeEdit" placeholder="الكود (اتركه فارغاً للإنشاء التلقائي)">
+      <input type="text" id="supCodeEdit" placeholder="الكود (فارغ = تلقائي)">
       <button class="btn block" onclick="saveSupervisor()" id="btnSupSave">💾 حفظ</button>
-      <button class="btn secondary block" onclick="cancelEdit('sup')" id="btnSupCancel" style="display:none;">إلغاء</button>
+      <button class="btn secondary block" onclick="cancelSupEdit()" id="btnSupCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 قائمة المشرفين <button class="btn small" onclick="printCodes()">🖨️ الأكواد</button></div>
-      <div class="search-input"><input type="text" id="supSearch" placeholder="بحث..." oninput="filterList('supList', this.value)"></div>
-      <div id="supList"><div class="skeleton"></div></div>
+      <div class="card-title">📋 قائمة المشرفين <button class="btn small" onclick="printCodes()">🖨️ طباعة الأكواد</button></div>
+      <div id="supList">جاري التحميل...</div>
     </div>
   </div>
 
   <!-- 3. المسعفون -->
   <div class="page" id="page-paramedics">
     <div class="card">
-      <div class="card-title" id="paramFormTitle">➕ إضافة مسعف</div>
+      <div class="card-title">➕ إضافة / تعديل مسعف</div>
       <input type="hidden" id="paramEditId">
-      <input type="text" id="paramName" placeholder="اسم المسعف" maxlength="60">
-      <input type="text" id="paramMilitaryId" placeholder="الرقم العسكري" maxlength="20">
+      <input type="text" id="paramName" placeholder="اسم المسعف">
+      <input type="text" id="paramMilitaryId" placeholder="الرقم العسكري">
       <select id="paramSector" onchange="updateParamCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <select id="paramCenter"><option value="">اختر المركز</option></select>
-      <input type="text" id="paramRank" placeholder="الرتبة" maxlength="30">
+      <input type="text" id="paramRank" placeholder="الرتبة">
       <button class="btn block" onclick="saveParamedic()" id="btnParamSave">💾 حفظ</button>
-      <button class="btn secondary block" onclick="cancelEdit('param')" id="btnParamCancel" style="display:none;">إلغاء</button>
+      <button class="btn secondary block" onclick="cancelParamEdit()" id="btnParamCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
       <div class="card-title">📋 قائمة المسعفين</div>
-      <div class="search-input"><input type="text" id="paramSearch" placeholder="بحث..." oninput="filterList('paramList', this.value)"></div>
-      <div id="paramList"><div class="skeleton"></div></div>
+      <div id="paramList">جاري التحميل...</div>
     </div>
   </div>
 
   <!-- 4. المركبات -->
   <div class="page" id="page-vehicles">
     <div class="card">
-      <div class="card-title" id="vehFormTitle">➕ إضافة مركبة</div>
+      <div class="card-title">➕ إضافة / تعديل مركبة</div>
       <input type="hidden" id="vehEditId">
-      <input type="text" id="vehPlate" placeholder="رقم اللوحة" maxlength="30">
-      <input type="text" id="vehType" placeholder="نوع المركبة" maxlength="40">
+      <input type="text" id="vehPlate" placeholder="رقم اللوحة">
+      <input type="text" id="vehType" placeholder="نوع المركبة">
       <select id="vehSector" onchange="updateVehCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <select id="vehCenter"><option value="">اختر المركز</option></select>
       <button class="btn block" onclick="saveVehicle()" id="btnVehSave">💾 حفظ</button>
-      <button class="btn secondary block" onclick="cancelEdit('veh')" id="btnVehCancel" style="display:none;">إلغاء</button>
+      <button class="btn secondary block" onclick="cancelVehEdit()" id="btnVehCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
       <div class="card-title">📋 قائمة المركبات</div>
-      <div class="search-input"><input type="text" id="vehSearch" placeholder="بحث..." oninput="filterList('vehList', this.value)"></div>
-      <div id="vehList"><div class="skeleton"></div></div>
+      <div id="vehList">جاري التحميل...</div>
     </div>
   </div>
 
@@ -335,12 +218,10 @@ body.light .duty-table select { color: #6b6030; }
         <button class="btn small" onclick="printDutyTable('portrait')">🖨️ عمودية</button>
         <button class="btn small" onclick="printDutyTable('landscape')">🖨️ أفقية</button>
       </div>
-      <div style="font-size:11px; color:var(--text-dim); margin-bottom:10px; text-align:center;">
-        <span class="kbd">Ctrl</span>+<span class="kbd">S</span> حفظ فوري | التعديلات تُحفظ تلقائياً بعد 800ms
-      </div>
-      <h3 style="color:var(--gold-light); margin-bottom:10px; font-size:14px; border-right:4px solid var(--gold); padding-right:8px;">قطاع A</h3>
+      <h3 style="color:var(--gold-light); margin-bottom:10px; font-size:14px;">قطاع A</h3>
       <div class="duty-table-wrapper" id="dutyTableContainerA"></div>
-      <h3 style="color:var(--gold-light); margin:20px 0 10px; font-size:14px; border-right:4px solid var(--gold); padding-right:8px;">قطاع B</h3>
+      
+      <h3 style="color:var(--gold-light); margin:20px 0 10px; font-size:14px;">قطاع B</h3>
       <div class="duty-table-wrapper" id="dutyTableContainerB"></div>
     </div>
   </div>
@@ -348,33 +229,33 @@ body.light .duty-table select { color: #6b6030; }
   <!-- 6. البلاغات -->
   <div class="page" id="page-issues">
     <div class="card">
-      <div class="card-title" id="issueFormTitle">➕ إضافة بلاغ</div>
+      <div class="card-title">➕ إضافة / تعديل بلاغ</div>
       <input type="hidden" id="issueEditId">
       <label>الهدف</label>
       <select id="issueTargetType">
         <option value="paramedic">مسعف</option><option value="center">مركز</option>
         <option value="vehicle">مركبة</option><option value="stock">مخزن</option>
       </select>
-      <input type="text" id="issueTargetName" placeholder="اسم الهدف" maxlength="80">
+      <input type="text" id="issueTargetName" placeholder="اسم الهدف">
       <label>النوع</label>
-      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة / إشادة" maxlength="60">
+      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة / إشادة">
       <label>الوصف</label>
-      <textarea id="issueDesc" placeholder="وصف..." rows="2" maxlength="500"></textarea>
+      <textarea id="issueDesc" placeholder="وصف..." rows="2"></textarea>
       <button class="btn block success" onclick="saveIssue()" id="btnIssueSave">➕ إضافة</button>
-      <button class="btn secondary block" onclick="cancelEdit('issue')" id="btnIssueCancel" style="display:none;">إلغاء</button>
+      <button class="btn secondary block" onclick="cancelIssueEdit()" id="btnIssueCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
       <div class="card-title">📋 سجل البلاغات</div>
-      <div class="search-input"><input type="text" id="issueSearch" placeholder="بحث بالاسم أو المشرف..." oninput="filterList('issuesList', this.value)"></div>
-      <div id="issuesList"><div class="skeleton"></div><div class="skeleton"></div></div>
+      <input type="text" id="issueSearch" placeholder="🔍 بحث..." oninput="filterIssues()">
+      <div id="issuesList">جاري التحميل...</div>
     </div>
   </div>
 
-  <!-- 7. ملاحظات -->
+  <!-- 7. ملاحظات المشرفين -->
   <div class="page" id="page-notes">
     <div class="card">
-      <div class="card-title">📝 ملاحظات المشرفين (الزيارات)</div>
-      <div id="notesList"><div class="skeleton"></div><div class="skeleton"></div></div>
+      <div class="card-title">📝 ملخص ملاحظات المشرفين (الزيارات)</div>
+      <div id="notesList">جاري التحميل...</div>
     </div>
   </div>
 
@@ -382,31 +263,31 @@ body.light .duty-table select { color: #6b6030; }
   <div class="page" id="page-broadcasts">
     <div class="card">
       <div class="card-title">📢 إرسال تعميم</div>
-      <input type="text" id="bcTitle" placeholder="العنوان" maxlength="100">
-      <textarea id="bcDesc" placeholder="النص" rows="3" maxlength="1000"></textarea>
+      <input type="text" id="bcTitle" placeholder="العنوان">
+      <textarea id="bcDesc" placeholder="النص" rows="3"></textarea>
       <button class="btn block success" onclick="addBroadcast()">📤 إرسال</button>
     </div>
     <div class="card">
       <div class="card-title">📜 التعاميم</div>
-      <div id="bcList"><div class="skeleton"></div></div>
+      <div id="bcList">جاري التحميل...</div>
     </div>
   </div>
 
   <!-- 9. البيانات الأساسية -->
   <div class="page" id="page-types">
     <div class="card">
-      <div class="card-title">⚙️ إدارة الأنواع</div>
+      <div class="card-title">⚙️ إدارة الأنواع (تظهر في تطبيق المشرف)</div>
       <label>الهدف</label>
       <select id="typeTarget" onchange="loadTypes()">
         <option value="paramedic">مسعف</option><option value="center">مركز</option>
         <option value="vehicle">مركبة</option><option value="stock">مخزن</option>
       </select>
-      <label>الفئة</label>
+      <label>النوع (إشكالية / إشادة)</label>
       <select id="typeCategory" onchange="loadTypes()">
         <option value="issue">إشكالية</option><option value="praise">إشادة</option>
       </select>
-      <input type="text" id="newTypeName" placeholder="اسم النوع" maxlength="50">
-      <button class="btn block" onclick="addType()">➕ إضافة</button>
+      <input type="text" id="newTypeName" placeholder="اسم النوع">
+      <button class="btn block" onclick="addType()">➕ إضافة نوع</button>
       <div id="typesList" style="margin-top:16px;"></div>
     </div>
   </div>
@@ -418,47 +299,25 @@ body.light .duty-table select { color: #6b6030; }
       <button class="btn block" onclick="printReport('supervisors')" style="margin-bottom:10px;">👨‍💼 تقرير المشرفين</button>
       <button class="btn block" onclick="printReport('paramedics')" style="margin-bottom:10px;">👨‍🚒 تقرير المسعفين</button>
       <button class="btn block" onclick="printReport('issues')" style="margin-bottom:10px;">🚩 تقرير البلاغات</button>
-      <button class="btn block success" onclick="exportExcel()" style="margin-top:20px;">📥 تصدير Excel</button>
-    </div>
-    <div class="card">
-      <div class="card-title">💾 النسخ الاحتياطي</div>
-      <button class="btn block" onclick="backupAll()" style="margin-bottom:10px;">📦 تنزيل نسخة احتياطية (JSON)</button>
-      <label>استعادة من ملف</label>
-      <input type="file" id="restoreFile" accept=".json" onchange="restoreFromFile(this.files[0])">
+      <button class="btn block success" onclick="exportExcel()" style="margin-top:20px;">📥 تصدير البلاغات (Excel)</button>
     </div>
   </div>
 
   <!-- 11. الإعدادات -->
   <div class="page" id="page-settings">
     <div class="card">
-      <div class="card-title">🎨 الهوية</div>
+      <div class="card-title">⚙️ الهوية</div>
       <label>اسم النظام</label>
-      <input type="text" id="cfgSystemName" onchange="saveConfig('systemName', this.value)" maxlength="60">
+      <input type="text" id="cfgSystemName" onchange="saveConfig('systemName', this.value)">
       <label>رابط الشعار</label>
       <input type="url" id="cfgLogoUrl" onchange="saveConfig('logoUrl', this.value)">
       <button class="btn block success" onclick="showToast('تم الحفظ')">💾 حفظ</button>
     </div>
     <div class="card">
-      <div class="card-title">ℹ️ عن النظام</div>
-      <p style="font-size:12px; color:var(--text-dim); line-height:1.8;">
-        <b>الإصدار:</b> V25<br>
-        <b>المميزات:</b> تحديث حي، نسخ احتياطي، بحث سريع، مظهر ليلي/نهاري<br>
-        <b>اختصارات:</b> <span class="kbd">Ctrl</span>+<span class="kbd">K</span> بحث | <span class="kbd">Ctrl</span>+<span class="kbd">S</span> حفظ الدوام
-      </p>
+      <div class="card-title" style="color:var(--red-light);">⚠️ مسح البيانات</div>
+      <button class="btn danger block" onclick="wipeData('issues')">🗑️ مسح جميع البلاغات</button>
+      <button class="btn danger block" onclick="wipeData('all')" style="margin-top:10px;">💥 مسح كل البيانات</button>
     </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة خطرة</div>
-      <button class="btn danger block" onclick="wipeData('issues')" style="margin-bottom:10px;">🗑️ مسح جميع البلاغات</button>
-      <button class="btn danger block" onclick="wipeData('all')">💥 مسح كل البيانات</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal البحث السريع -->
-<div id="quickSearchModal" onclick="if(event.target===this)closeQuickSearch()">
-  <div class="quick-search-box">
-    <input type="text" id="quickSearchInput" placeholder="🔍 ابحث في كل شيء..." oninput="doQuickSearch(this.value)" autofocus>
-    <div class="quick-search-results" id="quickSearchResults"></div>
   </div>
 </div>
 
@@ -466,940 +325,490 @@ body.light .duty-table select { color: #6b6030; }
 <div id="printArea"></div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════
-   التهيئة
-   ═══════════════════════════════════════════════════════════ */
-const firebaseConfig = {
-  apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
-  authDomain: "ems-supervisor.firebaseapp.com",
-  projectId: "ems-supervisor",
-  storageBucket: "ems-supervisor.firebasestorage.app",
-  messagingSenderId: "230655268524",
-  appId: "1:230655268524:web:5043a458af3d79989ff109"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
+      authDomain: "ems-supervisor.firebaseapp.com",
+      projectId: "ems-supervisor",
+      storageBucket: "ems-supervisor.firebasestorage.app",
+      messagingSenderId: "230655268524",
+      appId: "1:230655268524:web:5043a458af3d79989ff109"
+    };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-const session = localStorage.getItem("ems_session");
-if (!session) { window.location.href = "./index.html"; }
-const user = JSON.parse(session || "{}");
+    const session = localStorage.getItem("ems_session");
+    if (!session) { window.location.href = "./index.html"; }
+    const user = JSON.parse(session);
+    if (user.type !== "admin") { window.location.href = "./index.html"; }
 
-const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
-const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
+    const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
+    const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
 
-// المستمعون (لإلغائها لاحقاً)
-const unsubs = [];
+    document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("mainApp").classList.add("ready");
+    document.getElementById("currentUser").textContent = user.name || "المدير العام";
+    document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
+    loadConfig();
+    initRealtimeListeners();
 
-// Cache للبحث السريع
-const searchCache = { supervisors: [], paramedics: [], vehicles: [], issues: [] };
+    function showToast(msg, type="success") {
+        const c = document.getElementById("toastContainer"); const t = document.createElement("div");
+        t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
+        c.appendChild(t); setTimeout(() => t.remove(), 3000);
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   أدوات مساعدة
-   ═══════════════════════════════════════════════════════════ */
-function esc(s) {
-  if (s == null) return "";
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
-}
+    function switchTab(id) {
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.getElementById("page-" + id).classList.add("active");
+        document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
+        window.scrollTo({top:0,behavior:"smooth"});
+        
+        if (id === 'supervisors') loadSups();
+        if (id === 'paramedics') loadParams();
+        if (id === 'vehicles') loadVehicles();
+        if (id === 'notes') loadNotes();
+        if (id === 'issues') loadIssues();
+        if (id === 'broadcasts') loadBroadcasts();
+        if (id === 'duty') loadDutyTable();
+        if (id === 'types') loadTypes();
+    }
 
-function showToast(msg, type="success") {
-  const c = document.getElementById("toastContainer"); const t = document.createElement("div");
-  t.className = "toast " + type;
-  t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
-  c.appendChild(t); setTimeout(() => t.remove(), 3000);
-}
+    function manualRefresh() { showToast("تحديث..."); }
+    function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-function fmtDate(ts) {
-  try { return ts?.toDate?.().toLocaleString('ar-OM') || '-'; } catch { return '-'; }
-}
+    function initRealtimeListeners() {
+        db.collection("issues").onSnapshot(snap => {
+            const issues = [];
+            snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
+            document.getElementById("dashIssues").innerText = issues.length;
+            if (document.querySelector(".page.active").id === "page-issues") renderIssuesList(issues);
+        });
+        db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
+            document.getElementById("dashSups").innerText = snap.size;
+            if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
+        });
+        db.collection("paramedics").onSnapshot(snap => {
+            document.getElementById("dashParams").innerText = snap.size;
+            if (document.querySelector(".page.active").id === "page-paramedics") loadParams();
+        });
+        db.collection("vehicles").onSnapshot(snap => {
+            document.getElementById("dashVehicles").innerText = snap.size;
+            if (document.querySelector(".page.active").id === "page-vehicles") loadVehicles();
+        });
+    }
 
-function filterList(containerId, query) {
-  const q = (query || "").toLowerCase();
-  document.querySelectorAll(`#${containerId} .item-card`).forEach(card => {
-    card.style.display = card.textContent.toLowerCase().includes(q) ? "" : "none";
-  });
-}
+    // المشرفون
+    function loadSups() {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card">
+                    <div class="item-info"><h4>👨‍💼 ${data.name}</h4><p>الرقم: ${data.militaryId || '-'} | القطاع: ${data.sector || '-'}</p></div>
+                    <div class="item-actions">
+                        <button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${data.code}'); showToast('تم النسخ')">${data.code}</button>
+                        <button class="icon-btn-sm edit" onclick="editSup('${d.id}','${data.name}','${data.militaryId||''}','${data.sector}','${data.code}')">✏️</button>
+                        <button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById("supList").innerHTML = html || "لا يوجد مشرفون";
+        });
+    }
+    function editSup(id, name, mil, sector, code) {
+        document.getElementById("supEditId").value = id;
+        document.getElementById("supName").value = name;
+        document.getElementById("supMilitaryId").value = mil;
+        document.getElementById("supSector").value = sector;
+        document.getElementById("supCodeEdit").value = code;
+        document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnSupCancel").style.display = "block";
+    }
+    function cancelSupEdit() {
+        document.getElementById("supEditId").value = "";
+        document.getElementById("supName").value = ""; document.getElementById("supMilitaryId").value = ""; document.getElementById("supCodeEdit").value = "";
+        document.getElementById("btnSupSave").innerText = "💾 حفظ";
+        document.getElementById("btnSupCancel").style.display = "none";
+    }
+    function saveSupervisor() {
+        const id = document.getElementById("supEditId").value;
+        const name = document.getElementById("supName").value.trim();
+        const militaryId = document.getElementById("supMilitaryId").value.trim();
+        const sector = document.getElementById("supSector").value;
+        const codeInput = document.getElementById("supCodeEdit").value.trim();
+        if (!name) return showToast("أدخل الاسم", "danger");
+        if (id) {
+            const updateData = { name, militaryId, sector };
+            if(codeInput) updateData.code = codeInput;
+            db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); });
+        } else {
+            const code = codeInput || "SUP-" + Math.floor(1000 + Math.random() * 9000);
+            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor", active: true }).then(() => { showToast("تم الإنشاء: " + code); cancelSupEdit(); });
+        }
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   المظهر (Dark/Light)
-   ═══════════════════════════════════════════════════════════ */
-function initTheme() {
-  const saved = localStorage.getItem("ems_theme");
-  if (saved === "light") document.body.classList.add("light");
-  updateThemeBtn();
-}
-function toggleTheme() {
-  document.body.classList.toggle("light");
-  localStorage.setItem("ems_theme", document.body.classList.contains("light") ? "light" : "dark");
-  updateThemeBtn();
-}
-function updateThemeBtn() {
-  document.getElementById("themeBtn").textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
-}
+    // المسعفون
+    function loadParams() {
+        db.collection("paramedics").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card" style="border-right-color:var(--green-light);">
+                    <div class="item-info"><h4>👨‍🚒 ${data.name}</h4><p>الرقم: ${data.militaryId || '-'} | المركز: ${data.centerName} | الرتبة: ${data.rank || '-'}</p></div>
+                    <div class="item-actions">
+                        <button class="icon-btn-sm edit" onclick="editParam('${d.id}','${data.name}','${data.militaryId||''}','${data.centerName}','${data.rank||''}')">✏️</button>
+                        <button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${d.id}')">🗑️</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById("paramList").innerHTML = html || "لا يوجد مسعفون";
+        });
+    }
+    function editParam(id, name, mil, center, rank) {
+        document.getElementById("paramEditId").value = id;
+        document.getElementById("paramName").value = name;
+        document.getElementById("paramMilitaryId").value = mil;
+        document.getElementById("paramRank").value = rank;
+        document.getElementById("btnParamSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnParamCancel").style.display = "block";
+    }
+    function cancelParamEdit() {
+        document.getElementById("paramEditId").value = "";
+        document.getElementById("paramName").value = ""; document.getElementById("paramMilitaryId").value = ""; document.getElementById("paramRank").value = "";
+        document.getElementById("btnParamSave").innerText = "💾 حفظ";
+        document.getElementById("btnParamCancel").style.display = "none";
+    }
+    function saveParamedic() {
+        const id = document.getElementById("paramEditId").value;
+        const name = document.getElementById("paramName").value.trim();
+        const militaryId = document.getElementById("paramMilitaryId").value.trim();
+        const center = document.getElementById("paramCenter").value;
+        const rank = document.getElementById("paramRank").value.trim();
+        if (!name) return showToast("أدخل الاسم", "danger");
+        if (id) {
+            db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم التعديل"); cancelParamEdit(); });
+        } else {
+            if (!center) return showToast("اختر المركز", "danger");
+            db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم الحفظ"); cancelParamEdit(); });
+        }
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   التنقل
-   ═══════════════════════════════════════════════════════════ */
-function switchTab(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("page-" + id).classList.add("active");
-  document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
-  window.scrollTo({top:0,behavior:"smooth"});
+    // المركبات
+    function loadVehicles() {
+        db.collection("vehicles").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card" style="border-right-color:var(--amber-light);">
+                    <div class="item-info"><h4>🚑 ${data.plateNumber}</h4><p>النوع: ${data.type || '-'} | المركز: ${data.centerName}</p></div>
+                    <div class="item-actions">
+                        <button class="icon-btn-sm edit" onclick="editVeh('${d.id}','${data.plateNumber}','${data.type||''}','${data.centerName}')">✏️</button>
+                        <button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${d.id}')">🗑️</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById("vehList").innerHTML = html || "لا يوجد مركبات";
+        });
+    }
+    function editVeh(id, plate, type, center) {
+        document.getElementById("vehEditId").value = id;
+        document.getElementById("vehPlate").value = plate;
+        document.getElementById("vehType").value = type;
+        document.getElementById("btnVehSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnVehCancel").style.display = "block";
+    }
+    function cancelVehEdit() {
+        document.getElementById("vehEditId").value = "";
+        document.getElementById("vehPlate").value = ""; document.getElementById("vehType").value = "";
+        document.getElementById("btnVehSave").innerText = "💾 حفظ";
+        document.getElementById("btnVehCancel").style.display = "none";
+    }
+    function saveVehicle() {
+        const id = document.getElementById("vehEditId").value;
+        const plate = document.getElementById("vehPlate").value.trim();
+        const type = document.getElementById("vehType").value.trim();
+        const center = document.getElementById("vehCenter").value;
+        if (!plate) return showToast("أدخل اللوحة", "danger");
+        if (id) {
+            db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم التعديل"); cancelVehEdit(); });
+        } else {
+            if (!center) return showToast("اختر المركز", "danger");
+            db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم الحفظ"); cancelVehEdit(); });
+        }
+    }
 
-  if (id === 'duty') loadDutyTable();
-  if (id === 'types') loadTypes();
-}
+    function updateParamCenters() {
+        const sec = document.getElementById("paramSector").value;
+        const sel = document.getElementById("paramCenter");
+        sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
+    }
+    function updateVehCenters() {
+        const sec = document.getElementById("vehSector").value;
+        const sel = document.getElementById("vehCenter");
+        sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
+    }
 
-function logout() {
-  if (!confirm("تسجيل الخروج؟")) return;
-  localStorage.removeItem("ems_session");
-  window.location.href = "./index.html";
-}
+    // الملاحظات
+    function loadNotes() {
+        db.collection("issues").where("type", "==", "visit").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card" style="flex-direction:column; align-items:flex-start;">
+                    <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
+                        <b style="color:var(--gold-light);">🏥 ${data.centerName}</b>
+                        <span style="font-size:10px; opacity:0.5;">${new Date(data.timestamp.toDate()).toLocaleString('ar-OM')}</span>
+                    </div>
+                    <p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p>
+                    <p style="font-size:12px; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px; width:100%;">${data.description}</p>
+                </div>`;
+            });
+            document.getElementById("notesList").innerHTML = html || "لا يوجد ملاحظات";
+        });
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   المستمعون الحيون
-   ═══════════════════════════════════════════════════════════ */
-const activityFeed = [];
-
-function pushActivity(icon, text, color = "var(--gold)") {
-  activityFeed.unshift({ icon, text, color, time: new Date() });
-  if (activityFeed.length > 20) activityFeed.pop();
-  renderActivityFeed();
-}
-
-function renderActivityFeed() {
-  const el = document.getElementById("activityFeed");
-  if (!el) return;
-  if (activityFeed.length === 0) {
-    el.innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px; font-size:12px;">لا يوجد نشاط بعد</div>';
-    return;
-  }
-  el.innerHTML = activityFeed.slice(0, 5).map(a => 
-    `<div class="activity-item">
-       <div class="activity-dot" style="background:${a.color};"></div>
-       <div style="flex:1; font-size:12px;">${esc(a.text)}</div>
-       <div style="font-size:10px; opacity:0.5;">${a.time.toLocaleTimeString('ar-OM',{hour:'2-digit',minute:'2-digit'})}</div>
-     </div>`
-  ).join("");
-}
-
-function initRealtimeListeners() {
-  // البلاغات
-  unsubs.push(db.collection("issues").onSnapshot(snap => {
-    const issues = [];
-    snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
-    issues.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
+    // البلاغات
+    function loadIssues() {
+        db.collection("issues").where("type", "in", ["complaint", "praise"]).get().then(s => {
+            const issues = [];
+            s.forEach(d => issues.push({ id: d.id, ...d.data() }));
+            renderIssuesList(issues);
+        });
+    }
     
-    document.getElementById("dashIssues").innerText = issues.length;
-    
-    const complaints = issues.filter(i => i.type === "complaint" || (!i.isPraise && i.type !== "visit" && i.type !== "praise")).length;
-    const badge = document.getElementById("issuesBadge");
-    if (complaints > 0) { badge.textContent = complaints; badge.style.display = ""; }
-    else badge.style.display = "none";
-    
-    if (document.querySelector(".page.active").id === "page-issues") renderIssuesList(issues);
-    if (document.querySelector(".page.active").id === "page-dashboard") renderDashboardLatest(issues);
-    
-    searchCache.issues = issues;
-  }));
-
-  // المشرفون
-  unsubs.push(db.collection("access_code").onSnapshot(snap => {
-    const sups = [];
-    snap.forEach(d => { const data = d.data(); if (data.type === "supervisor") sups.push({ id: d.id, ...data }); });
-    document.getElementById("dashSups").innerText = sups.length;
-    searchCache.supervisors = sups;
-    if (document.querySelector(".page.active").id === "page-supervisors") renderSupsList(sups);
-  }));
-
-  // المسعفون
-  unsubs.push(db.collection("paramedics").onSnapshot(snap => {
-    const params = [];
-    snap.forEach(d => params.push({ id: d.id, ...d.data() }));
-    document.getElementById("dashParams").innerText = params.length;
-    searchCache.paramedics = params;
-    if (document.querySelector(".page.active").id === "page-paramedics") renderParamsList(params);
-  }));
-
-  // المركبات
-  unsubs.push(db.collection("vehicles").onSnapshot(snap => {
-    const vehs = [];
-    snap.forEach(d => vehs.push({ id: d.id, ...d.data() }));
-    document.getElementById("dashVehicles").innerText = vehs.length;
-    searchCache.vehicles = vehs;
-    if (document.querySelector(".page.active").id === "page-vehicles") renderVehiclesList(vehs);
-  }));
-
-  // الملاحظات
-  unsubs.push(db.collection("issues").where("type", "==", "visit").onSnapshot(snap => {
-    const notes = [];
-    snap.forEach(d => notes.push({ id: d.id, ...d.data() }));
-    notes.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
-    if (document.querySelector(".page.active").id === "page-notes") renderNotesList(notes);
-  }));
-
-  // التعاميم
-  unsubs.push(db.collection("broadcasts").onSnapshot(snap => {
-    const bcs = [];
-    snap.forEach(d => bcs.push({ id: d.id, ...d.data() }));
-    bcs.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0));
-    if (document.querySelector(".page.active").id === "page-broadcasts") renderBroadcastsList(bcs);
-  }));
-}
-
-/* ═══════════════════════════════════════════════════════════
-   لوحة القيادة
-   ═══════════════════════════════════════════════════════════ */
-function renderDashboardLatest(issues) {
-  const latest = issues.filter(i => i.type === "complaint" || i.type === "praise").slice(0, 3);
-  const el = document.getElementById("dashLatest");
-  if (!el) return;
-  if (latest.length === 0) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:15px;font-size:12px;">لا يوجد بلاغات</div>'; return; }
-  el.innerHTML = latest.map(i => 
-    `<div class="item-card" style="padding:10px; border-right-color:${i.isPraise?'var(--green-light)':'var(--red-light)'};">
-       <div class="item-info">
-         <h4 style="font-size:12px;">${i.isPraise?'⭐':'🚩'} ${esc(i.targetName||'-')}</h4>
-         <p style="font-size:10px;">${esc(i.issueType||'-')} · ${fmtDate(i.timestamp)}</p>
-       </div>
-     </div>`
-  ).join("");
-}
-
-/* ═══════════════════════════════════════════════════════════
-   المشرفون
-   ═══════════════════════════════════════════════════════════ */
-function renderSupsList(sups) {
-  const el = document.getElementById("supList");
-  if (!sups.length) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:20px;">لا يوجد مشرفون</div>'; return; }
-  el.innerHTML = sups.map(data => 
-    `<div class="item-card">
-       <div class="item-info">
-         <h4>👨‍💼 ${esc(data.name)}</h4>
-         <p>الرقم: ${esc(data.militaryId||'-')} | القطاع: ${esc(data.sector||'-')}</p>
-       </div>
-       <div class="item-actions">
-         <button class="icon-btn-sm copy" onclick="copyCode('${esc(data.code)}')">${esc(data.code)}</button>
-         <button class="icon-btn-sm edit" onclick="editSup('${data.id}')">✏️</button>
-         <button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${data.id}','${esc(data.name)}')">🗑️</button>
-       </div>
-     </div>`
-  ).join("");
-}
-
-function editSup(id) {
-  const data = searchCache.supervisors.find(s => s.id === id);
-  if (!data) return;
-  document.getElementById("supEditId").value = id;
-  document.getElementById("supName").value = data.name || "";
-  document.getElementById("supMilitaryId").value = data.militaryId || "";
-  document.getElementById("supSector").value = data.sector || "قطاع A";
-  document.getElementById("supCodeEdit").value = data.code || "";
-  document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات";
-  document.getElementById("btnSupCancel").style.display = "block";
-  document.getElementById("supFormTitle").innerText = "✏️ تعديل مشرف";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function saveSupervisor() {
-  const id = document.getElementById("supEditId").value;
-  const name = document.getElementById("supName").value.trim();
-  const militaryId = document.getElementById("supMilitaryId").value.trim();
-  const sector = document.getElementById("supSector").value;
-  const codeInput = document.getElementById("supCodeEdit").value.trim();
-  
-  if (name.length < 3) return showToast("الاسم يجب أن يكون 3 أحرف على الأقل", "danger");
-  if (name.length > 60) return showToast("الاسم طويل جداً", "danger");
-  
-  try {
-    if (id) {
-      const updateData = { name, militaryId, sector };
-      if (codeInput) updateData.code = codeInput;
-      await db.collection("access_code").doc(id).update(updateData);
-      showToast("تم التعديل");
-      pushActivity("✏️", `تعديل مشرف: ${name}`);
-    } else {
-      const code = codeInput || await generateUniqueCode();
-      await db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor", active: true, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showToast("تم الإنشاء: " + code);
-      pushActivity("➕", `مشرف جديد: ${name} (${code})`, "var(--green-light)");
+    function renderIssuesList(issues) {
+        let html = "";
+        issues.forEach(data => {
+            html += `<div class="item-card" style="border-right-color:${data.isPraise ? 'var(--green-light)' : 'var(--red-light)'};">
+                <div class="item-info">
+                    <h4>${data.isPraise ? '⭐' : '🚩'} ${data.targetName || '-'}</h4>
+                    <p>المشرف: ${data.supervisor} | النوع: ${data.issueType || '-'} | الحالة: ${data.status||'مفتوحة'}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="icon-btn-sm edit" onclick="editIssue('${data.id}','${data.targetType}','${data.targetName}','${data.issueType}','${data.description}')">✏️</button>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${data.id}')">🗑️</button>
+                </div>
+            </div>`;
+        });
+        document.getElementById("issuesList").innerHTML = html || "لا يوجد بلاغات";
     }
-    cancelEdit('sup');
-  } catch (e) {
-    showToast("خطأ: " + e.message, "danger");
-  }
-}
 
-async function generateUniqueCode() {
-  for (let i = 0; i < 5; i++) {
-    const code = "SUP-" + Math.floor(1000 + Math.random() * 9000);
-    const snap = await db.collection("access_code").where("code","==",code).limit(1).get();
-    if (snap.empty) return code;
-  }
-  throw new Error("فشل توليد كود فريد");
-}
-
-/* ═══════════════════════════════════════════════════════════
-   المسعفون
-   ═══════════════════════════════════════════════════════════ */
-function renderParamsList(params) {
-  const el = document.getElementById("paramList");
-  if (!params.length) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:20px;">لا يوجد مسعفون</div>'; return; }
-  el.innerHTML = params.map(data => 
-    `<div class="item-card" style="border-right-color:var(--green-light);">
-       <div class="item-info">
-         <h4>👨‍🚒 ${esc(data.name)}</h4>
-         <p>الرقم: ${esc(data.militaryId||'-')} | المركز: ${esc(data.centerName||'-')} | الرتبة: ${esc(data.rank||'-')}</p>
-       </div>
-       <div class="item-actions">
-         <button class="icon-btn-sm edit" onclick="editParam('${data.id}')">✏️</button>
-         <button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${data.id}','${esc(data.name)}')">🗑️</button>
-       </div>
-     </div>`
-  ).join("");
-}
-
-function editParam(id) {
-  const data = searchCache.paramedics.find(s => s.id === id);
-  if (!data) return;
-  document.getElementById("paramEditId").value = id;
-  document.getElementById("paramName").value = data.name || "";
-  document.getElementById("paramMilitaryId").value = data.militaryId || "";
-  document.getElementById("paramRank").value = data.rank || "";
-  
-  // استنتاج القطاع من المركز
-  for (const [sector, centers] of Object.entries(SECTORS)) {
-    if (centers.includes(data.centerName)) {
-      document.getElementById("paramSector").value = sector;
-      updateParamCenters();
-      document.getElementById("paramCenter").value = data.centerName;
-      break;
+    function editIssue(id, type, name, issueType, desc) {
+        document.getElementById("issueEditId").value = id;
+        document.getElementById("issueTargetType").value = type;
+        document.getElementById("issueTargetName").value = name;
+        document.getElementById("issueType").value = issueType;
+        document.getElementById("issueDesc").value = desc;
+        document.getElementById("btnIssueSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnIssueCancel").style.display = "block";
+        window.scrollTo({top:0,behavior:"smooth"});
     }
-  }
-  
-  document.getElementById("btnParamSave").innerText = "💾 حفظ التعديلات";
-  document.getElementById("btnParamCancel").style.display = "block";
-  document.getElementById("paramFormTitle").innerText = "✏️ تعديل مسعف";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function saveParamedic() {
-  const id = document.getElementById("paramEditId").value;
-  const name = document.getElementById("paramName").value.trim();
-  const militaryId = document.getElementById("paramMilitaryId").value.trim();
-  const center = document.getElementById("paramCenter").value;
-  const rank = document.getElementById("paramRank").value.trim();
-  
-  if (name.length < 3) return showToast("أدخل اسماً صحيحاً", "danger");
-  if (!center) return showToast("اختر المركز", "danger");
-  
-  try {
-    if (id) {
-      await db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank });
-      showToast("تم التعديل");
-      pushActivity("✏️", `تعديل مسعف: ${name}`);
-    } else {
-      await db.collection("paramedics").add({ name, militaryId, centerName: center, rank, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showToast("تم الحفظ");
-      pushActivity("➕", `مسعف جديد: ${name}`, "var(--green-light)");
+    function cancelIssueEdit() {
+        document.getElementById("issueEditId").value = "";
+        document.getElementById("issueTargetName").value = "";
+        document.getElementById("issueType").value = "";
+        document.getElementById("issueDesc").value = "";
+        document.getElementById("btnIssueSave").innerText = "➕ إضافة";
+        document.getElementById("btnIssueCancel").style.display = "none";
     }
-    cancelEdit('param');
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   المركبات
-   ═══════════════════════════════════════════════════════════ */
-function renderVehiclesList(vehs) {
-  const el = document.getElementById("vehList");
-  if (!vehs.length) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:20px;">لا يوجد مركبات</div>'; return; }
-  el.innerHTML = vehs.map(data => 
-    `<div class="item-card" style="border-right-color:var(--amber-light);">
-       <div class="item-info">
-         <h4>🚑 ${esc(data.plateNumber)}</h4>
-         <p>النوع: ${esc(data.type||'-')} | المركز: ${esc(data.centerName||'-')}</p>
-       </div>
-       <div class="item-actions">
-         <button class="icon-btn-sm edit" onclick="editVeh('${data.id}')">✏️</button>
-         <button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${data.id}','${esc(data.plateNumber)}')">🗑️</button>
-       </div>
-     </div>`
-  ).join("");
-}
-
-function editVeh(id) {
-  const data = searchCache.vehicles.find(v => v.id === id);
-  if (!data) return;
-  document.getElementById("vehEditId").value = id;
-  document.getElementById("vehPlate").value = data.plateNumber || "";
-  document.getElementById("vehType").value = data.type || "";
-  
-  for (const [sector, centers] of Object.entries(SECTORS)) {
-    if (centers.includes(data.centerName)) {
-      document.getElementById("vehSector").value = sector;
-      updateVehCenters();
-      document.getElementById("vehCenter").value = data.centerName;
-      break;
+    function saveIssue() {
+        const id = document.getElementById("issueEditId").value;
+        const targetType = document.getElementById("issueTargetType").value;
+        const targetName = document.getElementById("issueTargetName").value.trim();
+        const issueType = document.getElementById("issueType").value.trim();
+        const desc = document.getElementById("issueDesc").value.trim();
+        if (!targetName || !issueType) return showToast("أكمل البيانات", "danger");
+        
+        const data = { targetType, targetName, issueType, description: desc, isPraise: issueType.includes("إشادة") };
+        if (id) {
+            db.collection("issues").doc(id).update(data).then(() => { showToast("تم التعديل"); cancelIssueEdit(); });
+        } else {
+            data.supervisor = "الإدارة (إدخال يدوي)";
+            data.status = "new";
+            data.timestamp = new Date();
+            data.type = data.isPraise ? "praise" : "complaint";
+            db.collection("issues").add(data).then(() => { showToast("تم الحفظ"); cancelIssueEdit(); });
+        }
     }
-  }
-  
-  document.getElementById("btnVehSave").innerText = "💾 حفظ التعديلات";
-  document.getElementById("btnVehCancel").style.display = "block";
-  document.getElementById("vehFormTitle").innerText = "✏️ تعديل مركبة";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function saveVehicle() {
-  const id = document.getElementById("vehEditId").value;
-  const plate = document.getElementById("vehPlate").value.trim();
-  const type = document.getElementById("vehType").value.trim();
-  const center = document.getElementById("vehCenter").value;
-  
-  if (!plate) return showToast("أدخل رقم اللوحة", "danger");
-  if (!center) return showToast("اختر المركز", "danger");
-  
-  try {
-    if (id) {
-      await db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center });
-      showToast("تم التعديل");
-    } else {
-      await db.collection("vehicles").add({ plateNumber: plate, type, centerName: center, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      showToast("تم الحفظ");
-      pushActivity("🚑", `مركبة جديدة: ${plate}`, "var(--amber-light)");
+    function filterIssues() {
+        const q = document.getElementById("issueSearch").value.toLowerCase();
+        document.querySelectorAll("#issuesList .item-card").forEach(card => {
+            card.style.display = card.innerText.toLowerCase().includes(q) ? "" : "none";
+        });
     }
-    cancelEdit('veh');
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
 
-/* ═══════════════════════════════════════════════════════════
-   القوائم المنسدلة
-   ═══════════════════════════════════════════════════════════ */
-function updateParamCenters() {
-  const sec = document.getElementById("paramSector").value;
-  const sel = document.getElementById("paramCenter");
-  sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
-}
-function updateVehCenters() {
-  const sec = document.getElementById("vehSector").value;
-  const sel = document.getElementById("vehCenter");
-  sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
-}
-
-/* ═══════════════════════════════════════════════════════════
-   الملاحظات
-   ═══════════════════════════════════════════════════════════ */
-function renderNotesList(notes) {
-  const el = document.getElementById("notesList");
-  if (!notes.length) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:20px;">لا يوجد ملاحظات</div>'; return; }
-  el.innerHTML = notes.map(data => 
-    `<div class="item-card" style="flex-direction:column; align-items:flex-start;">
-       <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
-         <b style="color:var(--gold-light); font-size:13px;">🏥 ${esc(data.centerName||'-')}</b>
-         <span style="font-size:10px; opacity:0.5;">${fmtDate(data.timestamp)}</span>
-       </div>
-       <p style="font-size:12px;"><b>المشرف:</b> ${esc(data.supervisor||'-')}</p>
-       <p style="font-size:12px; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px; width:100%;">${esc(data.description||'-')}</p>
-     </div>`
-  ).join("");
-}
-
-/* ═══════════════════════════════════════════════════════════
-   البلاغات
-   ═══════════════════════════════════════════════════════════ */
-function renderIssuesList(issues) {
-  const el = document.getElementById("issuesList");
-  const filtered = issues.filter(i => i.type === "complaint" || i.type === "praise");
-  if (!filtered.length) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:20px;">لا يوجد بلاغات</div>'; return; }
-  el.innerHTML = filtered.map(data => 
-    `<div class="item-card" style="border-right-color:${data.isPraise?'var(--green-light)':'var(--red-light)'};">
-       <div class="item-info">
-         <h4>${data.isPraise?'⭐':'🚩'} ${esc(data.targetName||'-')}</h4>
-         <p>المشرف: ${esc(data.supervisor||'-')} | النوع: ${esc(data.issueType||'-')} | الحالة: ${esc(data.status||'مفتوحة')}</p>
-       </div>
-       <div class="item-actions">
-         <button class="icon-btn-sm edit" onclick="editIssue('${data.id}')">✏️</button>
-         <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${data.id}','${esc(data.targetName)}')">🗑️</button>
-       </div>
-     </div>`
-  ).join("");
-}
-
-function editIssue(id) {
-  const data = searchCache.issues.find(i => i.id === id);
-  if (!data) return;
-  document.getElementById("issueEditId").value = id;
-  document.getElementById("issueTargetType").value = data.targetType || "paramedic";
-  document.getElementById("issueTargetName").value = data.targetName || "";
-  document.getElementById("issueType").value = data.issueType || "";
-  document.getElementById("issueDesc").value = data.description || "";
-  document.getElementById("btnIssueSave").innerText = "💾 حفظ التعديلات";
-  document.getElementById("btnIssueCancel").style.display = "block";
-  document.getElementById("issueFormTitle").innerText = "✏️ تعديل بلاغ";
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-async function saveIssue() {
-  const id = document.getElementById("issueEditId").value;
-  const targetType = document.getElementById("issueTargetType").value;
-  const targetName = document.getElementById("issueTargetName").value.trim();
-  const issueType = document.getElementById("issueType").value.trim();
-  const desc = document.getElementById("issueDesc").value.trim();
-  
-  if (!targetName) return showToast("أدخل اسم الهدف", "danger");
-  if (!issueType) return showToast("أدخل نوع البلاغ", "danger");
-  
-  const isPraise = issueType.includes("إشادة") || issueType.includes("إشاده");
-  
-  try {
-    if (id) {
-      await db.collection("issues").doc(id).update({
-        targetType, targetName, issueType, description: desc, isPraise,
-        type: isPraise ? "praise" : "complaint",
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      showToast("تم التعديل");
-    } else {
-      await db.collection("issues").add({
-        targetType, targetName, issueType, description: desc, isPraise,
-        supervisor: "الإدارة (إدخال يدوي)",
-        status: "new",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        type: isPraise ? "praise" : "complaint"
-      });
-      showToast("تم الحفظ");
-      pushActivity(isPraise ? "⭐" : "🚩", `بلاغ ${isPraise?'إشادة':'إشكالية'}: ${targetName}`, isPraise?"var(--green-light)":"var(--red-light)");
+    // التعاميم
+    function loadBroadcasts() {
+        db.collection("broadcasts").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`;
+            });
+            document.getElementById("bcList").innerHTML = html || "لا يوجد تعاميم";
+        });
     }
-    cancelEdit('issue');
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   التعاميم
-   ═══════════════════════════════════════════════════════════ */
-function renderBroadcastsList(bcs) {
-  const el = document.getElementById("bcList");
-  if (!bcs.length) { el.innerHTML = '<div style="text-align:center;opacity:0.5;padding:20px;">لا يوجد تعاميم</div>'; return; }
-  el.innerHTML = bcs.map(data => 
-    `<div class="item-card">
-       <div class="item-info">
-         <h4>📢 ${esc(data.title)}</h4>
-         <p>${esc(data.description)}</p>
-         <p style="font-size:10px; opacity:0.5; margin-top:4px;">${fmtDate(data.timestamp)}</p>
-       </div>
-       <button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${data.id}','${esc(data.title)}')">🗑️</button>
-     </div>`
-  ).join("");
-}
-
-async function addBroadcast() {
-  const title = document.getElementById("bcTitle").value.trim();
-  const desc = document.getElementById("bcDesc").value.trim();
-  if (!title || !desc) return showToast("أكمل البيانات", "danger");
-  try {
-    await db.collection("broadcasts").add({ title, description: desc, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-    showToast("تم الإرسال");
-    pushActivity("📢", `تعميم: ${title}`, "var(--blue-light)");
-    document.getElementById("bcTitle").value = "";
-    document.getElementById("bcDesc").value = "";
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   جدول الدوام (مع Debounce)
-   ═══════════════════════════════════════════════════════════ */
-const dutyCache = {};
-const dutyTimers = {};
-const pendingChanges = new Set();
-
-function loadDutyTable() {
-  const month = document.getElementById("dutyMonth").value;
-  if (!month) return;
-  
-  document.getElementById("dutyTableContainerA").innerHTML = '<div class="skeleton" style="height:200px;"></div>';
-  document.getElementById("dutyTableContainerB").innerHTML = '<div class="skeleton" style="height:200px;"></div>';
-  
-  const [year, m] = month.split("-");
-  const days = new Date(year, m, 0).getDate();
-  
-  db.collection("access_code").where("type", "==", "supervisor").get().then(snap => {
-    const allSups = [];
-    snap.forEach(doc => allSups.push({ id: doc.id, ...doc.data() }));
-    const supA = allSups.filter(s => s.sector === "قطاع A");
-    const supB = allSups.filter(s => s.sector === "قطاع B");
-    
-    db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
-      const dutyData = {};
-      dutySnap.forEach(d => { dutyData[d.data().supervisorCode] = d.data().shifts || {}; });
-      document.getElementById("dutyTableContainerA").innerHTML = buildDutyHtml(supA, dutyData, year, m, days, month);
-      document.getElementById("dutyTableContainerB").innerHTML = buildDutyHtml(supB, dutyData, year, m, days, month);
-    });
-  });
-}
-
-function buildDutyHtml(suprvs, dutyData, year, m, days, month) {
-  if (suprvs.length === 0) return '<div style="text-align:center; opacity:0.5; padding:20px;">لا يوجد مشرفون</div>';
-  let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
-  for (let d = 1; d <= days; d++) { 
-    const dow = new Date(year, m-1, d).getDay(); 
-    const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : ''; 
-    html += `<th${wk}>${d}</th>`; 
-  }
-  html += '</tr></thead><tbody>';
-  suprvs.forEach(s => {
-    const shifts = dutyData[s.code] || {};
-    html += `<tr><td>${esc(s.name)}</td>`;
-    for (let d = 1; d <= days; d++) { 
-      const val = shifts[d] || ""; 
-      html += `<td id="cell-${month}-${s.code}-${d}"><select onchange="updateDuty('${month}','${s.code}','${esc(s.name)}',${d},this.value)"><option value="">—</option>${Object.keys(DUTY_CODES).map(c => `<option value="${c}" ${val===c?"selected":""}>${c}</option>`).join("")}</select></td>`; 
+    function addBroadcast() {
+        const title = document.getElementById("bcTitle").value.trim();
+        const desc = document.getElementById("bcDesc").value.trim();
+        if (!title || !desc) return showToast("أكمل البيانات", "danger");
+        db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
     }
-    html += '</tr>';
-  });
-  return html + '</tbody></table>';
-}
 
-function updateDuty(month, code, name, day, val) {
-  const docId = `${month}_${code}`;
-  const cellId = `cell-${month}-${code}-${day}`;
-  
-  if (!dutyCache[docId]) dutyCache[docId] = { shifts: {}, name };
-  dutyCache[docId].shifts[day] = val;
-  
-  const cell = document.getElementById(cellId);
-  if (cell) cell.classList.add("saving");
-  
-  clearTimeout(dutyTimers[docId]);
-  dutyTimers[docId] = setTimeout(async () => {
-    try {
-      await db.collection("duty_schedule").doc(docId).set({
-        month, supervisorCode: code, supervisorName: name,
-        shifts: dutyCache[docId].shifts,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-      if (cell) cell.classList.remove("saving");
-      showToast("تم الحفظ");
-    } catch (e) {
-      if (cell) cell.classList.remove("saving");
-      showToast("فشل الحفظ", "danger");
+    // الدوام
+    function loadDutyTable() {
+        const month = document.getElementById("dutyMonth").value;
+        if (!month) return;
+        const [year, m] = month.split("-");
+        const days = new Date(year, m, 0).getDate();
+        
+        db.collection("access_code").where("type", "==", "supervisor").get().then(snap => {
+            const allSups = [];
+            snap.forEach(doc => allSups.push({ id: doc.id, ...doc.data() }));
+            const supA = allSups.filter(s => s.sector === "قطاع A");
+            const supB = allSups.filter(s => s.sector === "قطاع B");
+            
+            db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
+                const dutyData = {};
+                dutySnap.forEach(d => { dutyData[d.data().supervisorCode] = d.data().shifts || {}; });
+                document.getElementById("dutyTableContainerA").innerHTML = buildDutyHtml(supA, dutyData, year, m, days, month);
+                document.getElementById("dutyTableContainerB").innerHTML = buildDutyHtml(supB, dutyData, year, m, days, month);
+            });
+        });
     }
-  }, 800);
-}
-
-async function flushDutySave() {
-  const ids = Object.keys(dutyTimers);
-  if (ids.length === 0) return;
-  for (const docId of ids) {
-    clearTimeout(dutyTimers[docId]);
-    const data = dutyCache[docId];
-    if (!data) continue;
-    try {
-      await db.collection("duty_schedule").doc(docId).set({
-        month: docId.split("_")[0], supervisorCode: docId.split("_").slice(1).join("_"),
-        supervisorName: data.name, shifts: data.shifts,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-    } catch (e) { console.error(e); }
-  }
-  showToast("تم حفظ كل التغييرات");
-}
-
-/* ═══════════════════════════════════════════════════════════
-   الأنواع
-   ═══════════════════════════════════════════════════════════ */
-let typesUnsub = null;
-function loadTypes() {
-  const target = document.getElementById("typeTarget").value;
-  const cat = document.getElementById("typeCategory").value;
-  const col = `${cat}_types_${target}`;
-  
-  if (typesUnsub) { typesUnsub(); typesUnsub = null; }
-  
-  document.getElementById("typesList").innerHTML = '<div class="skeleton" style="height:50px;"></div>';
-  
-  typesUnsub = db.collection(col).onSnapshot(s => {
-    let html = "";
-    s.forEach(d => {
-      const data = d.data();
-      html += `<div class="item-card"><div class="item-info"><h4>${esc(data.name)}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}','${esc(data.name)}')">🗑️</button></div>`;
-    });
-    document.getElementById("typesList").innerHTML = html || '<div style="text-align:center;opacity:0.5;padding:15px;">لا يوجد أنواع</div>';
-  });
-}
-
-async function addType() {
-  const target = document.getElementById("typeTarget").value;
-  const cat = document.getElementById("typeCategory").value;
-  const name = document.getElementById("newTypeName").value.trim();
-  if (!name) return showToast("أدخل الاسم", "danger");
-  const col = `${cat}_types_${target}`;
-  try {
-    await db.collection(col).add({ name, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    showToast("تمت الإضافة");
-    document.getElementById("newTypeName").value = "";
-  } catch (e) { showToast("خطأ", "danger"); }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   CRUD عام
-   ═══════════════════════════════════════════════════════════ */
-function cancelEdit(prefix) {
-  const map = { sup: "supervisor", param: "param", veh: "veh", issue: "issue" };
-  document.querySelectorAll(`[id^="${prefix}"]`).forEach(el => {
-    if (el.id === prefix + "EditId") { el.value = ""; return; }
-    if (el.tagName === "SELECT") el.selectedIndex = 0;
-    else if (el.id !== "supCodeEdit") el.value = "";
-  });
-  const btnMap = { sup: "btnSupSave", param: "btnParamSave", veh: "btnVehSave", issue: "btnIssueSave" };
-  const cancelMap = { sup: "btnSupCancel", param: "btnParamCancel", veh: "btnVehCancel", issue: "btnIssueCancel" };
-  const titleMap = { sup: "supFormTitle", param: "paramFormTitle", veh: "vehFormTitle", issue: "issueFormTitle" };
-  const labelMap = { sup: "➕ إضافة مشرف", param: "➕ إضافة مسعف", veh: "➕ إضافة مركبة", issue: "➕ إضافة بلاغ" };
-  const btnLabel = { sup: "💾 حفظ", param: "💾 حفظ", veh: "💾 حفظ", issue: "➕ إضافة" };
-  
-  document.getElementById(btnMap[prefix]).innerText = btnLabel[prefix];
-  document.getElementById(cancelMap[prefix]).style.display = "none";
-  document.getElementById(titleMap[prefix]).innerText = labelMap[prefix];
-}
-
-async function deleteDoc(col, id, name = "") {
-  const msg = name ? `حذف "${name}"؟` : "هل تريد الحذف؟";
-  if (!confirm("⚠️ " + msg + "\nلا يمكن التراجع.")) return;
-  try {
-    await db.collection(col).doc(id).delete();
-    showToast("تم الحذف");
-    pushActivity("🗑️", `حذف من ${col}: ${name}`, "var(--red-light)");
-  } catch (e) { showToast("فشل الحذف: " + e.message, "danger"); }
-}
-
-async function copyCode(code) {
-  try {
-    await navigator.clipboard.writeText(code);
-    showToast("تم نسخ الكود: " + code);
-  } catch {
-    const ta = document.createElement("textarea");
-    ta.value = code;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
-    showToast("تم النسخ");
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   المسح
-   ═══════════════════════════════════════════════════════════ */
-async function wipeData(type) {
-  if (!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
-  try {
-    if (type === 'issues') {
-      const snap = await db.collection("issues").get();
-      const batch = db.batch();
-      snap.forEach(d => batch.delete(d.ref));
-      await batch.commit();
-      showToast("تم مسح البلاغات");
-    } else {
-      const cols = ["issues", "broadcasts"];
-      for (const col of cols) {
-        const snap = await db.collection(col).get();
-        const batch = db.batch();
-        snap.forEach(d => batch.delete(d.ref));
-        await batch.commit();
-      }
-      showToast("تم المسح الشامل");
+    function buildDutyHtml(suprvs, dutyData, year, m, days, month) {
+        if (suprvs.length === 0) return '<div style="text-align:center; opacity:0.5; padding:10px;">لا يوجد مشرفون</div>';
+        let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
+        for (let d = 1; d <= days; d++) { const dow = new Date(year, m-1, d).getDay(); const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : ''; html += `<th${wk}>${d}</th>`; }
+        html += '</tr></thead><tbody>';
+        suprvs.forEach(s => {
+            const shifts = dutyData[s.code] || {};
+            html += `<tr><td>${s.name}</td>`;
+            for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; html += `<td><select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)"><option value="">—</option>${Object.keys(DUTY_CODES).map(c => `<option value="${c}" ${val===c?"selected":""}>${c}</option>`).join("")}</select></td>`; }
+            html += '</tr>';
+        });
+        return html + '</tbody></table>';
     }
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   النسخ الاحتياطي
-   ═══════════════════════════════════════════════════════════ */
-async function backupAll() {
-  try {
-    showToast("جاري التحضير...");
-    const backup = { timestamp: new Date().toISOString(), data: {} };
-    const cols = ["access_code", "paramedics", "vehicles", "issues", "broadcasts", "duty_schedule"];
-    for (const col of cols) {
-      const snap = await db.collection(col).get();
-      backup.data[col] = [];
-      snap.forEach(d => backup.data[col].push({ id: d.id, ...d.data() }));
+    async function updateDuty(month, code, name, day, val) {
+        const docId = `${month}_${code}`; const docRef = db.collection("duty_schedule").doc(docId);
+        try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); } catch(e) { showToast("خطأ", "danger"); }
     }
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `backup_${new Date().toISOString().slice(0,10)}.json`;
-    link.click();
-    URL.revokeObjectURL(link.href);
-    showToast("تم تنزيل النسخة");
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
 
-async function restoreFromFile(file) {
-  if (!file) return;
-  if (!confirm("⚠️ سيتم استبدال البيانات الحالية. متابعة؟")) return;
-  try {
-    const text = await file.text();
-    const backup = JSON.parse(text);
-    if (!backup.data) throw new Error("ملف غير صالح");
-    for (const [col, docs] of Object.entries(backup.data)) {
-      const batch = db.batch();
-      docs.forEach(doc => {
-        const { id, ...data } = doc;
-        const ref = db.collection(col).doc(id || db.collection(col).doc().id);
-        batch.set(ref, data);
-      });
-      await batch.commit();
+    // الأنواع
+    function loadTypes() {
+        const target = document.getElementById("typeTarget").value;
+        const cat = document.getElementById("typeCategory").value;
+        const col = `${cat}_types_${target}`;
+        
+        db.collection(col).get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card"><div class="item-info"><h4>${data.name}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}')">🗑️</button></div>`;
+            });
+            document.getElementById("typesList").innerHTML = html || "لا يوجد أنواع";
+        });
     }
-    showToast("تمت الاستعادة");
-  } catch (e) { showToast("خطأ: " + e.message, "danger"); }
-}
+    function addType() {
+        const target = document.getElementById("typeTarget").value;
+        const cat = document.getElementById("typeCategory").value;
+        const name = document.getElementById("newTypeName").value.trim();
+        if (!name) return showToast("أدخل الاسم", "danger");
+        const col = `${cat}_types_${target}`;
+        db.collection(col).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); });
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   البحث السريع
-   ═══════════════════════════════════════════════════════════ */
-function openQuickSearch() {
-  document.getElementById("quickSearchModal").classList.add("open");
-  setTimeout(() => document.getElementById("quickSearchInput").focus(), 100);
-}
-function closeQuickSearch() {
-  document.getElementById("quickSearchModal").classList.remove("open");
-  document.getElementById("quickSearchInput").value = "";
-  document.getElementById("quickSearchResults").innerHTML = "";
-}
-function doQuickSearch(q) {
-  const query = (q || "").toLowerCase().trim();
-  const results = document.getElementById("quickSearchResults");
-  if (query.length < 2) { results.innerHTML = '<div style="opacity:0.5;text-align:center;padding:20px;font-size:12px;">اكتب حرفين على الأقل...</div>'; return; }
-  
-  let matches = [];
-  searchCache.supervisors.forEach(s => { if ((s.name||"").toLowerCase().includes(query) || (s.code||"").toLowerCase().includes(query)) matches.push({ icon:"👨‍💼", text: s.name, sub: s.code, tab:"supervisors" }); });
-  searchCache.paramedics.forEach(p => { if ((p.name||"").toLowerCase().includes(query)) matches.push({ icon:"👨‍🚒", text: p.name, sub: p.centerName, tab:"paramedics" }); });
-  searchCache.vehicles.forEach(v => { if ((v.plateNumber||"").toLowerCase().includes(query)) matches.push({ icon:"🚑", text: v.plateNumber, sub: v.centerName, tab:"vehicles" }); });
-  searchCache.issues.forEach(i => { if ((i.targetName||"").toLowerCase().includes(query)) matches.push({ icon: i.isPraise?"⭐":"🚩", text: i.targetName, sub: i.issueType, tab:"issues" }); });
-  
-  if (matches.length === 0) { results.innerHTML = '<div style="opacity:0.5;text-align:center;padding:20px;font-size:12px;">لا نتائج</div>'; return; }
-  
-  results.innerHTML = matches.slice(0, 15).map(m => 
-    `<div class="quick-result" onclick="goToResult('${m.tab}')">
-       <div style="font-size:13px; font-weight:900;">${m.icon} ${esc(m.text)}</div>
-       <div style="font-size:10px; opacity:0.6;">${esc(m.sub||'')}</div>
-     </div>`
-  ).join("");
-}
-function goToResult(tab) {
-  closeQuickSearch();
-  switchTab(tab);
-}
+    // الحذف والمسح
+    function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
+    function wipeData(type) {
+        if(!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
+        if(type === 'issues') { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); showToast("تم مسح البلاغات"); }); }
+        else { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); }); db.collection("broadcasts").get().then(s => { s.forEach(d => d.ref.delete()); }); showToast("تم المسح الشامل"); }
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   الطباعة
-   ═══════════════════════════════════════════════════════════ */
-function printDutyTable(orientation) {
-  const month = document.getElementById("dutyMonth").value;
-  const htmlA = document.getElementById("dutyTableContainerA").innerHTML;
-  const htmlB = document.getElementById("dutyTableContainerB").innerHTML;
-  const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-  const style = orientation === 'landscape' ? '<style>@page { size: landscape; }</style>' : '';
-  const printHtml = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام الشهري — ${month}</h2></div></div><h3>قطاع A</h3>${htmlA}<h3>قطاع B</h3>${htmlB}<div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
-  document.getElementById("printArea").innerHTML = printHtml;
-  setTimeout(() => window.print(), 300);
-}
+    // الطباعة
+    function printDutyTable(orientation) {
+        const month = document.getElementById("dutyMonth").value;
+        const htmlA = document.getElementById("dutyTableContainerA").innerHTML;
+        const htmlB = document.getElementById("dutyTableContainerB").innerHTML;
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        
+        const style = orientation === 'landscape' ? '<style>@page { size: landscape; }</style>' : '';
+        
+        const printHtml = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام الشهري — ${month}</h2></div></div><h3>قطاع A</h3>${htmlA}<h3>قطاع B</h3>${htmlB}<div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
+        document.getElementById("printArea").innerHTML = printHtml;
+        setTimeout(() => window.print(), 300);
+    }
 
-function printCodes() {
-  const sups = searchCache.supervisors;
-  let tbody = "";
-  sups.forEach((data, i) => { tbody += `<tr><td>${i+1}</td><td>${esc(data.name)}</td><td>${esc(data.militaryId||'-')}</td><td>${esc(data.sector)}</td><td style="font-size:18px; font-weight:bold; color:#0d4a42;">${esc(data.code)}</td></tr>`; });
-  doPrint("قائمة أكواد الدخول", "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th>", tbody);
-}
+    function printCodes() {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
+            let tbody = "", i = 1;
+            s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td style="font-size:18px; font-weight:bold; color:#0d4a42;">${data.code}</td></tr>`; });
+            doPrint("قائمة أكواد الدخول", "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th>", tbody);
+        });
+    }
 
-function printReport(type) {
-  let title = "", thead = "", tbody = "";
-  if (type === 'supervisors') {
-    title = "تقرير المشرفين";
-    thead = "<th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>القطاع</th><th>الكود</th>";
-    searchCache.supervisors.forEach((data, i) => { tbody += `<tr><td>${i+1}</td><td>${esc(data.name)}</td><td>${esc(data.militaryId||'-')}</td><td>${esc(data.sector)}</td><td>${esc(data.code)}</td></tr>`; });
-  } else if (type === 'paramedics') {
-    title = "تقرير المسعفين";
-    thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>المركز</th><th>الرتبة</th>";
-    searchCache.paramedics.forEach((data, i) => { tbody += `<tr><td>${i+1}</td><td>${esc(data.name)}</td><td>${esc(data.militaryId||'-')}</td><td>${esc(data.centerName)}</td><td>${esc(data.rank||'-')}</td></tr>`; });
-  } else if (type === 'issues') {
-    title = "تقرير البلاغات";
-    thead = "<th>#</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th>";
-    const list = searchCache.issues.filter(i => i.type === "complaint" || i.type === "praise");
-    list.forEach((data, i) => { tbody += `<tr><td>${i+1}</td><td>${esc(data.targetName)}</td><td>${data.isPraise?'إشادة':'إشكالية'}</td><td>${esc(data.supervisor)}</td><td>${esc(data.status||'مفتوحة')}</td></tr>`; });
-  }
-  doPrint(title, thead, tbody);
-}
+    function printReport(type) {
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        let title = "", thead = "", tbody = "";
+        
+        if (type === 'supervisors') {
+            title = "تقرير المشرفين";
+            thead = "<th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>القطاع</th><th>الكود</th>";
+            db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
+                let i = 1;
+                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td>${data.code}</td></tr>`; });
+                doPrint(title, thead, tbody);
+            });
+        } else if (type === 'paramedics') {
+            title = "تقرير المسعفين";
+            thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>المركز</th><th>الرتبة</th>";
+            db.collection("paramedics").get().then(s => {
+                let i = 1;
+                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.centerName}</td><td>${data.rank||'-'}</td></tr>`; });
+                doPrint(title, thead, tbody);
+            });
+        } else if (type === 'issues') {
+            title = "تقرير البلاغات";
+            thead = "<th>#</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th>";
+            db.collection("issues").get().then(s => {
+                let i = 1;
+                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.targetName}</td><td>${data.isPraise?'إشادة':'إشكالية'}</td><td>${data.supervisor}</td><td>${data.status||'مفتوحة'}</td></tr>`; });
+                doPrint(title, thead, tbody);
+            });
+        }
+    }
 
-function doPrint(title, thead, tbody) {
-  const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-  const html = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-  document.getElementById("printArea").innerHTML = html;
-  setTimeout(() => window.print(), 300);
-}
+    function doPrint(title, thead, tbody) {
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        const html = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+        document.getElementById("printArea").innerHTML = html;
+        setTimeout(() => window.print(), 300);
+    }
 
-function exportExcel() {
-  const list = searchCache.issues.filter(i => i.type === "complaint" || i.type === "praise");
-  let csv = "\uFEFF";
-  csv += "التاريخ,الهدف,نوع الهدف,التصنيف,نوع البلاغ,المشرف,المركز,الحالة,الوصف\n";
-  const clean = v => `"${String(v||'').replace(/"/g,'""').replace(/\n/g,' ')}"`;
-  list.forEach(data => {
-    csv += [clean(fmtDate(data.timestamp)), clean(data.targetName), clean(data.targetType), clean(data.isPraise?'إشادة':'إشكالية'), clean(data.issueType), clean(data.supervisor), clean(data.centerName), clean(data.status||'مفتوحة'), clean(data.description)].join(",") + "\n";
-  });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `تقرير_البلاغات_${new Date().toISOString().slice(0,10)}.csv`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-  showToast("تم تصدير الملف");
-}
+    function exportExcel() {
+        db.collection("issues").get().then(s => {
+            let csv = "\uFEFF";
+            csv += "الهدف,النوع,المشرف,المركز,الحالة\n";
+            s.forEach(d => { const data = d.data(); csv += `"${data.targetName||''}","${data.isPraise?'إشادة':'إشكالية'}","${data.supervisor||''}","${data.centerName||''}","${data.status||'مفتوحة'}"\n`; });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `تقرير_البلاغات_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            showToast("تم تصدير الملف");
+        });
+    }
 
-/* ═══════════════════════════════════════════════════════════
-   الإعدادات
-   ═══════════════════════════════════════════════════════════ */
-function loadConfig() {
-  const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-  const sysName = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
-  document.getElementById("topbarLogo").src = logo;
-  document.getElementById("systemName").innerText = sysName;
-  document.getElementById("cfgSystemName").value = sysName;
-  document.getElementById("cfgLogoUrl").value = logo;
-}
-function saveConfig(key, val) {
-  localStorage.setItem("cfg_" + key, val);
-  if (key === 'logoUrl') document.getElementById("topbarLogo").src = val;
-  if (key === 'systemName') document.getElementById("systemName").innerText = val;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   اختصارات لوحة المفاتيح
-   ═══════════════════════════════════════════════════════════ */
-document.addEventListener("keydown", (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); openQuickSearch(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === "s") { e.preventDefault(); if (document.querySelector(".page.active").id === "page-duty") flushDutySave(); }
-  if (e.key === "Escape") closeQuickSearch();
-});
-
-/* ═══════════════════════════════════════════════════════════
-   الإقلاع
-   ═══════════════════════════════════════════════════════════ */
-window.addEventListener("beforeunload", () => {
-  unsubs.forEach(u => u());
-  if (typesUnsub) typesUnsub();
-});
-
-function boot() {
-  initTheme();
-  loadConfig();
-  document.getElementById("currentUser").textContent = user.name || "المدير العام";
-  document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
-  initRealtimeListeners();
-  renderActivityFeed();
-  document.getElementById("loadingOverlay").style.display = "none";
-  document.getElementById("mainApp").classList.add("ready");
-  pushActivity("✅", "تم تحميل النظام بنجاح", "var(--green-light)");
-}
-
-boot();
+    function loadConfig() {
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        const sysName = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
+        document.getElementById("topbarLogo").src = logo; document.getElementById("systemName").innerText = sysName;
+        document.getElementById("cfgSystemName").value = sysName; document.getElementById("cfgLogoUrl").value = logo;
+    }
+    function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
 </script>
 </body>
 </html>
