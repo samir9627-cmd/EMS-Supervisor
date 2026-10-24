@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — النظام المتكامل V23</title>
+<title>الإدارة العامة — النظام المتكامل V24</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
@@ -28,7 +28,6 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 @keyframes spin { to { transform:rotate(360deg); } }
 #mainApp { display:none; } #mainApp.ready { display:block; }
 
-/* الشريط العلوي */
 .topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: rgba(4,24,20,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
 .topbar-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: #fff; padding: 3px; }
 .topbar-info { flex: 1; }
@@ -37,34 +36,28 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: #fff; font-size: 17px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .icon-btn.danger { background: rgba(229,57,53,0.3); border-color: var(--red-light); }
 
-/* التبويبات */
 .tabs-bar { position: sticky; top: calc(70px + var(--safe-top)); z-index: 98; background: rgba(4,24,20,0.9); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
 .tabs-bar::-webkit-scrollbar { display: none; }
 .tabs-scroll { display: flex; gap: 8px; padding: 10px 16px; min-width: max-content; }
 .tab-btn { flex-shrink: 0; padding: 8px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(151,141,91,0.2); border-radius: 20px; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
 .tab-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; }
 
-/* الصفحات */
 .page { display: none; padding: 16px; max-width: 900px; margin: 0 auto; animation: slideUp 0.4s ease-out; }
 .page.active { display: block; }
 
-/* البطاقات */
 .card { background: rgba(13,74,66,0.3); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 16px; }
 .card-title { font-size: 15px; color: var(--gold-light); font-weight: 900; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(151,141,91,0.2); display: flex; justify-content: space-between; align-items: center; }
 
-/* الإحصائيات */
 .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
 @media (min-width:600px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
 .stat-mini { background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)); border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; }
 .stat-mini .num { font-size: 28px; font-weight: 900; color: var(--gold-light); }
 .stat-mini .lbl { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; }
 
-/* المدخلات */
 input, select, textarea { width: 100%; padding: 14px; background: rgba(4,24,20,0.6); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; font-weight: 600; outline: none; margin-bottom: 14px; }
 input:focus, select:focus, textarea:focus { border-color: var(--gold); }
 label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px; }
 
-/* الأزرار */
 .btn { padding: 12px 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn.block { width: 100%; }
 .btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); }
@@ -72,7 +65,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; }
 .btn.small { padding: 8px 14px; font-size: 11px; }
 
-/* عناصر القائمة */
 .item-card { background: rgba(13,74,66,0.4); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .item-info { flex: 1; }
 .item-info h4 { font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px; }
@@ -83,7 +75,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue-light); }
 .icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold-light); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
 
-/* التنبيهات */
 .toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
 .toast { background: rgba(13,74,66,0.95); backdrop-filter: blur(10px); color: #fff; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; text-align: center; }
 .toast.success { border-color: var(--green-light); }
@@ -92,7 +83,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:50px; height:50px; border:4px solid rgba(151,141,91,0.2); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
 
-/* الجدول الفخم */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
@@ -101,7 +91,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .duty-table th.weekend { background: rgba(229,57,53,0.4); color: #fff; }
 .duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold-light); font-weight: 900; text-align: center; -webkit-appearance: none; }
 
-/* محرك الطباعة */
 #printArea { display: none; }
 @media print {
   body * { visibility: hidden; }
@@ -238,14 +227,23 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
-  <!-- 6. البلاغات -->
+  <!-- 6. البلاغات (التحكم الشامل والمصحح) -->
   <div class="page" id="page-issues">
     <div class="card">
-      <div class="card-title">🚩 إضافة بلاغ يدوياً</div>
-      <input type="text" id="adminIssueTarget" placeholder="الهدف (اسم المسعف أو المركز)">
-      <input type="text" id="adminIssueType" placeholder="نوع البلاغ (إشكالية/إشادة)">
-      <textarea id="adminIssueDesc" placeholder="وصف البلاغ..." rows="2"></textarea>
-      <button class="btn block success" onclick="addAdminIssue()">➕ إضافة بلاغ</button>
+      <div class="card-title">➕ إضافة / تعديل بلاغ</div>
+      <input type="hidden" id="issueEditId">
+      <label>الهدف</label>
+      <select id="issueTargetType">
+        <option value="paramedic">مسعف</option><option value="center">مركز</option>
+        <option value="vehicle">مركبة</option><option value="stock">مخزن</option>
+      </select>
+      <input type="text" id="issueTargetName" placeholder="اسم الهدف">
+      <label>النوع</label>
+      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة / إشادة">
+      <label>الوصف</label>
+      <textarea id="issueDesc" placeholder="وصف..." rows="2"></textarea>
+      <button class="btn block success" onclick="saveIssue()" id="btnIssueSave">➕ إضافة</button>
+      <button class="btn secondary block" onclick="cancelIssueEdit()" id="btnIssueCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
       <div class="card-title">📋 سجل البلاغات</div>
@@ -323,11 +321,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 </div>
-
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
 
 <script>
+    /* ═══════════════════════════════════════════════════════════
+       الإعدادات والتهيئة
+       ═══════════════════════════════════════════════════════════ */
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -347,12 +347,19 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
     const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
 
+    // تهيئة النظام
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").textContent = user.name || "المدير العام";
     document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
-    loadConfig(); loadData();
+    loadConfig();
+    
+    // تشغيل التحديث الحي (onSnapshot) بدلاً من get()
+    initRealtimeListeners();
 
+    /* ═══════════════════════════════════════════════════════════
+       التنقل والتنبيهات
+       ═══════════════════════════════════════════════════════════ */
     function showToast(msg, type="success") {
         const c = document.getElementById("toastContainer"); const t = document.createElement("div");
         t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
@@ -366,6 +373,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
         
+        // تحميل البيانات عند التبديل (للتأكد من التحديث)
         if (id === 'supervisors') loadSups();
         if (id === 'paramedics') loadParams();
         if (id === 'vehicles') loadVehicles();
@@ -376,32 +384,62 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         if (id === 'types') loadTypes();
     }
 
-    function loadData() {
-        db.collection("access_code").get().then(s => document.getElementById("dashSups").innerText = s.size);
-        db.collection("paramedics").get().then(s => document.getElementById("dashParams").innerText = s.size);
-        db.collection("vehicles").get().then(s => document.getElementById("dashVehicles").innerText = s.size);
-        db.collection("issues").get().then(s => document.getElementById("dashIssues").innerText = s.size);
-    }
-
     function manualRefresh() { showToast("تحديث..."); loadData(); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    /* المشرفون */
+    /* ═══════════════════════════════════════════════════════════
+       التحديث الحي (onSnapshot) - يعالج مشكلة الأداء
+       ═══════════════════════════════════════════════════════════ */
+    function initRealtimeListeners() {
+        // مراقبة البلاغات
+        db.collection("issues").onSnapshot(snap => {
+            const issues = [];
+            snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
+            document.getElementById("dashIssues").innerText = issues.length;
+            const activePage = document.querySelector(".page.active").id;
+            if (activePage === "page-issues") renderIssuesList(issues);
+            if (activePage === "page-dashboard") renderDashboardLatest(issues);
+        });
+
+        // مراقبة المشرفين
+        db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
+            document.getElementById("dashSups").innerText = snap.size;
+            if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
+        });
+
+        // مراقبة المسعفين
+        db.collection("paramedics").onSnapshot(snap => {
+            document.getElementById("dashParams").innerText = snap.size;
+            if (document.querySelector(".page.active").id === "page-paramedics") loadParams();
+        });
+
+        // مراقبة المركبات
+        db.collection("vehicles").onSnapshot(snap => {
+            document.getElementById("dashVehicles").innerText = snap.size;
+            if (document.querySelector(".page.active").id === "page-vehicles") loadVehicles();
+        });
+    }
+
+    function renderDashboardLatest(issues) {
+        // يمكن إضافة آخر النشاطات هنا إذا أردت
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       المشرفون (إضافة، تعديل، حذف)
+       ═══════════════════════════════════════════════════════════ */
     function loadSups() {
-        db.collection("access_code").get().then(s => {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
             let html = "";
             s.forEach(d => {
                 const data = d.data();
-                if(data.code && data.code.startsWith("SUP")) {
-                    html += `<div class="item-card">
-                        <div class="item-info"><h4>👨‍💼 ${data.name}</h4><p>الرقم: ${data.militaryId || '-'} | القطاع: ${data.sector || '-'}</p></div>
-                        <div class="item-actions">
-                            <button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${data.code}'); showToast('تم النسخ')">${data.code}</button>
-                            <button class="icon-btn-sm edit" onclick="editSup('${d.id}','${data.name}','${data.militaryId||''}','${data.sector}','${data.code}')">✏️</button>
-                            <button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button>
-                        </div>
-                    </div>`;
-                }
+                html += `<div class="item-card">
+                    <div class="item-info"><h4>👨‍💼 ${data.name}</h4><p>الرقم: ${data.militaryId || '-'} | القطاع: ${data.sector || '-'}</p></div>
+                    <div class="item-actions">
+                        <button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${data.code}'); showToast('تم النسخ')">${data.code}</button>
+                        <button class="icon-btn-sm edit" onclick="editSup('${d.id}','${data.name}','${data.militaryId||''}','${data.sector}','${data.code}')">✏️</button>
+                        <button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button>
+                    </div>
+                </div>`;
             });
             document.getElementById("supList").innerHTML = html || "لا يوجد مشرفون";
         });
@@ -431,14 +469,16 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         if (id) {
             const updateData = { name, militaryId, sector };
             if(codeInput) updateData.code = codeInput;
-            db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); loadSups(); loadData(); });
+            db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); });
         } else {
             const code = codeInput || "SUP-" + Math.floor(1000 + Math.random() * 9000);
-            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor", active: true }).then(() => { showToast("تم الإنشاء: " + code); cancelSupEdit(); loadSups(); loadData(); });
+            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor", active: true }).then(() => { showToast("تم الإنشاء: " + code); cancelSupEdit(); });
         }
     }
 
-    /* المسعفون */
+    /* ═══════════════════════════════════════════════════════════
+       المسعفون
+       ═══════════════════════════════════════════════════════════ */
     function loadParams() {
         db.collection("paramedics").get().then(s => {
             let html = "";
@@ -477,14 +517,16 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         const rank = document.getElementById("paramRank").value.trim();
         if (!name) return showToast("أدخل الاسم", "danger");
         if (id) {
-            db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم التعديل"); cancelParamEdit(); loadParams(); loadData(); });
+            db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم التعديل"); cancelParamEdit(); });
         } else {
             if (!center) return showToast("اختر المركز", "danger");
-            db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم الحفظ"); cancelParamEdit(); loadParams(); loadData(); });
+            db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم الحفظ"); cancelParamEdit(); });
         }
     }
 
-    /* المركبات */
+    /* ═══════════════════════════════════════════════════════════
+       المركبات
+       ═══════════════════════════════════════════════════════════ */
     function loadVehicles() {
         db.collection("vehicles").get().then(s => {
             let html = "";
@@ -521,14 +563,16 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         const center = document.getElementById("vehCenter").value;
         if (!plate) return showToast("أدخل اللوحة", "danger");
         if (id) {
-            db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم التعديل"); cancelVehEdit(); loadVehicles(); loadData(); });
+            db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم التعديل"); cancelVehEdit(); });
         } else {
             if (!center) return showToast("اختر المركز", "danger");
-            db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم الحفظ"); cancelVehEdit(); loadVehicles(); loadData(); });
+            db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم الحفظ"); cancelVehEdit(); });
         }
     }
 
-    /* القوائم المنسدلة */
+    /* ═══════════════════════════════════════════════════════════
+       القوائم المنسدلة (ديناميكية)
+       ═══════════════════════════════════════════════════════════ */
     function updateParamCenters() {
         const sec = document.getElementById("paramSector").value;
         const sel = document.getElementById("paramCenter");
@@ -540,7 +584,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
     }
 
-    /* ملاحظات المشرفين */
+    /* ═══════════════════════════════════════════════════════════
+       ملاحظات المشرفين
+       ═══════════════════════════════════════════════════════════ */
     function loadNotes() {
         db.collection("issues").where("type", "==", "visit").get().then(s => {
             let html = "";
@@ -559,26 +605,34 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    /* البلاغات */
+    /* ═══════════════════════════════════════════════════════════
+       البلاغات (الإصلاح الجذري)
+       ═══════════════════════════════════════════════════════════ */
     function loadIssues() {
         db.collection("issues").where("type", "in", ["complaint", "praise"]).get().then(s => {
-            let html = "";
-            s.forEach(d => {
-                const data = d.data();
-                html += `<div class="item-card" style="border-right-color:${data.isPraise ? 'var(--green-light)' : 'var(--red-light)'};">
-                    <div class="item-info">
-                        <h4>${data.isPraise ? '⭐' : '🚩'} ${data.targetName || '-'}</h4>
-                        <p>المشرف: ${data.supervisor} | النوع: ${data.issueType || '-'} | الحالة: ${data.status||'مفتوحة'}</p>
-                    </div>
-                    <div class="item-actions">
-                        <button class="icon-btn-sm edit" onclick="editIssue('${d.id}','${data.targetType}','${data.targetName}','${data.issueType}','${data.description}')">✏️</button>
-                        <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
-                    </div>
-                </div>`;
-            });
-            document.getElementById("issuesList").innerHTML = html || "لا يوجد بلاغات";
+            const issues = [];
+            s.forEach(d => issues.push({ id: d.id, ...d.data() }));
+            renderIssuesList(issues);
         });
     }
+    
+    function renderIssuesList(issues) {
+        let html = "";
+        issues.forEach(data => {
+            html += `<div class="item-card" style="border-right-color:${data.isPraise ? 'var(--green-light)' : 'var(--red-light)'};">
+                <div class="item-info">
+                    <h4>${data.isPraise ? '⭐' : '🚩'} ${data.targetName || '-'}</h4>
+                    <p>المشرف: ${data.supervisor} | النوع: ${data.issueType || '-'} | الحالة: ${data.status||'مفتوحة'}</p>
+                </div>
+                <div class="item-actions">
+                    <button class="icon-btn-sm edit" onclick="editIssue('${data.id}','${data.targetType}','${data.targetName}','${data.issueType}','${data.description}')">✏️</button>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${data.id}')">🗑️</button>
+                </div>
+            </div>`;
+        });
+        document.getElementById("issuesList").innerHTML = html || "لا يوجد بلاغات";
+    }
+
     function editIssue(id, type, name, issueType, desc) {
         document.getElementById("issueEditId").value = id;
         document.getElementById("issueTargetType").value = type;
@@ -587,13 +641,14 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         document.getElementById("issueDesc").value = desc;
         document.getElementById("btnIssueSave").innerText = "💾 حفظ التعديلات";
         document.getElementById("btnIssueCancel").style.display = "block";
+        window.scrollTo({top:0,behavior:"smooth"});
     }
     function cancelIssueEdit() {
         document.getElementById("issueEditId").value = "";
         document.getElementById("issueTargetName").value = "";
         document.getElementById("issueType").value = "";
         document.getElementById("issueDesc").value = "";
-        document.getElementById("btnIssueSave").innerText = "💾 حفظ";
+        document.getElementById("btnIssueSave").innerText = "➕ إضافة";
         document.getElementById("btnIssueCancel").style.display = "none";
     }
     function saveIssue() {
@@ -606,13 +661,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         
         const data = { targetType, targetName, issueType, description: desc, isPraise: issueType.includes("إشادة") };
         if (id) {
-            db.collection("issues").doc(id).update(data).then(() => { showToast("تم التعديل"); cancelIssueEdit(); loadIssues(); });
+            db.collection("issues").doc(id).update(data).then(() => { showToast("تم التعديل"); cancelIssueEdit(); });
         } else {
             data.supervisor = "الإدارة (إدخال يدوي)";
             data.status = "new";
             data.timestamp = new Date();
             data.type = data.isPraise ? "praise" : "complaint";
-            db.collection("issues").add(data).then(() => { showToast("تم الحفظ"); cancelIssueEdit(); loadIssues(); });
+            db.collection("issues").add(data).then(() => { showToast("تم الحفظ"); cancelIssueEdit(); });
         }
     }
     function filterIssues() {
@@ -622,7 +677,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    /* التعاميم */
+    /* ═══════════════════════════════════════════════════════════
+       التعاميم
+       ═══════════════════════════════════════════════════════════ */
     function loadBroadcasts() {
         db.collection("broadcasts").get().then(s => {
             let html = "";
@@ -640,16 +697,18 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
     }
 
-    /* الدوام */
+    /* ═══════════════════════════════════════════════════════════
+       جدول الدوام (العمود الفقري)
+       ═══════════════════════════════════════════════════════════ */
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
         const [year, m] = month.split("-");
         const days = new Date(year, m, 0).getDate();
         
-        db.collection("access_code").get().then(snap => {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(snap => {
             const allSups = [];
-            snap.forEach(doc => { const data = doc.data(); if (data.code && data.code.startsWith("SUP")) allSups.push({ id: doc.id, ...data }); });
+            snap.forEach(doc => allSups.push({ id: doc.id, ...doc.data() }));
             const supA = allSups.filter(s => s.sector === "قطاع A");
             const supB = allSups.filter(s => s.sector === "قطاع B");
             
@@ -679,7 +738,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    /* البيانات الأساسية */
+    /* ═══════════════════════════════════════════════════════════
+       البيانات الأساسية (الأنواع)
+       ═══════════════════════════════════════════════════════════ */
     function loadTypes() {
         const target = document.getElementById("typeTarget").value;
         const cat = document.getElementById("typeCategory").value;
@@ -703,15 +764,19 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection(col).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); });
     }
 
-    /* الحذف والمسح */
-    function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); loadData(); }); } }
+    /* ═══════════════════════════════════════════════════════════
+       الحذف والمسح
+       ═══════════════════════════════════════════════════════════ */
+    function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
     function wipeData(type) {
         if(!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
-        if(type === 'issues') { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); showToast("تم مسح البلاغات"); loadIssues(); loadData(); }); }
-        else { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); }); db.collection("broadcasts").get().then(s => { s.forEach(d => d.ref.delete()); }); showToast("تم المسح الشامل"); loadData(); }
+        if(type === 'issues') { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); showToast("تم مسح البلاغات"); }); }
+        else { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); }); db.collection("broadcasts").get().then(s => { s.forEach(d => d.ref.delete()); }); showToast("تم المسح الشامل"); }
     }
 
-    /* الطباعة */
+    /* ═══════════════════════════════════════════════════════════
+       الطباعة
+       ═══════════════════════════════════════════════════════════ */
     function printDutyTable(orientation) {
         const month = document.getElementById("dutyMonth").value;
         const htmlA = document.getElementById("dutyTableContainerA").innerHTML;
@@ -726,9 +791,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     function printCodes() {
-        db.collection("access_code").get().then(s => {
+        db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
             let tbody = "", i = 1;
-            s.forEach(d => { const data = d.data(); if(data.code && data.code.startsWith("SUP")) { tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td style="font-size:18px; font-weight:bold; color:#0d4a42;">${data.code}</td></tr>`; } });
+            s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td style="font-size:18px; font-weight:bold; color:#0d4a42;">${data.code}</td></tr>`; });
             doPrint("قائمة أكواد الدخول", "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th>", tbody);
         });
     }
@@ -740,9 +805,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         if (type === 'supervisors') {
             title = "تقرير المشرفين";
             thead = "<th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>القطاع</th><th>الكود</th>";
-            db.collection("access_code").get().then(s => {
+            db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
                 let i = 1;
-                s.forEach(d => { const data = d.data(); if(data.code && data.code.startsWith("SUP")) { tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td>${data.code}</td></tr>`; } });
+                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td>${data.code}</td></tr>`; });
                 doPrint(title, thead, tbody);
             });
         } else if (type === 'paramedics') {
@@ -785,6 +850,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       الإعدادات
+       ═══════════════════════════════════════════════════════════ */
     function loadConfig() {
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         const sysName = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
@@ -793,6 +861,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
 
+    // تشغيل
     loadData();
 </script>
 </body>
