@@ -4,12 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — العمود الفقري V20</title>
+<title>الإدارة العامة — النظام المتكامل V23</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════
-   1. المتغيرات والهوية البصرية
-   ═══════════════════════════════════════════════════════════ */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 :root {
   --gold: #978d5b; --gold-light: #d4c896; --gold-bright: #f5e6b3;
@@ -31,9 +28,7 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 @keyframes spin { to { transform:rotate(360deg); } }
 #mainApp { display:none; } #mainApp.ready { display:block; }
 
-/* ═══════════════════════════════════════════════════════════
-   2. الهيكل الأساسي (الشريط العلوي والتبويبات)
-   ═══════════════════════════════════════════════════════════ */
+/* الشريط العلوي */
 .topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: rgba(4,24,20,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
 .topbar-logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: #fff; padding: 3px; }
 .topbar-info { flex: 1; }
@@ -42,42 +37,42 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .icon-btn { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: #fff; font-size: 17px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .icon-btn.danger { background: rgba(229,57,53,0.3); border-color: var(--red-light); }
 
+/* التبويبات */
 .tabs-bar { position: sticky; top: calc(70px + var(--safe-top)); z-index: 98; background: rgba(4,24,20,0.9); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
 .tabs-bar::-webkit-scrollbar { display: none; }
 .tabs-scroll { display: flex; gap: 8px; padding: 10px 16px; min-width: max-content; }
 .tab-btn { flex-shrink: 0; padding: 8px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(151,141,91,0.2); border-radius: 20px; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 6px; }
 .tab-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; }
 
+/* الصفحات */
 .page { display: none; padding: 16px; max-width: 900px; margin: 0 auto; animation: slideUp 0.4s ease-out; }
 .page.active { display: block; }
 
-/* ═══════════════════════════════════════════════════════════
-   3. تصميم البطاقات والعناصر
-   ═══════════════════════════════════════════════════════════ */
-.hero-brand { background: linear-gradient(145deg, rgba(13,74,66,0.4), rgba(4,24,20,0.7)); border: 1px solid var(--border); border-radius: 24px; padding: 30px 20px; text-align: center; margin-bottom: 20px; }
-.hero-logo { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 0 25px rgba(151,141,91,0.8)); margin-bottom: 15px; animation: float 4s infinite; }
-.hero-title { font-size: 24px; color: var(--gold-light); font-weight: 900; }
-.hero-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 5px; }
-
+/* البطاقات */
 .card { background: rgba(13,74,66,0.3); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 18px; padding: 20px; margin-bottom: 16px; }
 .card-title { font-size: 15px; color: var(--gold-light); font-weight: 900; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(151,141,91,0.2); display: flex; justify-content: space-between; align-items: center; }
 
+/* الإحصائيات */
 .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
 @media (min-width:600px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
 .stat-mini { background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)); border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; }
 .stat-mini .num { font-size: 28px; font-weight: 900; color: var(--gold-light); }
 .stat-mini .lbl { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 5px; }
 
+/* المدخلات */
 input, select, textarea { width: 100%; padding: 14px; background: rgba(4,24,20,0.6); border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 14px; font-weight: 600; outline: none; margin-bottom: 14px; }
 input:focus, select:focus, textarea:focus { border-color: var(--gold); }
 label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 700; margin-bottom: 8px; }
 
+/* الأزرار */
 .btn { padding: 12px 16px; border-radius: 12px; border: none; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn.block { width: 100%; }
 .btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); }
 .btn.danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
 .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; }
+.btn.small { padding: 8px 14px; font-size: 11px; }
 
+/* عناصر القائمة */
 .item-card { background: rgba(13,74,66,0.4); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .item-info { flex: 1; }
 .item-info h4 { font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px; }
@@ -88,6 +83,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue-light); }
 .icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold-light); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
 
+/* التنبيهات */
 .toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
 .toast { background: rgba(13,74,66,0.95); backdrop-filter: blur(10px); color: #fff; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; text-align: center; }
 .toast.success { border-color: var(--green-light); }
@@ -96,9 +92,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:50px; height:50px; border:4px solid rgba(151,141,91,0.2); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
 
-/* ═══════════════════════════════════════════════════════════
-   4. الجدول الفخم (مع تثبيت الأعمدة)
-   ═══════════════════════════════════════════════════════════ */
+/* الجدول الفخم */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
@@ -107,9 +101,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .duty-table th.weekend { background: rgba(229,57,53,0.4); color: #fff; }
 .duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold-light); font-weight: 900; text-align: center; -webkit-appearance: none; }
 
-/* ═══════════════════════════════════════════════════════════
-   5. محرك الطباعة (Print Engine)
-   ═══════════════════════════════════════════════════════════ */
+/* محرك الطباعة */
 #printArea { display: none; }
 @media print {
   body * { visibility: hidden; }
@@ -134,7 +126,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="color:var(--gold-light); font-weight:900;">جاري تهيئة العمود الفقري...</div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري تهيئة النظام المتكامل...</div>
 </div>
 
 <div id="mainApp">
@@ -160,16 +152,12 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
       <button class="tab-btn" data-tab="types" onclick="switchTab('types')">⚙️ البيانات الأساسية</button>
       <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📈 التقارير</button>
+      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">🔧 الإعدادات</button>
     </div>
   </div>
 
   <!-- 1. لوحة القيادة -->
   <div class="page active" id="page-dashboard">
-    <div class="hero-brand">
-      <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" class="hero-logo" id="heroLogo">
-      <div class="hero-title" id="heroTitle">هيئة الدفاع المدني والإسعاف</div>
-      <div class="hero-subtitle">الإدارة العامة للإسعاف — نظام الإسعاف الذكي 2026</div>
-    </div>
     <div class="stats-grid">
       <div class="stat-mini"><div class="num" id="dashSups">0</div><div class="lbl">المشرفون</div></div>
       <div class="stat-mini"><div class="num" id="dashParams">0</div><div class="lbl">المسعفون</div></div>
@@ -186,12 +174,12 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <input type="text" id="supName" placeholder="اسم المشرف">
       <input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
       <select id="supSector"><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
-      <input type="text" id="supCodeEdit" placeholder="الكود (اتركه فارغاً للتوليد التلقائي)">
+      <input type="text" id="supCodeEdit" placeholder="الكود">
       <button class="btn block" onclick="saveSupervisor()" id="btnSupSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelSupEdit()" id="btnSupCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 قائمة المشرفين</div>
+      <div class="card-title">📋 قائمة المشرفين <button class="btn small" onclick="printCodes()">🖨️ طباعة الأكواد</button></div>
       <div id="supList">جاري التحميل...</div>
     </div>
   </div>
@@ -317,15 +305,29 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <button class="btn block success" onclick="exportExcel()" style="margin-top:20px;">📥 تصدير البلاغات (Excel)</button>
     </div>
   </div>
+
+  <!-- 11. الإعدادات -->
+  <div class="page" id="page-settings">
+    <div class="card">
+      <div class="card-title">⚙️ الهوية</div>
+      <label>اسم النظام</label>
+      <input type="text" id="cfgSystemName" onchange="saveConfig('systemName', this.value)">
+      <label>رابط الشعار</label>
+      <input type="url" id="cfgLogoUrl" onchange="saveConfig('logoUrl', this.value)">
+      <button class="btn block success" onclick="showToast('تم الحفظ')">💾 حفظ</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:var(--red-light);">⚠️ مسح البيانات</div>
+      <button class="btn danger block" onclick="wipeData('issues')">🗑️ مسح جميع البلاغات</button>
+      <button class="btn danger block" onclick="wipeData('all')" style="margin-top:10px;">💥 مسح كل البيانات</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
 
 <script>
-    // ═══════════════════════════════════════════════════════════
-    // 1. إعدادات Firebase والاتصال
-    // ═══════════════════════════════════════════════════════════
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -345,9 +347,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
     const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
 
-    // ═══════════════════════════════════════════════════════════
-    // 2. التهيئة والتنقل
-    // ═══════════════════════════════════════════════════════════
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").textContent = user.name || "المدير العام";
@@ -387,9 +386,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     function manualRefresh() { showToast("تحديث..."); loadData(); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    // ═══════════════════════════════════════════════════════════
-    // 3. المشرفون والمسعفون والمركبات (تحكم شامل)
-    // ═══════════════════════════════════════════════════════════
+    /* المشرفون */
     function loadSups() {
         db.collection("access_code").get().then(s => {
             let html = "";
@@ -441,6 +438,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* المسعفون */
     function loadParams() {
         db.collection("paramedics").get().then(s => {
             let html = "";
@@ -486,6 +484,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* المركبات */
     function loadVehicles() {
         db.collection("vehicles").get().then(s => {
             let html = "";
@@ -529,6 +528,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* القوائم المنسدلة */
     function updateParamCenters() {
         const sec = document.getElementById("paramSector").value;
         const sel = document.getElementById("paramCenter");
@@ -540,9 +540,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 4. ملاحظات المشرفين
-    // ═══════════════════════════════════════════════════════════
+    /* ملاحظات المشرفين */
     function loadNotes() {
         db.collection("issues").where("type", "==", "visit").get().then(s => {
             let html = "";
@@ -561,9 +559,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 5. البلاغات (التحكم الكامل)
-    // ═══════════════════════════════════════════════════════════
+    /* البلاغات */
     function loadIssues() {
         db.collection("issues").where("type", "in", ["complaint", "praise"]).get().then(s => {
             let html = "";
@@ -626,9 +622,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 6. التعاميم
-    // ═══════════════════════════════════════════════════════════
+    /* التعاميم */
     function loadBroadcasts() {
         db.collection("broadcasts").get().then(s => {
             let html = "";
@@ -646,9 +640,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 7. الدوام (العمود الفقري)
-    // ═══════════════════════════════════════════════════════════
+    /* الدوام */
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
@@ -687,9 +679,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 8. البيانات الأساسية (الأنواع)
-    // ═══════════════════════════════════════════════════════════
+    /* البيانات الأساسية */
     function loadTypes() {
         const target = document.getElementById("typeTarget").value;
         const cat = document.getElementById("typeCategory").value;
@@ -713,14 +703,15 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection(col).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 9. الحذف والمسح
-    // ═══════════════════════════════════════════════════════════
+    /* الحذف والمسح */
     function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); loadData(); }); } }
+    function wipeData(type) {
+        if(!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
+        if(type === 'issues') { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); showToast("تم مسح البلاغات"); loadIssues(); loadData(); }); }
+        else { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); }); db.collection("broadcasts").get().then(s => { s.forEach(d => d.ref.delete()); }); showToast("تم المسح الشامل"); loadData(); }
+    }
 
-    // ═══════════════════════════════════════════════════════════
-    // 10. الطباعة (محرك الطباعة النظيف)
-    // ═══════════════════════════════════════════════════════════
+    /* الطباعة */
     function printDutyTable(orientation) {
         const month = document.getElementById("dutyMonth").value;
         const htmlA = document.getElementById("dutyTableContainerA").innerHTML;
@@ -732,6 +723,14 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         const printHtml = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام الشهري — ${month}</h2></div></div><h3>قطاع A</h3>${htmlA}<h3>قطاع B</h3>${htmlB}<div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
         document.getElementById("printArea").innerHTML = printHtml;
         setTimeout(() => window.print(), 300);
+    }
+
+    function printCodes() {
+        db.collection("access_code").get().then(s => {
+            let tbody = "", i = 1;
+            s.forEach(d => { const data = d.data(); if(data.code && data.code.startsWith("SUP")) { tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td style="font-size:18px; font-weight:bold; color:#0d4a42;">${data.code}</td></tr>`; } });
+            doPrint("قائمة أكواد الدخول", "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th>", tbody);
+        });
     }
 
     function printReport(type) {
@@ -772,9 +771,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         setTimeout(() => window.print(), 300);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 11. تصدير Excel
-    // ═══════════════════════════════════════════════════════════
     function exportExcel() {
         db.collection("issues").get().then(s => {
             let csv = "\uFEFF";
@@ -789,9 +785,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 12. الإعدادات
-    // ═══════════════════════════════════════════════════════════
     function loadConfig() {
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         const sysName = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
@@ -800,7 +793,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
 
-    // تشغيل
     loadData();
 </script>
 </body>
