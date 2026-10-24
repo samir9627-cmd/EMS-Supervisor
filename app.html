@@ -4,31 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>لوحة المشرف الميداني</title>
+<title>المشرف الميداني — النظام العالمي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
-:root { --gold:#978d5b; --gold-light:#d4c896; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814; --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252; --amber:#fb8c00; --blue:#29b6f6; --border:rgba(151,141,91,0.3); --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px); }
+:root { --gold:#978d5b; --gold-light:#d4c896; --teal:#0d4a42; --teal-dark:#082b26; --teal-deep:#041814; --green:#43a047; --green-light:#69f0ae; --red:#e53935; --red-light:#ff5252; --amber:#fb8c00; --blue:#29b6f6; --purple:#ab47bc; --border:rgba(151,141,91,0.3); --safe-top:env(safe-area-inset-top, 0px); --safe-bottom:env(safe-area-inset-bottom, 0px); }
 html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
 body { min-height: 100vh; padding-bottom: calc(100px + var(--safe-bottom)); }
 body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
 
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes spin { to { transform: rotate(360deg); } }
 #mainApp { display: none; } #mainApp.ready { display: block; }
 
 /* الشريط العلوي */
 .topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; }
-.topbar-logo { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; background: #fff; padding: 2px; }
+.topbar-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; }
 .topbar-info { flex: 1; }
 .topbar-info h1 { font-size: 14px; color: var(--gold-light); font-weight: 900; }
 .topbar-info p { font-size: 10px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 6px; margin-top: 3px; }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-light); box-shadow: 0 0 8px var(--green-light); }
-.icon-btn { width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: #fff; font-size: 17px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 .icon-btn.danger { background: rgba(198,40,40,0.4); border-color: var(--red-light); }
 
 /* التبويبات السفلية */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 4px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 4px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
 .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 2px; border-radius: 10px; cursor: pointer; background: transparent; border: none; color: rgba(255,255,255,0.65); font-family: inherit; font-weight: 700; font-size: 9px; }
 .nav-btn .nav-icon { font-size: 20px; line-height: 1; }
 .nav-btn.active { background: linear-gradient(135deg, rgba(151,141,91,0.3), rgba(151,141,91,0.1)); color: var(--gold-light); }
@@ -44,13 +43,13 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .action-btn { padding: 20px 14px; border-radius: 18px; border: none; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; }
 .action-btn.danger { background: linear-gradient(135deg, #e53935, #ff5252); }
 .action-btn.success { background: linear-gradient(135deg, #43a047, #69f0ae); color: #041814; }
+.action-btn.info { background: linear-gradient(135deg, #29b6f6, #64b5f6); color: #fff; grid-column: span 2; }
 
 /* البطاقات */
-.item-card { background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.item-card { background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
 .item-card.red { border-right-color: var(--red); }
 .item-card.green { border-right-color: var(--green-light); }
 .item-card.blue { border-right-color: var(--blue); }
-.item-info { flex: 1; min-width: 0; }
 .item-info h4 { font-size: 14px; font-weight: 900; color: var(--gold-light); margin-bottom: 4px; }
 .item-info p { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.6; }
 
@@ -66,7 +65,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
 .btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #041814; }
 .btn.block { width: 100%; }
 
-/* النوافذ المنبثقة */
+/* المودال */
 .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; }
 .modal-overlay.show { display: flex; }
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
@@ -78,8 +77,25 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
 .toast.success { border-color: var(--green-light); }
 .toast.danger { border-color: var(--red-light); }
 
+/* الدردشة */
+.chat-container { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+.chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.message { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+.message.mine { align-self: flex-end; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-bottom-left-radius: 2px; }
+.message.theirs { align-self: flex-start; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-bottom-right-radius: 2px; }
+.message .time { font-size: 9px; opacity: 0.6; margin-top: 4px; display: block; text-align: left; }
+.chat-input-box { display: flex; padding: 10px; background: rgba(4,24,20,0.6); border-top: 1px solid var(--border); }
+.chat-input-box input { flex: 1; margin: 0; border-radius: 8px 0 0 8px; border-left: none; }
+.chat-input-box button { padding: 0 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border: none; border-radius: 0 8px 8px 0; font-weight: 900; cursor: pointer; }
+
+/* أيقونة المايك */
+.mic-btn { background: rgba(41,182,246,0.2); border: 1px solid var(--blue); color: var(--blue); padding: 8px; border-radius: 8px; cursor: pointer; margin-bottom: 5px; display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 900; }
+.mic-btn.listening { background: rgba(229,57,53,0.3); border-color: var(--red); color: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
+@keyframes spin { to { transform:rotate(360deg); } }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -88,14 +104,14 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="color:var(--gold-light); font-weight:900;">جاري التحقق...</div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري التحميل...</div>
 </div>
 
 <div id="mainApp">
   <div class="topbar">
     <img src="https://i.postimg.cc/q72nZ5HT/IMG-2018.jpg" class="topbar-logo">
     <div class="topbar-info">
-      <h1>لوحة المشرف الميداني</h1>
+      <h1>المشرف الميداني</h1>
       <p><span class="status-dot"></span><span id="currentUser">—</span></p>
     </div>
     <button class="icon-btn" onclick="manualRefresh()">🔄</button>
@@ -116,33 +132,46 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
     </div>
 
     <div class="quick-actions">
-      <button class="action-btn danger" onclick="startEntry('complaint')"><span style="font-size:32px;">🚩</span><span>تسجيل إشكالية</span></button>
-      <button class="action-btn success" onclick="startEntry('praise')"><span style="font-size:32px;">⭐</span><span>تسجيل إشادة</span></button>
+      <button class="action-btn danger" onclick="startEntry('complaint')"><span style="font-size:32px;">🚩</span><span>إشكالية</span></button>
+      <button class="action-btn success" onclick="startEntry('praise')"><span style="font-size:32px;">⭐</span><span>إشادة</span></button>
+      <button class="action-btn info" onclick="startVisit()"><span style="font-size:28px;">📋</span><span>تسجيل زيارة مركز</span></button>
     </div>
 
     <div class="card">
-      <div class="card-title">📢 التعاميم الأخيرة</div>
+      <div class="card-title">📢 التعاميم</div>
       <div id="broadcastsList">جاري التحميل...</div>
     </div>
   </div>
 
   <!-- 2) السجلات -->
   <div class="page" id="page-issues">
-    <div class="card"><div class="card-title">🚩 سجلاتي</div><div id="issuesList">جاري التحميل...</div></div>
+    <div class="card"><div class="card-title">📋 سجلاتي (إشكالات / إشادات / زيارات)</div><div id="issuesList">جاري التحميل...</div></div>
   </div>
 
-  <!-- 3) تواصل -->
+  <!-- 3) الدردشة -->
   <div class="page" id="page-chat">
-    <div class="card">
-      <div class="card-title">💬 تواصل مع الإدارة</div>
-      <p style="font-size:12px; opacity:0.7; text-align:center;">هذه الميزة ستتوفر في التحديث القادم.</p>
+    <div class="card" style="padding:10px;">
+      <div class="card-title" style="margin-bottom:5px;">💬 غرفة العمليات (مباشر)</div>
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-box">
+          <input type="text" id="chatInput" placeholder="اكتب رسالتك للإدارة..." onkeypress="if(event.key === 'Enter') sendMessage()">
+          <button onclick="sendMessage()">إرسال</button>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- 4) الإعدادات (اختياري) -->
+  <div class="page" id="page-profile">
+     <div class="card"><div class="card-title">👤 بياناتي</div><p>الاسم: <b id="profName"></b></p><p>القطاع: <b id="profSector"></b></p></div>
   </div>
 
   <div class="bottom-nav">
     <button class="nav-btn active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span>الرئيسية</span></button>
-    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">🚩</span><span>سجلاتي</span></button>
-    <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>تواصل</span></button>
+    <button class="nav-btn" data-page="issues" onclick="switchPage('issues')"><span class="nav-icon">📋</span><span>سجلاتي</span></button>
+    <button class="nav-btn" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span>التواصل</span></button>
+    <button class="nav-btn" data-page="profile" onclick="switchPage('profile')"><span class="nav-icon">👤</span><span>حسابي</span></button>
   </div>
 </div>
 
@@ -161,16 +190,14 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
       messagingSenderId: "230655268524",
       appId: "1:230655268524:web:5043a458af3d79989ff109"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // التحقق من الجلسة
+    // 1. حماية الصفحة والتحقق من الجلسة
     const session = localStorage.getItem("ems_session");
     if (!session) { window.location.href = "./index.html"; }
-    
     const user = JSON.parse(session);
-    if (user.type === "admin") { window.location.href = "./admin.html"; }
+    if (user.type === "admin" || user.type === "ops") { window.location.href = "./index.html"; }
 
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
@@ -178,6 +205,21 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
     document.getElementById("welcomeName").innerText = user.name;
     document.getElementById("welcomeSector").innerText = user.sector || "غير محدد";
     document.getElementById("heroAvatar").innerText = (user.name || "م").charAt(0);
+    document.getElementById("profName").innerText = user.name;
+    document.getElementById("profSector").innerText = user.sector || "غير محدد";
+
+    // متغيرات عامة
+    let cachedParamedics = [];
+    let cachedVehicles = [];
+    let cachedMaster = [];
+    let currentLocation = { lat: null, lng: null };
+
+    // سحب الموقع الجغرافي فور فتح التطبيق
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition((pos) => {
+            currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        }, (err) => console.warn("GPS Error", err), { enableHighAccuracy: true });
+    }
 
     function showToast(msg, type="success") {
         const c = document.getElementById("toastContainer");
@@ -190,81 +232,223 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
 
     function switchPage(id) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.getElementById(id ? "page-" + id : "page-home").classList.add("active");
+        document.getElementById("page-" + id).classList.add("active");
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         document.querySelector(`.nav-btn[data-page="${id}"]`).classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
     }
 
-    function loadData() {
-        // جلب التعاميم
-        db.collection("broadcasts").get().then(s => {
-            let html = "";
-            s.forEach(d => {
-                const data = d.data();
-                html += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`;
-            });
-            document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
-        }).catch(()=>{});
+    // جلب كل البيانات المطلوبة
+    async function loadData() {
+        try {
+            const [broadcasts, issues, params, vehicles, master] = await Promise.all([
+                db.collection("broadcasts").get(),
+                db.collection("issues").where("supervisor", "==", user.name).get(),
+                db.collection("paramedics").get(),
+                db.collection("vehicles").get(),
+                db.collection("issue_types").get()
+            ]);
 
-        // جلب سجلاتي
-        db.collection("issues").where("supervisor", "==", user.name).get().then(s => {
-            let html = "";
-            s.forEach(d => {
+            // 1. التعاميم
+            let bcHtml = "";
+            broadcasts.forEach(d => { const data = d.data(); bcHtml += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`; });
+            document.getElementById("broadcastsList").innerHTML = bcHtml || "لا تعاميم";
+
+            // 2. السجلات
+            let issHtml = ""; 
+            cachedParamedics = []; params.forEach(d => cachedParamedics.push(d.data().name));
+            cachedVehicles = []; vehicles.forEach(d => cachedVehicles.push(d.data().plateNumber));
+            cachedMaster = []; master.forEach(d => cachedMaster.push(d.data().name));
+
+            issues.forEach(d => {
                 const data = d.data();
-                html += `<div class="item-card ${data.isPraise ? 'green' : 'red'}">
-                    <div class="item-info"><h4>${data.issueType || data.praiseType}</h4><p>الهدف: ${data.targetName}</p></div>
+                const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-OM') : '';
+                issHtml += `<div class="item-card ${data.isPraise ? 'green' : 'blue'}">
+                    <div class="item-info">
+                        <h4>${data.type === 'visit' ? '📋 زيارة' : data.isPraise ? '⭐ إشادة' : '🚩 إشكالية'}</h4>
+                        <p>${data.title || data.issueType || data.praiseType} | ${time}</p>
+                    </div>
                 </div>`;
             });
-            document.getElementById("issuesList").innerHTML = html || "لا يوجد سجلات";
-        }).catch(()=>{});
+            document.getElementById("issuesList").innerHTML = issHtml || "لا سجلات";
+            
+            loadChat();
+        } catch(e) { console.warn(e); }
     }
 
+    // ================== تسجيل إشكالية / إشادة ==================
     function startEntry(type) {
-        const title = type === 'complaint' ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة";
-        const btnClass = type === 'complaint' ? 'danger' : 'success';
+        const isComplaint = type === 'complaint';
+        const title = isComplaint ? "🚩 تسجيل إشكالية" : "⭐ تسجيل إشادة";
         
+        let paramOptions = cachedParamedics.map(p => `<option value="${p}">${p}</option>`).join("");
+        let vehicleOptions = cachedVehicles.map(v => `<option value="${v}">${v}</option>`).join("");
+        let masterOptions = cachedMaster.map(m => `<option value="${m}">${m}</option>`).join("");
+
         document.getElementById("modalTitle").innerText = title;
         document.getElementById("modalBody").innerHTML = `
+            <label>نوع الإجراء</label>
+            <select id="entryMasterType">${masterOptions || '<option>عام</option>'}</select>
+            
             <label>المركز</label>
             <select id="entryCenter">
-                <option>مركز إسعاف دارسيت</option>
-                <option>مركز إسعاف بوشر</option>
-                <option>مركز إسعاف العامرات</option>
-                <option>مركز إسعاف قريات</option>
+                <option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option>
+                <option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option>
             </select>
-            <label>اسم الهدف (المسعف/المركبة)</label>
-            <input type="text" id="entryTarget" placeholder="اسم الهدف">
-            <label>الوصف</label>
-            <textarea id="entryDesc" rows="3" placeholder="اكتب التفاصيل هنا..."></textarea>
-            <button class="btn ${btnClass} block" onclick="submitEntry('${type}')">💾 حفظ</button>
+
+            <label>المسعف المعني</label>
+            <select id="entryParamedic">${paramOptions || '<option>لا يوجد</option>'}</select>
+
+            <label>المركبة المعنية</label>
+            <select id="entryVehicle">${vehicleOptions || '<option>لا يوجد</option>'}</select>
+
+            <label>الوصف (مع إمكانية الكتابة بالصوت)</label>
+            <button class="mic-btn" id="micBtn" onclick="toggleVoice('entryDesc')">🎤 تحدث الآن</button>
+            <textarea id="entryDesc" rows="3" placeholder="اكتب التفاصيل..."></textarea>
+
+            ${isComplaint ? `
+            <label>التوصيات والمقترحات (لحل الإشكالية)</label>
+            <textarea id="entryRecommendation" rows="2" placeholder="كيف يمكن حل هذه المشكلة؟"></textarea>
+            ` : ''}
+
+            <button class="btn ${isComplaint ? 'danger' : 'success'} block" onclick="submitEntry('${type}')">💾 حفظ</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
     }
 
+    // ================== تسجيل زيارة ==================
+    function startVisit() {
+        document.getElementById("modalTitle").innerText = "📋 تسجيل زيارة مركز";
+        document.getElementById("modalBody").innerHTML = `
+            <label>المركز الذي تمت زيارته</label>
+            <select id="visitCenter">
+                <option>مركز إسعاف دارسيت</option><option>مركز إسعاف بوشر</option>
+                <option>مركز إسعاف العامرات</option><option>مركز إسعاف قريات</option>
+            </select>
+            <label>تقييم المركز</label>
+            <select id="visitEval"><option value="ممتاز">ممتاز</option><option value="جيد جداً">جيد جداً</option><option value="جيد">جيد</option><option value="يحتاج تحسين">يحتاج تحسين</option></select>
+            <label>ملاحظات الزيارة</label>
+            <button class="mic-btn" id="micBtn" onclick="toggleVoice('visitNotes')">🎤 تحدث الآن</button>
+            <textarea id="visitNotes" rows="3" placeholder="اكتب ملاحظاتك هنا..."></textarea>
+            <button class="btn success block" onclick="submitVisit()">💾 حفظ الزيارة</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    // ================== الحفظ في قاعدة البيانات ==================
     function submitEntry(type) {
         const center = document.getElementById("entryCenter").value;
-        const target = document.getElementById("entryTarget").value.trim();
+        const paramedic = document.getElementById("entryParamedic").value;
+        const vehicle = document.getElementById("entryVehicle").value;
         const desc = document.getElementById("entryDesc").value.trim();
+        const recommendation = document.getElementById("entryRecommendation") ? document.getElementById("entryRecommendation").value.trim() : "";
+        const masterType = document.getElementById("entryMasterType").value;
 
-        if (!target || !desc) return showToast("أكمل البيانات", "danger");
+        if (!desc) return showToast("الوصف مطلوب", "danger");
 
         db.collection("issues").add({
+            type: type,
+            isPraise: type === 'praise',
+            issueType: type === 'complaint' ? masterType : null,
+            praiseType: type === 'praise' ? masterType : null,
             centerName: center,
-            targetName: target,
-            issueType: type === 'complaint' ? 'إشكالية عامة' : null,
-            praiseType: type === 'praise' ? 'إشادة عامة' : null,
+            paramedicTarget: paramedic,
+            vehicleTarget: vehicle,
             description: desc,
+            recommendation: recommendation,
             supervisor: user.name,
             sector: user.sector,
-            isPraise: type === 'praise',
-            status: type === 'praise' ? 'resolved' : 'new',
-            timestamp: new Date()
+            status: 'new',
+            timestamp: new Date(),
+            location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
         }).then(() => {
             showToast("تم الحفظ بنجاح");
             closeModal();
             loadData();
         }).catch(err => showToast("خطأ: " + err.message, "danger"));
+    }
+
+    function submitVisit() {
+        const center = document.getElementById("visitCenter").value;
+        const evalVal = document.getElementById("visitEval").value;
+        const notes = document.getElementById("visitNotes").value.trim();
+
+        if (!notes) return showToast("الملاحظات مطلوبة", "danger");
+
+        db.collection("issues").add({
+            type: 'visit',
+            isPraise: false,
+            centerName: center,
+            evaluation: evalVal,
+            description: notes,
+            supervisor: user.name,
+            sector: user.sector,
+            status: 'new',
+            timestamp: new Date(),
+            location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
+        }).then(() => {
+            showToast("تم حفظ الزيارة بنجاح");
+            closeModal();
+            loadData();
+        }).catch(err => showToast("خطأ: " + err.message, "danger"));
+    }
+
+    // ================== ميزة الكتابة بالصوت ==================
+    let isListening = false;
+    function toggleVoice(targetId) {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            return showToast("متصفحك لا يدعم الكتابة بالصوت", "danger");
+        }
+        
+        const btn = document.getElementById("micBtn");
+        if (isListening) { isListening = false; btn.classList.remove("listening"); btn.innerText = "🎤 تحدث الآن"; return; }
+        
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'ar-OM';
+        recognition.interimResults = false;
+        
+        recognition.onstart = () => {
+            isListening = true;
+            btn.classList.add("listening");
+            btn.innerText = "🔴 جاري الاستماع...";
+        };
+        recognition.onresult = (event) => {
+            const text = event.results[0][0].transcript;
+            document.getElementById(targetId).value += " " + text;
+        };
+        recognition.onerror = () => showToast("لم يتم التعرف على الصوت", "danger");
+        recognition.onend = () => {
+            isListening = false;
+            btn.classList.remove("listening");
+            btn.innerText = "🎤 تحدث الآن";
+        };
+        recognition.start();
+    }
+
+    // ================== المراسلات ==================
+    function loadChat() {
+        db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
+            let html = "";
+            snap.forEach(doc => {
+                const m = doc.data();
+                const isMine = m.sender === user.name;
+                const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
+                html += `<div class="message ${isMine ? 'mine' : 'theirs'}"><div>${m.text}</div><span class="time">${isMine ? 'أنا' : m.sender} • ${time}</span></div>`;
+            });
+            const el = document.getElementById("chatMessages");
+            el.innerHTML = html;
+            el.scrollTop = el.scrollHeight;
+        });
+    }
+
+    function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = "";
+        db.collection("messages").add({
+            sender: user.name, text: text, timestamp: new Date()
+        });
     }
 
     function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
