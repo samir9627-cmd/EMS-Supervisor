@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#041814">
+<title>غرفة العمليات — الشاشة المباشرة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #978d5b; --gold-light: #d4c896; --gold-bright: #f5e6b3;
+  --teal: #0d4a42; --teal-dark: #082b26; --teal-deep: #041814;
+  --green: #43a047; --green-light: #69f0ae;
+  --red: #e53935; --red-light: #ff5252;
+  --amber: #fb8c00; --amber-light: #ffa726;
+  --blue: #29b6f6; --blue-light: #64b5f6;
+  --purple: #ab47bc;
+  --border: rgba(151,141,91,0.3);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
+html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
+body { min-height: 100vh; padding-bottom: 20px; }
+body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+@keyframes glow { 0%,100%{ box-shadow:0 0 20px rgba(151,141,91,0.4); } 50%{ box-shadow:0 0 40px rgba(151,141,91,0.8); } }
+
+.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 20px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 12px; }
+.topbar-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: contain; background: #fff; padding: 3px; box-shadow: 0 0 20px rgba(151,141,91,0.6); animation: glow 3s infinite; }
+.topbar-info { flex: 1; }
+.topbar-info h1 { font-size: 20px; color: var(--gold-light); font-weight: 900; letter-spacing: 1px; }
+.topbar-info p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+.live-badge { padding: 8px 18px; border-radius: 20px; background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 8px; animation: pulse 2s infinite; }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.icon-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.icon-btn.danger { background: rgba(229,57,53,0.3); border-color: var(--red-light); }
+
+.content { padding: 20px; max-width: 1400px; margin: 0 auto; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+@media (min-width:768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+.stat-box { background: linear-gradient(145deg, rgba(13,74,66,0.4), rgba(4,24,20,0.7)); border: 2px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; position: relative; overflow: hidden; }
+.stat-box::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.stat-box .icon { font-size: 36px; margin-bottom: 8px; opacity: 0.7; }
+.stat-box .num { font-size: 42px; font-weight: 900; color: var(--gold-light); line-height: 1; }
+.stat-box .lbl { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 8px; font-weight: 700; }
+.stat-box.red { border-color: rgba(229,57,53,0.4); }
+.stat-box.red .num { color: var(--red-light); }
+.stat-box.green { border-color: rgba(67,160,71,0.4); }
+.stat-box.green .num { color: var(--green-light); }
+.stat-box.blue { border-color: rgba(41,182,246,0.4); }
+.stat-box.blue .num { color: var(--blue-light); }
+
+.card { background: rgba(13,74,66,0.3); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 20px; }
+.card-title { font-size: 18px; color: var(--gold-light); font-weight: 900; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.card-title .hint { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 600; }
+
+.feed-list { display: flex; flex-direction: column; gap: 12px; }
+.feed-item { background: rgba(4,24,20,0.7); border: 1px solid var(--border); border-right: 5px solid var(--gold); border-radius: 16px; padding: 18px; animation: slideUp 0.4s ease-out; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.feed-item.issue { border-right-color: var(--red-light); background: linear-gradient(90deg, rgba(229,57,53,0.1), transparent); }
+.feed-item.praise { border-right-color: var(--green-light); background: linear-gradient(90deg, rgba(67,160,71,0.1), transparent); }
+.feed-item.visit { border-right-color: var(--blue-light); background: linear-gradient(90deg, rgba(41,182,246,0.1), transparent); }
+.feed-content { flex: 1; }
+.feed-title { font-size: 16px; font-weight: 900; color: var(--gold-light); margin-bottom: 6px; }
+.feed-desc { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 8px; }
+.feed-meta { font-size: 11px; color: rgba(255,255,255,0.5); display: flex; flex-wrap: wrap; gap: 10px; }
+.feed-time { font-size: 11px; color: var(--gold-light); font-weight: 900; text-align: left; min-width: 90px; }
+
+.empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); font-size: 14px; }
+.empty .icon { font-size: 60px; display: block; margin-bottom: 12px; opacity: 0.5; }
+
+#loadingOverlay { position: fixed; inset: 0; z-index: 9999; background: var(--teal-deep); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.spinner { width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div style="color: var(--gold-light); font-weight: 900;">جاري الاتصال بغرفة العمليات...</div>
+</div>
+
+<div id="mainApp" style="display: none;">
+  <div class="topbar">
+    <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" class="topbar-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/National_emblem_of_Oman.svg/200px-National_emblem_of_Oman.svg.png'">
+    <div class="topbar-info">
+      <h1>غرفة العمليات</h1>
+      <p>الشاشة المباشرة — نظام الإسعاف الذكي</p>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div> مباشر</div>
+    <button class="icon-btn danger" onclick="logout()">🚪</button>
+  </div>
+
+  <div class="content">
+    <div class="stats-grid">
+      <div class="stat-box red">
+        <div class="icon">🚩</div>
+        <div class="num" id="statIssues">0</div>
+        <div class="lbl">إشكالية ميدانية</div>
+      </div>
+      <div class="stat-box green">
+        <div class="icon">⭐</div>
+        <div class="num" id="statPraises">0</div>
+        <div class="lbl">إشادة مسجلة</div>
+      </div>
+      <div class="stat-box blue">
+        <div class="icon">📋</div>
+        <div class="num" id="statVisits">0</div>
+        <div class="lbl">تقرير زيارة</div>
+      </div>
+      <div class="stat-box">
+        <div class="icon">🕐</div>
+        <div class="num" id="statToday">0</div>
+        <div class="lbl">نشاط اليوم</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📡 آخر النشاطات المباشرة <span class="hint" id="lastUpdate">—</span></div>
+      <div class="feed-list" id="liveFeed">
+        <div class="empty"><span class="icon">📡</span>جاري الاتصال...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
+      authDomain: "ems-supervisor.firebaseapp.com",
+      projectId: "ems-supervisor",
+      storageBucket: "ems-supervisor.firebasestorage.app",
+      messagingSenderId: "230655268524",
+      appId: "1:230655268524:web:5043a458af3d79989ff109"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const session = localStorage.getItem("ems_session");
+    if (!session) { window.location.href = "./index.html"; }
+    const user = JSON.parse(session);
+    if (user.type !== "ops") { window.location.href = "./index.html"; }
+
+    document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("mainApp").style.display = "block";
+
+    function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
+
+    function timeAgo(ts) {
+        try {
+            const d = ts?.toDate?.();
+            if (!d) return "-";
+            const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+            if (diff < 60) return "الآن";
+            if (diff < 3600) return Math.floor(diff/60) + " دقيقة";
+            if (diff < 86400) return Math.floor(diff/3600) + " ساعة";
+            return Math.floor(diff/86400) + " يوم";
+        } catch { return "-"; }
+    }
+
+    function renderFeed(issues) {
+        const today = new Date().toISOString().slice(0,10);
+        const todayCount = issues.filter(i => {
+            try { return i.timestamp?.toDate?.()?.toISOString().slice(0,10) === today; } catch { return false; }
+        }).length;
+        
+        const complaints = issues.filter(i => !i.isPraise && i.type !== "visit").length;
+        const praises = issues.filter(i => i.isPraise).length;
+        const visits = issues.filter(i => i.type === "visit").length;
+        
+        document.getElementById("statIssues").textContent = complaints;
+        document.getElementById("statPraises").textContent = praises;
+        document.getElementById("statVisits").textContent = visits;
+        document.getElementById("statToday").textContent = todayCount;
+        document.getElementById("lastUpdate").textContent = "آخر تحديث: " + new Date().toLocaleTimeString('ar-OM');
+        
+        const feed = document.getElementById("liveFeed");
+        if (issues.length === 0) {
+            feed.innerHTML = '<div class="empty"><span class="icon">📡</span>لا يوجد نشاطات بعد</div>';
+            return;
+        }
+        
+        feed.innerHTML = issues.slice(0, 30).map(item => {
+            let cls = "issue", icon = "🚩", title = "إشكالية", target = item.targetName || item.centerName || "-";
+            if (item.isPraise) { cls = "praise"; icon = "⭐"; title = "إشادة"; }
+            else if (item.type === "visit") { cls = "visit"; icon = "📋"; title = "زيارة"; target = item.centerName || "-"; }
+            
+            return `<div class="feed-item ${cls}">
+                <div class="feed-content">
+                    <div class="feed-title">${icon} ${title}: ${target}</div>
+                    <div class="feed-desc">${item.description || '-'}</div>
+                    <div class="feed-meta">
+                        <span>👤 ${item.supervisor || '-'}</span>
+                        <span>🏷️ ${item.issueType || item.praiseType || '-'}</span>
+                        <span>🏥 ${item.sector || '-'}</span>
+                    </div>
+                </div>
+                <div class="feed-time">${timeAgo(item.timestamp)}</div>
+            </div>`;
+        }).join("");
+    }
+
+    db.collection("issues").orderBy("timestamp", "desc").limit(50).onSnapshot(snap => {
+        const issues = [];
+        snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
+        renderFeed(issues);
+    }, err => {
+        console.error(err);
+        document.getElementById("liveFeed").innerHTML = '<div class="empty"><span class="icon">⚠️</span>خطأ في الاتصال بقاعدة البيانات</div>';
+    });
+</script>
+</body>
+</html>
