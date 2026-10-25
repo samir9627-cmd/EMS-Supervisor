@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V37.0</title>
+<title>الإدارة العامة — V38.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -129,7 +129,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .kpi-info p { font-size: 11px; color: var(--text-sub); }
 .kpi-score { font-size: 22px; font-weight: 900; color: var(--gold); }
 
-/* تصميم فلاتر التقارير الجديدة */
 .report-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
 @media (max-width: 600px) { .report-filters { grid-template-columns: 1fr; } }
 
@@ -138,7 +137,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
 .modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
-/* إعدادات الطباعة */
 #printArea { display: none; }
 @media print {
   @page { margin: 5mm; size: A4 landscape; }
@@ -178,7 +176,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="tabs-bar">
     <div class="tabs-scroll">
       <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 القيادة</button>
-      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 البلاغات</button>
+      <!-- إرجاع تبويب البلاغات -->
+      <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 البلاغات</button>
+      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 تقارير المشرفين</button>
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
@@ -188,7 +188,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
       <button class="tab-btn" data-tab="messages" onclick="switchTab('messages')">📬 المراسلات</button>
       <button class="tab-btn" data-tab="kpi" onclick="switchTab('kpi')">🏆 KPI</button>
       <button class="tab-btn" data-tab="types" onclick="switchTab('types')">⚙️ الأساسية</button>
-      <button class="tab-btn" data-tab="reports_adv" onclick="switchTab('reports_adv')">📈 التقارير</button>
+      <button class="tab-btn" data-tab="reports_adv" onclick="switchTab('reports_adv')">📈 التقارير المتقدمة</button>
       <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">🔧 الإعدادات</button>
     </div>
   </div>
@@ -199,11 +199,49 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
       <div class="stat-card" onclick="switchTab('supervisors')"><div class="icon-bg">👨‍💼</div><div class="num" id="kpiSups">0</div><div class="lbl">المشرفون</div></div>
       <div class="stat-card" onclick="switchTab('paramedics')"><div class="icon-bg">👨‍🚒</div><div class="num" id="kpiParams">0</div><div class="lbl">المسعفون</div></div>
       <div class="stat-card" onclick="switchTab('vehicles')"><div class="icon-bg">🚑</div><div class="num" id="kpiVehs">0</div><div class="lbl">المركبات</div></div>
-      <div class="stat-card" onclick="switchTab('reports')"><div class="icon-bg">🚩</div><div class="num" id="kpiIssues">0</div><div class="lbl">البلاغات المفتوحة</div></div>
+      <div class="stat-card" onclick="switchTab('issues')"><div class="icon-bg">🚩</div><div class="num" id="kpiIssues">0</div><div class="lbl">البلاغات المفتوحة</div></div>
     </div>
     <div class="dash-row">
       <div class="dash-card"><h3>📊 توزيع البلاغات</h3><div class="chart-container"><canvas id="doughnutChart"></canvas></div></div>
       <div class="dash-card"><h3>📈 نشاط 7 أيام</h3><div class="chart-container"><canvas id="lineChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- إرجاع صفحة البلاغات -->
+  <div class="page" id="page-issues">
+    <div class="card">
+      <div class="card-title">➕ إرسال بلاغ إلى المشرف</div>
+      <label>القطاع</label>
+      <select id="issueSector" onchange="updateIssueCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
+      
+      <label>المركز</label>
+      <select id="issueCenter" onchange="loadIssueTargets()"><option value="">اختر المركز</option></select>
+      
+      <label>نوع الهدف</label>
+      <select id="issueTargetType" onchange="loadIssueTargets()">
+        <option value="paramedic">مسعف</option>
+        <option value="vehicle">مركبة</option>
+        <option value="center">المركز نفسه</option>
+      </select>
+      
+      <label>اسم الهدف</label>
+      <select id="issueTargetName"><option value="">-- اختر المركز أولاً --</option></select>
+      
+      <label>نوع البلاغ</label>
+      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة">
+      
+      <label>الوصف</label>
+      <textarea id="issueDesc" placeholder="تفاصيل البلاغ..." rows="3"></textarea>
+      
+      <button class="btn block success" onclick="saveIssue()">📤 إرسال البلاغ للمشرف</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📤 بلاغات مُرسلة (معلقة)</div>
+      <div id="pendingIssuesList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">✅ بلاغات منجزة</div>
+      <div id="completedIssuesList"></div>
     </div>
   </div>
 
@@ -310,7 +348,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     </div>
   </div>
 
-  <!-- صفحة التقارير المطورة -->
   <div class="page" id="page-reports_adv">
     <div class="card">
       <div class="card-title">📈 التقارير المتقدمة</div>
@@ -320,10 +357,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         <option value="paramedics">قائمة المسعفين</option><option value="vehicles">قائمة المركبات</option>
         <option value="issues">البلاغات</option><option value="visits">الزيارات</option>
       </select>
-      
-      <!-- فلاتر جديدة متعددة المستويات -->
       <div class="report-filters" id="reportFilters"></div>
-      
       <label>اتجاه الطباعة</label>
       <select id="printOrientation"><option value="landscape">أفقي</option><option value="portrait">عمودي</option></select>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -426,6 +460,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (id === 'paramedics') loadParams();
         if (id === 'vehicles') loadVehicles();
         if (id === 'notes') loadNotes();
+        if (id === 'issues') loadIssues();
         if (id === 'reports') loadSupervisorReports();
         if (id === 'broadcasts') loadBroadcasts();
         if (id === 'duty') loadDutyTable();
@@ -434,7 +469,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (id === 'kpi') loadKPI();
         if (id === 'settings') { populateDeleteItems(); loadConfig(); }
         if (id === 'dashboard') renderDashboardCharts();
-        if (id === 'reports_adv') updateReportOptions(); // تحديث الفلاتر عند فتح التقارير
+        if (id === 'reports_adv') updateReportOptions();
     }
 
     function manualRefresh() { showToast("تحديث..."); }
@@ -447,6 +482,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (document.querySelector(".page.active").id === "page-reports") loadSupervisorReports();
         if (document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
         if (document.querySelector(".page.active").id === "page-notes") loadNotes();
+        if (document.querySelector(".page.active").id === "page-issues") loadIssues();
     });
     
     db.collection("paramedics").onSnapshot(snap => {
@@ -515,6 +551,105 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
+    // ==========================================
+    // إرجاع ميزة البلاغات (الإدارة ترسل للمشرف)
+    // ==========================================
+    function updateIssueCenters() {
+        const sec = document.getElementById("issueSector").value;
+        const sel = document.getElementById("issueCenter");
+        sel.innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
+        loadIssueTargets();
+    }
+
+    function loadIssueTargets() {
+        const center = document.getElementById("issueCenter").value;
+        const targetType = document.getElementById("issueTargetType").value;
+        const sel = document.getElementById("issueTargetName");
+        
+        if (!center) { sel.innerHTML = '<option value="">-- اختر المركز أولاً --</option>'; return; }
+        if (targetType === 'center') { sel.innerHTML = `<option value="${center}">${center}</option>`; return; }
+        
+        if (targetType === 'paramedic') {
+            const filtered = allParameds.filter(p => p.centerName === center);
+            sel.innerHTML = filtered.length ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("") : '<option value="">لا يوجد مسعفون في هذا المركز</option>';
+        } else if (targetType === 'vehicle') {
+            const filtered = allVehicles.filter(v => v.centerName === center);
+            sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد مركبات في هذا المركز</option>';
+        }
+    }
+
+    async function saveIssue() {
+        const center = document.getElementById("issueCenter").value;
+        const targetType = document.getElementById("issueTargetType").value;
+        const targetName = document.getElementById("issueTargetName").value;
+        const issueType = document.getElementById("issueType").value.trim();
+        const desc = document.getElementById("issueDesc").value.trim();
+        
+        if (!center) return showToast("اختر المركز", "danger");
+        if (!targetName) return showToast("اختر الهدف", "danger");
+        if (!issueType) return showToast("أدخل نوع البلاغ", "danger");
+        if (!desc) return showToast("أدخل الوصف", "danger");
+        
+        let sector = "";
+        for (const [s, centers] of Object.entries(SECTORS)) {
+            if (centers.includes(center)) { sector = s; break; }
+        }
+        if (!sector) return showToast("المركز غير مرتبط بقطاع", "danger");
+        
+        try {
+            await db.collection("issues").add({
+                type: 'complaint', isPraise: false, targetType, targetName, centerName: center, sector,
+                issueType, description: desc, supervisor: "الإدارة (إدخال يدوي)",
+                status: "pending_supervisor", createdAt: firebase.firestore.FieldValue.serverTimestamp(), timestamp: new Date()
+            });
+            showToast("تم إرسال البلاغ لمشرفي " + sector);
+            document.getElementById("issueType").value = "";
+            document.getElementById("issueDesc").value = "";
+            loadIssues();
+        } catch(e) { showToast("خطأ: " + e.message, "danger"); }
+    }
+
+    function loadIssues() {
+        db.collection("issues").where("status", "==", "pending_supervisor").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card" style="border-right-color:var(--amber);">
+                    <div class="item-info">
+                        <h4>⏳ ${data.targetName}</h4>
+                        <p>🏥 ${data.centerName} | 📌 ${data.issueType} | 📍 ${data.sector}</p>
+                        <p style="font-size:10px; opacity:0.6; margin-top:4px;">${data.description}</p>
+                    </div>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                </div>`;
+            });
+            document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد بلاغات معلقة";
+        });
+        
+        db.collection("issues").where("status", "==", "resolved_by_supervisor").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                const time = data.resolvedAt ? new Date(data.resolvedAt.toDate()).toLocaleString('ar-OM') : '—';
+                const responses = data.responses || [];
+                const lastResponse = responses[responses.length - 1] || {};
+                html += `<div class="item-card" style="border-right-color:var(--green);">
+                    <div class="item-info">
+                        <h4>✅ ${data.targetName}</h4>
+                        <p>🏥 ${data.centerName} | 📌 ${data.issueType}</p>
+                        <p style="font-size:11px; margin-top:6px; color:var(--green);">👨‍💼 <b>${lastResponse.supervisor || data.resolvedBy}</b> — ${time}</p>
+                        <p style="font-size:11px; background:rgba(0,0,0,0.1); padding:6px; border-radius:6px; margin-top:4px;"><b>الإجراء:</b> ${lastResponse.text || '—'}</p>
+                    </div>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                </div>`;
+            });
+            document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة بعد";
+        });
+    }
+
+    // ==========================================
+    // تقارير المشرفين
+    // ==========================================
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
@@ -630,6 +765,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         
+        // إزالة الوميض بضبط خلفية بيضاء فورية
         const style = `<style>@page { size: A4 landscape; margin: 5mm; } body, html { background: #ffffff !important; color: #000000 !important; } .print-page { background: #fff !important; zoom: 0.85; }</style>`;
         document.getElementById("printArea").innerHTML = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>تقرير البلاغات ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>الوصف</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
         setTimeout(() => { window.print(); }, 800);
@@ -784,21 +920,13 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }).join("") || "لا يوجد بيانات";
     }
 
-    // ✅ التحديث الجذري لنظام التقارير (فلاتر متعددة المستويات)
     function updateReportOptions() {
         const type = document.getElementById("reportType").value;
         const filters = document.getElementById("reportFilters");
         
-        // بناء الفلاتر الأساسية
         const dateFilters = `<div><label>من تاريخ</label><input type="date" id="filterFrom"></div><div><label>إلى تاريخ</label><input type="date" id="filterTo"></div>`;
-        
-        // فلتر القطاع
         const sectorFilter = `<div><label>القطاع</label><select id="filterSector" onchange="updateReportCenters()"><option value="">الكل</option>${Object.keys(SECTORS).map(s => `<option value="${s}">${s}</option>`).join("")}</select></div>`;
-        
-        // فلتر المركز (يتم تحديثه ديناميكياً)
         const centerFilter = `<div><label>المركز</label><select id="filterCenter"><option value="">الكل</option></select></div>`;
-        
-        // فلتر المشرف
         const supFilter = `<div><label>المشرف</label><select id="filterSup"><option value="">الكل</option>${allSupervisors.map(s => `<option value="${s.name}">${s.name}</option>`).join("")}</select></div>`;
 
         let html = dateFilters;
@@ -812,8 +940,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
         
         filters.innerHTML = html;
-        
-        // تحديث المراكز بناءً على القطاع المختار
         updateReportCenters();
     }
 
@@ -832,7 +958,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         centerSel.innerHTML = `<option value="">الكل</option>` + centers.map(c => `<option value="${c}">${c}</option>`).join("");
     }
 
-    // دالة توليد التقارير (مع الفلاتر الشاملة)
     async function generateReport(action) {
         const type = document.getElementById("reportType").value;
         const orientation = document.getElementById("printOrientation").value;
@@ -844,7 +969,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const selParam = document.getElementById("filterParam")?.value;
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         
-        // تصفية البيانات الأساسية حسب التاريخ
         let filteredIssues = allIssues;
         if (from) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) >= new Date(from).getTime());
         if (to) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) <= new Date(to).getTime() + 86400000);
@@ -861,7 +985,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             
             data = sups.map(s => {
                 let mine = filteredIssues.filter(i => i.supervisor === s.name || i.resolvedBy === s.name);
-                if (selCenter) mine = mine.filter(i => i.centerName === selCenter); // فلترة المركز
+                if (selCenter) mine = mine.filter(i => i.centerName === selCenter);
                 
                 return { 
                     name: s.name, sector: s.sector,
@@ -880,7 +1004,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             if (type === 'visits') d = d.filter(i => i.type === 'visit'); 
             else d = d.filter(i => i.type !== 'visit');
             
-            // تطبيق الفلاتر
             if (selSector) d = d.filter(i => i.sector === selSector);
             if (selCenter) d = d.filter(i => i.centerName === selCenter);
             if (selSup) d = d.filter(i => i.supervisor === selSup);
@@ -947,13 +1070,12 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
         
         if (action === 'print') {
-            // إصلاح الطباعة والخلفية
+            // إزالة الوميض بضبط الخلفية البيضاء
             const style = `<style>@page { size: ${orientation}; margin: 5mm; } body, html { background: #ffffff !important; color: #000000 !important; } .print-page { background: #fff !important; zoom: 0.8; }</style>`;
             const html = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
             document.getElementById("printArea").innerHTML = html;
-            setTimeout(() => { window.print(); }, 800); // تأخير لضمان بناء الجدول
+            setTimeout(() => { window.print(); }, 800);
         } else {
-            // تصدير Excel
             let csv = "\uFEFF"; 
             const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
             csv += thead.replace(/<\/?th>/g, m => m === '<th>' ? '' : ',').replace(/,$/, '\n');
