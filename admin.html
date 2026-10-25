@@ -103,18 +103,16 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue); }
 .icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
 
-/* البلاغات الواردة (التصميم الشجري) */
 .issue-group { background: rgba(0,0,0,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
 [data-theme="light"] .issue-group { background: rgba(0,0,0,0.03); }
 .issue-group-header { font-size: 14px; font-weight: 900; color: var(--gold); margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 5px; }
-.issue-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px; background: var(--bg-glass); border-radius: 8px; margin-bottom: 8px; border-right: 4px solid var(--red); }
+.issue-item { padding: 10px; background: var(--bg-glass); border-radius: 8px; margin-bottom: 8px; border-right: 4px solid var(--red); }
 .issue-item.praise { border-right-color: var(--green); }
 .issue-item.note { border-right-color: var(--blue); }
 .issue-info h4 { font-size: 13px; margin-bottom: 4px; }
 .issue-info p { font-size: 11px; color: var(--text-sub); }
 .issue-meta { font-size: 10px; color: var(--text-sub); margin-top: 4px; }
 
-/* المراسلات */
 .chat-box { background: rgba(0,0,0,0.15); border-radius: 12px; border: 1px solid var(--border); padding: 12px; max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
 [data-theme="light"] .chat-box { background: rgba(0,0,0,0.03); }
 .chat-bubble { padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; position: relative; }
@@ -134,25 +132,16 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .kpi-info p { font-size: 11px; color: var(--text-sub); }
 .kpi-score { font-size: 22px; font-weight: 900; color: var(--gold); }
 
-.toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
-.toast { background: var(--bg-glass); backdrop-filter: blur(20px); color: var(--text-main); padding: 14px 20px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; text-align: center; animation: notifyIn 0.3s ease-out; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
-.toast.success { border-color: var(--green); }
-.toast.danger { border-color: var(--red); }
-.toast.notification { border-color: var(--amber); background: linear-gradient(135deg, rgba(251,140,0,0.15), var(--bg-glass)); }
-
-#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.spinner { width:50px; height:50px; border:4px solid rgba(151,141,91,0.2); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px; }
-
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-glass); }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
 .duty-table th { background: var(--teal-dark); color: var(--gold); position: sticky; top: 0; z-index: 10; }
 .duty-table td:first-child, .duty-table th:first-child { position: sticky; right: 0; background: var(--teal-dark); z-index: 20; min-width: 160px; text-align: right; font-weight: 900; color: var(--gold); }
-.duty-table th.weekend { background: rgba(229,57,53,0.4); color: #fff; }
-.duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold); font-weight: 900; text-align: center; -webkit-appearance: none; }
 
-.report-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-@media (max-width: 500px) { .report-filters { grid-template-columns: 1fr; } }
+.toast-container { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
+.toast { background: var(--bg-glass); backdrop-filter: blur(20px); color: var(--text-main); padding: 14px 20px; border-radius: 12px; border: 1px solid var(--gold); font-size: 14px; font-weight: 700; text-align: center; animation: notifyIn 0.3s ease-out; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+.toast.success { border-color: var(--green); }
+.toast.danger { border-color: var(--red); }
 
 #printArea { display: none; }
 @media print {
@@ -169,11 +158,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   .print-table th { background: #0d4a42; color: white; padding: 4px; border: 1px solid #978d5b; text-align: center; }
   .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; }
   .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }
-  .print-page .duty-table { font-size: 7px; width: 100%; border-collapse: collapse; }
-  .print-page .duty-table th, .print-page .duty-table td { padding: 2px; min-width: 20px; font-size: 7px; border: 1px solid #999; text-align: center; }
-  .print-page .duty-table th { background: #0d4a42 !important; color: white !important; }
-  .print-page .duty-table td:first-child, .print-page .duty-table th:first-child { min-width: 70px; font-size: 7px; background: #0d4a42 !important; color: white !important; }
-  .print-page .duty-table select { font-size: 7px; padding: 0; border: none; background: transparent; color: #333; }
 }
 </style>
 </head>
@@ -199,9 +183,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="tabs-bar">
     <div class="tabs-scroll">
       <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 القيادة</button>
-      <!-- التبويب الجديد -->
       <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 البلاغات والملاحظات</button>
-      
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
@@ -219,10 +201,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 
   <!-- 1. لوحة القيادة -->
   <div class="page active" id="page-dashboard">
-    <div class="dash-hero">
-      <h2>👋 مرحباً، <span id="heroName">المدير العام</span></h2>
-      <p>نظرة شاملة — <span id="heroDate"></span></p>
-    </div>
+    <div class="dash-hero"><h2>👋 مرحباً، <span id="heroName">المدير العام</span></h2><p>نظرة شاملة — <span id="heroDate"></span></p></div>
     <div class="stats-grid">
       <div class="stat-card" onclick="switchTab('supervisors')"><div class="icon-bg">👨‍💼</div><div class="num" id="kpiSups">0</div><div class="lbl">المشرفون</div></div>
       <div class="stat-card" onclick="switchTab('paramedics')"><div class="icon-bg">👨‍🚒</div><div class="num" id="kpiParams">0</div><div class="lbl">المسعفون</div></div>
@@ -235,19 +214,11 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     </div>
   </div>
 
-  <!-- 2. البلاغات والملاحظات الجديد -->
+  <!-- 2. البلاغات والملاحظات -->
   <div class="page" id="page-reports">
     <div class="card">
-      <div class="card-title">
-        📥 تقارير المشرفين الواردة
-        <button class="btn small" onclick="printAllReports()">🖨️ طباعة التقرير</button>
-      </div>
-      <label>تصفية حسب القطاع</label>
-      <select id="filterSector" onchange="loadSupervisorReports()">
-        <option value="">-- كل القطاعات --</option>
-        <option value="قطاع A">قطاع A</option>
-        <option value="قطاع B">قطاع B</option>
-      </select>
+      <div class="card-title">📥 تقارير المشرفين الواردة <button class="btn small" onclick="printAllReports()">🖨️ طباعة</button></div>
+      <select id="filterSector" onchange="loadSupervisorReports()"><option value="">-- كل القطاعات --</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <div id="reportsContainer"></div>
     </div>
   </div>
@@ -256,9 +227,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-supervisors">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مشرف</div>
-      <input type="hidden" id="supEditId">
-      <input type="text" id="supName" placeholder="اسم المشرف">
-      <input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
+      <input type="hidden" id="supEditId"><input type="text" id="supName" placeholder="اسم المشرف"><input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
       <select id="supSector"><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <input type="text" id="supCodeEdit" placeholder="الكود">
       <button class="btn block" onclick="saveSupervisor()" id="btnSupSave">💾 حفظ</button>
@@ -266,8 +235,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     </div>
     <div class="card">
       <div class="card-title">📋 المشرفون <button class="btn small" onclick="printCodes()">🖨️ الأكواد</button></div>
-      <input type="search" id="supSearch" placeholder="🔍 ابحث عن مشرف..." onkeyup="loadSups()">
-      <div id="supList">جاري التحميل...</div>
+      <input type="search" id="supSearch" placeholder="🔍 ابحث..." onkeyup="loadSups()"><div id="supList"></div>
     </div>
   </div>
 
@@ -275,38 +243,27 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-paramedics">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مسعف</div>
-      <input type="hidden" id="paramEditId">
-      <input type="text" id="paramName" placeholder="اسم المسعف">
-      <input type="text" id="paramMilitaryId" placeholder="الرقم العسكري">
+      <input type="hidden" id="paramEditId"><input type="text" id="paramName" placeholder="اسم المسعف"><input type="text" id="paramMilitaryId" placeholder="الرقم العسكري">
       <select id="paramSector" onchange="updateParamCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <select id="paramCenter"><option value="">اختر المركز</option></select>
       <input type="text" id="paramRank" placeholder="الرتبة">
       <button class="btn block" onclick="saveParamedic()" id="btnParamSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelParamEdit()" id="btnParamCancel" style="display:none;">إلغاء</button>
     </div>
-    <div class="card">
-      <div class="card-title">📋 المسعفون</div>
-      <input type="search" id="paramSearch" placeholder="🔍 ابحث عن مسعف..." onkeyup="loadParams()">
-      <div id="paramList">جاري التحميل...</div>
-    </div>
+    <div class="card"><div class="card-title">📋 المسعفون</div><input type="search" id="paramSearch" placeholder="🔍 ابحث..." onkeyup="loadParams()"><div id="paramList"></div></div>
   </div>
 
   <!-- 5. المركبات -->
   <div class="page" id="page-vehicles">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مركبة</div>
-      <input type="hidden" id="vehEditId">
-      <input type="text" id="vehPlate" placeholder="رقم اللوحة">
-      <input type="text" id="vehType" placeholder="نوع المركبة">
+      <input type="hidden" id="vehEditId"><input type="text" id="vehPlate" placeholder="رقم اللوحة"><input type="text" id="vehType" placeholder="النوع">
       <select id="vehSector" onchange="updateVehCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <select id="vehCenter"><option value="">اختر المركز</option></select>
       <button class="btn block" onclick="saveVehicle()" id="btnVehSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelVehEdit()" id="btnVehCancel" style="display:none;">إلغاء</button>
     </div>
-    <div class="card">
-      <div class="card-title">📋 المركبات</div>
-      <div id="vehList">جاري التحميل...</div>
-    </div>
+    <div class="card"><div class="card-title">📋 المركبات</div><div id="vehList"></div></div>
   </div>
 
   <!-- 6. الدوام -->
@@ -325,92 +282,51 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     </div>
   </div>
 
-  <!-- 7. البلاغات (الإدارة) -->
+  <!-- 7. البلاغات -->
   <div class="page" id="page-issues">
     <div class="card">
-      <div class="card-title">➕ إرسال بلاغ إلى مشرفي القطاع</div>
-      <label>المركز المستهدف</label>
+      <div class="card-title">➕ إرسال بلاغ</div>
       <select id="issueCenter" onchange="loadIssueTargets()"><option value="">اختر المركز</option></select>
-      <label>نوع الهدف</label>
-      <select id="issueTargetType" onchange="loadIssueTargets()">
-        <option value="paramedic">مسعف</option>
-        <option value="vehicle">مركبة</option>
-        <option value="center">المركز نفسه</option>
-      </select>
-      <label>اسم الهدف</label>
-      <select id="issueTargetName"><option value="">-- اختر المركز أولاً --</option></select>
-      <label>نوع البلاغ</label>
-      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة">
-      <label>الوصف</label>
-      <textarea id="issueDesc" placeholder="تفاصيل البلاغ..." rows="3"></textarea>
-      <button class="btn block success" onclick="saveIssue()">📤 إرسال البلاغ</button>
+      <select id="issueTargetType" onchange="loadIssueTargets()"><option value="paramedic">مسعف</option><option value="vehicle">مركبة</option><option value="center">المركز</option></select>
+      <select id="issueTargetName"><option value="">-- اختر المركز --</option></select>
+      <input type="text" id="issueType" placeholder="نوع البلاغ"><textarea id="issueDesc" placeholder="الوصف" rows="3"></textarea>
+      <button class="btn block success" onclick="saveIssue()">📤 إرسال</button>
     </div>
-    <div class="card">
-      <div class="card-title">📤 بلاغات مُرسلة</div>
-      <div id="pendingIssuesList">جاري التحميل...</div>
-    </div>
-    <div class="card">
-      <div class="card-title">✅ بلاغات منجزة</div>
-      <div id="completedIssuesList">جاري التحميل...</div>
-    </div>
+    <div class="card"><div class="card-title">📤 بلاغات مُرسلة</div><div id="pendingIssuesList"></div></div>
+    <div class="card"><div class="card-title">✅ بلاغات منجزة</div><div id="completedIssuesList"></div></div>
   </div>
 
   <!-- 8. ملاحظات -->
   <div class="page" id="page-notes">
-    <div class="card">
-      <div class="card-title">📝 ملاحظات المشرفين (زيارات)</div>
-      <div id="notesList">جاري التحميل...</div>
-    </div>
+    <div class="card"><div class="card-title">📝 ملاحظات المشرفين</div><div id="notesList"></div></div>
   </div>
 
   <!-- 9. التعاميم -->
   <div class="page" id="page-broadcasts">
     <div class="card">
       <div class="card-title">📢 إرسال تعميم</div>
-      <input type="text" id="bcTitle" placeholder="العنوان">
-      <textarea id="bcDesc" placeholder="النص" rows="3"></textarea>
-      <button class="btn block success" onclick="addBroadcast()">📤 إرسال</button>
+      <input type="text" id="bcTitle" placeholder="العنوان"><textarea id="bcDesc" rows="3" placeholder="النص"></textarea>
+      <button class="btn success block" onclick="sendBroadcast()">📤 إرسال</button>
     </div>
-    <div class="card">
-      <div class="card-title">📜 التعاميم</div>
-      <div id="bcList">جاري التحميل...</div>
-    </div>
+    <div class="card"><div class="card-title">📜 التعاميم</div><div id="bcList"></div></div>
   </div>
 
-  <!-- 10. المراسلات (المحدثة) -->
+  <!-- 10. المراسلات -->
   <div class="page" id="page-messages">
     <div class="card">
       <div class="card-title">📬 المراسلات</div>
-      <select id="msgSupervisorFilter" onchange="loadMessages()">
-        <option value="">-- اختر مشرفاً للمحادثة --</option>
-      </select>
-      <div class="chat-box" id="messagesBox">اختر مشرفاً لبدء المحادثة...</div>
-      <div style="display:flex; gap:8px;">
-        <input type="text" id="msgInput" placeholder="اكتب رسالتك هنا..." style="margin-bottom:0;" disabled>
-        <button class="btn" onclick="sendAdminMessage()" id="btnSendMsg" disabled>📤</button>
-      </div>
+      <select id="msgSupervisorFilter" onchange="loadMessages()"><option value="">-- اختر مشرفاً --</option></select>
+      <div class="chat-box" id="messagesBox"></div>
+      <div style="display:flex; gap:8px;"><input type="text" id="msgInput" placeholder="اكتب..." style="margin-bottom:0;"><button class="btn" onclick="sendAdminMessage()">📤</button></div>
     </div>
   </div>
 
   <!-- 11. KPI -->
   <div class="page" id="page-kpi">
     <div class="card">
-      <div class="card-title">🏆 مؤشرات الأداء (KPI)</div>
-      <label>الفئة</label>
-      <select id="kpiCategory" onchange="loadKPI()">
-        <option value="supervisors">المشرفون</option>
-        <option value="paramedics">المسعفون</option>
-        <option value="vehicles">المركبات</option>
-        <option value="centers">المراكز</option>
-        <option value="stock">المخزن</option>
-      </select>
-      <label>الفترة</label>
-      <select id="kpiPeriod" onchange="loadKPI()">
-        <option value="week">آخر 7 أيام</option>
-        <option value="month">آخر 30 يوم</option>
-        <option value="all">كل الوقت</option>
-      </select>
-      <div id="kpiList">جاري التحميل...</div>
+      <div class="card-title">🏆 KPI</div>
+      <select id="kpiCategory" onchange="loadKPI()"><option value="supervisors">المشرفون</option><option value="paramedics">المسعفون</option></select>
+      <div id="kpiList"></div>
     </div>
   </div>
 
@@ -418,15 +334,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-types">
     <div class="card">
       <div class="card-title">⚙️ إدارة الأنواع</div>
-      <label>الهدف</label>
-      <select id="typeTarget" onchange="loadTypes()">
-        <option value="paramedic">مسعف</option><option value="center">مركز</option>
-        <option value="vehicle">مركبة</option><option value="stock">مخزن</option>
-      </select>
-      <label>الفئة</label>
-      <select id="typeCategory" onchange="loadTypes()">
-        <option value="issue">إشكالية</option><option value="praise">إشادة</option>
-      </select>
+      <select id="typeTarget" onchange="loadTypes()"><option value="paramedic">مسعف</option><option value="center">مركز</option><option value="vehicle">مركبة</option></select>
+      <select id="typeCategory" onchange="loadTypes()"><option value="issue">إشكالية</option><option value="praise">إشادة</option></select>
       <input type="text" id="newTypeName" placeholder="اسم النوع">
       <button class="btn block" onclick="addType()">➕ إضافة</button>
       <div id="typesList" style="margin-top:16px;"></div>
@@ -436,76 +345,31 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <!-- 13. التقارير المتقدمة -->
   <div class="page" id="page-reports_adv">
     <div class="card">
-      <div class="card-title">📈 التقارير المتقدمة</div>
-      <label>نوع التقرير</label>
-      <select id="reportType" onchange="updateReportOptions()">
-        <option value="activity">تقرير نشاط المشرفين الشامل</option>
-        <option value="supervisors">قائمة المشرفين</option>
-        <option value="paramedics">قائمة المسعفين</option>
-        <option value="vehicles">قائمة المركبات</option>
-        <option value="issues">البلاغات</option>
-        <option value="visits">الزيارات</option>
-      </select>
-      <div class="report-filters" id="reportFilters"></div>
-      <label>اتجاه الطباعة</label>
-      <select id="printOrientation">
-        <option value="portrait">عمودي</option>
-        <option value="landscape">أفقي</option>
-      </select>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" onclick="generateReport('print')" style="flex:1;">🖨️ طباعة PDF</button>
-        <button class="btn success" onclick="generateReport('excel')" style="flex:1;">📥 تصدير Excel</button>
-      </div>
+      <div class="card-title">📈 التقارير</div>
+      <select id="reportType"><option value="supervisors">المشرفون</option><option value="paramedics">المسعفون</option><option value="vehicles">المركبات</option></select>
+      <button class="btn block" onclick="generateReport('print')">🖨️ طباعة</button>
     </div>
   </div>
 
   <!-- 14. الإعدادات -->
   <div class="page" id="page-settings">
     <div class="card">
-      <div class="card-title">🎨 الهوية والمظهر</div>
-      <label>اسم النظام</label>
+      <div class="card-title">🎨 الهوية</div>
       <input type="text" id="cfgSystemName" onchange="saveConfig('systemName', this.value)">
-      <label>رابط الشعار</label>
       <input type="url" id="cfgLogoUrl" onchange="saveConfig('logoUrl', this.value)">
-      <button class="btn block secondary" onclick="toggleTheme()">🌓 تبديل الوضع الداكن/الفاتح</button>
+      <button class="btn block secondary" onclick="toggleTheme()">🌓 تبديل الوضع</button>
     </div>
     <div class="card">
-      <div class="card-title">🔐 كلمة مرور المدير</div>
-      <input type="password" id="oldPwd" placeholder="الحالية">
-      <input type="password" id="newPwd" placeholder="الجديدة">
-      <input type="password" id="confirmPwd" placeholder="التأكيد">
-      <button class="btn block" onclick="changeAdminPassword()">🔐 تغيير</button>
-    </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--red);">⚠️ إدارة الحذف المتقدم</div>
-      <label>اختر المجموعة</label>
-      <select id="deleteCol" onchange="populateDeleteItems()">
-        <option value="">اختر المجموعة...</option>
-        <option value="access_code">المشرفون</option>
-        <option value="paramedics">المسعفون</option>
-        <option value="vehicles">المركبات</option>
-        <option value="issues">البلاغات</option>
-        <option value="broadcasts">التعاميم</option>
-        <option value="messages">الرسائل</option>
-        <option value="duty_schedule">الدوام</option>
-      </select>
-      <label>اختر العنصر</label>
-      <select id="deleteItemId"><option value="">-- اختر المجموعة أولاً --</option></select>
-      <button class="btn danger block" onclick="deleteItems()" style="margin-top:10px;">🗑️ حذف العنصر المحدد</button>
-    </div>
-    <div class="card">
-      <div class="card-title" style="color:var(--red);">💥 منطقة الخطر</div>
-      <button class="btn danger block" onclick="deleteIssuesByType('praise')">🗑️ حذف كل الإشادات</button>
-      <button class="btn danger block" onclick="deleteIssuesByType('complaint')" style="margin-top:8px;">🗑️ حذف كل الإشكالات</button>
-      <button class="btn danger block" onclick="deleteIssuesByType('visit')" style="margin-top:8px;">🗑️ حذف كل الزيارات</button>
-      <button class="btn danger block" onclick="wipeData('all')" style="margin-top:16px;">💥 مسح كل البيانات</button>
+      <div class="card-title">⚠️ الحذف</div>
+      <select id="deleteCol" onchange="populateDeleteItems()"><option value="">اختر...</option><option value="access_code">المشرفون</option><option value="paramedics">المسعفون</option><option value="vehicles">المركبات</option><option value="issues">البلاغات</option><option value="broadcasts">التعاميم</option><option value="messages">الرسائل</option></select>
+      <select id="deleteItemId"><option value="">-- اختر العنصر --</option></select>
+      <button class="btn danger block" onclick="deleteItems()">🗑️ حذف</button>
     </div>
   </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
-
 <script>
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
@@ -523,65 +387,49 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     const user = JSON.parse(session);
     if (user.type !== "admin") { window.location.href = "./index.html"; }
 
-    const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
+    const SECTORS = { 
+        "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], 
+        "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] 
+    };
     const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
 
-    let allParameds = [], allVehicles = [], allIssues = [], allSupervisors = [], allMessages = [];
+    let allParameds = [], allVehicles = [], allIssues = [], allSupervisors = [], allMessages = [], allBroadcasts = [];
     let doughnutChart, lineChart;
-    let isFirstLoad = true;
 
-    // Theme
-    function initTheme() {
-        const savedTheme = localStorage.getItem("cfg_theme") || "dark";
-        document.documentElement.setAttribute("data-theme", savedTheme);
-        document.getElementById("themeToggleBtn").textContent = savedTheme === "dark" ? "☀️" : "🌙";
-    }
+    // ==========================================
+    // 1. الوضع الليلي والنهاري
+    // ==========================================
     function toggleTheme() {
         const current = document.documentElement.getAttribute("data-theme") || "dark";
         const newTheme = current === "dark" ? "light" : "dark";
         document.documentElement.setAttribute("data-theme", newTheme);
         localStorage.setItem("cfg_theme", newTheme);
-        document.getElementById("themeToggleBtn").textContent = newTheme === "dark" ? "☀️" : "🌙";
-        showToast(newTheme === "dark" ? "تم تفعيل الوضع الداكن" : "تم تفعيل الوضع الفاتح", "info");
+        document.getElementById("themeToggleBtn").innerText = newTheme === "dark" ? "☀️" : "🌙";
         if(document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
     }
-
-    function playNotificationSound() {
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-        } catch(e) {}
+    if(localStorage.getItem("cfg_theme") === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.getElementById("themeToggleBtn").innerText = "🌙";
     }
 
-    function showNotification(title, msg) {
-        const c = document.getElementById("toastContainer"); const t = document.createElement("div");
-        t.className = "toast notification"; 
-        t.innerHTML = `<div style="font-size:16px;margin-bottom:4px;">🔔 ${title}</div><div style="font-size:12px;opacity:0.9;">${msg}</div>`;
-        c.appendChild(t); setTimeout(() => t.remove(), 5000);
-        playNotificationSound();
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(title, { body: msg, icon: localStorage.getItem("cfg_logoUrl") });
-        }
-    }
-    if ("Notification" in window && Notification.permission === "default") Notification.requestPermission();
-
+    // ==========================================
+    // 2. الإشعارات
+    // ==========================================
     function showToast(msg, type="success") {
-        const c = document.getElementById("toastContainer"); const t = document.createElement("div");
-        t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
-        c.appendChild(t); setTimeout(() => t.remove(), 3000);
+        const c = document.getElementById("toastContainer"); 
+        const t = document.createElement("div");
+        t.className = "toast " + type; 
+        t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
+        c.appendChild(t); 
+        setTimeout(() => t.remove(), 3000);
     }
 
     function switchTab(id) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         document.getElementById("page-" + id).classList.add("active");
-        document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
+        const btn = document.querySelector(`.tab-btn[data-tab="${id}"]`);
+        if(btn) btn.classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
         
         if (id === 'supervisors') loadSups();
@@ -589,10 +437,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (id === 'vehicles') loadVehicles();
         if (id === 'notes') loadNotes();
         if (id === 'issues') loadIssues();
+        if (id === 'reports') loadSupervisorReports();
         if (id === 'broadcasts') loadBroadcasts();
         if (id === 'duty') loadDutyTable();
         if (id === 'types') loadTypes();
-        if (id === 'reports') loadSupervisorReports();
         if (id === 'messages') { populateMsgSupervisors(); loadMessages(); }
         if (id === 'kpi') loadKPI();
         if (id === 'settings') { populateDeleteItems(); loadConfig(); }
@@ -602,81 +450,66 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     function manualRefresh() { showToast("تم التحديث"); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    function initRealtimeListeners() {
-        db.collection("issues").onSnapshot(snap => {
-            const prevCount = allIssues.length;
-            allIssues = [];
-            snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
-            
-            if (!isFirstLoad && allIssues.length > prevCount) {
-                const newest = allIssues[allIssues.length - 1];
-                showNotification("🚩 بلاغ جديد", `${newest.targetName || "بلاغ"} - ${newest.centerName || ""}`);
-            }
-            
-            document.getElementById("kpiIssues").innerText = allIssues.filter(i => i.status === 'pending_supervisor' || i.status === 'new').length;
-            
-            if (document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
-            if (document.querySelector(".page.active").id === "page-issues") loadIssues();
-            if (document.querySelector(".page.active").id === "page-kpi") loadKPI();
-            if (document.querySelector(".page.active").id === "page-notes") loadNotes();
-            if (document.querySelector(".page.active").id === "page-reports") loadSupervisorReports();
-        });
-        
-        db.collection("paramedics").onSnapshot(snap => {
-            allParameds = [];
-            snap.forEach(d => allParameds.push({ id: d.id, ...d.data() }));
-            document.getElementById("kpiParams").innerText = allParameds.length;
-            if (document.querySelector(".page.active").id === "page-paramedics") loadParams();
-        });
-        
-        db.collection("vehicles").onSnapshot(snap => {
-            allVehicles = [];
-            snap.forEach(d => allVehicles.push({ id: d.id, ...d.data() }));
-            document.getElementById("kpiVehs").innerText = allVehicles.length;
-            if (document.querySelector(".page.active").id === "page-vehicles") loadVehicles();
-        });
-        
-        db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
-            allSupervisors = [];
-            snap.forEach(d => allSupervisors.push({ id: d.id, ...d.data() }));
-            document.getElementById("kpiSups").innerText = allSupervisors.length;
-            if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
-            populateMsgSupervisors(); // تحديث قائمة المحادثات
-        });
-        
-        db.collection("messages").orderBy("timestamp", "desc").limit(100).onSnapshot(snap => {
-            const prevCount = allMessages.length;
-            allMessages = [];
-            snap.forEach(d => allMessages.push({ id: d.id, ...d.data() }));
-            
-            if (!isFirstLoad && allMessages.length > prevCount && allMessages.length > 0) {
-                const newest = allMessages[0];
-                if (newest.sender !== user.name && newest.sender !== "المدير العام") {
-                    showNotification("📬 رسالة جديدة", `${newest.sender}: ${newest.text.substring(0, 50)}`);
-                }
-            }
-            
-            if (document.querySelector(".page.active").id === "page-messages") loadMessages();
-        });
-        
-        setTimeout(() => { isFirstLoad = false; }, 3000);
-    }
+    // ==========================================
+    // 3. التحديث اللحظي من Firebase
+    // ==========================================
+    db.collection("issues").onSnapshot(snap => {
+        allIssues = [];
+        snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
+        document.getElementById("kpiIssues").innerText = allIssues.filter(i => i.status === 'pending_supervisor' || i.status === 'new').length;
+        if (document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
+        if (document.querySelector(".page.active").id === "page-reports") loadSupervisorReports();
+        if (document.querySelector(".page.active").id === "page-issues") loadIssues();
+        if (document.querySelector(".page.active").id === "page-notes") loadNotes();
+    });
+    
+    db.collection("paramedics").onSnapshot(snap => {
+        allParameds = [];
+        snap.forEach(d => allParameds.push({ id: d.id, ...d.data() }));
+        document.getElementById("kpiParams").innerText = allParameds.length;
+        if (document.querySelector(".page.active").id === "page-paramedics") loadParams();
+    });
+    
+    db.collection("vehicles").onSnapshot(snap => {
+        allVehicles = [];
+        snap.forEach(d => allVehicles.push({ id: d.id, ...d.data() }));
+        document.getElementById("kpiVehs").innerText = allVehicles.length;
+        if (document.querySelector(".page.active").id === "page-vehicles") loadVehicles();
+    });
+    
+    db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
+        allSupervisors = [];
+        snap.forEach(d => allSupervisors.push({ id: d.id, ...d.data() }));
+        document.getElementById("kpiSups").innerText = allSupervisors.length;
+        if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
+        populateMsgSupervisors();
+    });
+    
+    db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
+        allMessages = [];
+        snap.forEach(d => allMessages.push({ id: d.id, ...d.data() }));
+        if (document.querySelector(".page.active").id === "page-messages") loadMessages();
+    });
 
+    // ==========================================
+    // 4. لوحة القيادة والرسوم البيانية
+    // ==========================================
     function renderDashboardCharts() {
         const praises = allIssues.filter(i => i.isPraise).length;
         const complaints = allIssues.filter(i => !i.isPraise && i.type !== 'visit').length;
         const visits = allIssues.filter(i => i.type === 'visit').length;
         const isDark = document.documentElement.getAttribute("data-theme") !== "light";
-        const chartTextColor = isDark ? "#fff" : "#333";
-        const chartGridColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.05)";
         
         const ctx1 = document.getElementById("doughnutChart");
         if (ctx1) {
             if (doughnutChart) doughnutChart.destroy();
             doughnutChart = new Chart(ctx1, {
                 type: 'doughnut',
-                data: { labels: ['إشادات', 'إشكالات', 'زيارات'], datasets: [{ data: [praises, complaints, visits], backgroundColor: ['#69f0ae', '#ff5252', '#64b5f6'], borderColor: isDark ? '#082b26' : '#ffffff', borderWidth: 3 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: chartTextColor, font: { family: 'Cairo' } } } } }
+                data: { 
+                    labels: ['إشادات', 'إشكالات', 'زيارات'], 
+                    datasets: [{ data: [praises, complaints, visits], backgroundColor: ['#69f0ae', '#ff5252', '#64b5f6'], borderColor: isDark ? '#082b26' : '#fff', borderWidth: 3 }] 
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: isDark ? '#fff' : '#333' } } } }
             });
         }
         
@@ -686,7 +519,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             const d = new Date(Date.now() - i*86400000);
             const start = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
             const end = start + 86400000;
-            const count = allIssues.filter(i => { const ts = i.timestamp?.seconds * 1000 || 0; return ts >= start && ts < end; }).length;
+            const count = allIssues.filter(i => { 
+                const ts = i.timestamp?.seconds * 1000 || 0; 
+                return ts >= start && ts < end; 
+            }).length;
             days.push(count); labels.push(dayNames[d.getDay()]);
         }
         
@@ -695,15 +531,15 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             if (lineChart) lineChart.destroy();
             lineChart = new Chart(ctx2, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'عدد البلاغات', data: days, borderColor: '#d4c896', backgroundColor: 'rgba(212,200,150,0.1)', tension: 0.4, fill: true, pointBackgroundColor: '#978d5b', pointBorderColor: chartTextColor, pointRadius: 5 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: chartTextColor, font: { family: 'Cairo' } } } }, scales: { x: { ticks: { color: chartTextColor }, grid: { color: chartGridColor } }, y: { ticks: { color: chartTextColor, stepSize: 1 }, grid: { color: chartGridColor }, beginAtZero: true } } }
+                data: { labels, datasets: [{ label: 'عدد البلاغات', data: days, borderColor: '#978d5b', backgroundColor: 'rgba(151,141,91,0.1)', tension: 0.4, fill: true }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: isDark ? '#fff' : '#333' } } }, scales: { x: { ticks: { color: isDark ? '#fff' : '#333' } }, y: { ticks: { color: isDark ? '#fff' : '#333' }, beginAtZero: true } } }
             });
         }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       صفحة البلاغات والملاحظات الجديدة
-       ═══════════════════════════════════════════════════════════ */
+    // ==========================================
+    // 5. البلاغات الواردة (الشجرية)
+    // ==========================================
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
@@ -712,10 +548,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         allIssues.forEach(issue => {
             if(issue.supervisor === "الإدارة (إدخال يدوي)") return;
             if(sectorFilter && issue.sector !== sectorFilter) return;
-
             const sec = issue.sector || "غير محدد";
             const center = issue.centerName || "غير محدد";
-            
             if(!grouped[sec]) grouped[sec] = {};
             if(!grouped[sec][center]) grouped[sec][center] = [];
             grouped[sec][center].push(issue);
@@ -730,11 +564,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                     let typeClass = "issue-item", typeText = "إشكالية", typeIcon = "🚩";
                     if (issue.isPraise) { typeClass = "issue-item praise"; typeText = "إشادة"; typeIcon = "⭐"; }
                     else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة زيارة"; typeIcon = "📝"; }
-
                     const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
                     html += `<div class="${typeClass}">
                         <div class="issue-info">
-                            <h4>${typeIcon} ${typeText} - ${issue.targetName}</h4>
+                            <h4>${typeIcon} ${typeText} - ${issue.targetName || "المركز"}</h4>
                             <p>${issue.description || issue.issueType || 'لا يوجد وصف'}</p>
                             <div class="issue-meta">👨‍💼 المشرف: ${issue.supervisor} | 📅 ${date}</div>
                         </div>
@@ -744,100 +577,97 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             }
             html += `</div>`;
         }
-        container.innerHTML = html || "<div style='text-align:center; padding:20px;'>لا توجد بلاغات واردة من المشرفين</div>";
+        container.innerHTML = html || "<div style='text-align:center; padding:20px;'>لا توجد بلاغات واردة</div>";
     }
 
     function printAllReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         let filtered = allIssues.filter(i => i.supervisor !== "الإدارة (إدخال يدوي)");
         if(sectorFilter) filtered = filtered.filter(i => i.sector === sectorFilter);
-
         let tbody = "";
         filtered.forEach((d, i) => {
             let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : "إشكالية");
             const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
-            tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor}</td><td>${typeText}</td><td>${d.targetName}</td><td>${d.description || d.issueType || '-'}</td><td>${date}</td></tr>`;
+            tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor}</td><td>${typeText}</td><td>${d.targetName}</td><td>${d.description || '-'}</td><td>${date}</td></tr>`;
         });
-
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        const html = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>تقرير بلاغات وملاحظات المشرفين ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div>
-        <table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>التفاصيل</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
-        
+        const html = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>تقرير بلاغات المشرفين ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>التفاصيل</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
         document.getElementById("printArea").innerHTML = html;
         setTimeout(() => window.print(), 300);
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       المراسلات (المحدثة والمقسمة)
-       ═══════════════════════════════════════════════════════════ */
+    // ==========================================
+    // 6. التعاميم
+    // ==========================================
+    function loadBroadcasts() {
+        db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(snap => {
+            let html = "";
+            snap.forEach(d => {
+                const data = d.data();
+                const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-OM') : '';
+                html += `<div class="item-card" style="border-right-color:var(--blue);">
+                    <div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p><p style="font-size:10px; opacity:0.6; margin-top:5px;">🕐 ${date}</p></div>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button>
+                </div>`;
+            });
+            document.getElementById("bcList").innerHTML = html || "لا توجد تعاميم";
+        });
+    }
+
+    function sendBroadcast() {
+        const title = document.getElementById("bcTitle").value.trim();
+        const desc = document.getElementById("bcDesc").value.trim();
+        if(!title || !desc) return showToast("أكمل البيانات", "danger");
+        db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => {
+            showToast("تم الإرسال");
+            document.getElementById("bcTitle").value = "";
+            document.getElementById("bcDesc").value = "";
+        });
+    }
+
+    // ==========================================
+    // 7. المراسلات (خاصة بين المدير والمشرف)
+    // ==========================================
     function populateMsgSupervisors() {
         const sel = document.getElementById("msgSupervisorFilter");
         const currentVal = sel.value;
-        sel.innerHTML = '<option value="">-- اختر مشرفاً للمحادثة --</option>';
-        allSupervisors.forEach(s => {
-            const opt = document.createElement("option");
-            opt.value = s.name; opt.textContent = s.name;
-            sel.appendChild(opt);
-        });
+        sel.innerHTML = '<option value="">-- اختر مشرفاً --</option>';
+        allSupervisors.forEach(s => { sel.innerHTML += `<option value="${s.name}">${s.name}</option>`; });
         sel.value = currentVal;
     }
 
     function loadMessages() {
-        const selectedSup = document.getElementById("msgSupervisorFilter").value;
-        const box = document.getElementById("messagesBox");
-        const input = document.getElementById("msgInput");
-        const btn = document.getElementById("btnSendMsg");
-
-        if (!selectedSup) {
-            box.innerHTML = "اختر مشرفاً لبدء المحادثة...";
-            input.disabled = true; btn.disabled = true;
-            return;
-        }
-        input.disabled = false; btn.disabled = false;
-
-        const filtered = allMessages.filter(m => {
-            const iAmSender = m.sender === (user.name || "المدير العام");
-            const iAmReceiver = m.receiver === (user.name || "المدير العام");
-            const supIsSender = m.sender === selectedSup;
-            const supIsReceiver = m.receiver === selectedSup;
-            return (iAmSender && supIsReceiver) || (iAmReceiver && supIsSender);
-        });
-
+        const sup = document.getElementById("msgSupervisorFilter").value;
+        if(!sup) { document.getElementById("messagesBox").innerHTML = "اختر مشرفاً للمحادثة..."; return; }
+        
         let html = "";
-        filtered.slice(0, 100).reverse().forEach(m => {
-            const isMine = m.sender === (user.name || "المدير العام");
-            const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleString('ar-OM') : '';
-            html += `<div class="chat-bubble ${isMine ? 'mine' : 'theirs'}">
-                <button class="chat-del-btn" onclick="deleteDoc('messages','${m.id}')">✕</button>
-                <div class="author">${isMine ? 'أنا' : m.sender}</div>
-                <div>${m.text}</div>
-                <div class="time">${time}</div>
-            </div>`;
+        allMessages.forEach(m => {
+            const isMine = m.sender === "المدير العام" || m.sender === user.name;
+            if((isMine && m.receiver === sup) || (!isMine && m.sender === sup)) {
+                const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
+                html += `<div class="chat-bubble ${isMine ? 'mine' : 'theirs'}">
+                    <div class="author">${isMine ? 'أنا' : m.sender}</div>
+                    <div>${m.text}</div>
+                    <div class="time">${time}</div>
+                </div>`;
+            }
         });
-        box.innerHTML = html || "لا يوجد رسائل بينك وبين هذا المشرف";
-        box.scrollTop = box.scrollHeight;
+        document.getElementById("messagesBox").innerHTML = html || "لا توجد رسائل";
+        document.getElementById("messagesBox").scrollTop = document.getElementById("messagesBox").scrollHeight;
     }
 
-    async function sendAdminMessage() {
-        const selectedSup = document.getElementById("msgSupervisorFilter").value;
+    function sendAdminMessage() {
+        const sup = document.getElementById("msgSupervisorFilter").value;
         const text = document.getElementById("msgInput").value.trim();
-        if (!selectedSup) return showToast("اختر مشرفاً أولاً", "danger");
-        if (!text) return;
-
+        if(!sup) return showToast("اختر مشرفاً", "danger");
+        if(!text) return;
         document.getElementById("msgInput").value = "";
-        await db.collection("messages").add({
-            sender: user.name || "المدير العام",
-            receiver: selectedSup, // 👈 التحديد الدقيق للمشرف
-            text: text, 
-            timestamp: new Date()
-        });
-        showToast("تم الإرسال");
-        loadMessages();
+        db.collection("messages").add({ sender: "المدير العام", receiver: sup, text: text, timestamp: new Date() }).then(() => showToast("تم الإرسال"));
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       الدوال الأخرى (المشرفين، المسعفين، المركبات...)
-       ═══════════════════════════════════════════════════════════ */
+    // ==========================================
+    // 8. المشرفين
+    // ==========================================
     function loadSups() {
         const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
         let html = "";
@@ -847,24 +677,13 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 <div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>الرقم: ${d.militaryId || '-'} | القطاع: ${d.sector || '-'}</p></div>
                 <div class="item-actions">
                     <button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${d.code}'); showToast('تم النسخ')">${d.code}</button>
-                    <button class="icon-btn-sm edit" onclick="editSup('${d.id}','${d.name}','${d.militaryId||''}','${d.sector}','${d.code}')">✏️</button>
                     <button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button>
                 </div>
             </div>`;
         });
         document.getElementById("supList").innerHTML = html || "لا يوجد مشرفون";
     }
-    function editSup(id, name, mil, sector, code) {
-        document.getElementById("supEditId").value = id; document.getElementById("supName").value = name;
-        document.getElementById("supMilitaryId").value = mil; document.getElementById("supSector").value = sector;
-        document.getElementById("supCodeEdit").value = code;
-        document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnSupCancel").style.display = "block";
-    }
-    function cancelSupEdit() {
-        document.getElementById("supEditId").value = ""; document.getElementById("supName").value = "";
-        document.getElementById("supMilitaryId").value = ""; document.getElementById("supCodeEdit").value = "";
-        document.getElementById("btnSupSave").innerText = "💾 حفظ"; document.getElementById("btnSupCancel").style.display = "none";
-    }
+
     function saveSupervisor() {
         const id = document.getElementById("supEditId").value;
         const name = document.getElementById("supName").value.trim();
@@ -873,13 +692,22 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const codeInput = document.getElementById("supCodeEdit").value.trim();
         if (!name) return showToast("أدخل الاسم", "danger");
         if (id) {
-            const updateData = { name, militaryId, sector };
-            if(codeInput) updateData.code = codeInput;
-            db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); });
+            db.collection("access_code").doc(id).update({ name, militaryId, sector }).then(() => { showToast("تم التعديل"); });
         } else {
             const code = codeInput || "SUP-" + Math.floor(1000 + Math.random() * 9000);
-            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor", active: true }).then(() => { showToast("تم الإنشاء: " + code); cancelSupEdit(); });
+            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor", active: true }).then(() => { showToast("تم الإنشاء: " + code); });
         }
+        document.getElementById("supName").value = ""; document.getElementById("supMilitaryId").value = ""; document.getElementById("supCodeEdit").value = "";
+    }
+    function cancelSupEdit() {}
+
+    // ==========================================
+    // 9. المسعفون
+    // ==========================================
+    function updateParamCenters() {
+        const sec = document.getElementById("paramSector").value;
+        const sel = document.getElementById("paramCenter");
+        sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
     }
 
     function loadParams() {
@@ -890,41 +718,34 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             html += `<div class="item-card" style="border-right-color:var(--green);">
                 <div class="item-info"><h4>👨‍🚒 ${d.name}</h4><p>الرقم: ${d.militaryId || '-'} | المركز: ${d.centerName} | الرتبة: ${d.rank || '-'}</p></div>
                 <div class="item-actions">
-                    <button class="icon-btn-sm edit" onclick="editParam('${d.id}','${d.name}','${d.militaryId||''}','${d.centerName}','${d.rank||''}')">✏️</button>
                     <button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${d.id}')">🗑️</button>
                 </div>
             </div>`;
         });
         document.getElementById("paramList").innerHTML = html || "لا يوجد مسعفون";
     }
-    function editParam(id, name, mil, center, rank) {
-        document.getElementById("paramEditId").value = id; document.getElementById("paramName").value = name;
-        document.getElementById("paramMilitaryId").value = mil; document.getElementById("paramRank").value = rank;
-        for (const [sec, centers] of Object.entries(SECTORS)) {
-            if (centers.includes(center)) {
-                document.getElementById("paramSector").value = sec; updateParamCenters(); document.getElementById("paramCenter").value = center; break;
-            }
-        }
-        document.getElementById("btnParamSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnParamCancel").style.display = "block";
-    }
-    function cancelParamEdit() {
-        document.getElementById("paramEditId").value = ""; document.getElementById("paramName").value = "";
-        document.getElementById("paramMilitaryId").value = ""; document.getElementById("paramRank").value = "";
-        document.getElementById("btnParamSave").innerText = "💾 حفظ"; document.getElementById("btnParamCancel").style.display = "none";
-    }
+
     function saveParamedic() {
-        const id = document.getElementById("paramEditId").value;
         const name = document.getElementById("paramName").value.trim();
         const militaryId = document.getElementById("paramMilitaryId").value.trim();
         const center = document.getElementById("paramCenter").value;
         const rank = document.getElementById("paramRank").value.trim();
         if (!name) return showToast("أدخل الاسم", "danger");
-        if (id) {
-            db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم التعديل"); cancelParamEdit(); });
-        } else {
-            if (!center) return showToast("اختر المركز", "danger");
-            db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم الحفظ"); cancelParamEdit(); });
-        }
+        if (!center) return showToast("اختر المركز", "danger");
+        db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { 
+            showToast("تم الحفظ"); 
+            document.getElementById("paramName").value = ""; document.getElementById("paramMilitaryId").value = ""; document.getElementById("paramRank").value = "";
+        });
+    }
+    function cancelParamEdit() {}
+
+    // ==========================================
+    // 10. المركبات
+    // ==========================================
+    function updateVehCenters() {
+        const sec = document.getElementById("vehSector").value;
+        const sel = document.getElementById("vehCenter");
+        sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
     }
 
     function loadVehicles() {
@@ -933,139 +754,230 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             html += `<div class="item-card" style="border-right-color:var(--amber);">
                 <div class="item-info"><h4>🚑 ${d.plateNumber}</h4><p>النوع: ${d.type || '-'} | المركز: ${d.centerName}</p></div>
                 <div class="item-actions">
-                    <button class="icon-btn-sm edit" onclick="editVeh('${d.id}','${d.plateNumber}','${d.type||''}','${d.centerName}')">✏️</button>
                     <button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${d.id}')">🗑️</button>
                 </div>
             </div>`;
         });
         document.getElementById("vehList").innerHTML = html || "لا يوجد مركبات";
     }
-    function editVeh(id, plate, type, center) {
-        document.getElementById("vehEditId").value = id; document.getElementById("vehPlate").value = plate;
-        document.getElementById("vehType").value = type;
-        for (const [sec, centers] of Object.entries(SECTORS)) {
-            if (centers.includes(center)) {
-                document.getElementById("vehSector").value = sec; updateVehCenters(); document.getElementById("vehCenter").value = center; break;
-            }
-        }
-        document.getElementById("btnVehSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnVehCancel").style.display = "block";
-    }
-    function cancelVehEdit() {
-        document.getElementById("vehEditId").value = ""; document.getElementById("vehPlate").value = ""; document.getElementById("vehType").value = "";
-        document.getElementById("btnVehSave").innerText = "💾 حفظ"; document.getElementById("btnVehCancel").style.display = "none";
-    }
+
     function saveVehicle() {
-        const id = document.getElementById("vehEditId").value;
         const plate = document.getElementById("vehPlate").value.trim();
         const type = document.getElementById("vehType").value.trim();
         const center = document.getElementById("vehCenter").value;
         if (!plate) return showToast("أدخل اللوحة", "danger");
-        if (id) {
-            db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم التعديل"); cancelVehEdit(); });
-        } else {
-            if (!center) return showToast("اختر المركز", "danger");
-            db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم الحفظ"); cancelVehEdit(); });
-        }
+        if (!center) return showToast("اختر المركز", "danger");
+        db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { 
+            showToast("تم الحفظ"); 
+            document.getElementById("vehPlate").value = ""; document.getElementById("vehType").value = "";
+        });
     }
+    function cancelVehEdit() {}
 
-    function updateParamCenters() {
-        const sec = document.getElementById("paramSector").value;
-        document.getElementById("paramCenter").innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
-    }
-    function updateVehCenters() {
-        const sec = document.getElementById("vehSector").value;
-        document.getElementById("vehCenter").innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       الدوام، البلاغات، الملاحظات، KPI
-       ═══════════════════════════════════════════════════════════ */
+    // ==========================================
+    // 11. الدوام
+    // ==========================================
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
-        const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
+        const [year, m] = month.split("-");
+        const days = new Date(year, m, 0).getDate();
+        
         db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
-            const dutyData = {}; dutySnap.forEach(d => { dutyData[d.data().supervisorCode] = d.data().shifts || {}; });
-            const supA = allSupervisors.filter(s => s.sector === "قطاع A"); const supB = allSupervisors.filter(s => s.sector === "قطاع B");
+            const dutyData = {};
+            dutySnap.forEach(d => { dutyData[d.data().supervisorCode] = d.data().shifts || {}; });
+            const supA = allSupervisors.filter(s => s.sector === "قطاع A");
+            const supB = allSupervisors.filter(s => s.sector === "قطاع B");
             document.getElementById("dutyTableContainerA").innerHTML = buildDutyHtml(supA, dutyData, year, m, days, month);
             document.getElementById("dutyTableContainerB").innerHTML = buildDutyHtml(supB, dutyData, year, m, days, month);
         });
     }
+
     function buildDutyHtml(suprvs, dutyData, year, m, days, month) {
         if (suprvs.length === 0) return '<div style="text-align:center; opacity:0.5; padding:10px;">لا يوجد مشرفون</div>';
         let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
-        for (let d = 1; d <= days; d++) { const dow = new Date(year, m-1, d).getDay(); const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : ''; html += `<th${wk}>${d}</th>`; }
+        for (let d = 1; d <= days; d++) html += `<th>${d}</th>`;
         html += '</tr></thead><tbody>';
         suprvs.forEach(s => {
-            const shifts = dutyData[s.code] || {}; html += `<tr><td>${s.name}</td>`;
-            for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; html += `<td><select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)"><option value="">—</option>${Object.keys(DUTY_CODES).map(c => `<option value="${c}" ${val===c?"selected":""}>${c}</option>`).join("")}</select></td>`; }
+            const shifts = dutyData[s.code] || {};
+            html += `<tr><td>${s.name}</td>`;
+            for (let d = 1; d <= days; d++) { 
+                const val = shifts[d] || ""; 
+                html += `<td><select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)"><option value="">—</option>${Object.keys(DUTY_CODES).map(c => `<option value="${c}" ${val===c?"selected":""}>${c}</option>`).join("")}</select></td>`; 
+            }
             html += '</tr>';
         });
         return html + '</tbody></table>';
     }
+
     async function updateDuty(month, code, name, day, val) {
-        const docId = `${month}_${code}`; const docRef = db.collection("duty_schedule").doc(docId);
-        try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); } catch(e) { showToast("خطأ", "danger"); }
+        const docId = `${month}_${code}`; 
+        const docRef = db.collection("duty_schedule").doc(docId);
+        try { 
+            const doc = await docRef.get(); 
+            let shifts = doc.exists ? (doc.data().shifts || {}) : {}; 
+            shifts[day] = val; 
+            await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); 
+            showToast("تم الحفظ"); 
+        } catch(e) { showToast("خطأ", "danger"); }
     }
 
+    // ==========================================
+    // 12. البلاغات والملاحظات
+    // ==========================================
     function loadIssueTargets() {
-        const center = document.getElementById("issueCenter").value; const targetType = document.getElementById("issueTargetType").value; const sel = document.getElementById("issueTargetName");
+        const center = document.getElementById("issueCenter").value;
+        const targetType = document.getElementById("issueTargetType").value;
+        const sel = document.getElementById("issueTargetName");
         if (!center) { sel.innerHTML = '<option value="">-- اختر المركز أولاً --</option>'; return; }
         if (targetType === 'center') { sel.innerHTML = `<option value="${center}">${center}</option>`; return; }
         if (targetType === 'paramedic') {
             const filtered = allParameds.filter(p => p.centerName === center);
-            sel.innerHTML = filtered.length ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("") : '<option value="">لا يوجد مسعفون في هذا المركز</option>';
+            sel.innerHTML = filtered.length ? filtered.map(p => `<option value="${p.name}">${p.name}</option>`).join("") : '<option value="">لا يوجد</option>';
         } else if (targetType === 'vehicle') {
             const filtered = allVehicles.filter(v => v.centerName === center);
-            sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد مركبات في هذا المركز</option>';
+            sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد</option>';
         }
     }
+
     async function saveIssue() {
-        const center = document.getElementById("issueCenter").value; const targetType = document.getElementById("issueTargetType").value;
-        const targetName = document.getElementById("issueTargetName").value; const issueType = document.getElementById("issueType").value.trim(); const desc = document.getElementById("issueDesc").value.trim();
-        if (!center) return showToast("اختر المركز", "danger"); if (!targetName) return showToast("اختر الهدف", "danger");
-        if (!issueType) return showToast("أدخل نوع البلاغ", "danger"); if (!desc) return showToast("أدخل الوصف", "danger");
+        const center = document.getElementById("issueCenter").value;
+        const targetType = document.getElementById("issueTargetType").value;
+        const targetName = document.getElementById("issueTargetName").value;
+        const issueType = document.getElementById("issueType").value.trim();
+        const desc = document.getElementById("issueDesc").value.trim();
+        if (!center || !targetName || !issueType || !desc) return showToast("أكمل البيانات", "danger");
         let sector = ""; for (const [s, centers] of Object.entries(SECTORS)) { if (centers.includes(center)) { sector = s; break; } }
-        if (!sector) return showToast("المركز غير مرتبط بقطاع", "danger");
         try {
             await db.collection("issues").add({ type: 'complaint', isPraise: false, targetType, targetName, centerName: center, sector, issueType, description: desc, supervisor: "الإدارة (إدخال يدوي)", status: "pending_supervisor", createdAt: firebase.firestore.FieldValue.serverTimestamp(), timestamp: new Date() });
-            showToast("تم إرسال البلاغ لمشرفي " + sector); document.getElementById("issueType").value = ""; document.getElementById("issueDesc").value = ""; loadIssues();
-        } catch(e) { showToast("خطأ: " + e.message, "danger"); }
+            showToast("تم الإرسال");
+            document.getElementById("issueType").value = ""; document.getElementById("issueDesc").value = "";
+        } catch(e) { showToast("خطأ", "danger"); }
     }
+
     function loadIssues() {
         db.collection("issues").where("status", "==", "pending_supervisor").get().then(s => {
-            let html = ""; s.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--amber);"><div class="item-info"><h4>⏳ ${data.targetName}</h4><p>🏥 ${data.centerName} | 📌 ${data.issueType} | 📍 ${data.sector}</p><p style="font-size:10px; opacity:0.6; margin-top:4px;">${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button></div>`; });
-            document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد بلاغات معلقة";
+            let html = ""; s.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--amber);"><div class="item-info"><h4>⏳ ${data.targetName}</h4><p>${data.centerName} | ${data.issueType}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button></div>`; });
+            document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد";
         });
         db.collection("issues").where("status", "==", "resolved_by_supervisor").get().then(s => {
-            let html = ""; s.forEach(d => { const data = d.data(); const time = data.resolvedAt ? new Date(data.resolvedAt.toDate()).toLocaleString('ar-OM') : '—'; const responses = data.responses || []; const lastResponse = responses[responses.length - 1] || {};
-                html += `<div class="item-card" style="border-right-color:var(--green);"><div class="item-info"><h4>✅ ${data.targetName}</h4><p>🏥 ${data.centerName} | 📌 ${data.issueType}</p><p style="font-size:11px; margin-top:6px; color:var(--green);">👨‍💼 <b>${lastResponse.supervisor || data.resolvedBy}</b> — ${time}</p><p style="font-size:11px; background:rgba(0,0,0,0.1); padding:6px; border-radius:6px; margin-top:4px;"><b>الإجراء:</b> ${lastResponse.text || '—'}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button></div>`; });
-            document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة بعد";
+            let html = ""; s.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--green);"><div class="item-info"><h4>✅ ${data.targetName}</h4><p>${data.centerName} | تم بواسطة: ${data.resolvedBy}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button></div>`; });
+            document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد";
         });
     }
-    function loadKPI() { /* كودك السابق */ }
+
     function loadNotes() {
         db.collection("issues").where("type", "==", "visit").get().then(s => {
-            let html = ""; s.forEach(d => { const data = d.data(); html += `<div class="item-card" style="flex-direction:column; align-items:flex-start;"><div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:5px;"><b style="color:var(--gold);">🏥 ${data.centerName}</b><span style="font-size:10px; opacity:0.5;">${new Date(data.timestamp.toDate()).toLocaleString('ar-OM')}</span></div><p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p><p style="font-size:12px; background:rgba(0,0,0,0.1); padding:8px; border-radius:8px; width:100%;">${data.description}</p></div>`; });
-            document.getElementById("notesList").innerHTML = html || "لا يوجد ملاحظات";
+            let html = ""; s.forEach(d => { const data = d.data(); html += `<div class="item-card"><div class="item-info"><h4>🏥 ${data.centerName}</h4><p>${data.description}</p><p style="font-size:10px;">المشرف: ${data.supervisor}</p></div></div>`; });
+            document.getElementById("notesList").innerHTML = html || "لا يوجد";
         });
     }
-    function loadBroadcasts() { /* كودك السابق */ }
-    function loadTypes() { /* كودك السابق */ }
-    function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
 
-    /* الطباعة والإعدادات */
-    function printCodes() { /* كودك السابق */ }
-    function printDutyTable(orientation) { /* كودك السابق */
-        const month = document.getElementById("dutyMonth").value; if(!month) return showToast("اختر الشهر", "danger");
+    // ==========================================
+    // 13. KPI والأنواع والإعدادات
+    // ==========================================
+    function loadKPI() {
+        const category = document.getElementById("kpiCategory").value;
+        const el = document.getElementById("kpiList");
+        let items = [];
+        if (category === 'supervisors') {
+            items = allSupervisors.map(s => {
+                const mine = allIssues.filter(i => i.resolvedBy === s.name || i.supervisor === s.name);
+                const score = mine.filter(i => i.status === 'resolved_by_supervisor').length * 10;
+                return { name: s.name, sub: `${mine.length} بلاغ`, score };
+            });
+        } else {
+            items = allParameds.map(p => {
+                const mine = allIssues.filter(i => i.targetName === p.name);
+                return { name: p.name, sub: `${mine.length} بلاغ`, score: mine.length * 5 };
+            });
+        }
+        items.sort((a, b) => b.score - a.score);
+        el.innerHTML = items.map((item, i) => {
+            const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i+1);
+            return `<div class="kpi-row"><div class="kpi-rank">${rank}</div><div class="kpi-info"><h4>${item.name}</h4><p>${item.sub}</p></div><div class="kpi-score">${item.score}</div></div>`;
+        }).join("") || "لا يوجد";
+    }
+
+    function loadTypes() {
+        const target = document.getElementById("typeTarget").value;
+        const cat = document.getElementById("typeCategory").value;
+        const col = `${cat}_types_${target}`;
+        db.collection(col).get().then(s => {
+            let html = "";
+            s.forEach(d => { html += `<div class="item-card"><div class="item-info"><h4>${d.data().name}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}')">🗑️</button></div>`; });
+            document.getElementById("typesList").innerHTML = html || "لا يوجد";
+        });
+    }
+
+    function addType() {
+        const target = document.getElementById("typeTarget").value;
+        const cat = document.getElementById("typeCategory").value;
+        const name = document.getElementById("newTypeName").value.trim();
+        if (!name) return showToast("أدخل الاسم", "danger");
+        db.collection(`${cat}_types_${target}`).add({ name }).then(() => { showToast("تم"); document.getElementById("newTypeName").value = ""; loadTypes(); });
+    }
+
+    function loadConfig() {
+        document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
+        document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || "";
+    }
+
+    function saveConfig(key, val) { 
+        localStorage.setItem("cfg_" + key, val); 
+        if(key === 'systemName') document.getElementById("systemName").innerText = val;
+        showToast("تم الحفظ");
+    }
+
+    async function populateDeleteItems() {
+        const col = document.getElementById("deleteCol").value;
+        const sel = document.getElementById("deleteItemId");
+        if (!col) { sel.innerHTML = '<option value="">-- اختر العنصر --</option>'; return; }
+        const snap = await db.collection(col).get();
+        let html = '<option value="">-- اختر العنصر --</option>';
+        snap.forEach(d => {
+            const data = d.data();
+            const label = data.name || data.plateNumber || data.targetName || data.title || data.sender || d.id;
+            html += `<option value="${d.id}">${label}</option>`;
+        });
+        sel.innerHTML = html;
+    }
+
+    async function deleteItems() {
+        const col = document.getElementById("deleteCol").value;
+        const id = document.getElementById("deleteItemId").value;
+        if (!col || !id) return showToast("اختر العنصر", "danger");
+        if (!confirm("هل أنت متأكد من الحذف؟")) return;
+        await db.collection(col).doc(id).delete();
+        showToast("تم الحذف");
+        populateDeleteItems();
+    }
+
+    function deleteDoc(col, id) { 
+        if(confirm("حذف؟")) { 
+            db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); 
+        } 
+    }
+
+    function printCodes() {
+        let tbody = "", i = 1;
+        allSupervisors.forEach(d => { tbody += `<tr><td>${i++}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.sector}</td><td style="font-weight:bold;">${d.code}</td></tr>`; });
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        document.getElementById("printArea").innerHTML = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>أكواد الدخول</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+        setTimeout(() => window.print(), 300);
+    }
+
+    function printDutyTable(orientation) {
+        const month = document.getElementById("dutyMonth").value;
+        if(!month) return showToast("اختر الشهر", "danger");
         const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
         db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
             const dutyData = {}; dutySnap.forEach(d => { dutyData[d.data().supervisorCode] = d.data().shifts || {}; });
             const supA = allSupervisors.filter(s => s.sector === "قطاع A"); const supB = allSupervisors.filter(s => s.sector === "قطاع B");
             const buildPrintTable = (suprvs) => {
-                if(suprvs.length === 0) return '<div style="text-align:center; padding:10px;">لا يوجد مشرفون</div>';
+                if(suprvs.length === 0) return '<div style="text-align:center;">لا يوجد مشرفون</div>';
                 let html = '<table class="duty-table" style="width:100%; border-collapse:collapse;"><thead><tr><th style="border:1px solid #999; padding:2px; background:#0d4a42; color:white; font-size:7px;">المشرف</th>';
-                for (let d = 1; d <= days; d++) { const dow = new Date(year, m-1, d).getDay(); const isWk = (dow === 5 || dow === 6); html += `<th style="border:1px solid #999; padding:2px; background:${isWk?'#c62828':'#0d4a42'}; color:white; font-size:7px;">${d}</th>`; }
+                for (let d = 1; d <= days; d++) html += `<th style="border:1px solid #999; padding:2px; background:#0d4a42; color:white; font-size:7px;">${d}</th>`;
                 html += '</tr></thead><tbody>';
                 suprvs.forEach(s => { const shifts = dutyData[s.code] || {}; html += `<tr><td style="border:1px solid #999; padding:2px; font-size:7px; font-weight:bold; text-align:right; background:#f0f0f0;">${s.name}</td>`; for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; const displayVal = val ? (DUTY_CODES[val] || val) : "—"; html += `<td style="border:1px solid #999; padding:2px; text-align:center; font-size:7px;">${displayVal}</td>`; } html += '</tr>'; });
                 return html + '</tbody></table>';
@@ -1075,34 +987,21 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             document.getElementById("printArea").innerHTML = printHtml; setTimeout(() => window.print(), 500);
         });
     }
-    function loadConfig() { /* كودك السابق */ }
-    function saveConfig(key, val) { /* كودك السابق */ }
-    function updateReportOptions() { /* كودك السابق */ }
-    function generateReport(action) { /* كودك السابق */ }
-    function populateDeleteItems() { /* كودك السابق */ }
-    function deleteItems() { /* كودك السابق */ }
-    function deleteIssuesByType(kind) { /* كودك السابق */ }
-    function changeAdminPassword() { /* كودك السابق */ }
-    function wipeData(type) { /* كودك السابق */ }
-    function loadTypes() { /* كودك السابق */ }
-    function addType() { /* كودك السابق */ }
-    function loadBroadcasts() { /* كودك السابق */ }
-    function addBroadcast() { /* كودك السابق */ }
 
-    // التشغيل
-    initTheme();
+    // ==========================================
+    // 14. التشغيل
+    // ==========================================
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
-    document.getElementById("currentUser").textContent = user.name || "المدير العام";
-    document.getElementById("heroName").textContent = user.name || "المدير العام";
-    document.getElementById("heroDate").textContent = new Date().toLocaleDateString('ar-OM', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById("currentUser").innerText = user.name;
+    document.getElementById("heroName").innerText = user.name;
+    document.getElementById("heroDate").innerText = new Date().toLocaleDateString('ar-OM', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
     
     const allCenters = Object.values(SECTORS).flat();
     allCenters.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; document.getElementById("issueCenter").appendChild(o); });
     
-    loadConfig(); initRealtimeListeners(); updateReportOptions();
-    document.getElementById("deleteCol").addEventListener("change", populateDeleteItems);
+    loadConfig();
     renderDashboardCharts();
 </script>
 </body>
