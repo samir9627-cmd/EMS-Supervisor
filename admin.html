@@ -143,17 +143,18 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 /* إعدادات الطباعة */
 #printArea { display: none; }
 @media print {
-  @page { margin: 8mm; size: A4 landscape; }
+  @page { margin: 5mm; size: A4 landscape; }
+  body, html { background: #fff !important; color: #000 !important; }
   body * { visibility: hidden; }
-  #printArea { visibility: visible !important; display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
+  #printArea { visibility: visible !important; display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; color: #000 !important; }
   #printArea * { visibility: visible !important; }
-  .print-page { background: white; color: black; padding: 10px; font-family: 'Cairo'; width: 100%; }
+  .print-page { background: white; color: black; padding: 10px; font-family: 'Cairo'; width: 100%; zoom: 0.85; }
   .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; }
   .print-logo { width: 60px; height: 60px; object-fit: contain; }
   .print-header-text h1 { font-size: 16px; color: #0d4a42; margin: 0; text-align:center; }
   .print-header-text h2 { font-size: 12px; color: #666; margin: 3px 0 0; font-weight: normal; text-align:center; }
   .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; }
-  .print-table th { background: #0d4a42; color: white; padding: 4px; border: 1px solid #978d5b; text-align: center; }
+  .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; }
   .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; }
   .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }
 }
@@ -392,11 +393,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 
     let allParameds = [], allVehicles = [], allIssues = [], allSupervisors = [], allMessages = [];
     let doughnutChart, lineChart;
-    let editingIssueId = null; // لتتبع ما إذا كنا نعدل بلاغاً
+    let editingIssueId = null; 
 
-    // ==========================================
-    // 1. الوضع الليلي والنهاري
-    // ==========================================
     function toggleTheme() {
         const current = document.documentElement.getAttribute("data-theme") || "dark";
         const newTheme = current === "dark" ? "light" : "dark";
@@ -442,9 +440,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     function manualRefresh() { showToast("تحديث..."); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    // ==========================================
-    // 2. التحديث اللحظي من Firebase
-    // ==========================================
     db.collection("issues").onSnapshot(snap => {
         allIssues = [];
         snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
@@ -483,9 +478,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (document.querySelector(".page.active").id === "page-messages") loadMessages();
     });
 
-    // ==========================================
-    // 3. لوحة القيادة
-    // ==========================================
     function renderDashboardCharts() {
         const praises = allIssues.filter(i => i.isPraise).length;
         const complaints = allIssues.filter(i => !i.isPraise && i.type !== 'visit').length;
@@ -523,9 +515,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // ==========================================
-    // 4. البلاغات الشجرية (مع الطباعة والحذف والتعديل)
-    // ==========================================
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
@@ -644,9 +633,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         setTimeout(() => window.print(), 300);
     }
 
-    // ==========================================
-    // 5. الملاحظات (مع الفلترة، الحذف، التفاصيل)
-    // ==========================================
     function populateNotesFilter() {
         const sel = document.getElementById("noteFilter");
         if(sel.options.length > 1) return;
@@ -696,9 +682,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         document.getElementById("modalOverlay").classList.add("show");
     }
 
-    // ==========================================
-    // 6. الدوام (التصميم السابق الكامل)
-    // ==========================================
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
@@ -767,9 +750,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
     }
 
-    // ==========================================
-    // 7. KPI والنقاط
-    // ==========================================
     function loadKPI() {
         const category = document.getElementById("kpiCategory").value;
         const el = document.getElementById("kpiList");
@@ -801,9 +781,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }).join("") || "لا يوجد بيانات";
     }
 
-    // ==========================================
-    // 8. التقارير المتقدمة
-    // ==========================================
     function updateReportOptions() {
         const type = document.getElementById("reportType").value;
         const filters = document.getElementById("reportFilters");
@@ -879,9 +856,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // ==========================================
-    // 9. التعاميم والمراسلات
-    // ==========================================
     function loadBroadcasts() {
         db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(snap => {
             let html = ""; snap.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`; });
@@ -919,9 +893,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         db.collection("messages").add({ sender: "المدير العام", receiver: sup, text, timestamp: new Date() }).then(() => showToast("تم"));
     }
 
-    // ==========================================
-    // 10. المشرفين (مع التعديل والحذف والنسخ)
-    // ==========================================
     function loadSups() {
         const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
         let html = ""; 
@@ -987,9 +958,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         setTimeout(() => window.print(), 300);
     }
 
-    // ==========================================
-    // 11. المسعفون (مع التعديل والحذف)
-    // ==========================================
     function updateParamCenters() {
         const sec = document.getElementById("paramSector").value;
         document.getElementById("paramCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
@@ -1056,9 +1024,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // ==========================================
-    // 12. المركبات (مع التعديل والحذف)
-    // ==========================================
     function updateVehCenters() {
         const sec = document.getElementById("vehSector").value;
         document.getElementById("vehCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
@@ -1120,15 +1085,34 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // ==========================================
-    // 13. الإعدادات والحذف الشامل
-    // ==========================================
     function loadConfig() { 
         document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; 
         document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || "";
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === "systemName") document.getElementById("systemName").innerText = val; showToast("تم الحفظ"); }
-    function changeAdminPassword() { showToast("تم التغيير (تجريبي)"); }
+    
+    // ✅ إصلاح كلمة المرور (تم التعديل هنا)
+    function changeAdminPassword() {
+        const oldPwd = document.getElementById("oldPwd").value;
+        const newPwd = document.getElementById("newPwd").value;
+        if(!oldPwd || !newPwd) return showToast("أدخل كلمة المرور الحالية والجديدة", "danger");
+        
+        const currentStored = localStorage.getItem("admin_pwd") || "admin123"; 
+        
+        if(oldPwd !== currentStored) {
+            return showToast("كلمة المرور الحالية خاطئة!", "danger");
+        }
+        
+        if(newPwd.length < 4) {
+            return showToast("كلمة المرور الجديدة قصيرة جداً", "danger");
+        }
+
+        localStorage.setItem("admin_pwd", newPwd);
+        showToast("✅ تم تغيير كلمة المرور بنجاح!");
+        document.getElementById("oldPwd").value = "";
+        document.getElementById("newPwd").value = "";
+    }
+
     function deleteDoc(col, id) { if(confirm("هل أنت متأكد من الحذف؟")) db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); }
     
     async function populateDeleteItems() {
@@ -1158,9 +1142,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         showToast("تم المسح الشامل");
     }
 
-    // ==========================================
-    // 14. التشغيل
-    // ==========================================
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").innerText = user.name;
