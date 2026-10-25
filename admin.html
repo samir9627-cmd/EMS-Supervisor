@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — النظام المتكامل V27</title>
+<title>الإدارة العامة — النظام المتكامل V29</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
@@ -152,6 +152,10 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <div class="stat-mini"><div class="num" id="dashVehicles">0</div><div class="lbl">المركبات</div></div>
       <div class="stat-mini"><div class="num" id="dashIssues">0</div><div class="lbl">البلاغات</div></div>
     </div>
+    <div class="card">
+      <div class="card-title">📡 النشاط الحي</div>
+      <div id="liveActivity" style="font-size:12px; line-height:1.8;">جاري التحميل...</div>
+    </div>
   </div>
 
   <!-- 2. المشرفون -->
@@ -159,10 +163,14 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مشرف</div>
       <input type="hidden" id="supEditId">
+      <label>الاسم</label>
       <input type="text" id="supName" placeholder="اسم المشرف">
+      <label>الرقم العسكري</label>
       <input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
+      <label>القطاع</label>
       <select id="supSector"><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
-      <input type="text" id="supCodeEdit" placeholder="الكود (فارغ = تلقائي)">
+      <label>الكود</label>
+      <input type="text" id="supCodeEdit" placeholder="SUP-XXXX">
       <button class="btn block" onclick="saveSupervisor()" id="btnSupSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelSupEdit()" id="btnSupCancel" style="display:none;">إلغاء</button>
     </div>
@@ -177,10 +185,15 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مسعف</div>
       <input type="hidden" id="paramEditId">
+      <label>الاسم</label>
       <input type="text" id="paramName" placeholder="اسم المسعف">
+      <label>الرقم العسكري</label>
       <input type="text" id="paramMilitaryId" placeholder="الرقم العسكري">
+      <label>القطاع</label>
       <select id="paramSector" onchange="updateParamCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
+      <label>المركز</label>
       <select id="paramCenter"><option value="">اختر المركز</option></select>
+      <label>الرتبة</label>
       <input type="text" id="paramRank" placeholder="الرتبة">
       <button class="btn block" onclick="saveParamedic()" id="btnParamSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelParamEdit()" id="btnParamCancel" style="display:none;">إلغاء</button>
@@ -196,9 +209,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مركبة</div>
       <input type="hidden" id="vehEditId">
+      <label>رقم اللوحة</label>
       <input type="text" id="vehPlate" placeholder="رقم اللوحة">
+      <label>نوع المركبة</label>
       <input type="text" id="vehType" placeholder="نوع المركبة">
+      <label>القطاع</label>
       <select id="vehSector" onchange="updateVehCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
+      <label>المركز</label>
       <select id="vehCenter"><option value="">اختر المركز</option></select>
       <button class="btn block" onclick="saveVehicle()" id="btnVehSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelVehEdit()" id="btnVehCancel" style="display:none;">إلغاء</button>
@@ -323,8 +340,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
+<div class="toast-container" id="toastContainer"></div>
+<div id="printArea"></div>
 
 <script>
+    /* ═══════════════════════════════════════════════════════════
+       الإعدادات الأساسية
+       ═══════════════════════════════════════════════════════════ */
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -337,6 +359,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // التحقق من الجلسة (يجب أن يكون مديراً)
     const session = localStorage.getItem("ems_session");
     if (!session) { window.location.href = "./index.html"; }
     const user = JSON.parse(session);
@@ -345,13 +368,19 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
     const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
 
+    // التهيئة
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").textContent = user.name || "المدير العام";
     document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
     loadConfig();
+    
+    // مستمعو التحديث الحي
     initRealtimeListeners();
-
+    
+    /* ═══════════════════════════════════════════════════════════
+       دوال مساعدة
+       ═══════════════════════════════════════════════════════════ */
     function showToast(msg, type="success") {
         const c = document.getElementById("toastContainer"); const t = document.createElement("div");
         t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
@@ -378,13 +407,33 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     function manualRefresh() { showToast("تحديث..."); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
+    /* ═══════════════════════════════════════════════════════════
+       1. التحديث اللحظي (onSnapshot)
+       ═══════════════════════════════════════════════════════════ */
     function initRealtimeListeners() {
+        // مراقبة البلاغات
         db.collection("issues").onSnapshot(snap => {
             const issues = [];
             snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
             document.getElementById("dashIssues").innerText = issues.length;
+            
+            // النشاط الحي
+            const live = document.getElementById("liveActivity");
+            if (live) {
+                const latest = issues.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)).slice(0, 5);
+                live.innerHTML = latest.map(i => {
+                    const icon = i.isPraise ? '⭐' : (i.type === 'visit' ? '📋' : '🚩');
+                    const time = i.timestamp ? new Date(i.timestamp.toDate()).toLocaleTimeString('ar-OM', {hour:'2-digit',minute:'2-digit'}) : '—';
+                    return `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <span>${icon} ${i.supervisor || '—'}: ${i.targetName || i.centerName || '—'}</span>
+                        <span style="opacity:0.6; font-size:10px;">${time}</span>
+                    </div>`;
+                }).join("") || "لا يوجد نشاط";
+            }
+            
             if (document.querySelector(".page.active").id === "page-issues") renderIssuesList(issues);
         });
+        
         db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
             document.getElementById("dashSups").innerText = snap.size;
             if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
@@ -399,7 +448,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    // المشرفون
+    /* ═══════════════════════════════════════════════════════════
+       2. المشرفون
+       ═══════════════════════════════════════════════════════════ */
     function loadSups() {
         db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
             let html = "";
@@ -449,7 +500,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
-    // المسعفون
+    /* ═══════════════════════════════════════════════════════════
+       3. المسعفون
+       ═══════════════════════════════════════════════════════════ */
     function loadParams() {
         db.collection("paramedics").get().then(s => {
             let html = "";
@@ -495,7 +548,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
-    // المركبات
+    /* ═══════════════════════════════════════════════════════════
+       4. المركبات
+       ═══════════════════════════════════════════════════════════ */
     function loadVehicles() {
         db.collection("vehicles").get().then(s => {
             let html = "";
@@ -550,7 +605,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
     }
 
-    // الملاحظات
+    /* ═══════════════════════════════════════════════════════════
+       5. ملاحظات المشرفين
+       ═══════════════════════════════════════════════════════════ */
     function loadNotes() {
         db.collection("issues").where("type", "==", "visit").get().then(s => {
             let html = "";
@@ -569,7 +626,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    // البلاغات
+    /* ═══════════════════════════════════════════════════════════
+       6. البلاغات (مع الإصلاح الجذري)
+       ═══════════════════════════════════════════════════════════ */
     function loadIssues() {
         db.collection("issues").where("type", "in", ["complaint", "praise"]).get().then(s => {
             const issues = [];
@@ -584,10 +643,11 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
             html += `<div class="item-card" style="border-right-color:${data.isPraise ? 'var(--green-light)' : 'var(--red-light)'};">
                 <div class="item-info">
                     <h4>${data.isPraise ? '⭐' : '🚩'} ${data.targetName || '-'}</h4>
-                    <p>المشرف: ${data.supervisor} | النوع: ${data.issueType || '-'} | الحالة: ${data.status||'مفتوحة'}</p>
+                    <p>المشرف: ${data.supervisor} | النوع: ${data.issueType || data.praiseType || '-'} | الحالة: ${data.status||'مفتوحة'}</p>
+                    ${data.description ? `<p style="font-size:10px; opacity:0.7;">${data.description}</p>` : ''}
                 </div>
                 <div class="item-actions">
-                    <button class="icon-btn-sm edit" onclick="editIssue('${data.id}','${data.targetType}','${data.targetName}','${data.issueType}','${data.description}')">✏️</button>
+                    <button class="icon-btn-sm edit" onclick="editIssue('${data.id}','${data.targetType}','${data.targetName}','${data.issueType || data.praiseType}','${data.description}')">✏️</button>
                     <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${data.id}')">🗑️</button>
                 </div>
             </div>`;
@@ -599,8 +659,8 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         document.getElementById("issueEditId").value = id;
         document.getElementById("issueTargetType").value = type;
         document.getElementById("issueTargetName").value = name;
-        document.getElementById("issueType").value = issueType;
-        document.getElementById("issueDesc").value = desc;
+        document.getElementById("issueType").value = issueType || "";
+        document.getElementById("issueDesc").value = desc || "";
         document.getElementById("btnIssueSave").innerText = "💾 حفظ التعديلات";
         document.getElementById("btnIssueCancel").style.display = "block";
         window.scrollTo({top:0,behavior:"smooth"});
@@ -639,7 +699,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
-    // التعاميم
+    /* ═══════════════════════════════════════════════════════════
+       7. التعاميم
+       ═══════════════════════════════════════════════════════════ */
     function loadBroadcasts() {
         db.collection("broadcasts").get().then(s => {
             let html = "";
@@ -657,7 +719,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
     }
 
-    // الدوام
+    /* ═══════════════════════════════════════════════════════════
+       8. الدوام
+       ═══════════════════════════════════════════════════════════ */
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
@@ -696,7 +760,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    // الأنواع
+    /* ═══════════════════════════════════════════════════════════
+       9. البيانات الأساسية
+       ═══════════════════════════════════════════════════════════ */
     function loadTypes() {
         const target = document.getElementById("typeTarget").value;
         const cat = document.getElementById("typeCategory").value;
@@ -720,7 +786,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection(col).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); });
     }
 
-    // الحذف والمسح
+    /* ═══════════════════════════════════════════════════════════
+       10. الحذف والمسح
+       ═══════════════════════════════════════════════════════════ */
     function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
     function wipeData(type) {
         if(!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
@@ -728,7 +796,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         else { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); }); db.collection("broadcasts").get().then(s => { s.forEach(d => d.ref.delete()); }); showToast("تم المسح الشامل"); }
     }
 
-    // الطباعة
+    /* ═══════════════════════════════════════════════════════════
+       11. الطباعة
+       ═══════════════════════════════════════════════════════════ */
     function printDutyTable(orientation) {
         const month = document.getElementById("dutyMonth").value;
         const htmlA = document.getElementById("dutyTableContainerA").innerHTML;
@@ -802,6 +872,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       12. الإعدادات
+       ═══════════════════════════════════════════════════════════ */
     function loadConfig() {
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         const sysName = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
@@ -809,6 +882,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         document.getElementById("cfgSystemName").value = sysName; document.getElementById("cfgLogoUrl").value = logo;
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
+
+    // تشغيل
+    loadData();
 </script>
 </body>
 </html>
