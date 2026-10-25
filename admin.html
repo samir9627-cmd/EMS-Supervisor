@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V34.0</title>
+<title>الإدارة العامة — V35.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -90,11 +90,12 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .btn.secondary { background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-main); }
 .btn.small { padding: 8px 14px; font-size: 11px; }
 
-.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: 0.2s; }
-.item-info { flex: 1; min-width: 200px; }
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
+.item-card:hover { background: rgba(255,255,255,0.05); }
+.item-info { flex: 1; min-width: 200px; pointer-events: none; }
 .item-info h4 { font-size: 14px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
 .item-info p { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
-.item-actions { display: flex; gap: 6px; }
+.item-actions { display: flex; gap: 6px; pointer-events: auto; }
 .icon-btn-sm { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: 0.2s; }
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red); }
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue); }
@@ -119,7 +120,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .chat-bubble .author { font-size: 10px; font-weight: 900; opacity: 0.8; margin-bottom: 4px; }
 .chat-bubble .time { font-size: 9px; opacity: 0.6; margin-top: 4px; text-align: left; }
 
-/* تصميم KPI الجديد */
+/* KPI */
 .kpi-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-glass); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
 .kpi-rank { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; background: var(--gold); color: #fff; }
 .kpi-rank.gold { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #000; }
@@ -132,6 +133,12 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 
 .report-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
 @media (max-width: 500px) { .report-filters { grid-template-columns: 1fr; } }
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
+.modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
 /* إعدادات الطباعة */
 #printArea { display: none; }
@@ -175,7 +182,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="tabs-bar">
     <div class="tabs-scroll">
       <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 القيادة</button>
-      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 البلاغات والملاحظات</button>
+      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 البلاغات</button>
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
@@ -265,10 +272,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-notes">
     <div class="card">
       <div class="card-title">📝 ملاحظات المشرفين (زيارات)</div>
-      <label>تصفية حسب المشرف</label>
-      <select id="noteFilter" onchange="loadNotes()">
-        <option value="">-- كل المشرفين --</option>
-      </select>
+      <select id="noteFilter" onchange="loadNotes()"><option value="">-- كل المشرفين --</option></select>
       <div id="notesList"></div>
     </div>
   </div>
@@ -361,32 +365,45 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   </div>
 </div>
 
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet"><h3 id="modalTitle">تفاصيل</h3><div id="modalBody"></div></div>
+</div>
+
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
-
 <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8", authDomain: "ems-supervisor.firebaseapp.com",
-      projectId: "ems-supervisor", storageBucket: "ems-supervisor.firebasestorage.app",
-      messagingSenderId: "230655268524", appId: "1:230655268524:web:5043a458af3d79989ff109"
+      apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
+      authDomain: "ems-supervisor.firebaseapp.com",
+      projectId: "ems-supervisor",
+      storageBucket: "ems-supervisor.firebasestorage.app",
+      messagingSenderId: "230655268524",
+      appId: "1:230655268524:web:5043a458af3d79989ff109"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const user = JSON.parse(localStorage.getItem("ems_session")) || { name: "المدير العام", type: "admin" };
 
-    const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
+    const SECTORS = { 
+        "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], 
+        "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] 
+    };
     const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
+
     let allParameds = [], allVehicles = [], allIssues = [], allSupervisors = [], allMessages = [];
     let doughnutChart, lineChart;
+    let editingIssueId = null; // لتتبع ما إذا كنا نعدل بلاغاً
 
-    // Theme
+    // ==========================================
+    // 1. الوضع الليلي والنهاري
+    // ==========================================
     function toggleTheme() {
         const current = document.documentElement.getAttribute("data-theme") || "dark";
         const newTheme = current === "dark" ? "light" : "dark";
         document.documentElement.setAttribute("data-theme", newTheme);
         localStorage.setItem("cfg_theme", newTheme);
         document.getElementById("themeToggleBtn").innerText = newTheme === "dark" ? "☀️" : "🌙";
-        if(document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
+        if(document.querySelector(".page.active") && document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
     }
     if(localStorage.getItem("cfg_theme") === "light") {
         document.documentElement.setAttribute("data-theme", "light");
@@ -398,6 +415,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
         c.appendChild(t); setTimeout(() => t.remove(), 3000);
     }
+
+    function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); editingIssueId = null; }
 
     function switchTab(id) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
@@ -423,7 +442,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     function manualRefresh() { showToast("تحديث..."); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    // التحديث اللحظي
+    // ==========================================
+    // 2. التحديث اللحظي من Firebase
+    // ==========================================
     db.collection("issues").onSnapshot(snap => {
         allIssues = [];
         snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
@@ -462,7 +483,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (document.querySelector(".page.active").id === "page-messages") loadMessages();
     });
 
-    // لوحة القيادة
+    // ==========================================
+    // 3. لوحة القيادة
+    // ==========================================
     function renderDashboardCharts() {
         const praises = allIssues.filter(i => i.isPraise).length;
         const complaints = allIssues.filter(i => !i.isPraise && i.type !== 'visit').length;
@@ -500,7 +523,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // البلاغات الشجرية
+    // ==========================================
+    // 4. البلاغات الشجرية (مع الطباعة والحذف والتعديل)
+    // ==========================================
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
@@ -524,13 +549,15 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                     if (issue.isPraise) { typeClass = "issue-item praise"; typeText = "إشادة"; typeIcon = "⭐"; }
                     else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة"; typeIcon = "📝"; }
                     const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
-                    html += `<div class="${typeClass}">
+                    html += `<div class="${typeClass}" style="cursor:pointer;" onclick="openIssueDetails('${issue.id}')">
                         <div class="issue-info">
                             <h4>${typeIcon} ${typeText} - ${issue.targetName || "المركز"}</h4>
                             <p>${issue.description || issue.issueType || ''}</p>
                             <div class="issue-meta">👨‍💼 ${issue.supervisor} | 📅 ${date}</div>
                         </div>
-                        <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${issue.id}')">🗑️</button>
+                        <div class="item-actions">
+                            <button class="icon-btn-sm delete" onclick="event.stopPropagation(); deleteDoc('issues','${issue.id}')">🗑️</button>
+                        </div>
                     </div>`;
                 });
                 html += `</div>`;
@@ -538,6 +565,68 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             html += `</div>`;
         }
         container.innerHTML = html || "لا توجد بلاغات";
+    }
+
+    function openIssueDetails(issueId) {
+        const issue = allIssues.find(i => i.id === issueId);
+        if (!issue) return;
+        editingIssueId = issueId;
+        let typeText = issue.isPraise ? "إشادة" : (issue.type === "visit" ? "ملاحظة زيارة" : "إشكالية");
+        const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
+        
+        document.getElementById("modalTitle").innerText = "🔍 تفاصيل البلاغ";
+        document.getElementById("modalBody").innerHTML = `
+            <div style="background:rgba(0,0,0,0.2); padding:15px; border-radius:12px; margin-bottom:15px;">
+                <p><b>النوع:</b> ${typeText}</p>
+                <p><b>الهدف:</b> ${issue.targetName || '-'}</p>
+                <p><b>المركز:</b> ${issue.centerName || '-'}</p>
+                <p><b>القطاع:</b> ${issue.sector || '-'}</p>
+                <p><b>المشرف:</b> ${issue.supervisor || '-'}</p>
+                <p><b>التاريخ:</b> ${date}</p>
+            </div>
+            <label>تفاصيل البلاغ / النوع:</label>
+            <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.issueType || issue.praiseType || '-'}</p>
+            <label>الوصف:</label>
+            <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.description || '-'}</p>
+            
+            <button class="btn info block" onclick="editIssue('${issueId}')">✏️ تعديل البلاغ</button>
+            <button class="btn danger block" onclick="deleteDoc('issues','${issueId}'); closeModal();" style="margin-top:8px;">🗑️ حذف البلاغ</button>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إغلاق</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    function editIssue(issueId) {
+        const issue = allIssues.find(i => i.id === issueId);
+        if (!issue) return;
+        
+        document.getElementById("modalTitle").innerText = "✏️ تعديل البلاغ";
+        document.getElementById("modalBody").innerHTML = `
+            <label>اسم الهدف</label>
+            <input type="text" id="editTarget" value="${issue.targetName || ''}">
+            <label>نوع البلاغ</label>
+            <input type="text" id="editType" value="${issue.issueType || issue.praiseType || ''}">
+            <label>الوصف</label>
+            <textarea id="editDesc" rows="4">${issue.description || ''}</textarea>
+            <button class="btn success block" onclick="saveIssueEdit('${issueId}')">💾 حفظ التعديلات</button>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
+        `;
+    }
+
+    async function saveIssueEdit(issueId) {
+        const target = document.getElementById("editTarget").value;
+        const type = document.getElementById("editType").value;
+        const desc = document.getElementById("editDesc").value;
+        const isPraise = allIssues.find(i => i.id === issueId)?.isPraise;
+        
+        const updateData = { targetName: target, description: desc };
+        if (isPraise) updateData.praiseType = type;
+        else updateData.issueType = type;
+        
+        await db.collection("issues").doc(issueId).update(updateData);
+        showToast("تم التعديل");
+        closeModal();
+        loadSupervisorReports();
     }
 
     function printAllReports() {
@@ -555,7 +644,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         setTimeout(() => window.print(), 300);
     }
 
-    // الملاحظات (مع الفلترة والحذف)
+    // ==========================================
+    // 5. الملاحظات (مع الفلترة، الحذف، التفاصيل)
+    // ==========================================
     function populateNotesFilter() {
         const sel = document.getElementById("noteFilter");
         if(sel.options.length > 1) return;
@@ -574,21 +665,40 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 const data = d.data();
                 if(filter && data.supervisor !== filter) return;
                 const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-OM') : '';
-                html += `<div class="item-card" style="flex-direction:column; align-items:flex-start;">
+                html += `<div class="item-card" onclick="openNoteDetails('${d.id}')" style="flex-direction:column; align-items:flex-start; cursor:pointer;">
                     <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:5px;">
                         <b style="color:var(--gold);">🏥 ${data.centerName}</b>
                         <span style="font-size:10px; opacity:0.5;">${date}</span>
                     </div>
                     <p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p>
                     <p style="font-size:12px; background:rgba(0,0,0,0.1); padding:8px; border-radius:8px; width:100%;">${data.description}</p>
-                    <button class="icon-btn-sm delete" style="margin-top:8px; align-self:flex-end;" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                    <button class="icon-btn-sm delete" style="margin-top:8px; align-self:flex-end;" onclick="event.stopPropagation(); deleteDoc('issues','${d.id}')">🗑️</button>
                 </div>`;
             });
             document.getElementById("notesList").innerHTML = html || "لا يوجد ملاحظات";
         });
     }
 
-    // جدول الدوام (التصميم السابق)
+    function openNoteDetails(id) {
+        const note = allIssues.find(i => i.id === id);
+        if(!note) return;
+        const date = note.timestamp ? new Date(note.timestamp.toDate()).toLocaleString('ar-OM') : '';
+        document.getElementById("modalTitle").innerText = "📝 تفاصيل الملاحظة";
+        document.getElementById("modalBody").innerHTML = `
+            <p><b>المركز:</b> ${note.centerName}</p>
+            <p><b>المشرف:</b> ${note.supervisor}</p>
+            <p><b>التاريخ:</b> ${date}</p>
+            <label>الوصف:</label>
+            <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;">${note.description}</p>
+            <button class="btn danger block" onclick="deleteDoc('issues','${id}'); closeModal();" style="margin-top:15px;">🗑️ حذف الملاحظة</button>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إغلاق</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    // ==========================================
+    // 6. الدوام (التصميم السابق الكامل)
+    // ==========================================
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
@@ -657,7 +767,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
     }
 
-    // KPI الجديد (50 نقطة أساس + مكافآت)
+    // ==========================================
+    // 7. KPI والنقاط
+    // ==========================================
     function loadKPI() {
         const category = document.getElementById("kpiCategory").value;
         const el = document.getElementById("kpiList");
@@ -689,7 +801,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }).join("") || "لا يوجد بيانات";
     }
 
-    // التقارير المتقدمة (التي تم إرجاعها)
+    // ==========================================
+    // 8. التقارير المتقدمة
+    // ==========================================
     function updateReportOptions() {
         const type = document.getElementById("reportType").value;
         const filters = document.getElementById("reportFilters");
@@ -765,7 +879,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // التعاميم والمراسلات والمشرفين والمسعفين والمركبات
+    // ==========================================
+    // 9. التعاميم والمراسلات
+    // ==========================================
     function loadBroadcasts() {
         db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(snap => {
             let html = ""; snap.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`; });
@@ -803,54 +919,217 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         db.collection("messages").add({ sender: "المدير العام", receiver: sup, text, timestamp: new Date() }).then(() => showToast("تم"));
     }
 
+    // ==========================================
+    // 10. المشرفين (مع التعديل والحذف والنسخ)
+    // ==========================================
     function loadSups() {
         const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
-        let html = ""; allSupervisors.forEach(d => { if (search && !d.name.toLowerCase().includes(search)) return; html += `<div class="item-card"><div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>${d.sector}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button></div>`; });
+        let html = ""; 
+        allSupervisors.forEach(d => { 
+            if (search && !d.name.toLowerCase().includes(search)) return; 
+            html += `<div class="item-card">
+                <div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>الرقم: ${d.militaryId||'-'} | ${d.sector}</p></div>
+                <div class="item-actions">
+                    <button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${d.code}'); showToast('تم نسخ الكود')">${d.code}</button>
+                    <button class="icon-btn-sm edit" onclick="editSupervisor('${d.id}')">✏️</button>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button>
+                </div>
+            </div>`; 
+        });
         document.getElementById("supList").innerHTML = html;
     }
-    function saveSupervisor() {
-        const name = document.getElementById("supName").value.trim(), sector = document.getElementById("supSector").value;
-        if(!name) return showToast("أدخل الاسم", "danger");
-        db.collection("access_code").add({ name, sector, code: "SUP-"+Math.floor(1000+Math.random()*9000), type: "supervisor" }).then(() => { showToast("تم"); document.getElementById("supName").value = ""; });
-    }
-    function cancelSupEdit() {}
 
+    function editSupervisor(id) {
+        const s = allSupervisors.find(x => x.id === id);
+        if(!s) return;
+        document.getElementById("supEditId").value = id;
+        document.getElementById("supName").value = s.name;
+        document.getElementById("supMilitaryId").value = s.militaryId || '';
+        document.getElementById("supSector").value = s.sector;
+        document.getElementById("supCodeEdit").value = s.code;
+        document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnSupCancel").style.display = "block";
+        window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function cancelSupEdit() {
+        document.getElementById("supEditId").value = "";
+        document.getElementById("supName").value = "";
+        document.getElementById("supMilitaryId").value = "";
+        document.getElementById("supCodeEdit").value = "";
+        document.getElementById("btnSupSave").innerText = "💾 حفظ";
+        document.getElementById("btnSupCancel").style.display = "none";
+    }
+
+    function saveSupervisor() {
+        const id = document.getElementById("supEditId").value;
+        const name = document.getElementById("supName").value.trim();
+        const militaryId = document.getElementById("supMilitaryId").value.trim();
+        const sector = document.getElementById("supSector").value;
+        const codeInput = document.getElementById("supCodeEdit").value.trim();
+        if(!name) return showToast("أدخل الاسم", "danger");
+        
+        if (id) {
+            const updateData = { name, militaryId, sector };
+            if(codeInput) updateData.code = codeInput;
+            db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); });
+        } else {
+            const code = codeInput || "SUP-"+Math.floor(1000+Math.random()*9000);
+            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor" }).then(() => { showToast("تمت الإضافة"); cancelSupEdit(); });
+        }
+    }
+
+    function printCodes() {
+        let tbody = "", i = 1;
+        allSupervisors.forEach(d => { tbody += `<tr><td>${i++}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.sector}</td><td style="font-weight:bold; font-family:monospace;">${d.code}</td></tr>`; });
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        document.getElementById("printArea").innerHTML = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>قائمة المشرفين وأكوادهم</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>القطاع</th><th>الكود</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+        setTimeout(() => window.print(), 300);
+    }
+
+    // ==========================================
+    // 11. المسعفون (مع التعديل والحذف)
+    // ==========================================
     function updateParamCenters() {
         const sec = document.getElementById("paramSector").value;
         document.getElementById("paramCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
     }
+
     function loadParams() {
         const search = document.getElementById("paramSearch")?.value.toLowerCase() || "";
-        let html = ""; allParameds.forEach(d => { if (search && !d.name.toLowerCase().includes(search)) return; html += `<div class="item-card"><div class="item-info"><h4>👨‍🚒 ${d.name}</h4><p>${d.centerName}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${d.id}')">🗑️</button></div>`; });
+        let html = ""; 
+        allParameds.forEach(d => { 
+            if (search && !d.name.toLowerCase().includes(search)) return; 
+            html += `<div class="item-card" style="border-right-color:var(--green);">
+                <div class="item-info"><h4>👨‍🚒 ${d.name}</h4><p>الرقم: ${d.militaryId||'-'} | المركز: ${d.centerName} | الرتبة: ${d.rank||'-'}</p></div>
+                <div class="item-actions">
+                    <button class="icon-btn-sm edit" onclick="editParamedic('${d.id}')">✏️</button>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${d.id}')">🗑️</button>
+                </div>
+            </div>`; 
+        });
         document.getElementById("paramList").innerHTML = html;
     }
-    function saveParamedic() {
-        const name = document.getElementById("paramName").value.trim(), center = document.getElementById("paramCenter").value;
-        if(!name || !center) return showToast("أكمل", "danger");
-        db.collection("paramedics").add({ name, centerName: center }).then(() => { showToast("تم"); document.getElementById("paramName").value = ""; });
-    }
-    function cancelParamEdit() {}
 
+    function editParamedic(id) {
+        const p = allParameds.find(x => x.id === id);
+        if(!p) return;
+        document.getElementById("paramEditId").value = id;
+        document.getElementById("paramName").value = p.name;
+        document.getElementById("paramMilitaryId").value = p.militaryId || '';
+        document.getElementById("paramRank").value = p.rank || '';
+        
+        for (const [sec, centers] of Object.entries(SECTORS)) {
+            if (centers.includes(p.centerName)) {
+                document.getElementById("paramSector").value = sec;
+                updateParamCenters();
+                document.getElementById("paramCenter").value = p.centerName;
+                break;
+            }
+        }
+        document.getElementById("btnParamSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnParamCancel").style.display = "block";
+        window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function cancelParamEdit() {
+        document.getElementById("paramEditId").value = "";
+        document.getElementById("paramName").value = "";
+        document.getElementById("paramMilitaryId").value = "";
+        document.getElementById("paramRank").value = "";
+        document.getElementById("btnParamSave").innerText = "💾 حفظ";
+        document.getElementById("btnParamCancel").style.display = "none";
+    }
+
+    function saveParamedic() {
+        const id = document.getElementById("paramEditId").value;
+        const name = document.getElementById("paramName").value.trim();
+        const militaryId = document.getElementById("paramMilitaryId").value.trim();
+        const center = document.getElementById("paramCenter").value;
+        const rank = document.getElementById("paramRank").value.trim();
+        if(!name || !center) return showToast("أكمل البيانات", "danger");
+        
+        if (id) {
+            db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم التعديل"); cancelParamEdit(); });
+        } else {
+            db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { showToast("تمت الإضافة"); cancelParamEdit(); });
+        }
+    }
+
+    // ==========================================
+    // 12. المركبات (مع التعديل والحذف)
+    // ==========================================
     function updateVehCenters() {
         const sec = document.getElementById("vehSector").value;
         document.getElementById("vehCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
     }
+
     function loadVehicles() {
-        let html = ""; allVehicles.forEach(d => { html += `<div class="item-card"><div class="item-info"><h4>🚑 ${d.plateNumber}</h4><p>${d.centerName}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${d.id}')">🗑️</button></div>`; });
+        let html = ""; 
+        allVehicles.forEach(d => { 
+            html += `<div class="item-card" style="border-right-color:var(--amber);">
+                <div class="item-info"><h4>🚑 ${d.plateNumber}</h4><p>النوع: ${d.type||'-'} | المركز: ${d.centerName}</p></div>
+                <div class="item-actions">
+                    <button class="icon-btn-sm edit" onclick="editVehicle('${d.id}')">✏️</button>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${d.id}')">🗑️</button>
+                </div>
+            </div>`; 
+        });
         document.getElementById("vehList").innerHTML = html;
     }
-    function saveVehicle() {
-        const plate = document.getElementById("vehPlate").value.trim(), center = document.getElementById("vehCenter").value;
-        if(!plate || !center) return showToast("أكمل", "danger");
-        db.collection("vehicles").add({ plateNumber: plate, centerName: center }).then(() => { showToast("تم"); document.getElementById("vehPlate").value = ""; });
-    }
-    function cancelVehEdit() {}
 
-    // الإعدادات
-    function loadConfig() { document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; }
-    function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); showToast("تم"); }
-    function changeAdminPassword() { showToast("تم (تجريبي)"); }
-    function deleteDoc(col, id) { if(confirm("حذف؟")) db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); }
+    function editVehicle(id) {
+        const v = allVehicles.find(x => x.id === id);
+        if(!v) return;
+        document.getElementById("vehEditId").value = id;
+        document.getElementById("vehPlate").value = v.plateNumber;
+        document.getElementById("vehType").value = v.type || '';
+        
+        for (const [sec, centers] of Object.entries(SECTORS)) {
+            if (centers.includes(v.centerName)) {
+                document.getElementById("vehSector").value = sec;
+                updateVehCenters();
+                document.getElementById("vehCenter").value = v.centerName;
+                break;
+            }
+        }
+        document.getElementById("btnVehSave").innerText = "💾 حفظ التعديلات";
+        document.getElementById("btnVehCancel").style.display = "block";
+        window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function cancelVehEdit() {
+        document.getElementById("vehEditId").value = "";
+        document.getElementById("vehPlate").value = "";
+        document.getElementById("vehType").value = "";
+        document.getElementById("btnVehSave").innerText = "💾 حفظ";
+        document.getElementById("btnVehCancel").style.display = "none";
+    }
+
+    function saveVehicle() {
+        const id = document.getElementById("vehEditId").value;
+        const plate = document.getElementById("vehPlate").value.trim();
+        const type = document.getElementById("vehType").value.trim();
+        const center = document.getElementById("vehCenter").value;
+        if(!plate || !center) return showToast("أكمل البيانات", "danger");
+        
+        if (id) {
+            db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم التعديل"); cancelVehEdit(); });
+        } else {
+            db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تمت الإضافة"); cancelVehEdit(); });
+        }
+    }
+
+    // ==========================================
+    // 13. الإعدادات والحذف الشامل
+    // ==========================================
+    function loadConfig() { 
+        document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; 
+        document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || "";
+    }
+    function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === "systemName") document.getElementById("systemName").innerText = val; showToast("تم الحفظ"); }
+    function changeAdminPassword() { showToast("تم التغيير (تجريبي)"); }
+    function deleteDoc(col, id) { if(confirm("هل أنت متأكد من الحذف؟")) db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); }
     
     async function populateDeleteItems() {
         const col = document.getElementById("deleteCol").value, sel = document.getElementById("deleteItemId");
@@ -874,12 +1153,14 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         await batch.commit(); showToast(`تم حذف ${count}`);
     }
     async function wipeData() {
-        if(!confirm("مسح شامل؟")) return;
+        if(!confirm("⚠️ مسح شامل؟")) return;
         for (const col of ['issues', 'broadcasts', 'messages']) { const snap = await db.collection(col).get(); const batch = db.batch(); snap.forEach(d => batch.delete(d.ref)); await batch.commit(); }
-        showToast("تم المسح");
+        showToast("تم المسح الشامل");
     }
 
-    // التشغيل
+    // ==========================================
+    // 14. التشغيل
+    // ==========================================
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").innerText = user.name;
