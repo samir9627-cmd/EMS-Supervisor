@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V35.0</title>
+<title>الإدارة العامة — V36.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -744,7 +744,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 suprvs.forEach(s => { const shifts = data[s.code] || {}; html += `<tr><td>${s.name}</td>`; for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; const displayVal = val ? (DUTY_CODES[val] || val) : "—"; html += `<td>${displayVal}</td>`; } html += '</tr>'; });
                 return html + '</tbody></table>';
             };
-            const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png"; const style = orientation === 'landscape' ? '<style>@page { size: landscape; }</style>' : '';
+            const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png"; 
+            const style = orientation === 'landscape' ? '<style>@page { size: landscape; margin: 5mm; } body { background: #fff !important; } .print-page { zoom: 0.8; }</style>' : '';
             const printHtml = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام — ${month}</h2></div></div><h3 style="font-size:10px; margin:5px 0;">قطاع A</h3>${buildPrintTable(supA)}<h3 style="font-size:10px; margin:10px 0 5px;">قطاع B</h3>${buildPrintTable(supB)}<div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
             document.getElementById("printArea").innerHTML = printHtml; setTimeout(() => window.print(), 500);
         });
@@ -801,6 +802,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         filters.innerHTML = html;
     }
 
+    // ✅ دالة التقارير (تم تعديلها لإظهار الملاحظات وإصلاح الطباعة)
     async function generateReport(action) {
         const type = document.getElementById("reportType").value;
         const orientation = document.getElementById("printOrientation").value;
@@ -813,8 +815,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (to) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) <= new Date(to).getTime() + 86400000);
         
         let data = [], title = "", thead = "";
+        
         if (type === 'activity') {
-            title = "تقرير نشاط المشرفين"; thead = "<th>#</th><th>المشرف</th><th>إشكالات</th><th>إشادات</th><th>ملاحظات</th><th>بلاغات منجزة</th>";
+            title = "تقرير نشاط المشرفين"; 
+            thead = "<th>#</th><th>المشرف</th><th>إشكالات</th><th>إشادات</th><th>ملاحظات</th><th>بلاغات منجزة</th>";
             let sups = allSupervisors;
             if (document.getElementById("filterSup")?.value) sups = sups.filter(s => s.name === document.getElementById("filterSup").value);
             if (document.getElementById("filterSector")?.value) sups = sups.filter(s => s.sector === document.getElementById("filterSector").value);
@@ -822,33 +826,73 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 const mine = filteredIssues.filter(i => i.supervisor === s.name || i.resolvedBy === s.name);
                 return { name: s.name, complaints: mine.filter(i => !i.isPraise && i.type !== 'visit' && i.type === 'complaint').length, praises: mine.filter(i => i.isPraise).length, notes: mine.filter(i => i.type === 'visit').length, resolved: mine.filter(i => i.status === 'resolved_by_supervisor').length };
             });
-        } else if (type === 'issues' || type === 'visits') {
-            title = type === 'visits' ? "تقرير الزيارات" : "تقرير البلاغات"; thead = "<th>#</th><th>التاريخ</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th>";
+        } 
+        else if (type === 'issues' || type === 'visits') {
+            title = type === 'visits' ? "تقرير الزيارات" : "تقرير البلاغات"; 
+            // ✅ إضافة عمود الملاحظات / الوصف
+            thead = "<th>#</th><th>التاريخ</th><th>الهدف / المركز</th><th>النوع</th><th>المشرف</th><th>الحالة</th><th>الملاحظات / الإجراء</th>";
+            
             let d = filteredIssues;
-            if (type === 'visits') d = d.filter(i => i.type === 'visit'); else d = d.filter(i => i.type !== 'visit');
+            if (type === 'visits') d = d.filter(i => i.type === 'visit'); 
+            else d = d.filter(i => i.type !== 'visit');
+            
+            const fs = document.getElementById("filterStatus")?.value;
+            const fsec = document.getElementById("filterSector")?.value;
+            if (fs) d = d.filter(i => i.status === fs);
+            if (fsec) d = d.filter(i => i.sector === fsec);
             data = d;
         }
         
         let tbody = "";
         data.forEach((d, i) => {
-            if (type === 'activity') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.complaints}</td><td>${d.praises}</td><td>${d.notes}</td><td>${d.resolved}</td></tr>`;
-            else {
+            if (type === 'activity') {
+                tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.complaints}</td><td>${d.praises}</td><td>${d.notes}</td><td>${d.resolved}</td></tr>`;
+            } else {
                 const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
-                tbody += `<tr><td>${i+1}</td><td>${time}</td><td>${d.targetName || d.centerName || '-'}</td><td>${d.issueType || '-'}</td><td>${d.supervisor || '-'}</td><td>${d.status || 'مفتوحة'}</td></tr>`;
+                const target = d.targetName || d.centerName || '-';
+                const issueType = d.issueType || (d.isPraise ? 'إشادة' : (d.type === 'visit' ? 'زيارة' : '-'));
+                
+                // ✅ استخراج الملاحظات (إذا كانت زيارة نأخذ الوصف، وإذا كانت بلاغ نأخذ ردود المشرف)
+                let details = d.description || '-';
+                if (d.responses && d.responses.length > 0) {
+                    details += ` | الإجراء: ${d.responses[d.responses.length - 1].text}`;
+                }
+
+                tbody += `<tr>
+                    <td>${i+1}</td>
+                    <td>${time}</td>
+                    <td>${target}</td>
+                    <td>${issueType}</td>
+                    <td>${d.supervisor || '-'}</td>
+                    <td>${d.status === 'resolved_by_supervisor' ? 'منجزة' : 'مفتوحة'}</td>
+                    <td style="text-align:right; font-size:8px; max-width:150px;">${details}</td>
+                </tr>`;
             }
         });
         
         if (action === 'print') {
-            const style = orientation === 'landscape' ? '<style>@page { size: landscape; }</style>' : '';
+            // إصلاح الخلفية السوداء وتصغير الجدول ليدخل في ورقة واحدة
+            const style = `<style>@page { size: ${orientation}; margin: 5mm; } body, html { background: #fff !important; color: #000 !important; } .print-page { zoom: 0.8; }</style>`;
             const html = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
             document.getElementById("printArea").innerHTML = html;
             setTimeout(() => window.print(), 300);
         } else {
-            let csv = "\uFEFF"; const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
+            // تصدير Excel
+            let csv = "\uFEFF"; 
+            const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
             csv += thead.replace(/<\/?th>/g, m => m === '<th>' ? '' : ',').replace(/,$/, '\n');
             data.forEach((d, i) => {
-                if (type === 'activity') csv += [i+1, clean(d.name), d.complaints, d.praises, d.notes, d.resolved].join(",") + "\n";
-                else { const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-'; csv += [i+1, time, clean(d.targetName), clean(d.issueType), clean(d.supervisor), clean(d.status)].join(",") + "\n"; }
+                if (type === 'activity') {
+                    csv += [i+1, clean(d.name), d.complaints, d.praises, d.notes, d.resolved].join(",") + "\n";
+                } else {
+                    const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
+                    const target = d.targetName || d.centerName || '-';
+                    const issueType = d.issueType || (d.isPraise ? 'إشادة' : (d.type === 'visit' ? 'زيارة' : '-'));
+                    let details = d.description || '-';
+                    if (d.responses && d.responses.length > 0) details += ` | ${d.responses[d.responses.length - 1].text}`;
+                    
+                    csv += [i+1, time, clean(target), clean(issueType), clean(d.supervisor), d.status === 'resolved_by_supervisor' ? 'منجزة' : 'مفتوحة', clean(details)].join(",") + "\n";
+                }
             });
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a");
             link.href = URL.createObjectURL(blob); link.download = `report_${new Date().toISOString().slice(0,10)}.csv`; link.click();
@@ -1091,7 +1135,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === "systemName") document.getElementById("systemName").innerText = val; showToast("تم الحفظ"); }
     
-    // ✅ إصلاح كلمة المرور (تم التعديل هنا)
+    // ✅ إصلاح كلمة المرور
     function changeAdminPassword() {
         const oldPwd = document.getElementById("oldPwd").value;
         const newPwd = document.getElementById("newPwd").value;
