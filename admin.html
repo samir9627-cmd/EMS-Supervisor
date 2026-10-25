@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V32.0</title>
+<title>الإدارة العامة — V32.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- استدعاء مكتبات Firebase (كانت تالفة أثناء التجميع) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <style>
@@ -118,11 +117,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold-light); font-weight: 900; text-align: center; -webkit-appearance: none; }
 
 .chat-box { background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border); padding: 12px; max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
-.chat-bubble { padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; }
+.chat-bubble { padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; position: relative; }
 .chat-bubble.mine { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); margin-right: auto; }
 .chat-bubble.theirs { background: rgba(255,255,255,0.1); border: 1px solid var(--border); margin-left: auto; }
 .chat-bubble .author { font-size: 10px; font-weight: 900; opacity: 0.7; margin-bottom: 4px; }
 .chat-bubble .time { font-size: 9px; opacity: 0.5; margin-top: 4px; text-align: left; }
+/* زر حذف الرسالة */
+.chat-del-btn { position: absolute; top: 5px; left: 5px; background: rgba(229,57,53,0.8); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
 .kpi-row { display: flex; align-items: center; gap: 10px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 8px; }
 .kpi-rank { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; background: var(--gold); color: var(--teal-deep); }
@@ -235,7 +236,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
-  <!-- 2. المشرفون -->
+  <!-- 2. المشرفون (محدث بالبحث) -->
   <div class="page" id="page-supervisors">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مشرف</div>
@@ -249,11 +250,12 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
     <div class="card">
       <div class="card-title">📋 المشرفون <button class="btn small" onclick="printCodes()">🖨️ الأكواد</button></div>
+      <input type="search" id="supSearch" placeholder="🔍 ابحث عن مشرف..." onkeyup="loadSups()">
       <div id="supList">جاري التحميل...</div>
     </div>
   </div>
 
-  <!-- 3. المسعفون -->
+  <!-- 3. المسعفون (محدث بالبحث) -->
   <div class="page" id="page-paramedics">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مسعف</div>
@@ -268,6 +270,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
     <div class="card">
       <div class="card-title">📋 المسعفون</div>
+      <input type="search" id="paramSearch" placeholder="🔍 ابحث عن مسعف..." onkeyup="loadParams()">
       <div id="paramList">جاري التحميل...</div>
     </div>
   </div>
@@ -358,7 +361,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
-  <!-- 9. المراسلات -->
+  <!-- 9. المراسلات (محدثة) -->
   <div class="page" id="page-messages">
     <div class="card">
       <div class="card-title">📬 المراسلات</div>
@@ -438,7 +441,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
-  <!-- 13. الإعدادات -->
+  <!-- 13. الإعدادات (محدثة) -->
   <div class="page" id="page-settings">
     <div class="card">
       <div class="card-title">🎨 الهوية</div>
@@ -455,10 +458,10 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <button class="btn block" onclick="changeAdminPassword()">🔐 تغيير</button>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ حذف فردي / جماعي</div>
-      <label>المجموعة</label>
-      <select id="deleteCol">
-        <option value="">اختر</option>
+      <div class="card-title" style="color:var(--red-light);">⚠️ إدارة الحذف المتقدم</div>
+      <label>اختر المجموعة المراد حذف عناصر منها</label>
+      <select id="deleteCol" onchange="populateDeleteItems()">
+        <option value="">اختر المجموعة...</option>
         <option value="access_code">المشرفون</option>
         <option value="paramedics">المسعفون</option>
         <option value="vehicles">المركبات</option>
@@ -467,12 +470,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         <option value="messages">الرسائل</option>
         <option value="duty_schedule">الدوام</option>
       </select>
-      <label>العنصر (اختياري)</label>
-      <select id="deleteItemId"><option value="">-- حذف كل المجموعة --</option></select>
-      <button class="btn danger block" onclick="deleteItems()">🗑️ حذف</button>
+      <label>اختر العنصر للحذف</label>
+      <select id="deleteItemId"><option value="">-- اختر المجموعة أولاً --</option></select>
+      <button class="btn danger block" onclick="deleteItems()" style="margin-top:10px;">🗑️ حذف العنصر المحدد</button>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ حذف البلاغات حسب النوع</div>
+      <div class="card-title" style="color:var(--red-light);">💥 منطقة الخطر (حذف جماعي)</div>
+      <p style="font-size:12px; color:rgba(255,255,255,0.6); margin-bottom:10px;">تنبيه: هذه العمليات لا يمكن التراجع عنها. اكتب كلمة "حذف" للتأكيد.</p>
       <button class="btn danger block" onclick="deleteIssuesByType('praise')">🗑️ حذف كل الإشادات</button>
       <button class="btn danger block" onclick="deleteIssuesByType('complaint')" style="margin-top:8px;">🗑️ حذف كل الإشكالات</button>
       <button class="btn danger block" onclick="deleteIssuesByType('visit')" style="margin-top:8px;">🗑️ حذف كل الزيارات</button>
@@ -485,9 +489,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 <div id="printArea"></div>
 
 <script>
-    /* ═══════════════════════════════════════════════════════════
-       الإعدادات الأساسية والتحقق
-       ═══════════════════════════════════════════════════════════ */
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -588,7 +589,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       لوحة القيادة (Dashboard + Charts)
+       لوحة القيادة
        ═══════════════════════════════════════════════════════════ */
     function renderDashboardCharts() {
         const praises = allIssues.filter(i => i.isPraise).length;
@@ -651,11 +652,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       المشرفون
+       المشرفون (محدث بالبحث)
        ═══════════════════════════════════════════════════════════ */
     function loadSups() {
+        const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
         let html = "";
         allSupervisors.forEach(d => {
+            if (search && !d.name.toLowerCase().includes(search) && !(d.militaryId||"").includes(search)) return;
             html += `<div class="item-card">
                 <div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>الرقم: ${d.militaryId || '-'} | القطاع: ${d.sector || '-'}</p></div>
                 <div class="item-actions">
@@ -700,11 +703,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       المسعفون
+       المسعفون (محدث بالبحث)
        ═══════════════════════════════════════════════════════════ */
     function loadParams() {
+        const search = document.getElementById("paramSearch")?.value.toLowerCase() || "";
         let html = "";
         allParameds.forEach(d => {
+            if (search && !d.name.toLowerCase().includes(search) && !(d.militaryId||"").includes(search) && !(d.centerName||"").includes(search)) return;
             html += `<div class="item-card" style="border-right-color:var(--green-light);">
                 <div class="item-info"><h4>👨‍🚒 ${d.name}</h4><p>الرقم: ${d.militaryId || '-'} | المركز: ${d.centerName} | الرتبة: ${d.rank || '-'}</p></div>
                 <div class="item-actions">
@@ -942,30 +947,35 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       المراسلات
+       المراسلات (محدثة)
        ═══════════════════════════════════════════════════════════ */
     function populateMsgSupervisors() {
         const sel = document.getElementById("msgSupervisorFilter");
-        if (sel.options.length > 1) return;
+        // إعادة بناء القائمة لتحديث الأسماء
+        const currentVal = sel.value;
+        sel.innerHTML = '<option value="">-- كل الرسائل --</option>';
         allSupervisors.forEach(s => {
             const opt = document.createElement("option");
             opt.value = s.name; opt.textContent = s.name;
             sel.appendChild(opt);
         });
+        sel.value = currentVal;
     }
 
     function loadMessages() {
         const filter = document.getElementById("msgSupervisorFilter").value;
         let filtered = allMessages;
-        if (filter) filtered = allMessages.filter(m => m.sender === filter || (m.type === 'reply_to_admin'));
+        if (filter) filtered = allMessages.filter(m => m.sender === filter || (m.type === 'reply_to_admin' && m.originalSender === filter));
         
         let html = "";
-        filtered.slice(0, 50).reverse().forEach(m => {
+        filtered.slice(0, 100).reverse().forEach(m => {
             const isMine = m.sender === "المدير العام" || m.sender === user.name;
             const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleString('ar-OM') : '';
+            // إضافة زر الحذف
             html += `<div class="chat-bubble ${isMine ? 'mine' : 'theirs'}">
+                <button class="chat-del-btn" onclick="deleteDoc('messages','${m.id}')">✕</button>
                 <div class="author">${isMine ? 'أنا' : m.sender}</div>
-                <div>${m.text}</div>
+                <div style="padding-left: 15px;">${m.text}</div>
                 <div class="time">${time}</div>
             </div>`;
         });
@@ -1049,7 +1059,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       التقارير المتقدمة
+       التقارير المتقدمة (تم إصلاح الطباعة)
        ═══════════════════════════════════════════════════════════ */
     function updateReportOptions() {
         const type = document.getElementById("reportType").value;
@@ -1186,49 +1196,45 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       الإعدادات والحذف المتقدم
+       الإعدادات والحذف المتقدم (محدث)
        ═══════════════════════════════════════════════════════════ */
     async function populateDeleteItems() {
         const col = document.getElementById("deleteCol").value;
         const sel = document.getElementById("deleteItemId");
         sel.innerHTML = '<option value="">جاري التحميل...</option>';
-        if (!col) { sel.innerHTML = '<option value="">-- حذف كل المجموعة --</option>'; return; }
+        if (!col) { sel.innerHTML = '<option value="">-- اختر المجموعة أولاً --</option>'; return; }
         
         try {
             const snap = await db.collection(col).get();
-            let html = '<option value="">-- حذف كل المجموعة --</option>';
+            let html = '<option value="">-- اختر العنصر للحذف --</option>';
             snap.forEach(d => {
                 const data = d.data();
-                const label = data.name || data.plateNumber || data.targetName || data.title || data.supervisorName || d.id;
+                const label = data.name || data.plateNumber || data.targetName || data.title || data.supervisorName || data.text || d.id;
                 html += `<option value="${d.id}">${label}</option>`;
             });
             sel.innerHTML = html;
-        } catch(e) { sel.innerHTML = '<option value="">خطأ</option>'; }
+        } catch(e) { sel.innerHTML = '<option value="">خطأ في الجلب</option>'; }
     }
 
     async function deleteItems() {
         const col = document.getElementById("deleteCol").value;
         const id = document.getElementById("deleteItemId").value;
         if (!col) return showToast("اختر المجموعة", "danger");
+        if (!id) return showToast("اختر العنصر المراد حذفه", "danger");
         
-        if (id) {
-            if (!confirm("حذف العنصر المحدد؟")) return;
+        if (!confirm("هل أنت متأكد من حذف هذا العنصر؟")) return;
+        try {
             await db.collection(col).doc(id).delete();
-            showToast("تم الحذف");
-        } else {
-            if (!confirm(`حذف كل عناصر "${col}"؟ لا يمكن التراجع!`)) return;
-            const snap = await db.collection(col).get();
-            const batch = db.batch();
-            snap.forEach(d => batch.delete(d.ref));
-            await batch.commit();
-            showToast("تم حذف كل المجموعة");
-        }
-        populateDeleteItems();
+            showToast("تم الحذف بنجاح");
+            populateDeleteItems();
+        } catch(e) { showToast("خطأ في الحذف", "danger"); }
     }
 
     async function deleteIssuesByType(kind) {
         const names = { praise: 'الإشادات', complaint: 'الإشكالات', visit: 'الزيارات' };
-        if (!confirm(`حذف كل ${names[kind]}؟`)) return;
+        const input = prompt(`⚠️ خطر: لحذف كل ${names[kind]}، اكتب كلمة "حذف" في المربع أدناه:`);
+        if (input !== "حذف") return showToast("تم إلغاء العملية", "danger");
+        
         const snap = await db.collection("issues").get();
         const batch = db.batch();
         let count = 0;
@@ -1263,7 +1269,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     async function wipeData(type) {
-        if(!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
+        const input = prompt("⚠️ خطر شديد: سيتم مسح كل البيانات (بلاغات، رسائل، تعاميم). اكتب كلمة 'حذف' للتأكيد:");
+        if(input !== "حذف") return showToast("تم إلغاء المسح", "success");
+        
         if(type === 'all') {
             for (const col of ['issues', 'broadcasts', 'messages']) {
                 const snap = await db.collection(col).get();
@@ -1271,7 +1279,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
                 snap.forEach(d => batch.delete(d.ref));
                 await batch.commit();
             }
-            showToast("تم المسح الشامل");
+            showToast("تم المسح الشامل بنجاح");
         }
     }
 
@@ -1369,7 +1377,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
 
     /* ═══════════════════════════════════════════════════════════
-       التشغيل (تم نقله للأسفل بعد تعريف جميع الدوال)
+       التشغيل
        ═══════════════════════════════════════════════════════════ */
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
