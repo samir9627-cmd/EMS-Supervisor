@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V38.0</title>
+<title>الإدارة العامة — V39.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -118,6 +118,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .chat-bubble.theirs { background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-main); margin-left: auto; }
 .chat-bubble .author { font-size: 10px; font-weight: 900; opacity: 0.8; margin-bottom: 4px; }
 .chat-bubble .time { font-size: 9px; opacity: 0.6; margin-top: 4px; text-align: left; }
+.chat-del-btn { position: absolute; top: 5px; left: 5px; background: rgba(229,57,53,0.9); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
 .kpi-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-glass); border-radius: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
 .kpi-rank { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; background: var(--gold); color: #fff; }
@@ -176,14 +177,15 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="tabs-bar">
     <div class="tabs-scroll">
       <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 القيادة</button>
-      <!-- إرجاع تبويب البلاغات -->
+      
+      <!-- دمج الملاحظات والإشكاليات والزيارات والبلاغات في تبويب واحد -->
+      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 بلاغات ومهام المشرفين</button>
+      
       <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 البلاغات</button>
-      <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📥 تقارير المشرفين</button>
       <button class="tab-btn" data-tab="supervisors" onclick="switchTab('supervisors')">👨‍💼 المشرفون</button>
       <button class="tab-btn" data-tab="paramedics" onclick="switchTab('paramedics')">👨‍🚒 المسعفون</button>
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
       <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')">📅 الدوام</button>
-      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات</button>
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
       <button class="tab-btn" data-tab="messages" onclick="switchTab('messages')">📬 المراسلات</button>
       <button class="tab-btn" data-tab="kpi" onclick="switchTab('kpi')">🏆 KPI</button>
@@ -199,7 +201,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
       <div class="stat-card" onclick="switchTab('supervisors')"><div class="icon-bg">👨‍💼</div><div class="num" id="kpiSups">0</div><div class="lbl">المشرفون</div></div>
       <div class="stat-card" onclick="switchTab('paramedics')"><div class="icon-bg">👨‍🚒</div><div class="num" id="kpiParams">0</div><div class="lbl">المسعفون</div></div>
       <div class="stat-card" onclick="switchTab('vehicles')"><div class="icon-bg">🚑</div><div class="num" id="kpiVehs">0</div><div class="lbl">المركبات</div></div>
-      <div class="stat-card" onclick="switchTab('issues')"><div class="icon-bg">🚩</div><div class="num" id="kpiIssues">0</div><div class="lbl">البلاغات المفتوحة</div></div>
+      <div class="stat-card" onclick="switchTab('reports')"><div class="icon-bg">🚩</div><div class="num" id="kpiIssues">0</div><div class="lbl">بلاغات المشرفين</div></div>
     </div>
     <div class="dash-row">
       <div class="dash-card"><h3>📊 توزيع البلاغات</h3><div class="chart-container"><canvas id="doughnutChart"></canvas></div></div>
@@ -207,7 +209,16 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     </div>
   </div>
 
-  <!-- إرجاع صفحة البلاغات -->
+  <!-- صفحة بلاغات ومهام المشرفين (مجمعة) -->
+  <div class="page" id="page-reports">
+    <div class="card">
+      <div class="card-title">📥 بلاغات ومهام المشرفين <button class="btn small" onclick="printAllReports()">🖨️ طباعة</button></div>
+      <select id="filterSector" onchange="loadSupervisorReports()"><option value="">-- كل القطاعات --</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
+      <div id="reportsContainer"></div>
+    </div>
+  </div>
+
+  <!-- صفحة البلاغات (إرسال من الإدارة) -->
   <div class="page" id="page-issues">
     <div class="card">
       <div class="card-title">➕ إرسال بلاغ إلى المشرف</div>
@@ -242,14 +253,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     <div class="card">
       <div class="card-title">✅ بلاغات منجزة</div>
       <div id="completedIssuesList"></div>
-    </div>
-  </div>
-
-  <div class="page" id="page-reports">
-    <div class="card">
-      <div class="card-title">📥 تقارير المشرفين <button class="btn small" onclick="printAllReports()">🖨️ طباعة</button></div>
-      <select id="filterSector" onchange="loadSupervisorReports()"><option value="">-- كل القطاعات --</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
-      <div id="reportsContainer"></div>
     </div>
   </div>
 
@@ -300,14 +303,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
       </div>
       <h3 style="color:var(--gold); margin-bottom:10px; font-size:14px;">قطاع A</h3><div class="duty-table-wrapper" id="dutyTableContainerA"></div>
       <h3 style="color:var(--gold); margin:20px 0 10px; font-size:14px;">قطاع B</h3><div class="duty-table-wrapper" id="dutyTableContainerB"></div>
-    </div>
-  </div>
-
-  <div class="page" id="page-notes">
-    <div class="card">
-      <div class="card-title">📝 ملاحظات المشرفين (زيارات)</div>
-      <select id="noteFilter" onchange="loadNotes()"><option value="">-- كل المشرفين --</option></select>
-      <div id="notesList"></div>
     </div>
   </div>
 
@@ -459,7 +454,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (id === 'supervisors') loadSups();
         if (id === 'paramedics') loadParams();
         if (id === 'vehicles') loadVehicles();
-        if (id === 'notes') loadNotes();
         if (id === 'issues') loadIssues();
         if (id === 'reports') loadSupervisorReports();
         if (id === 'broadcasts') loadBroadcasts();
@@ -481,7 +475,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         document.getElementById("kpiIssues").innerText = allIssues.filter(i => i.status === 'pending_supervisor' || i.status === 'new').length;
         if (document.querySelector(".page.active").id === "page-reports") loadSupervisorReports();
         if (document.querySelector(".page.active").id === "page-dashboard") renderDashboardCharts();
-        if (document.querySelector(".page.active").id === "page-notes") loadNotes();
         if (document.querySelector(".page.active").id === "page-issues") loadIssues();
     });
     
@@ -505,7 +498,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         document.getElementById("kpiSups").innerText = allSupervisors.length;
         if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
         populateMsgSupervisors();
-        populateNotesFilter();
     });
     
     db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
@@ -552,7 +544,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     // ==========================================
-    // إرجاع ميزة البلاغات (الإدارة ترسل للمشرف)
+    // إدارة البلاغات (إرسال من الإدارة)
     // ==========================================
     function updateIssueCenters() {
         const sec = document.getElementById("issueSector").value;
@@ -648,13 +640,14 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     // ==========================================
-    // تقارير المشرفين
+    // صفحة بلاغات ومهام المشرفين (المجمعة)
     // ==========================================
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
         const grouped = {};
         allIssues.forEach(issue => {
+            // استبعاد البلاغات التي أرسلتها الإدارة، ونعرض فقط ما سجله المشرف
             if(issue.supervisor === "الإدارة (إدخال يدوي)") return;
             if(sectorFilter && issue.sector !== sectorFilter) return;
             const sec = issue.sector || "غير محدد";
@@ -665,13 +658,13 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
         let html = "";
         for (const [sec, centers] of Object.entries(grouped)) {
-            html += `<div class="issue-group"><div class="issue-group-header"><span>📍 ${sec}</span> <span>${Object.values(centers).flat().length} بلاغ</span></div>`;
+            html += `<div class="issue-group"><div class="issue-group-header"><span>📍 ${sec}</span> <span>${Object.values(centers).flat().length} سجل</span></div>`;
             for (const [center, issues] of Object.entries(centers)) {
                 html += `<div style="margin-bottom:10px;"><div style="font-size:12px; font-weight:bold; color:var(--gold); margin-bottom:5px;">🏥 ${center}</div>`;
                 issues.forEach(issue => {
                     let typeClass = "issue-item", typeText = "إشكالية", typeIcon = "🚩";
                     if (issue.isPraise) { typeClass = "issue-item praise"; typeText = "إشادة"; typeIcon = "⭐"; }
-                    else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة"; typeIcon = "📝"; }
+                    else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة زيارة"; typeIcon = "📝"; }
                     const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
                     html += `<div class="${typeClass}" style="cursor:pointer;" onclick="openIssueDetails('${issue.id}')">
                         <div class="issue-info">
@@ -688,7 +681,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             }
             html += `</div>`;
         }
-        container.innerHTML = html || "لا توجد بلاغات";
+        container.innerHTML = html || "لا توجد سجلات";
     }
 
     function openIssueDetails(issueId) {
@@ -698,7 +691,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         let typeText = issue.isPraise ? "إشادة" : (issue.type === "visit" ? "ملاحظة زيارة" : "إشكالية");
         const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
         
-        document.getElementById("modalTitle").innerText = "🔍 تفاصيل البلاغ";
+        document.getElementById("modalTitle").innerText = "🔍 تفاصيل";
         document.getElementById("modalBody").innerHTML = `
             <div style="background:rgba(0,0,0,0.2); padding:15px; border-radius:12px; margin-bottom:15px;">
                 <p><b>النوع:</b> ${typeText}</p>
@@ -708,13 +701,13 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 <p><b>المشرف:</b> ${issue.supervisor || '-'}</p>
                 <p><b>التاريخ:</b> ${date}</p>
             </div>
-            <label>تفاصيل البلاغ / النوع:</label>
+            <label>تفاصيل النوع:</label>
             <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.issueType || issue.praiseType || '-'}</p>
             <label>الوصف:</label>
             <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.description || '-'}</p>
             
-            <button class="btn info block" onclick="editIssue('${issueId}')">✏️ تعديل البلاغ</button>
-            <button class="btn danger block" onclick="deleteDoc('issues','${issueId}'); closeModal();" style="margin-top:8px;">🗑️ حذف البلاغ</button>
+            <button class="btn info block" onclick="editIssue('${issueId}')">✏️ تعديل</button>
+            <button class="btn danger block" onclick="deleteDoc('issues','${issueId}'); closeModal();" style="margin-top:8px;">🗑️ حذف</button>
             <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إغلاق</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
@@ -724,7 +717,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const issue = allIssues.find(i => i.id === issueId);
         if (!issue) return;
         
-        document.getElementById("modalTitle").innerText = "✏️ تعديل البلاغ";
+        document.getElementById("modalTitle").innerText = "✏️ تعديل";
         document.getElementById("modalBody").innerHTML = `
             <label>اسم الهدف</label>
             <input type="text" id="editTarget" value="${issue.targetName || ''}">
@@ -765,61 +758,14 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         
-        // إزالة الوميض بضبط خلفية بيضاء فورية
         const style = `<style>@page { size: A4 landscape; margin: 5mm; } body, html { background: #ffffff !important; color: #000000 !important; } .print-page { background: #fff !important; zoom: 0.85; }</style>`;
-        document.getElementById("printArea").innerHTML = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>تقرير البلاغات ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>الوصف</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+        document.getElementById("printArea").innerHTML = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>تقرير سجلات المشرفين ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>الوصف</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
         setTimeout(() => { window.print(); }, 800);
     }
 
-    function populateNotesFilter() {
-        const sel = document.getElementById("noteFilter");
-        if(sel.options.length > 1) return;
-        allSupervisors.forEach(s => {
-            const o = document.createElement("option");
-            o.value = s.name; o.textContent = s.name;
-            sel.appendChild(o);
-        });
-    }
-
-    function loadNotes() {
-        const filter = document.getElementById("noteFilter").value;
-        db.collection("issues").where("type", "==", "visit").get().then(s => {
-            let html = "";
-            s.forEach(d => {
-                const data = d.data();
-                if(filter && data.supervisor !== filter) return;
-                const date = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-OM') : '';
-                html += `<div class="item-card" onclick="openNoteDetails('${d.id}')" style="flex-direction:column; align-items:flex-start; cursor:pointer;">
-                    <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:5px;">
-                        <b style="color:var(--gold);">🏥 ${data.centerName}</b>
-                        <span style="font-size:10px; opacity:0.5;">${date}</span>
-                    </div>
-                    <p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p>
-                    <p style="font-size:12px; background:rgba(0,0,0,0.1); padding:8px; border-radius:8px; width:100%;">${data.description}</p>
-                    <button class="icon-btn-sm delete" style="margin-top:8px; align-self:flex-end;" onclick="event.stopPropagation(); deleteDoc('issues','${d.id}')">🗑️</button>
-                </div>`;
-            });
-            document.getElementById("notesList").innerHTML = html || "لا يوجد ملاحظات";
-        });
-    }
-
-    function openNoteDetails(id) {
-        const note = allIssues.find(i => i.id === id);
-        if(!note) return;
-        const date = note.timestamp ? new Date(note.timestamp.toDate()).toLocaleString('ar-OM') : '';
-        document.getElementById("modalTitle").innerText = "📝 تفاصيل الملاحظة";
-        document.getElementById("modalBody").innerHTML = `
-            <p><b>المركز:</b> ${note.centerName}</p>
-            <p><b>المشرف:</b> ${note.supervisor}</p>
-            <p><b>التاريخ:</b> ${date}</p>
-            <label>الوصف:</label>
-            <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;">${note.description}</p>
-            <button class="btn danger block" onclick="deleteDoc('issues','${id}'); closeModal();" style="margin-top:15px;">🗑️ حذف الملاحظة</button>
-            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إغلاق</button>
-        `;
-        document.getElementById("modalOverlay").classList.add("show");
-    }
-
+    // ==========================================
+    // الدوام
+    // ==========================================
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
@@ -889,6 +835,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
     }
 
+    // ==========================================
+    // KPI
+    // ==========================================
     function loadKPI() {
         const category = document.getElementById("kpiCategory").value;
         const el = document.getElementById("kpiList");
@@ -920,6 +869,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }).join("") || "لا يوجد بيانات";
     }
 
+    // ==========================================
+    // التقارير المتقدمة
+    // ==========================================
     function updateReportOptions() {
         const type = document.getElementById("reportType").value;
         const filters = document.getElementById("reportFilters");
@@ -1070,7 +1022,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
         
         if (action === 'print') {
-            // إزالة الوميض بضبط الخلفية البيضاء
             const style = `<style>@page { size: ${orientation}; margin: 5mm; } body, html { background: #ffffff !important; color: #000000 !important; } .print-page { background: #fff !important; zoom: 0.8; }</style>`;
             const html = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
             document.getElementById("printArea").innerHTML = html;
@@ -1109,6 +1060,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
+    // ==========================================
+    // التعاميم
+    // ==========================================
     function loadBroadcasts() {
         db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(snap => {
             let html = ""; snap.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`; });
@@ -1121,6 +1075,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; });
     }
 
+    // ==========================================
+    // المراسلات (مع زر مسح)
+    // ==========================================
     function populateMsgSupervisors() {
         const sel = document.getElementById("msgSupervisorFilter"), cur = sel.value;
         sel.innerHTML = '<option value="">-- اختر --</option>';
@@ -1129,16 +1086,22 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
     function loadMessages() {
         const sup = document.getElementById("msgSupervisorFilter").value;
-        if(!sup) { document.getElementById("messagesBox").innerHTML = "اختر..."; return; }
+        if(!sup) { document.getElementById("messagesBox").innerHTML = "اختر مشرفاً..."; return; }
         let html = "";
         allMessages.forEach(m => {
             const isMine = m.sender === "المدير العام" || m.sender === user.name;
             if((isMine && m.receiver === sup) || (!isMine && m.sender === sup)) {
                 const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
-                html += `<div class="chat-bubble ${isMine ? 'mine' : 'theirs'}"><div class="author">${isMine ? 'أنا' : m.sender}</div><div>${m.text}</div><div class="time">${time}</div></div>`;
+                html += `<div class="chat-bubble ${isMine ? 'mine' : 'theirs'}">
+                    <button class="chat-del-btn" onclick="deleteDoc('messages','${m.id}')">✕</button>
+                    <div class="author">${isMine ? 'أنا' : m.sender}</div>
+                    <div style="padding-left: 15px;">${m.text}</div>
+                    <div class="time">${time}</div>
+                </div>`;
             }
         });
-        document.getElementById("messagesBox").innerHTML = html || "لا يوجد"; document.getElementById("messagesBox").scrollTop = document.getElementById("messagesBox").scrollHeight;
+        document.getElementById("messagesBox").innerHTML = html || "لا يوجد";
+        document.getElementById("messagesBox").scrollTop = document.getElementById("messagesBox").scrollHeight;
     }
     function sendAdminMessage() {
         const sup = document.getElementById("msgSupervisorFilter").value, text = document.getElementById("msgInput").value.trim();
@@ -1146,6 +1109,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         db.collection("messages").add({ sender: "المدير العام", receiver: sup, text, timestamp: new Date() }).then(() => showToast("تم"));
     }
 
+    // ==========================================
+    // المشرفين والمسعفين والمركبات
+    // ==========================================
     function loadSups() {
         const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
         let html = ""; 
@@ -1338,6 +1304,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
+    // ==========================================
+    // الإعدادات والحذف
+    // ==========================================
     function loadConfig() { 
         document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; 
         document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || "";
@@ -1394,6 +1363,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         showToast("تم المسح الشامل");
     }
 
+    // التشغيل
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").innerText = user.name;
