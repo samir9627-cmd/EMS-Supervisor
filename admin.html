@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — النظام المتكامل V29</title>
+<title>الإدارة العامة — دورة البلاغ V30</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
@@ -15,6 +15,7 @@
   --red: #e53935; --red-light: #ff5252;
   --amber: #fb8c00; --amber-light: #ffa726;
   --blue: #29b6f6; --blue-light: #64b5f6;
+  --purple: #ab47bc;
   --border: rgba(151,141,91,0.3);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -64,10 +65,10 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; }
 .btn.small { padding: 8px 14px; font-size: 11px; }
 
-.item-card { background: rgba(13,74,66,0.4); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.item-info { flex: 1; }
+.item-card { background: rgba(13,74,66,0.4); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.item-info { flex: 1; min-width: 200px; }
 .item-info h4 { font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px; }
-.item-info p { font-size: 11px; color: rgba(255,255,255,0.6); }
+.item-info p { font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.6; }
 .item-actions { display: flex; gap: 6px; }
 .icon-btn-sm { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; }
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red-light); }
@@ -90,20 +91,27 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 .duty-table th.weekend { background: rgba(229,57,53,0.4); color: #fff; }
 .duty-table select { padding: 4px; margin: 0; font-size: 13px; background: transparent; border: none; color: var(--gold-light); font-weight: 900; text-align: center; -webkit-appearance: none; }
 
+/* تقرير متقدم */
+.report-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+@media (max-width: 500px) { .report-filters { grid-template-columns: 1fr; } }
+.print-preview { background: white; color: black; padding: 20px; border-radius: 12px; margin-top: 15px; max-height: 500px; overflow: auto; }
+
 #printArea { display: none; }
 @media print {
+  @page { margin: 10mm; }
   body * { visibility: hidden; }
   body { background: white !important; }
   #printArea { visibility: visible !important; display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
   #printArea * { visibility: visible !important; }
+  .landscape-mode { @page { size: landscape; } }
   .print-page { background: white; color: black; padding: 20px; font-family: 'Cairo'; width: 100%; }
   .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 15px; margin-bottom: 20px; }
   .print-logo { width: 80px; height: 80px; object-fit: contain; }
   .print-header-text h1 { font-size: 20px; color: #0d4a42; margin: 0; text-align:center; }
   .print-header-text h2 { font-size: 14px; color: #666; margin: 5px 0 0; font-weight: normal; text-align:center; }
-  .print-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-  .print-table th { background: #0d4a42; color: white; padding: 10px; border: 1px solid #978d5b; text-align: center; }
-  .print-table td { padding: 8px; border: 1px solid #ddd; text-align: center; color: #333; }
+  .print-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+  .print-table th { background: #0d4a42; color: white; padding: 8px; border: 1px solid #978d5b; text-align: center; }
+  .print-table td { padding: 6px; border: 1px solid #ddd; text-align: center; color: #333; }
   .print-footer { margin-top: 30px; padding-top: 15px; border-top: 1px dashed #978d5b; text-align: center; font-size: 10px; color: #666; }
 }
 </style>
@@ -114,7 +122,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="color:var(--gold-light); font-weight:900;">جاري تهيئة النظام المتكامل...</div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري تهيئة النظام...</div>
 </div>
 
 <div id="mainApp">
@@ -136,9 +144,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <button class="tab-btn" data-tab="vehicles" onclick="switchTab('vehicles')">🚑 المركبات</button>
       <button class="tab-btn" data-tab="duty" onclick="switchTab('duty')">📅 الدوام</button>
       <button class="tab-btn" data-tab="issues" onclick="switchTab('issues')">🚩 البلاغات</button>
-      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات المشرفين</button>
+      <button class="tab-btn" data-tab="notes" onclick="switchTab('notes')">📝 ملاحظات</button>
       <button class="tab-btn" data-tab="broadcasts" onclick="switchTab('broadcasts')">📢 التعاميم</button>
-      <button class="tab-btn" data-tab="types" onclick="switchTab('types')">⚙️ البيانات الأساسية</button>
+      <button class="tab-btn" data-tab="types" onclick="switchTab('types')">⚙️ الأساسية</button>
       <button class="tab-btn" data-tab="reports" onclick="switchTab('reports')">📈 التقارير</button>
       <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">🔧 الإعدادات</button>
     </div>
@@ -153,7 +161,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <div class="stat-mini"><div class="num" id="dashIssues">0</div><div class="lbl">البلاغات</div></div>
     </div>
     <div class="card">
-      <div class="card-title">📡 النشاط الحي</div>
+      <div class="card-title">📡 آخر النشاطات</div>
       <div id="liveActivity" style="font-size:12px; line-height:1.8;">جاري التحميل...</div>
     </div>
   </div>
@@ -169,13 +177,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
       <label>القطاع</label>
       <select id="supSector"><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
-      <label>الكود</label>
+      <label>الكود (فارغ = تلقائي)</label>
       <input type="text" id="supCodeEdit" placeholder="SUP-XXXX">
       <button class="btn block" onclick="saveSupervisor()" id="btnSupSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelSupEdit()" id="btnSupCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 قائمة المشرفين <button class="btn small" onclick="printCodes()">🖨️ طباعة الأكواد</button></div>
+      <div class="card-title">📋 المشرفون <button class="btn small" onclick="printCodes()">🖨️ الأكواد</button></div>
       <div id="supList">جاري التحميل...</div>
     </div>
   </div>
@@ -199,7 +207,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <button class="btn secondary block" onclick="cancelParamEdit()" id="btnParamCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 قائمة المسعفين</div>
+      <div class="card-title">📋 المسعفون</div>
       <div id="paramList">جاري التحميل...</div>
     </div>
   </div>
@@ -211,7 +219,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <input type="hidden" id="vehEditId">
       <label>رقم اللوحة</label>
       <input type="text" id="vehPlate" placeholder="رقم اللوحة">
-      <label>نوع المركبة</label>
+      <label>النوع</label>
       <input type="text" id="vehType" placeholder="نوع المركبة">
       <label>القطاع</label>
       <select id="vehSector" onchange="updateVehCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
@@ -221,7 +229,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <button class="btn secondary block" onclick="cancelVehEdit()" id="btnVehCancel" style="display:none;">إلغاء</button>
     </div>
     <div class="card">
-      <div class="card-title">📋 قائمة المركبات</div>
+      <div class="card-title">📋 المركبات</div>
       <div id="vehList">جاري التحميل...</div>
     </div>
   </div>
@@ -237,41 +245,57 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       </div>
       <h3 style="color:var(--gold-light); margin-bottom:10px; font-size:14px;">قطاع A</h3>
       <div class="duty-table-wrapper" id="dutyTableContainerA"></div>
-      
       <h3 style="color:var(--gold-light); margin:20px 0 10px; font-size:14px;">قطاع B</h3>
       <div class="duty-table-wrapper" id="dutyTableContainerB"></div>
     </div>
   </div>
 
-  <!-- 6. البلاغات -->
+  <!-- 6. البلاغات - دورة كاملة -->
   <div class="page" id="page-issues">
     <div class="card">
-      <div class="card-title">➕ إضافة / تعديل بلاغ</div>
-      <input type="hidden" id="issueEditId">
-      <label>الهدف</label>
-      <select id="issueTargetType">
-        <option value="paramedic">مسعف</option><option value="center">مركز</option>
-        <option value="vehicle">مركبة</option><option value="stock">مخزن</option>
+      <div class="card-title">➕ إرسال بلاغ إلى مشرفي القطاع</div>
+      <label>المركز المستهدف</label>
+      <select id="issueCenter" onchange="loadIssueTargets()">
+        <option value="">اختر المركز</option>
+        <option value="مركز إسعاف دارسيت">مركز إسعاف دارسيت</option>
+        <option value="مركز إسعاف بوشر">مركز إسعاف بوشر</option>
+        <option value="مركز إسعاف العامرات">مركز إسعاف العامرات</option>
+        <option value="مركز إسعاف قريات">مركز إسعاف قريات</option>
+        <option value="مركز إسعاف الخوض 1">مركز إسعاف الخوض 1</option>
+        <option value="مركز إسعاف الخوض 2">مركز إسعاف الخوض 2</option>
+        <option value="مركز إسعاف العذيبة">مركز إسعاف العذيبة</option>
+        <option value="مركز إسعاف الرسيل">مركز إسعاف الرسيل</option>
       </select>
-      <input type="text" id="issueTargetName" placeholder="اسم الهدف">
-      <label>النوع</label>
-      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة / إشادة">
+      <label>الهدف</label>
+      <select id="issueTargetType" onchange="loadIssueTargets()">
+        <option value="paramedic">مسعف</option>
+        <option value="vehicle">مركبة</option>
+        <option value="center">المركز نفسه</option>
+      </select>
+      <label>اسم الهدف (من المركز)</label>
+      <select id="issueTargetName"><option value="">-- اختر المركز أولاً --</option></select>
+      <label>نوع البلاغ</label>
+      <input type="text" id="issueType" placeholder="مثال: تأخر استجابة">
       <label>الوصف</label>
-      <textarea id="issueDesc" placeholder="وصف..." rows="2"></textarea>
-      <button class="btn block success" onclick="saveIssue()" id="btnIssueSave">➕ إضافة</button>
-      <button class="btn secondary block" onclick="cancelIssueEdit()" id="btnIssueCancel" style="display:none;">إلغاء</button>
+      <textarea id="issueDesc" placeholder="تفاصيل البلاغ..." rows="3"></textarea>
+      <button class="btn block success" onclick="saveIssue()">📤 إرسال البلاغ إلى مشرفي القطاع</button>
     </div>
+
     <div class="card">
-      <div class="card-title">📋 سجل البلاغات</div>
-      <input type="text" id="issueSearch" placeholder="🔍 بحث..." oninput="filterIssues()">
-      <div id="issuesList">جاري التحميل...</div>
+      <div class="card-title">📤 بلاغات مُرسلة (تنتظر رد المشرف)</div>
+      <div id="pendingIssuesList">جاري التحميل...</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">✅ بلاغات مُنجزة (تم الرد من المشرف)</div>
+      <div id="completedIssuesList">جاري التحميل...</div>
     </div>
   </div>
 
   <!-- 7. ملاحظات المشرفين -->
   <div class="page" id="page-notes">
     <div class="card">
-      <div class="card-title">📝 ملخص ملاحظات المشرفين (الزيارات)</div>
+      <div class="card-title">📝 ملاحظات المشرفين (الزيارات)</div>
       <div id="notesList">جاري التحميل...</div>
     </div>
   </div>
@@ -293,30 +317,52 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
   <!-- 9. البيانات الأساسية -->
   <div class="page" id="page-types">
     <div class="card">
-      <div class="card-title">⚙️ إدارة الأنواع (تظهر في تطبيق المشرف)</div>
+      <div class="card-title">⚙️ إدارة الأنواع</div>
       <label>الهدف</label>
       <select id="typeTarget" onchange="loadTypes()">
         <option value="paramedic">مسعف</option><option value="center">مركز</option>
         <option value="vehicle">مركبة</option><option value="stock">مخزن</option>
       </select>
-      <label>النوع (إشكالية / إشادة)</label>
+      <label>الفئة</label>
       <select id="typeCategory" onchange="loadTypes()">
         <option value="issue">إشكالية</option><option value="praise">إشادة</option>
       </select>
       <input type="text" id="newTypeName" placeholder="اسم النوع">
-      <button class="btn block" onclick="addType()">➕ إضافة نوع</button>
+      <button class="btn block" onclick="addType()">➕ إضافة</button>
       <div id="typesList" style="margin-top:16px;"></div>
     </div>
   </div>
 
-  <!-- 10. التقارير -->
+  <!-- 10. التقارير المتقدمة -->
   <div class="page" id="page-reports">
     <div class="card">
-      <div class="card-title">📈 التقارير</div>
-      <button class="btn block" onclick="printReport('supervisors')" style="margin-bottom:10px;">👨‍💼 تقرير المشرفين</button>
-      <button class="btn block" onclick="printReport('paramedics')" style="margin-bottom:10px;">👨‍🚒 تقرير المسعفين</button>
-      <button class="btn block" onclick="printReport('issues')" style="margin-bottom:10px;">🚩 تقرير البلاغات</button>
-      <button class="btn block success" onclick="exportExcel()" style="margin-top:20px;">📥 تصدير البلاغات (Excel)</button>
+      <div class="card-title">📈 التقارير المتقدمة</div>
+      
+      <label>نوع التقرير</label>
+      <select id="reportType" onchange="updateReportOptions()">
+        <option value="supervisors">المشرفون</option>
+        <option value="paramedics">المسعفون</option>
+        <option value="vehicles">المركبات</option>
+        <option value="issues">البلاغات</option>
+        <option value="visits">الزيارات</option>
+      </select>
+      
+      <div class="report-filters" id="reportFilters">
+        <!-- ديناميكي -->
+      </div>
+      
+      <label>اتجاه الطباعة</label>
+      <select id="printOrientation">
+        <option value="portrait">عمودي (A4)</option>
+        <option value="landscape">أفقي (A4)</option>
+      </select>
+      
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn" onclick="generateReport('print')" style="flex:1;">🖨️ طباعة PDF</button>
+        <button class="btn success" onclick="generateReport('excel')" style="flex:1;">📥 تصدير Excel</button>
+      </div>
+      
+      <div id="reportPreview" class="print-preview" style="display:none;"></div>
     </div>
   </div>
 
@@ -328,25 +374,18 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
       <input type="text" id="cfgSystemName" onchange="saveConfig('systemName', this.value)">
       <label>رابط الشعار</label>
       <input type="url" id="cfgLogoUrl" onchange="saveConfig('logoUrl', this.value)">
-      <button class="btn block success" onclick="showToast('تم الحفظ')">💾 حفظ</button>
     </div>
     <div class="card">
-      <div class="card-title" style="color:var(--red-light);">⚠️ مسح البيانات</div>
+      <div class="card-title" style="color:var(--red-light);">⚠️ منطقة الخطر</div>
       <button class="btn danger block" onclick="wipeData('issues')">🗑️ مسح جميع البلاغات</button>
-      <button class="btn danger block" onclick="wipeData('all')" style="margin-top:10px;">💥 مسح كل البيانات</button>
     </div>
   </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
-<div class="toast-container" id="toastContainer"></div>
-<div id="printArea"></div>
 
 <script>
-    /* ═══════════════════════════════════════════════════════════
-       الإعدادات الأساسية
-       ═══════════════════════════════════════════════════════════ */
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -359,7 +398,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // التحقق من الجلسة (يجب أن يكون مديراً)
     const session = localStorage.getItem("ems_session");
     if (!session) { window.location.href = "./index.html"; }
     const user = JSON.parse(session);
@@ -368,19 +406,19 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     const SECTORS = { "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] };
     const DUTY_CODES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "دوام إداري", "س": "سنوية", "خ": "أخرى" };
 
-    // التهيئة
+    let allParameds = [];
+    let allVehicles = [];
+    let allIssues = [];
+    let allSupervisors = [];
+
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").textContent = user.name || "المدير العام";
     document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
     loadConfig();
-    
-    // مستمعو التحديث الحي
     initRealtimeListeners();
-    
-    /* ═══════════════════════════════════════════════════════════
-       دوال مساعدة
-       ═══════════════════════════════════════════════════════════ */
+    updateReportOptions();
+
     function showToast(msg, type="success") {
         const c = document.getElementById("toastContainer"); const t = document.createElement("div");
         t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
@@ -407,20 +445,15 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     function manualRefresh() { showToast("تحديث..."); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    /* ═══════════════════════════════════════════════════════════
-       1. التحديث اللحظي (onSnapshot)
-       ═══════════════════════════════════════════════════════════ */
     function initRealtimeListeners() {
-        // مراقبة البلاغات
         db.collection("issues").onSnapshot(snap => {
-            const issues = [];
-            snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
-            document.getElementById("dashIssues").innerText = issues.length;
+            allIssues = [];
+            snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
+            document.getElementById("dashIssues").innerText = allIssues.length;
             
-            // النشاط الحي
             const live = document.getElementById("liveActivity");
             if (live) {
-                const latest = issues.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)).slice(0, 5);
+                const latest = allIssues.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)).slice(0, 5);
                 live.innerHTML = latest.map(i => {
                     const icon = i.isPraise ? '⭐' : (i.type === 'visit' ? '📋' : '🚩');
                     const time = i.timestamp ? new Date(i.timestamp.toDate()).toLocaleTimeString('ar-OM', {hour:'2-digit',minute:'2-digit'}) : '—';
@@ -431,25 +464,30 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
                 }).join("") || "لا يوجد نشاط";
             }
             
-            if (document.querySelector(".page.active").id === "page-issues") renderIssuesList(issues);
+            if (document.querySelector(".page.active").id === "page-issues") loadIssues();
+        });
+        
+        db.collection("paramedics").onSnapshot(snap => {
+            allParameds = [];
+            snap.forEach(d => allParameds.push({ id: d.id, ...d.data() }));
+            document.getElementById("dashParams").innerText = allParameds.length;
+        });
+        
+        db.collection("vehicles").onSnapshot(snap => {
+            allVehicles = [];
+            snap.forEach(d => allVehicles.push({ id: d.id, ...d.data() }));
+            document.getElementById("dashVehicles").innerText = allVehicles.length;
         });
         
         db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
-            document.getElementById("dashSups").innerText = snap.size;
-            if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
-        });
-        db.collection("paramedics").onSnapshot(snap => {
-            document.getElementById("dashParams").innerText = snap.size;
-            if (document.querySelector(".page.active").id === "page-paramedics") loadParams();
-        });
-        db.collection("vehicles").onSnapshot(snap => {
-            document.getElementById("dashVehicles").innerText = snap.size;
-            if (document.querySelector(".page.active").id === "page-vehicles") loadVehicles();
+            allSupervisors = [];
+            snap.forEach(d => allSupervisors.push({ id: d.id, ...d.data() }));
+            document.getElementById("dashSups").innerText = allSupervisors.length;
         });
     }
 
     /* ═══════════════════════════════════════════════════════════
-       2. المشرفون
+       المشرفون / المسعفون / المركبات
        ═══════════════════════════════════════════════════════════ */
     function loadSups() {
         db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
@@ -500,9 +538,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       3. المسعفون
-       ═══════════════════════════════════════════════════════════ */
     function loadParams() {
         db.collection("paramedics").get().then(s => {
             let html = "";
@@ -548,9 +583,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       4. المركبات
-       ═══════════════════════════════════════════════════════════ */
     function loadVehicles() {
         db.collection("vehicles").get().then(s => {
             let html = "";
@@ -606,121 +638,111 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       5. ملاحظات المشرفين
+       البلاغات - دورة كاملة
        ═══════════════════════════════════════════════════════════ */
-    function loadNotes() {
-        db.collection("issues").where("type", "==", "visit").get().then(s => {
-            let html = "";
-            s.forEach(d => {
-                const data = d.data();
-                html += `<div class="item-card" style="flex-direction:column; align-items:flex-start;">
-                    <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
-                        <b style="color:var(--gold-light);">🏥 ${data.centerName}</b>
-                        <span style="font-size:10px; opacity:0.5;">${new Date(data.timestamp.toDate()).toLocaleString('ar-OM')}</span>
-                    </div>
-                    <p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p>
-                    <p style="font-size:12px; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px; width:100%;">${data.description}</p>
-                </div>`;
-            });
-            document.getElementById("notesList").innerHTML = html || "لا يوجد ملاحظات";
-        });
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       6. البلاغات (مع الإصلاح الجذري)
-       ═══════════════════════════════════════════════════════════ */
-    function loadIssues() {
-        db.collection("issues").where("type", "in", ["complaint", "praise"]).get().then(s => {
-            const issues = [];
-            s.forEach(d => issues.push({ id: d.id, ...d.data() }));
-            renderIssuesList(issues);
-        });
-    }
     
-    function renderIssuesList(issues) {
-        let html = "";
-        issues.forEach(data => {
-            html += `<div class="item-card" style="border-right-color:${data.isPraise ? 'var(--green-light)' : 'var(--red-light)'};">
-                <div class="item-info">
-                    <h4>${data.isPraise ? '⭐' : '🚩'} ${data.targetName || '-'}</h4>
-                    <p>المشرف: ${data.supervisor} | النوع: ${data.issueType || data.praiseType || '-'} | الحالة: ${data.status||'مفتوحة'}</p>
-                    ${data.description ? `<p style="font-size:10px; opacity:0.7;">${data.description}</p>` : ''}
-                </div>
-                <div class="item-actions">
-                    <button class="icon-btn-sm edit" onclick="editIssue('${data.id}','${data.targetType}','${data.targetName}','${data.issueType || data.praiseType}','${data.description}')">✏️</button>
-                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${data.id}')">🗑️</button>
-                </div>
-            </div>`;
-        });
-        document.getElementById("issuesList").innerHTML = html || "لا يوجد بلاغات";
-    }
-
-    function editIssue(id, type, name, issueType, desc) {
-        document.getElementById("issueEditId").value = id;
-        document.getElementById("issueTargetType").value = type;
-        document.getElementById("issueTargetName").value = name;
-        document.getElementById("issueType").value = issueType || "";
-        document.getElementById("issueDesc").value = desc || "";
-        document.getElementById("btnIssueSave").innerText = "💾 حفظ التعديلات";
-        document.getElementById("btnIssueCancel").style.display = "block";
-        window.scrollTo({top:0,behavior:"smooth"});
-    }
-    function cancelIssueEdit() {
-        document.getElementById("issueEditId").value = "";
-        document.getElementById("issueTargetName").value = "";
-        document.getElementById("issueType").value = "";
-        document.getElementById("issueDesc").value = "";
-        document.getElementById("btnIssueSave").innerText = "➕ إضافة";
-        document.getElementById("btnIssueCancel").style.display = "none";
-    }
-    function saveIssue() {
-        const id = document.getElementById("issueEditId").value;
+    // تحميل الأهداف بناءً على المركز ونوع الهدف
+    function loadIssueTargets() {
+        const center = document.getElementById("issueCenter").value;
         const targetType = document.getElementById("issueTargetType").value;
-        const targetName = document.getElementById("issueTargetName").value.trim();
-        const issueType = document.getElementById("issueType").value.trim();
-        const desc = document.getElementById("issueDesc").value.trim();
-        if (!targetName || !issueType) return showToast("أكمل البيانات", "danger");
+        const sel = document.getElementById("issueTargetName");
         
-        const data = { targetType, targetName, issueType, description: desc, isPraise: issueType.includes("إشادة") };
-        if (id) {
-            db.collection("issues").doc(id).update(data).then(() => { showToast("تم التعديل"); cancelIssueEdit(); });
-        } else {
-            data.supervisor = "الإدارة (إدخال يدوي)";
-            data.status = "new";
-            data.timestamp = new Date();
-            data.type = data.isPraise ? "praise" : "complaint";
-            db.collection("issues").add(data).then(() => { showToast("تم الحفظ"); cancelIssueEdit(); });
+        if (!center) { sel.innerHTML = '<option value="">-- اختر المركز أولاً --</option>'; return; }
+        if (targetType === 'center') { sel.innerHTML = `<option value="${center}">${center}</option>`; return; }
+        
+        if (targetType === 'paramedic') {
+            const filtered = allParameds.filter(p => p.centerName === center);
+            sel.innerHTML = filtered.length ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("") : '<option value="">لا يوجد مسعفون</option>';
+        } else if (targetType === 'vehicle') {
+            const filtered = allVehicles.filter(v => v.centerName === center);
+            sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد مركبات</option>';
         }
     }
-    function filterIssues() {
-        const q = document.getElementById("issueSearch").value.toLowerCase();
-        document.querySelectorAll("#issuesList .item-card").forEach(card => {
-            card.style.display = card.innerText.toLowerCase().includes(q) ? "" : "none";
-        });
+
+    // حفظ البلاغ وإرساله للمشرفين
+    async function saveIssue() {
+        const center = document.getElementById("issueCenter").value;
+        const targetType = document.getElementById("issueTargetType").value;
+        const targetName = document.getElementById("issueTargetName").value;
+        const issueType = document.getElementById("issueType").value.trim();
+        const desc = document.getElementById("issueDesc").value.trim();
+        
+        if (!center) return showToast("اختر المركز", "danger");
+        if (!targetName) return showToast("اختر الهدف", "danger");
+        if (!issueType) return showToast("أدخل نوع البلاغ", "danger");
+        if (!desc) return showToast("أدخل الوصف", "danger");
+        
+        // تحديد القطاع من المركز
+        let sector = "";
+        for (const [s, centers] of Object.entries(SECTORS)) {
+            if (centers.includes(center)) { sector = s; break; }
+        }
+        if (!sector) return showToast("المركز غير مرتبط بقطاع", "danger");
+        
+        try {
+            await db.collection("issues").add({
+                type: 'complaint',
+                isPraise: false,
+                targetType: targetType,
+                targetName: targetName,
+                centerName: center,
+                sector: sector,
+                issueType: issueType,
+                description: desc,
+                supervisor: "الإدارة (إدخال يدوي)",
+                status: "pending_supervisor",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                timestamp: new Date()
+            });
+            showToast("تم إرسال البلاغ لمشرفي " + sector);
+            document.getElementById("issueType").value = "";
+            document.getElementById("issueDesc").value = "";
+            loadIssues();
+        } catch(e) { showToast("خطأ: " + e.message, "danger"); }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       7. التعاميم
-       ═══════════════════════════════════════════════════════════ */
-    function loadBroadcasts() {
-        db.collection("broadcasts").get().then(s => {
+    function loadIssues() {
+        // البلاغات المعلقة
+        db.collection("issues").where("status", "==", "pending_supervisor").get().then(s => {
             let html = "";
             s.forEach(d => {
                 const data = d.data();
-                html += `<div class="item-card"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`;
+                html += `<div class="item-card" style="border-right-color:var(--amber-light);">
+                    <div class="item-info">
+                        <h4>⏳ ${data.targetName}</h4>
+                        <p>🏥 ${data.centerName} | 📌 ${data.issueType} | 📍 ${data.sector}</p>
+                        <p style="font-size:10px; opacity:0.6; margin-top:4px;">${data.description}</p>
+                    </div>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                </div>`;
             });
-            document.getElementById("bcList").innerHTML = html || "لا يوجد تعاميم";
+            document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد بلاغات معلقة";
         });
-    }
-    function addBroadcast() {
-        const title = document.getElementById("bcTitle").value.trim();
-        const desc = document.getElementById("bcDesc").value.trim();
-        if (!title || !desc) return showToast("أكمل البيانات", "danger");
-        db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
+        
+        // البلاغات المنجزة
+        db.collection("issues").where("status", "==", "resolved_by_supervisor").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                const time = data.resolvedAt ? new Date(data.resolvedAt.toDate()).toLocaleString('ar-OM') : '—';
+                const responses = data.responses || [];
+                const lastResponse = responses[responses.length - 1] || {};
+                html += `<div class="item-card" style="border-right-color:var(--green-light);">
+                    <div class="item-info">
+                        <h4>✅ ${data.targetName}</h4>
+                        <p>🏥 ${data.centerName} | 📌 ${data.issueType}</p>
+                        <p style="font-size:11px; margin-top:6px; color:var(--green-light);">👨‍💼 <b>${lastResponse.supervisor || data.resolvedBy}</b> — ${time}</p>
+                        <p style="font-size:11px; background:rgba(0,0,0,0.2); padding:6px; border-radius:6px; margin-top:4px;"><b>الإجراء:</b> ${lastResponse.text || '—'}</p>
+                    </div>
+                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                </div>`;
+            });
+            document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة بعد";
+        });
     }
 
     /* ═══════════════════════════════════════════════════════════
-       8. الدوام
+       الدوام
        ═══════════════════════════════════════════════════════════ */
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
@@ -761,13 +783,47 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       9. البيانات الأساسية
+       الملاحظات والتعاميم والأنواع
        ═══════════════════════════════════════════════════════════ */
+    function loadNotes() {
+        db.collection("issues").where("type", "==", "visit").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card" style="flex-direction:column; align-items:flex-start;">
+                    <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
+                        <b style="color:var(--gold-light);">🏥 ${data.centerName}</b>
+                        <span style="font-size:10px; opacity:0.5;">${new Date(data.timestamp.toDate()).toLocaleString('ar-OM')}</span>
+                    </div>
+                    <p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p>
+                    <p style="font-size:12px; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px; width:100%;">${data.description}</p>
+                </div>`;
+            });
+            document.getElementById("notesList").innerHTML = html || "لا يوجد ملاحظات";
+        });
+    }
+
+    function loadBroadcasts() {
+        db.collection("broadcasts").get().then(s => {
+            let html = "";
+            s.forEach(d => {
+                const data = d.data();
+                html += `<div class="item-card"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`;
+            });
+            document.getElementById("bcList").innerHTML = html || "لا يوجد تعاميم";
+        });
+    }
+    function addBroadcast() {
+        const title = document.getElementById("bcTitle").value.trim();
+        const desc = document.getElementById("bcDesc").value.trim();
+        if (!title || !desc) return showToast("أكمل البيانات", "danger");
+        db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
+    }
+
     function loadTypes() {
         const target = document.getElementById("typeTarget").value;
         const cat = document.getElementById("typeCategory").value;
         const col = `${cat}_types_${target}`;
-        
         db.collection(col).get().then(s => {
             let html = "";
             s.forEach(d => {
@@ -787,27 +843,112 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
 
     /* ═══════════════════════════════════════════════════════════
-       10. الحذف والمسح
+       التقارير المتقدمة
        ═══════════════════════════════════════════════════════════ */
-    function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
-    function wipeData(type) {
-        if(!confirm("⚠️ هل أنت متأكد؟ لا يمكن التراجع!")) return;
-        if(type === 'issues') { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); showToast("تم مسح البلاغات"); }); }
-        else { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); }); db.collection("broadcasts").get().then(s => { s.forEach(d => d.ref.delete()); }); showToast("تم المسح الشامل"); }
+    function updateReportOptions() {
+        const type = document.getElementById("reportType").value;
+        const filters = document.getElementById("reportFilters");
+        
+        let html = "";
+        if (type === 'supervisors') {
+            html = `<div><label>القطاع</label><select id="filterSector"><option value="">الكل</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select></div>`;
+        } else if (type === 'paramedics') {
+            html = `<div><label>المركز</label><select id="filterCenter"><option value="">الكل</option><option value="مركز إسعاف دارسيت">دارسيت</option><option value="مركز إسعاف بوشر">بوشر</option><option value="مركز إسعاف العامرات">العامرات</option><option value="مركز إسعاف قريات">قريات</option><option value="مركز إسعاف الخوض 1">الخوض 1</option><option value="مركز إسعاف الخوض 2">الخوض 2</option><option value="مركز إسعاف العذيبة">العذيبة</option><option value="مركز إسعاف الرسيل">الرسيل</option></select></div>
+            <div><label>بحث بالاسم</label><input type="text" id="filterSearch" placeholder="اسم المسعف..."></div>`;
+        } else if (type === 'vehicles') {
+            html = `<div><label>المركز</label><select id="filterCenter"><option value="">الكل</option><option value="مركز إسعاف دارسيت">دارسيت</option>...</select></div>`;
+        } else if (type === 'issues' || type === 'visits') {
+            html = `<div><label>الحالة</label><select id="filterStatus"><option value="">الكل</option><option value="pending_supervisor">معلقة</option><option value="resolved_by_supervisor">منجزة</option><option value="new">جديدة</option></select></div>
+            <div><label>القطاع</label><select id="filterSector"><option value="">الكل</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select></div>`;
+        }
+        filters.innerHTML = html;
+    }
+
+    async function generateReport(action) {
+        const type = document.getElementById("reportType").value;
+        const orientation = document.getElementById("printOrientation").value;
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        
+        let data = [], title = "", thead = "";
+        
+        if (type === 'supervisors') {
+            title = "تقرير المشرفين";
+            thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th>";
+            data = allSupervisors;
+        } else if (type === 'paramedics') {
+            title = "تقرير المسعفين";
+            thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>المركز</th><th>الرتبة</th>";
+            data = allParameds;
+        } else if (type === 'vehicles') {
+            title = "تقرير المركبات";
+            thead = "<th>#</th><th>اللوحة</th><th>النوع</th><th>المركز</th>";
+            data = allVehicles;
+        } else if (type === 'issues' || type === 'visits') {
+            title = type === 'visits' ? "تقرير الزيارات" : "تقرير البلاغات";
+            thead = "<th>#</th><th>التاريخ</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th><th>الحل</th>";
+            data = allIssues.filter(i => type === 'visits' ? i.type === 'visit' : (i.type !== 'visit'));
+        }
+        
+        // بناء tbody
+        let tbody = "";
+        data.forEach((d, i) => {
+            if (type === 'supervisors') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.sector}</td><td>${d.code}</td></tr>`;
+            else if (type === 'paramedics') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.centerName}</td><td>${d.rank||'-'}</td></tr>`;
+            else if (type === 'vehicles') tbody += `<tr><td>${i+1}</td><td>${d.plateNumber}</td><td>${d.type||'-'}</td><td>${d.centerName}</td></tr>`;
+            else {
+                const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
+                const responses = d.responses || [];
+                const lastResponse = responses[responses.length - 1] || {};
+                tbody += `<tr><td>${i+1}</td><td>${time}</td><td>${d.targetName || d.centerName || '-'}</td><td>${d.issueType || '-'}</td><td>${d.supervisor || '-'}</td><td>${d.status || 'مفتوحة'}</td><td>${lastResponse.text || '-'}</td></tr>`;
+            }
+        });
+        
+        if (action === 'print') {
+            const style = orientation === 'landscape' ? '<style>@page { size: landscape; }</style>' : '';
+            const html = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
+            document.getElementById("printArea").innerHTML = html;
+            setTimeout(() => window.print(), 300);
+        } else {
+            // تصدير Excel
+            let csv = "\uFEFF";
+            const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
+            csv += thead.replace(/<th>/g, '').replace(/<\/th>/g, ',') + "\n";
+            data.forEach((d, i) => {
+                if (type === 'supervisors') csv += [i+1, clean(d.name), clean(d.militaryId), clean(d.sector), clean(d.code)].join(",") + "\n";
+                else if (type === 'paramedics') csv += [i+1, clean(d.name), clean(d.militaryId), clean(d.centerName), clean(d.rank)].join(",") + "\n";
+                else if (type === 'vehicles') csv += [i+1, clean(d.plateNumber), clean(d.type), clean(d.centerName)].join(",") + "\n";
+                else {
+                    const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
+                    const responses = d.responses || [];
+                    const lastResponse = responses[responses.length - 1] || {};
+                    csv += [i+1, time, clean(d.targetName || d.centerName), clean(d.issueType), clean(d.supervisor), clean(d.status), clean(lastResponse.text)].join(",") + "\n";
+                }
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${title}_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            showToast("تم تصدير التقرير");
+        }
     }
 
     /* ═══════════════════════════════════════════════════════════
-       11. الطباعة
+       أدوات عامة
        ═══════════════════════════════════════════════════════════ */
+    function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
+    function wipeData(type) {
+        if(!confirm("⚠️ هل أنت متأكد؟")) return;
+        if(type === 'issues') { db.collection("issues").get().then(s => { s.forEach(d => d.ref.delete()); showToast("تم مسح البلاغات"); }); }
+    }
+
     function printDutyTable(orientation) {
         const month = document.getElementById("dutyMonth").value;
         const htmlA = document.getElementById("dutyTableContainerA").innerHTML;
         const htmlB = document.getElementById("dutyTableContainerB").innerHTML;
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        
         const style = orientation === 'landscape' ? '<style>@page { size: landscape; }</style>' : '';
-        
-        const printHtml = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام الشهري — ${month}</h2></div></div><h3>قطاع A</h3>${htmlA}<h3>قطاع B</h3>${htmlB}<div class="print-footer">تاريخ الطباعة: ${new Date().toLocaleString('ar-OM')}</div></div>`;
+        const printHtml = `<div class="print-page">${style}<div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام — ${month}</h2></div></div><h3>قطاع A</h3>${htmlA}<h3>قطاع B</h3>${htmlB}<div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
         document.getElementById("printArea").innerHTML = printHtml;
         setTimeout(() => window.print(), 300);
     }
@@ -816,65 +957,13 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
             let tbody = "", i = 1;
             s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td style="font-size:18px; font-weight:bold; color:#0d4a42;">${data.code}</td></tr>`; });
-            doPrint("قائمة أكواد الدخول", "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th>", tbody);
+            const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+            const html = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>قائمة أكواد الدخول</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>الكود</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+            document.getElementById("printArea").innerHTML = html;
+            setTimeout(() => window.print(), 300);
         });
     }
 
-    function printReport(type) {
-        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        let title = "", thead = "", tbody = "";
-        
-        if (type === 'supervisors') {
-            title = "تقرير المشرفين";
-            thead = "<th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>القطاع</th><th>الكود</th>";
-            db.collection("access_code").where("type", "==", "supervisor").get().then(s => {
-                let i = 1;
-                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.sector}</td><td>${data.code}</td></tr>`; });
-                doPrint(title, thead, tbody);
-            });
-        } else if (type === 'paramedics') {
-            title = "تقرير المسعفين";
-            thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>المركز</th><th>الرتبة</th>";
-            db.collection("paramedics").get().then(s => {
-                let i = 1;
-                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.name}</td><td>${data.militaryId||'-'}</td><td>${data.centerName}</td><td>${data.rank||'-'}</td></tr>`; });
-                doPrint(title, thead, tbody);
-            });
-        } else if (type === 'issues') {
-            title = "تقرير البلاغات";
-            thead = "<th>#</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th>";
-            db.collection("issues").get().then(s => {
-                let i = 1;
-                s.forEach(d => { const data = d.data(); tbody += `<tr><td>${i++}</td><td>${data.targetName}</td><td>${data.isPraise?'إشادة':'إشكالية'}</td><td>${data.supervisor}</td><td>${data.status||'مفتوحة'}</td></tr>`; });
-                doPrint(title, thead, tbody);
-            });
-        }
-    }
-
-    function doPrint(title, thead, tbody) {
-        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        const html = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-        document.getElementById("printArea").innerHTML = html;
-        setTimeout(() => window.print(), 300);
-    }
-
-    function exportExcel() {
-        db.collection("issues").get().then(s => {
-            let csv = "\uFEFF";
-            csv += "الهدف,النوع,المشرف,المركز,الحالة\n";
-            s.forEach(d => { const data = d.data(); csv += `"${data.targetName||''}","${data.isPraise?'إشادة':'إشكالية'}","${data.supervisor||''}","${data.centerName||''}","${data.status||'مفتوحة'}"\n`; });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `تقرير_البلاغات_${new Date().toISOString().slice(0,10)}.csv`;
-            link.click();
-            showToast("تم تصدير الملف");
-        });
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       12. الإعدادات
-       ═══════════════════════════════════════════════════════════ */
     function loadConfig() {
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         const sysName = localStorage.getItem("cfg_systemName") || "الإدارة العامة";
@@ -882,9 +971,6 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         document.getElementById("cfgSystemName").value = sysName; document.getElementById("cfgLogoUrl").value = logo;
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
-
-    // تشغيل
-    loadData();
 </script>
 </body>
 </html>
