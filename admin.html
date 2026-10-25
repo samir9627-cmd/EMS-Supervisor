@@ -7,7 +7,7 @@
 <title>الإدارة العامة — V32.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<!-- ✅ إصلاح 1: إضافة سكربتات Firebase (كانت مفقودة تماماً) -->
+<!-- استدعاء مكتبات Firebase (كانت تالفة أثناء التجميع) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <style>
@@ -198,6 +198,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 1. لوحة القيادة -->
   <div class="page active" id="page-dashboard">
     <div class="dash-hero">
       <h2>👋 مرحباً، <span id="heroName">المدير العام</span></h2>
@@ -234,6 +235,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 2. المشرفون -->
   <div class="page" id="page-supervisors">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مشرف</div>
@@ -251,6 +253,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 3. المسعفون -->
   <div class="page" id="page-paramedics">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مسعف</div>
@@ -269,6 +272,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 4. المركبات -->
   <div class="page" id="page-vehicles">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مركبة</div>
@@ -286,6 +290,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 5. الدوام -->
   <div class="page" id="page-duty">
     <div class="card">
       <div class="card-title">📅 جدول الدوام</div>
@@ -301,6 +306,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 6. البلاغات -->
   <div class="page" id="page-issues">
     <div class="card">
       <div class="card-title">➕ إرسال بلاغ إلى مشرفي القطاع</div>
@@ -330,6 +336,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 7. ملاحظات -->
   <div class="page" id="page-notes">
     <div class="card">
       <div class="card-title">📝 ملاحظات المشرفين</div>
@@ -337,6 +344,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 8. التعاميم -->
   <div class="page" id="page-broadcasts">
     <div class="card">
       <div class="card-title">📢 إرسال تعميم</div>
@@ -350,6 +358,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 9. المراسلات -->
   <div class="page" id="page-messages">
     <div class="card">
       <div class="card-title">📬 المراسلات</div>
@@ -362,6 +371,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 10. KPI -->
   <div class="page" id="page-kpi">
     <div class="card">
       <div class="card-title">🏆 مؤشرات الأداء (KPI)</div>
@@ -383,6 +393,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 11. البيانات الأساسية -->
   <div class="page" id="page-types">
     <div class="card">
       <div class="card-title">⚙️ إدارة الأنواع</div>
@@ -401,6 +412,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 12. التقارير -->
   <div class="page" id="page-reports">
     <div class="card">
       <div class="card-title">📈 التقارير المتقدمة</div>
@@ -426,6 +438,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     </div>
   </div>
 
+  <!-- 13. الإعدادات -->
   <div class="page" id="page-settings">
     <div class="card">
       <div class="card-title">🎨 الهوية</div>
@@ -470,7 +483,11 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
 
 <div class="toast-container" id="toastContainer"></div>
 <div id="printArea"></div>
+
 <script>
+    /* ═══════════════════════════════════════════════════════════
+       الإعدادات الأساسية والتحقق
+       ═══════════════════════════════════════════════════════════ */
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
       authDomain: "ems-supervisor.firebaseapp.com",
@@ -494,22 +511,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     let allParameds = [], allVehicles = [], allIssues = [], allSupervisors = [], allMessages = [];
     let doughnutChart, lineChart;
 
-    document.getElementById("loadingOverlay").style.display = "none";
-    document.getElementById("mainApp").classList.add("ready");
-    document.getElementById("currentUser").textContent = user.name || "المدير العام";
-    document.getElementById("heroName").textContent = user.name || "المدير العام";
-    document.getElementById("heroDate").textContent = new Date().toLocaleDateString('ar-OM', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
-    
-    const allCenters = Object.values(SECTORS).flat();
-    const issueCenterSel = document.getElementById("issueCenter");
-    allCenters.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; issueCenterSel.appendChild(o); });
-    
-    loadConfig();
-    initRealtimeListeners();
-    updateReportOptions();
-    document.getElementById("deleteCol").addEventListener("change", populateDeleteItems);
-
+    /* ═══════════════════════════════════════════════════════════
+       الدوال الأساسية
+       ═══════════════════════════════════════════════════════════ */
     function showToast(msg, type="success") {
         const c = document.getElementById("toastContainer"); const t = document.createElement("div");
         t.className = "toast " + type; t.textContent = (type==="success"?"✅ ":type==="danger"?"⚠️ ":"ℹ️ ") + msg;
@@ -540,6 +544,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     function manualRefresh() { showToast("تحديث..."); }
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
+    /* ═══════════════════════════════════════════════════════════
+       التحديث اللحظي
+       ═══════════════════════════════════════════════════════════ */
     function initRealtimeListeners() {
         db.collection("issues").onSnapshot(snap => {
             allIssues = [];
@@ -580,6 +587,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       لوحة القيادة (Dashboard + Charts)
+       ═══════════════════════════════════════════════════════════ */
     function renderDashboardCharts() {
         const praises = allIssues.filter(i => i.isPraise).length;
         const complaints = allIssues.filter(i => !i.isPraise && i.type !== 'visit').length;
@@ -640,6 +650,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         ).join("") : '<div style="text-align:center; opacity:0.5; padding:20px;">لا يوجد نشاط اليوم</div>';
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       المشرفون
+       ═══════════════════════════════════════════════════════════ */
     function loadSups() {
         let html = "";
         allSupervisors.forEach(d => {
@@ -686,6 +699,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       المسعفون
+       ═══════════════════════════════════════════════════════════ */
     function loadParams() {
         let html = "";
         allParameds.forEach(d => {
@@ -736,6 +752,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       المركبات
+       ═══════════════════════════════════════════════════════════ */
     function loadVehicles() {
         let html = "";
         allVehicles.forEach(d => {
@@ -795,6 +814,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         sel.innerHTML = (SECTORS[sec] || []).map(c => `<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       الدوام
+       ═══════════════════════════════════════════════════════════ */
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
@@ -827,17 +849,12 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
     }
     async function updateDuty(month, code, name, day, val) {
         const docId = `${month}_${code}`; const docRef = db.collection("duty_schedule").doc(docId);
-        try {
-            const doc = await docRef.get();
-            let shifts = doc.exists ? (doc.data().shifts || {}) : {};
-            shifts[day] = val;
-            // ✅ إصلاح 2: استخدام serverTimestamp بدل new Date() للتوافق مع قراءة .seconds
-            await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-            showToast("تم الحفظ");
-        } catch(e) { showToast("خطأ", "danger"); }
+        try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); } catch(e) { showToast("خطأ", "danger"); }
     }
-</script>
-<script>
+
+    /* ═══════════════════════════════════════════════════════════
+       البلاغات
+       ═══════════════════════════════════════════════════════════ */
     function loadIssueTargets() {
         const center = document.getElementById("issueCenter").value;
         const targetType = document.getElementById("issueTargetType").value;
@@ -877,10 +894,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
             await db.collection("issues").add({
                 type: 'complaint', isPraise: false, targetType, targetName, centerName: center, sector,
                 issueType, description: desc, supervisor: "الإدارة (إدخال يدوي)",
-                status: "pending_supervisor",
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                // ✅ إصلاح 3: استخدام serverTimestamp بدل new Date() للتوافق مع قراءة .seconds
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                status: "pending_supervisor", createdAt: firebase.firestore.FieldValue.serverTimestamp(), timestamp: new Date()
             });
             showToast("تم إرسال البلاغ لمشرفي " + sector);
             document.getElementById("issueType").value = "";
@@ -927,6 +941,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       المراسلات
+       ═══════════════════════════════════════════════════════════ */
     function populateMsgSupervisors() {
         const sel = document.getElementById("msgSupervisorFilter");
         if (sel.options.length > 1) return;
@@ -961,14 +978,15 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         if (!text) return;
         document.getElementById("msgInput").value = "";
         await db.collection("messages").add({
-            sender: user.name || "المدير العام", text,
-            // ✅ إصلاح 4: استخدام serverTimestamp بدل new Date()
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            sender: user.name || "المدير العام", text, timestamp: new Date()
         });
         showToast("تم الإرسال");
         loadMessages();
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       KPI
+       ═══════════════════════════════════════════════════════════ */
     function loadKPI() {
         const category = document.getElementById("kpiCategory").value;
         const period = document.getElementById("kpiPeriod").value;
@@ -1030,6 +1048,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }).join("") || '<div style="text-align:center; opacity:0.5; padding:20px;">لا يوجد بيانات</div>';
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       التقارير المتقدمة
+       ═══════════════════════════════════════════════════════════ */
     function updateReportOptions() {
         const type = document.getElementById("reportType").value;
         const filters = document.getElementById("reportFilters");
@@ -1164,6 +1185,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       الإعدادات والحذف المتقدم
+       ═══════════════════════════════════════════════════════════ */
     async function populateDeleteItems() {
         const col = document.getElementById("deleteCol").value;
         const sel = document.getElementById("deleteItemId");
@@ -1251,6 +1275,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         }
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       الأنواع والتعاميم والملاحظات
+       ═══════════════════════════════════════════════════════════ */
     function loadTypes() {
         const target = document.getElementById("typeTarget").value;
         const cat = document.getElementById("typeCategory").value;
@@ -1287,8 +1314,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         const title = document.getElementById("bcTitle").value.trim();
         const desc = document.getElementById("bcDesc").value.trim();
         if (!title || !desc) return showToast("أكمل البيانات", "danger");
-        // ✅ إصلاح 5: استخدام serverTimestamp بدل new Date()
-        db.collection("broadcasts").add({ title, description: desc, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
+        db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; loadBroadcasts(); });
     }
 
     function loadNotes() {
@@ -1299,7 +1325,7 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
                 html += `<div class="item-card" style="flex-direction:column; align-items:flex-start;">
                     <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px; margin-bottom:5px;">
                         <b style="color:var(--gold-light);">🏥 ${data.centerName}</b>
-                        <span style="font-size:10px; opacity:0.5;">${data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('ar-OM') : '—'}</span>
+                        <span style="font-size:10px; opacity:0.5;">${new Date(data.timestamp.toDate()).toLocaleString('ar-OM')}</span>
                     </div>
                     <p style="font-size:12px;"><b>المشرف:</b> ${data.supervisor}</p>
                     <p style="font-size:12px; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px; width:100%;">${data.description}</p>
@@ -1309,6 +1335,9 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         });
     }
 
+    /* ═══════════════════════════════════════════════════════════
+       الحذف والطباعة
+       ═══════════════════════════════════════════════════════════ */
     function deleteDoc(col, id) { if(confirm("حذف؟")) { db.collection(col).doc(id).delete().then(() => { showToast("تم الحذف"); }); } }
 
     function printCodes() {
@@ -1338,6 +1367,25 @@ label { display: block; font-size: 13px; color: var(--gold-light); font-weight: 
         document.getElementById("cfgSystemName").value = sysName; document.getElementById("cfgLogoUrl").value = logo;
     }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === 'logoUrl') document.getElementById("topbarLogo").src = val; if(key === 'systemName') document.getElementById("systemName").innerText = val; }
+
+    /* ═══════════════════════════════════════════════════════════
+       التشغيل (تم نقله للأسفل بعد تعريف جميع الدوال)
+       ═══════════════════════════════════════════════════════════ */
+    document.getElementById("loadingOverlay").style.display = "none";
+    document.getElementById("mainApp").classList.add("ready");
+    document.getElementById("currentUser").textContent = user.name || "المدير العام";
+    document.getElementById("heroName").textContent = user.name || "المدير العام";
+    document.getElementById("heroDate").textContent = new Date().toLocaleDateString('ar-OM', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById("dutyMonth").value = new Date().toISOString().slice(0,7);
+    
+    const allCenters = Object.values(SECTORS).flat();
+    const issueCenterSel = document.getElementById("issueCenter");
+    allCenters.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; issueCenterSel.appendChild(o); });
+    
+    loadConfig();
+    initRealtimeListeners();
+    updateReportOptions();
+    document.getElementById("deleteCol").addEventListener("change", populateDeleteItems);
 
     renderDashboardCharts();
 </script>
