@@ -4,24 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>المشرف الميداني — V31.0</title>
+<title>المشرف الميداني — V33.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+/* =========================================
+   المتغيرات الأساسية (الوضع الداكن)
+   ========================================= */
 :root {
-  --gold: #978d5b; --gold-light: #d4c896; --gold-bright: #f5e6b3;
+  --gold: #978d5b; --gold-light: #d4c896;
   --teal: #0d4a42; --teal-dark: #082b26; --teal-deep: #041814;
   --green: #43a047; --green-light: #69f0ae;
   --red: #e53935; --red-light: #ff5252;
   --amber: #fb8c00; --amber-light: #ffa726;
   --blue: #29b6f6; --blue-light: #64b5f6;
   --border: rgba(151,141,91,0.3);
+  --text-main: #ffffff;
+  --text-sub: rgba(255,255,255,0.7);
+  --bg-glass: rgba(13,74,66,0.55);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+/* =========================================
+   الوضع الفاتح
+   ========================================= */
+[data-theme="light"] {
+  --gold: #a3813a; --gold-light: #c29c47;
+  --teal: #ffffff; --teal-dark: #f4f6f5; --teal-deep: #f9fbfa;
+  --green: #2e7d32; --green-light: #4caf50;
+  --red: #c62828; --red-light: #e53935;
+  --amber: #e65100; --amber-light: #ff9800;
+  --blue: #0277bd; --blue-light: #039be5;
+  --border: rgba(163,129,58,0.4);
+  --text-main: #1a1a1a;
+  --text-sub: #555555;
+  --bg-glass: rgba(255,255,255,0.85);
+}
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
-html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
+html, body { background: var(--teal-deep); color: var(--text-main); font-weight: 600; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 body { min-height: 100vh; padding-bottom: calc(120px + var(--safe-bottom)); }
-body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
+body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, var(--teal-deep) 0%, var(--teal-dark) 50%, var(--teal-deep) 100%); }
+[data-theme="light"] body::before { background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.1) 0%, transparent 40%), linear-gradient(180deg, #f9fbfa 0%, #eef2ef 50%, #f9fbfa 100%); }
 
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -30,26 +52,37 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 
 #mainApp { display: none; } #mainApp.ready { display: block; }
 
-.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; }
+/* =========================================
+   الشريط العلوي
+   ========================================= */
+.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; transition: background 0.3s; }
+[data-theme="light"] .topbar { background: rgba(255,255,255,0.95); }
 .topbar-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; }
 .topbar-info { flex: 1; }
-.topbar-info h1 { font-size: 14px; color: var(--gold-light); font-weight: 900; }
-.topbar-info p { font-size: 10px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 6px; margin-top: 3px; }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-light); box-shadow: 0 0 8px var(--green-light); }
-.icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: #fff; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-.icon-btn.danger { background: rgba(198,40,40,0.4); border-color: var(--red-light); }
+.topbar-info h1 { font-size: 14px; color: var(--gold); font-weight: 900; }
+.topbar-info p { font-size: 10px; color: var(--text-sub); display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.icon-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-glass); color: var(--text-main); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+.icon-btn.danger { background: rgba(198,40,40,0.4); border-color: var(--red-light); color: #fff; }
 .icon-btn .badge { position: absolute; top: -5px; right: -5px; background: var(--red); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; animation: alertPulse 2s infinite; }
 
+/* =========================================
+   الشريط السفلي
+   ========================================= */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 8px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-.nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 4px; border-radius: 14px; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid rgba(151,141,91,0.2); color: rgba(255,255,255,0.7); font-family: inherit; font-weight: 700; font-size: 11px; transition: 0.25s; min-height: 72px; position: relative; }
+[data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.98); }
+.nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 4px; border-radius: 14px; cursor: pointer; background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-sub); font-family: inherit; font-weight: 700; font-size: 11px; transition: 0.25s; min-height: 72px; position: relative; }
 .nav-btn .nav-icon { font-size: 26px; line-height: 1; }
-.nav-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; box-shadow: 0 4px 15px rgba(151,141,91,0.4); }
+.nav-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border-color: var(--gold); font-weight: 900; box-shadow: 0 4px 15px rgba(151,141,91,0.4); }
 .nav-btn .nav-badge { position: absolute; top: 2px; right: 15px; background: var(--red); color: #fff; font-size: 9px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
 
+/* =========================================
+   الصفحات والبطاقات
+   ========================================= */
 .page { display: none; padding: 16px; max-width: 720px; margin: 0 auto; }
 .page.active { display: block; animation: slideUp 0.35s; }
-.card { background: rgba(13,74,66,0.55); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
-.card-title { font-size: 14px; color: var(--gold-light); font-weight: 900; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.card { background: var(--bg-glass); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
+.card-title { font-size: 14px; color: var(--gold); font-weight: 900; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
 .quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 .action-btn { padding: 20px 14px; border-radius: 18px; border: none; font-family: inherit; font-weight: 900; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; }
@@ -57,66 +90,85 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .action-btn.success { background: linear-gradient(135deg, #43a047, #69f0ae); color: #041814; }
 .action-btn.info { background: linear-gradient(135deg, #29b6f6, #64b5f6); color: #fff; grid-column: span 2; }
 
-.item-card { background: rgba(4,24,20,0.8); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .item-card.red { border-right-color: var(--red); }
-.item-card.green { border-right-color: var(--green-light); }
+.item-card.green { border-right-color: var(--green); }
 .item-card.blue { border-right-color: var(--blue); }
 .item-card.purple { border-right-color: #ab47bc; }
 .item-info { flex: 1; min-width: 200px; }
-.item-info h4 { font-size: 14px; font-weight: 900; color: var(--gold-light); margin-bottom: 4px; }
-.item-info p { font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+.item-info h4 { font-size: 14px; font-weight: 900; color: var(--gold); margin-bottom: 4px; }
+.item-info p { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
 
-input, select, textarea { width: 100%; padding: 12px 14px; background: rgba(4,24,20,0.7); border: 1px solid var(--border); border-radius: 11px; color: #fff; font-size: 13px; font-family: inherit; font-weight: 600; outline: none; margin-bottom: 12px; }
+/* =========================================
+   الحقول والأزرار
+   ========================================= */
+input, select, textarea { width: 100%; padding: 12px 14px; background: var(--bg-glass); border: 1px solid var(--border); border-radius: 11px; color: var(--text-main); font-size: 13px; font-family: inherit; font-weight: 600; outline: none; margin-bottom: 12px; }
 input:focus, select:focus, textarea:focus { border-color: var(--gold); }
-select option { background: var(--teal-deep); color: #fff; }
-label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-weight: 700; margin-bottom: 7px; }
+select option { background: var(--teal-deep); color: var(--text-main); }
+label { display: block; font-size: 12px; color: var(--text-main); font-weight: 700; margin-bottom: 7px; }
 
-.btn { padding: 12px 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.btn { padding: 12px 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; font-size: 13px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .btn.danger { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; }
-.btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #041814; }
+.btn.success { background: linear-gradient(135deg, var(--green), var(--green-light)); color: #fff; }
 .btn.info { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; }
 .btn.block { width: 100%; }
-.btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: #fff; }
+.btn.secondary { background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-main); }
 
+/* =========================================
+   المودال
+   ========================================= */
 .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; }
 .modal-overlay.show { display: flex; }
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
-.modal-sheet h3 { color: var(--gold-light); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+.modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
+/* =========================================
+   الإشعارات
+   ========================================= */
 .toast-container { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
-.toast { background: linear-gradient(135deg, var(--teal), var(--teal-dark)); color: #fff; padding: 12px 18px; border-radius: 12px; border: 1px solid var(--gold); font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-.toast.success { border-color: var(--green-light); }
-.toast.danger { border-color: var(--red-light); }
+.toast { background: var(--bg-glass); color: var(--text-main); padding: 12px 18px; border-radius: 12px; border: 1px solid var(--gold); font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+.toast.success { border-color: var(--green); }
+.toast.danger { border-color: var(--red); }
 
-.chat-container { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+/* =========================================
+   الدردشة
+   ========================================= */
+.chat-container { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
 .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 .message { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
-.message.mine { align-self: flex-end; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-bottom-left-radius: 2px; }
-.message.theirs { align-self: flex-start; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-bottom-right-radius: 2px; }
+.message.mine { align-self: flex-end; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border-bottom-left-radius: 2px; }
+.message.theirs { align-self: flex-start; background: var(--bg-glass); border: 1px solid var(--border); border-bottom-right-radius: 2px; color: var(--text-main); }
 .message .time { font-size: 9px; opacity: 0.6; margin-top: 4px; display: block; text-align: left; }
-.chat-input-box { display: flex; padding: 10px; background: rgba(4,24,20,0.6); border-top: 1px solid var(--border); }
+.chat-input-box { display: flex; padding: 10px; background: var(--bg-glass); border-top: 1px solid var(--border); }
 .chat-input-box input { flex: 1; margin: 0; border-radius: 8px 0 0 8px; border-left: none; }
-.chat-input-box button { padding: 0 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border: none; border-radius: 0 8px 8px 0; font-weight: 900; cursor: pointer; }
+.chat-input-box button { padding: 0 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border: none; border-radius: 0 8px 8px 0; font-weight: 900; cursor: pointer; }
 
+/* =========================================
+   عناصر الإدخال (Chips والصوت)
+   ========================================= */
 .chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; perspective: 1000px; }
-.chip-3d { padding: 10px 16px; border-radius: 12px; background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)); border: 1px solid rgba(255,255,255,0.15); font-size: 12px; cursor: pointer; transition: all 0.3s ease; font-weight: 700; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
-.chip-3d:active { transform: scale(0.95); }
-.chip-3d.selected { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--teal-deep); border-color: var(--gold-light); font-weight: 900; box-shadow: 0 8px 15px rgba(151,141,91,0.5), inset 0 2px 5px rgba(255,255,255,0.5); transform: translateY(-3px) rotateX(10deg); }
+.chip-3d { padding: 10px 16px; border-radius: 12px; background: var(--bg-glass); border: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: all 0.3s ease; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 6px; }
+.chip-3d.selected { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border-color: var(--gold); font-weight: 900; }
 .chip-3d.selected::before { content: '✓'; font-weight: 900; }
 
 .input-with-btn { position: relative; margin-bottom: 14px; }
 .input-with-btn textarea { margin-bottom: 0; padding-left: 50px; }
-.mic-btn { position: absolute; bottom: 10px; left: 10px; width: 38px; height: 38px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: var(--teal-deep); font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(41,182,246,0.4); }
-.mic-btn.recording { background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; animation: pulse 1s infinite; }
+.mic-btn { position: absolute; bottom: 10px; left: 10px; width: 38px; height: 38px; border-radius: 10px; border: none; background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(41,182,246,0.4); }
+.mic-btn.recording { background: linear-gradient(135deg, var(--red), var(--red-light)); animation: pulse 1s infinite; }
 
-.duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); margin-top: 10px; }
+.gps-btn { background: rgba(41,182,246,0.15); border: 1px solid var(--blue); color: var(--blue-light); padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* =========================================
+   جدول الدوام
+   ========================================= */
+.duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-glass); margin-top: 10px; }
 .duty-table { border-collapse: collapse; font-size: 11px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 8px; text-align: center; min-width: 36px; }
-.duty-table th { background: var(--teal-dark); color: var(--gold-light); }
-.duty-table td { color: #fff; }
-.duty-table td.s-p { background: rgba(67,160,71,0.2); color: var(--green-light); font-weight: 900; }
-.duty-table td.s-m { background: rgba(251,140,0,0.2); color: var(--amber-light); font-weight: 900; }
-.duty-table td.s-o { background: rgba(229,57,53,0.2); color: var(--red-light); font-weight: 900; }
+.duty-table th { background: var(--teal-dark); color: var(--gold); }
+.duty-table td { color: var(--text-main); }
+.duty-table td.s-p { background: rgba(67,160,71,0.2); color: var(--green); font-weight: 900; }
+.duty-table td.s-m { background: rgba(251,140,0,0.2); color: var(--amber); font-weight: 900; }
+.duty-table td.s-o { background: rgba(229,57,53,0.2); color: var(--red); font-weight: 900; }
 
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
@@ -138,6 +190,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
       <h1>لوحة المشرف الميداني</h1>
       <p><span class="status-dot"></span><span id="currentUser">—</span></p>
     </div>
+    <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
     <button class="icon-btn" onclick="manualRefresh()">🔄</button>
     <button class="icon-btn danger" onclick="confirmLogout()">🚪</button>
   </div>
@@ -147,9 +200,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
     <div class="card" style="background:linear-gradient(135deg, rgba(151,141,91,0.15), rgba(13,74,66,0.6)); border-color:var(--gold);">
       <div style="display:flex; align-items:center; justify-content:space-between;">
         <div>
-          <div style="font-size:12px; color:rgba(255,255,255,0.7);">مرحباً بك 👋</div>
-          <div style="font-size:20px; color:#fff; font-weight:900;" id="welcomeName">—</div>
-          <div style="font-size:12px; color:var(--gold-light); margin-top:4px;" id="welcomeSector">—</div>
+          <div style="font-size:12px; color:var(--text-sub);">مرحباً بك 👋</div>
+          <div style="font-size:20px; color:var(--text-main); font-weight:900;" id="welcomeName">—</div>
+          <div style="font-size:12px; color:var(--gold); margin-top:4px;" id="welcomeSector">—</div>
         </div>
         <div style="min-width:70px; height:70px; padding:0 10px; border-radius:50%; background:linear-gradient(135deg, var(--gold), var(--gold-light)); color:var(--teal-deep); display:flex; align-items:center; justify-content:center; font-size:14px; font-family:monospace; font-weight:900;" id="heroAvatar">#—</div>
       </div>
@@ -157,7 +210,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
 
     <div class="card">
       <div class="card-title">📅 دوامي اليوم</div>
-      <div id="myDuty" style="font-size:18px; font-weight:900; color:var(--gold-light); text-align:center; padding:15px; background:rgba(0,0,0,0.2); border-radius:12px;">جاري التحميل...</div>
+      <div id="myDuty" style="font-size:18px; font-weight:900; color:var(--gold); text-align:center; padding:15px; background:rgba(0,0,0,0.1); border-radius:12px;">جاري التحميل...</div>
     </div>
 
     <div class="card">
@@ -209,9 +262,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
   <!-- 4. حسابي -->
   <div class="page" id="page-profile">
      <div class="card" style="text-align:center;">
-        <h2 style="color:var(--gold-light); font-size:20px;" id="profName">—</h2>
-        <p style="color:#ccc; font-size:12px; margin-top:5px;" id="profSector">—</p>
-        <div style="display:inline-block; margin-top:10px; padding:6px 12px; background:rgba(0,0,0,0.5); border:1px solid var(--gold); border-radius:8px; font-family:monospace; font-size:14px; font-weight:900; color:var(--gold-light);" id="profCode">—</div>
+        <h2 style="color:var(--gold); font-size:20px;" id="profName">—</h2>
+        <p style="color:var(--text-sub); font-size:12px; margin-top:5px;" id="profSector">—</p>
+        <div style="display:inline-block; margin-top:10px; padding:6px 12px; background:rgba(0,0,0,0.3); border:1px solid var(--gold); border-radius:8px; font-family:monospace; font-size:14px; font-weight:900; color:var(--gold);" id="profCode">—</div>
      </div>
      <button class="btn secondary block" onclick="confirmLogout()" style="margin-top:20px;">🚪 تسجيل الخروج</button>
   </div>
@@ -251,6 +304,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], 
         "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] 
     };
+    const DUTY_NAMES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "إداري", "س": "سنوية", "خ": "أخرى" };
 
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
@@ -262,7 +316,6 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
     document.getElementById("profSector").innerText = user.sector || "غير محدد";
     document.getElementById("profCode").innerText = user.code || "—";
 
-    const DUTY_NAMES = { "ص": "صباحي", "م": "مسائي", "أ": "إجازة", "د": "إداري", "س": "سنوية", "خ": "أخرى" };
     let cachedMaster = { issue: {}, praise: {} };
     let cachedParamedics = [];
     let currentLocation = { lat: null, lng: null };
@@ -270,10 +323,26 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
     let myCode = user.code;
     let pendingIssuesCount = 0;
 
+    // متابعة الموقع في الخلفية
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
             currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         }, null, { enableHighAccuracy: true });
+    }
+
+    // ==========================================
+    // الوضع الليلي والنهاري
+    // ==========================================
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute("data-theme") || "dark";
+        const newTheme = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", newTheme);
+        localStorage.setItem("cfg_theme", newTheme);
+        document.getElementById("themeBtn").innerText = newTheme === "dark" ? "🌙" : "☀️";
+    }
+    if(localStorage.getItem("cfg_theme") === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.getElementById("themeBtn").innerText = "☀️";
     }
 
     function showToast(msg, type="success") {
@@ -284,19 +353,47 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
 
     function switchPage(id) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.getElementById(id ? "page-" + id : "page-home").classList.add("active");
+        document.getElementById("page-" + id).classList.add("active");
         document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
         document.querySelector(`.nav-btn[data-page="${id}"]`).classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
     }
 
-    /* ═══════ دالة الصوت المحسنة (تعمل على كروم وسفاري) ═══════ */
+    // ==========================================
+    // تحديد الموقع (GPS)
+    // ==========================================
+    function getLocation() {
+        const el = document.getElementById("gpsStatus");
+        if (!el) return;
+        el.innerText = "📍 جاري تحديد الموقع...";
+        el.style.color = "var(--gold)";
+        if (!navigator.geolocation) { el.innerText = "❌ غير مدعوم"; return; }
+        
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                el.innerText = `✅ تم تحديد الموقع (±${Math.round(pos.coords.accuracy)} م)`;
+                el.style.color = "var(--green)";
+            },
+            (err) => {
+                if (err.code === 1) el.innerText = "❌ رفضت السماح بالوصول";
+                else if (err.code === 2) el.innerText = "❌ إشارة GPS غير متاحة";
+                else el.innerText = "❌ انتهت المهلة. حاول مرة أخرى.";
+                el.style.color = "var(--red)";
+            },
+            { enableHighAccuracy: true, timeout: 15000 }
+        );
+    }
+
+    // ==========================================
+    // الإدخال الصوتي (محسّن)
+    // ==========================================
     function toggleVoice(targetId, btn) {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SR) return showToast("متصفحك لا يدعم الإدخال الصوتي (استخدم Chrome أو Safari الحديث)", "danger");
+        if (!SR) return showToast("متصفحك لا يدعم الإدخال الصوتي", "danger");
         
         if (btn.classList.contains("recording")) {
-            if (window.currentRecognition) { window.currentRecognition.stop(); }
+            if (window.currentRecognition) window.currentRecognition.stop();
             btn.classList.remove("recording"); btn.innerText = "🎤";
             return;
         }
@@ -304,7 +401,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         const recognition = new SR();
         window.currentRecognition = recognition;
         recognition.lang = 'ar-OM';
-        recognition.continuous = false; // في سفاري يجب أن يكون false ليعمل
+        recognition.continuous = false;
         recognition.interimResults = false;
 
         recognition.onstart = () => { btn.classList.add("recording"); btn.innerText = "🔴"; };
@@ -313,8 +410,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
             const el = document.getElementById(targetId);
             if (el) el.value += " " + text;
         };
-        recognition.onerror = (e) => { 
-            console.warn("Speech Error:", e.error);
+        recognition.onerror = () => { 
             showToast("تعذر الاستماع. تأكد من السماح بالميكروفون.", "danger"); 
             btn.classList.remove("recording"); btn.innerText = "🎤"; 
         };
@@ -324,7 +420,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         catch(e) { showToast("المتصفح رفض تشغيل الميكروفون", "danger"); }
     }
 
-    /* ═══════ التحميل الرئيسي ═══════ */
+    // ==========================================
+    // التحميل الرئيسي للبيانات
+    // ==========================================
     async function loadData() {
         try {
             for (const cat of ["issue", "praise"]) {
@@ -340,7 +438,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
             cachedParamedics = paramSnap.docs.map(d => d.data());
 
             // التعاميم
-            db.collection("broadcasts").get().then(s => {
+            db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(s => {
                 let html = "";
                 s.forEach(d => { const data = d.data(); html += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`; });
                 document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
@@ -367,7 +465,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         } catch(e) { console.warn(e); }
     }
 
-    /* ═══════ الدوام ═══════ */
+    // ==========================================
+    // الدوام
+    // ==========================================
     function loadMyDuty() {
         const today = new Date();
         const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
@@ -393,9 +493,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
             let html = '<table class="duty-table"><thead><tr><th>اليوم</th>';
             for (let d = 1; d <= days; d++) {
                 const isToday = d === today.getDate();
-                html += `<th style="${isToday ? 'background:var(--gold);color:var(--teal-deep);' : ''}">${d}</th>`;
+                html += `<th style="${isToday ? 'background:var(--gold);color:#fff;' : ''}">${d}</th>`;
             }
-            html += '</tr></thead><tbody><tr><td style="color:var(--gold-light); font-weight:900;">الدوام</td>';
+            html += '</tr></thead><tbody><tr><td style="color:var(--gold); font-weight:900;">الدوام</td>';
             for (let d = 1; d <= days; d++) {
                 const code = shifts[d] || "";
                 let cls = "";
@@ -409,7 +509,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         });
     }
 
-    /* ═══════ بلاغات الإدارة (مع التنبيهات) ═══════ */
+    // ==========================================
+    // بلاغات الإدارة والتنبيهات
+    // ==========================================
     function loadAdminIssues() {
         db.collection("issues").where("sector", "==", user.sector).where("status", "==", "pending_supervisor").onSnapshot(s => {
             let html = "";
@@ -419,17 +521,16 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
                 const data = d.data();
                 html += `<div class="item-card purple" style="flex-direction:column; align-items:flex-start;">
                     <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
-                        <b style="color:var(--gold-light);">🚩 ${data.targetName}</b>
+                        <b style="color:var(--gold);">🚩 ${data.targetName}</b>
                         <span style="font-size:10px; opacity:0.6;">${data.issueType}</span>
                     </div>
                     <p style="font-size:12px;"><b>المركز:</b> ${data.centerName}</p>
-                    <p style="font-size:12px; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px; width:100%; margin-bottom:8px;">${data.description}</p>
+                    <p style="font-size:12px; background:rgba(0,0,0,0.1); padding:8px; border-radius:8px; width:100%; margin-bottom:8px;">${data.description}</p>
                     <button class="btn info block" onclick="openReplyToAdmin('${d.id}')">📩 الرد على الإدارة (ما تم فعله)</button>
                 </div>`;
             });
             document.getElementById("pendingIssues").innerHTML = html || "لا يوجد بلاغات معلقة من الإدارة";
             
-            // تحديث الإشعار
             const badge = document.getElementById("navBadge");
             if(pendingIssuesCount > 0) {
                 badge.style.display = "flex";
@@ -450,7 +551,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
                     <div class="item-info">
                         <h4>✅ ${data.targetName}</h4>
                         <p>🏥 ${data.centerName} | 🕐 ${time}</p>
-                        <p style="font-size:11px; background:rgba(0,0,0,0.2); padding:6px; border-radius:6px; margin-top:4px;"><b>ما فعلته:</b> ${lastResponse.text || '—'}</p>
+                        <p style="font-size:11px; background:rgba(0,0,0,0.1); padding:6px; border-radius:6px; margin-top:4px;"><b>ما فعلته:</b> ${lastResponse.text || '—'}</p>
                     </div>
                 </div>`;
             });
@@ -481,26 +582,32 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
             const data = doc.data();
             const responses = data.responses || [];
             responses.push({ supervisor: user.name, code: myCode, text: text, time: new Date().toISOString() });
+            
             await issueRef.update({
                 responses: responses,
                 status: "resolved_by_supervisor",
                 resolvedBy: user.name,
                 resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
+            
+            // إرسال رسالة للمدير لتنبيهه
             await db.collection("messages").add({
                 sender: user.name,
-                receiver: "المدير العام", // ✅ توجيه للادارة فقط
+                receiver: "المدير العام",
                 text: `رد على بلاغ "${data.targetName}": ${text}`,
                 type: "reply_to_admin",
                 issueId: issueId,
                 timestamp: new Date()
             });
+            
             showToast("تم إرسال الرد للإدارة");
             closeModal(); loadAdminIssues(); loadData();
         } catch(e) { console.error(e); showToast("خطأ: " + e.message, "danger"); }
     }
 
-    /* ═══════ تسجيل بلاغ جديد ═══════ */
+    // ==========================================
+    // تسجيل بلاغ جديد
+    // ==========================================
     function startEntry(type) {
         const isComplaint = type === 'complaint';
         selectedIssueTypes = [];
@@ -521,8 +628,8 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
                 <textarea id="entryDesc" rows="3" placeholder="اكتب التفاصيل..."></textarea>
                 <button class="mic-btn" onclick="toggleVoice('entryDesc', this)">🎤</button>
             </div>
-            <button class="gps-btn" onclick="getLocation()" style="background: rgba(41,182,246,0.15); border: 1px solid var(--blue); color: var(--blue-light); padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 900; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;">📍 تحديد موقعي</button>
-            <div id="gpsStatus" style="font-size:11px; color:var(--gold-light); margin-bottom:10px; text-align:center;"></div>
+            <button class="gps-btn" onclick="getLocation()">📍 تحديد موقعي</button>
+            <div id="gpsStatus" style="font-size:11px; color:var(--gold); margin-bottom:10px; text-align:center;"></div>
             <label>📎 التوصيات (اختياري)</label>
             <div class="input-with-btn">
                 <textarea id="entryRecommendation" rows="2" placeholder="كيف يمكن حل هذه المشكلة؟"></textarea>
@@ -543,7 +650,6 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         const chips = document.getElementById("actionTypesChips");
         let targetHtml = "";
 
-        // القطاعات المتاحة
         const sectorsOptions = Object.keys(SECTORS).map(s => `<option value="${s}" ${s === user.sector ? 'selected' : ''}>${s}</option>`).join("");
 
         if (targetType === "paramedic") {
@@ -567,7 +673,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
                 <label>📍 القطاع</label>
                 <select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select>
                 <label>🏥 المركز</label>
-                <select id="entryCenter" onchange="updateEntryVehicles()"></select>
+                <select id="entryCenter"></select>
                 <label>🚑 رقم المركبة</label>
                 <select id="entryTargetName"></select>
             `;
@@ -576,7 +682,6 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         }
         area.innerHTML = targetHtml;
         
-        // تحديث المراكز فور عرض الواجهة
         if (document.getElementById("entrySector")) updateEntryCenters();
 
         const types = (master[targetType] || []);
@@ -589,8 +694,7 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         const centerSelect = document.getElementById("entryCenter") || document.getElementById("entryTargetName");
         if(centerSelect) {
             centerSelect.innerHTML = centers.map(c => `<option value="${c}">${c}</option>`).join("");
-            if(centerSelect.id === "entryCenter") updateEntryParamedics(); // تحديث المسعفين إذا كان الهدف مسعف
-            if(centerSelect.id === "entryCenter") updateEntryVehicles();
+            if(centerSelect.id === "entryCenter") updateEntryParamedics();
         }
     }
 
@@ -599,15 +703,9 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         const sel = document.getElementById("entryTargetName");
         if(!sel) return;
         const filtered = cachedParamedics.filter(p => p.centerName === center);
-        if(filtered.length > 0) {
-            sel.innerHTML = filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("");
-        } else {
-            sel.innerHTML = `<option value="">-- لا يوجد مسعفون --</option>`;
-        }
-    }
-
-    function updateEntryVehicles() {
-        // يمكن جلب المركبات هنا في المستقبل
+        sel.innerHTML = filtered.length > 0 
+            ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("")
+            : `<option value="">-- لا يوجد مسعفون --</option>`;
     }
 
     function toggleChip(el, val) {
@@ -652,8 +750,8 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
                 <textarea id="visitNotes" rows="4"></textarea>
                 <button class="mic-btn" onclick="toggleVoice('visitNotes', this)">🎤</button>
             </div>
-            <button class="gps-btn" onclick="getLocation()" style="background: rgba(41,182,246,0.15); border: 1px solid var(--blue); color: var(--blue-light); padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 900; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;">📍 تحديد موقعي</button>
-            <div id="gpsStatus" style="font-size:11px; color:var(--gold-light); margin-bottom:10px; text-align:center;"></div>
+            <button class="gps-btn" onclick="getLocation()">📍 تحديد موقعي</button>
+            <div id="gpsStatus" style="font-size:11px; color:var(--gold); margin-bottom:10px; text-align:center;"></div>
             <button class="btn success block" onclick="submitVisit()">💾 حفظ</button>
             <button class="btn secondary block" onclick="closeModal()">إغلاق</button>
         `;
@@ -679,17 +777,18 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         }).then(() => { showToast("تم الحفظ"); closeModal(); loadData(); });
     }
 
-    /* ═══════ الدردشة (خاصة) ═══════ */
+    // ==========================================
+    // الدردشة (خاصة مع المدير)
+    // ==========================================
     function loadChat() {
-        db.collection("messages").where("type", "!=", "reply_to_admin").orderBy("timestamp", "asc").limitToLast(100).onSnapshot(snap => {
+        db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
             let html = "";
             snap.forEach(doc => {
                 const m = doc.data();
-                // عرض الرسائل فقط التي بيني وبين المدير
                 const isMine = m.sender === user.name;
-                const isFromAdmin = m.sender === "المدير العام" && m.receiver === user.name;
-                
-                if (isMine || isFromAdmin) {
+                // نظهر فقط رسائل المشرف للمدير أو رسائل المدير له
+                if ((isMine && (m.receiver === "المدير العام" || !m.receiver)) || 
+                    (m.sender === "المدير العام" && m.receiver === user.name)) {
                     const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
                     html += `<div class="message ${isMine ? 'mine' : 'theirs'}"><div>${m.text}</div><span class="time">${time}</span></div>`;
                 }
@@ -706,13 +805,13 @@ label { display: block; font-size: 12px; color: rgba(255,255,255,0.85); font-wei
         input.value = "";
         db.collection("messages").add({ 
             sender: user.name, 
-            receiver: "المدير العام", // ✅ توجيه للادارة فقط
+            receiver: "المدير العام", // ✅ توجيه خاص للإدارة
             text: text, 
             timestamp: new Date() 
         });
     }
 
-    function manualRefresh() { showToast("جاري التحديث..."); loadData(); }
+    function manualRefresh() { showToast("تحديث..."); loadData(); }
     function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
     function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; } }
 
