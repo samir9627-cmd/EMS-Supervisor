@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>المشرف الميداني — V49.0</title>
+<title>المشرف الميداني — V52.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -188,7 +188,10 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     </div>
 
     <div class="card">
-      <div class="card-title">🗓️ جدول دوامي الشهري</div>
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <span>🗓️ جدول دوامي الشهري</span>
+        <input type="month" id="dutyMonthSelector" onchange="loadMonthlyDuty()" style="margin-bottom:0; width:auto; padding:6px 10px; font-size:12px; background:var(--bg-glass); border:1px solid var(--gold); color:var(--text-main); border-radius:8px;">
+      </div>
       <div class="duty-table-wrapper" id="myMonthlyDuty">جاري التحميل...</div>
     </div>
 
@@ -385,7 +388,6 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             const paramSnap = await db.collection("paramedics").get();
             cachedParamedics = paramSnap.docs.map(d => d.data());
 
-            // التعاميم
             db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(s => {
                 let html = "";
                 s.forEach(d => { 
@@ -398,12 +400,10 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
                 document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
             });
             
-            // سجلات المشرف (البلاغات الإدارية + الخاصة به)
             db.collection("issues").orderBy("timestamp", "desc").onSnapshot(s => {
                 myRecords = [];
                 s.forEach(d => {
                     const data = d.data();
-                    // فلترة: إما بلاغ إداري في قطاعه أو بلاغ خاص به
                     if (data.supervisor === "الإدارة (إدخال يدوي)" && data.sector === user.sector) {
                         myRecords.push({ id: d.id, ...data });
                     } else if (data.supervisor === user.name) {
@@ -414,6 +414,16 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
                 loadAdminIssues();
             });
             
+            // مراقبة طلبات التعديل
+            db.collection("edit_requests").where("supervisorName", "==", user.name).where("status", "==", "approved").onSnapshot(snap => {
+                snap.forEach(doc => {
+                    if(!doc.data().notified) {
+                        showToast("✅ تمت الموافقة على طلب فتح التعديل", "success");
+                        doc.ref.update({ notified: true });
+                    }
+                });
+            });
+            
             loadMyDuty(); loadMonthlyDuty(); loadChat();
         } catch(e) { 
             console.error(e); 
@@ -421,9 +431,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         }
     }
 
-    // ==========================================
-    // التعاميم - الرد
-    // ==========================================
+    // التعاميم
     function openBroadcastReply(id, title) {
         document.getElementById("modalTitle").innerText = "📩 إفادة بالاطلاع";
         document.getElementById("modalBody").innerHTML = `
@@ -437,24 +445,19 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         `;
         document.getElementById("modalOverlay").classList.add("show");
     }
-
     async function submitBroadcastReply(id, title) {
         const text = document.getElementById("broadcastReplyText").value.trim();
         if(!text) return showToast("أدخل ردك", "danger");
         try {
             await db.collection("messages").add({
-                sender: user.name,
-                receiver: "المدير العام",
-                text: `إفادة بخصوص تعميم "${title}": ${text}`,
-                timestamp: new Date()
+                sender: user.name, receiver: "المدير العام",
+                text: `إفادة بخصوص تعميم "${title}": ${text}`, timestamp: new Date()
             });
-            showToast("تم إرسال الإفادة للإدارة"); closeModal();
+            showToast("تم إرسال الإفادة"); closeModal();
         } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    // ==========================================
-    // سجلاتي
-    // ==========================================
+    // السجلات
     function renderMyRecords() {
         let filtered = myRecords;
         if (currentFilter === 'active') filtered = myRecords.filter(i => i.archived !== true);
@@ -476,9 +479,12 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             if (isResolved) statusBadge = '<span class="status-badge status-resolved">✅ محلولة</span>';
             else if (d.status === 'in_progress') statusBadge = '<span class="status-badge status-progress">🔄 قيد الإجراء</span>';
 
-            // التحقق من إمكانية التعديل (أقل من 60 دقيقة)
+            // التحقق من إمكانية التعديل (أقل من 60 دقيقة أو تمت الموافقة)
             let canEdit = false;
-            if (d.timestamp) {
+            if (d.allow_edit_until) {
+                const allowedUntil = new Date(d.allow_edit_until.seconds * 1000);
+                if (allowedUntil > new Date()) canEdit = true;
+            } else if (d.timestamp) {
                 const created = d.timestamp.toDate();
                 const diffMins = (Date.now() - created.getTime()) / 60000;
                 if (diffMins < 60) canEdit = true;
@@ -492,10 +498,34 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
                 <div class="item-actions">
                     ${!isResolved ? `<button class="btn success small" onclick="event.stopPropagation(); openResolveModal('${d.id}')">✅ تم الحل</button>` : ''}
                     ${canEdit && !isResolved ? `<button class="btn info small" onclick="event.stopPropagation(); editMyRecord('${d.id}')">✏️</button>` : ''}
+                    ${!canEdit && !isResolved ? `<button class="btn secondary small" onclick="event.stopPropagation(); requestEdit('${d.id}')">🔒 طلب تعديل</button>` : ''}
                 </div>
             </div>`;
         });
         document.getElementById("issuesList").innerHTML = html || "لا يوجد سجلات";
+    }
+
+    function requestEdit(id) {
+        document.getElementById("modalTitle").innerText = "🔒 طلب فتح تعديل";
+        document.getElementById("modalBody").innerHTML = `
+            <label>ما سبب طلب فتح التعديل؟</label>
+            <textarea id="editReason" rows="3" placeholder="اذكر السبب..."></textarea>
+            <button class="btn info block" onclick="submitEditRequest('${id}')">📤 إرسال الطلب للمدير</button>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    async function submitEditRequest(id) {
+        const reason = document.getElementById("editReason").value.trim();
+        if(!reason) return showToast("اذكر السبب", "danger");
+        try {
+            await db.collection("edit_requests").add({
+                issueId: id, supervisorName: user.name, reason: reason,
+                status: "pending", timestamp: new Date(), notified: false
+            });
+            showToast("تم إرسال الطلب للمدير"); closeModal();
+        } catch(e) { showToast("خطأ", "danger"); }
     }
 
     function filterMyRecords(type) {
@@ -539,13 +569,11 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 
     async function submitResolution(id) {
         const text = document.getElementById("resolveDesc").value.trim();
-        if(!text) return showToast("يجب كتابة الإجراء المتخذ", "danger");
+        if(!text) return showToast("يجب كتابة الإجراء", "danger");
         try {
             await db.collection("issues").doc(id).update({
-                status: "resolved_by_supervisor",
-                resolution: text,
-                resolvedBy: user.name,
-                resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                status: "resolved_by_supervisor", resolution: text,
+                resolvedBy: user.name, resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast("تم إغلاق البلاغ بنجاح"); closeModal();
         } catch(e) { showToast("خطأ", "danger"); }
@@ -570,9 +598,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         showToast("تم التعديل"); closeModal();
     }
 
-    // ==========================================
-    // الدوام والرئيسية
-    // ==========================================
+    // الدوام
     function loadMyDuty() {
         const today = new Date();
         const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
@@ -589,13 +615,21 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 
     function loadMonthlyDuty() {
         const today = new Date();
-        const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-        const days = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-        db.collection("duty_schedule").doc(`${monthStr}_${myCode}`).get().then(doc => {
+        const selector = document.getElementById("dutyMonthSelector");
+        if (!selector.value) selector.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+        const selectedMonth = selector.value;
+        const [year, month] = selectedMonth.split("-");
+        const days = new Date(year, month, 0).getDate();
+        
+        db.collection("duty_schedule").doc(`${selectedMonth}_${myCode}`).get().then(doc => {
             const el = document.getElementById("myMonthlyDuty");
             let shifts = {}; if (doc.exists) shifts = doc.data().shifts || {};
             let html = '<table class="duty-table"><thead><tr><th>اليوم</th>';
-            for (let d = 1; d <= days; d++) { const isToday = d === today.getDate(); html += `<th style="${isToday ? 'background:var(--gold);color:#fff;' : ''}">${d}</th>`; }
+            for (let d = 1; d <= days; d++) { 
+                const isCurrentMonth = (year == today.getFullYear() && month == (today.getMonth()+1));
+                const isToday = isCurrentMonth && (d === today.getDate()); 
+                html += `<th style="${isToday ? 'background:var(--gold);color:#fff;' : ''}">${d}</th>`; 
+            }
             html += '</tr></thead><tbody><tr><td style="color:var(--gold); font-weight:900;">الدوام</td>';
             for (let d = 1; d <= days; d++) {
                 const code = shifts[d] || ""; let cls = "";
@@ -662,22 +696,18 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         if (!text) return showToast("اكتب ما تم فعله", "danger");
         try {
             await db.collection("issues").doc(issueId).update({
-                status: "resolved_by_supervisor",
-                resolution: text,
-                resolvedBy: user.name,
-                resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                status: "resolved_by_supervisor", resolution: text,
+                resolvedBy: user.name, resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             await db.collection("messages").add({
                 sender: user.name, receiver: "المدير العام", text: `رد على بلاغ: ${text}`,
                 type: "reply_to_admin", issueId: issueId, timestamp: new Date()
             });
             showToast("تم إرسال الرد للإدارة"); closeModal();
-        } catch(e) { console.error(e); showToast("خطأ: " + e.message, "danger"); }
+        } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    // ==========================================
     // تسجيل بلاغ جديد
-    // ==========================================
     function startEntry(type) {
         const isComplaint = type === 'complaint';
         selectedIssueTypes = [];
@@ -783,6 +813,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         }).then(() => { showToast("تم الحفظ بنجاح"); closeModal(); });
     }
 
+    // نظام الزيارة الجديد
+    let visitStartTime = null;
+
     function startVisit() {
         document.getElementById("modalTitle").innerText = "📋 تسجيل زيارة";
         document.getElementById("modalBody").innerHTML = `
@@ -793,11 +826,16 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             <div class="input-with-btn"><textarea id="visitNotes" rows="4"></textarea><button class="mic-btn" onclick="toggleVoice('visitNotes', this)">🎤</button></div>
             <button class="gps-btn" onclick="getLocation()">📍 تحديد موقعي</button>
             <div id="gpsStatus" style="font-size:11px; color:var(--gold); margin-bottom:10px; text-align:center;"></div>
-            <button class="btn success block" onclick="submitVisit()">💾 حفظ</button>
-            <button class="btn secondary block" onclick="closeModal()">إغلاق</button>
+            <div style="display:flex; gap:8px;">
+                <button class="btn info block" onclick="checkInVisit()">🟢 بدء الزيارة</button>
+                <button class="btn success block" id="btnCheckOut" style="display:none;" onclick="checkOutVisit()">🔴 إنهاء الزيارة</button>
+            </div>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إغلاق</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
         updateVisitCenters();
+        visitStartTime = null;
+        document.getElementById("btnCheckOut").style.display = "none";
     }
 
     function updateVisitCenters() {
@@ -806,21 +844,32 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         document.getElementById("visitCenter").innerHTML = centers.map(c => `<option value="${c}">${c}</option>`).join("");
     }
 
-    function submitVisit() {
+    function checkInVisit() {
+        visitStartTime = new Date();
+        document.getElementById("btnCheckOut").style.display = "block";
+        document.querySelector(".btn.info").style.display = "none";
+        showToast("✅ تم تسجيل بدء الزيارة");
+    }
+
+    function checkOutVisit() {
+        if (!visitStartTime) return showToast("لم تبدأ الزيارة", "danger");
+        const endTime = new Date();
+        const duration = Math.round((endTime - visitStartTime) / 60000); // بالميلي ثانية إلى دقائق
         const center = document.getElementById("visitCenter").value;
         const sector = document.getElementById("visitSector").value;
         const notes = document.getElementById("visitNotes").value.trim();
-        if (!notes) return showToast("أدخل الملاحظات", "danger");
+        const durationText = duration > 0 ? `${duration} دقيقة` : `أقل من دقيقة`;
+        
+        const finalNotes = `[مدة الزيارة: ${durationText}] ${notes}`;
+        
         db.collection("issues").add({
-            type: 'visit', isPraise: false, centerName: center, description: notes,
+            type: 'visit', isPraise: false, centerName: center, description: finalNotes,
             supervisor: user.name, sector: sector, status: 'pending_supervisor', archived: false, timestamp: new Date(),
             location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
-        }).then(() => { showToast("تم الحفظ"); closeModal(); });
+        }).then(() => { showToast("تم حفظ الزيارة"); closeModal(); });
     }
 
-    // ==========================================
     // الدردشة
-    // ==========================================
     function loadChat() {
         db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
             let html = "";
