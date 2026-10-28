@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V46.0</title>
+<title>الإدارة العامة — V47.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -92,29 +92,31 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .btn.secondary { background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-main); }
 .btn.small { padding: 8px 14px; font-size: 11px; }
 
-.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
+/* تحسين وتصغير سجلات المشرفين */
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
 .item-card:hover { background: rgba(255,255,255,0.05); }
 .item-info { flex: 1; min-width: 200px; pointer-events: none; }
-.item-info h4 { font-size: 12px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
-.item-info p { font-size: 10px; color: var(--text-sub); line-height: 1.4; }
-.item-actions { display: flex; gap: 6px; pointer-events: auto; }
-.icon-btn-sm { width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: 0.2s; }
+.item-info h4 { font-size: 11px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
+.item-info p { font-size: 9px; color: var(--text-sub); line-height: 1.3; }
+.item-actions { display: flex; gap: 4px; pointer-events: auto; }
+.icon-btn-sm { width: 28px; height: 28px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: 0.2s; }
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red); }
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue); }
-.icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
+.icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold); font-size: 10px; font-family: monospace; font-weight: 900; width: auto; padding: 0 8px; }
 .icon-btn-sm.remind { background: rgba(251,140,0,0.2); color: var(--amber); }
 .icon-btn-sm.archive { background: rgba(171,71,188,0.2); color: #ce93d8; }
 
-.status-badge { display: inline-block; padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 900; margin-right: 5px; }
+.status-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 900; margin-right: 4px; }
 .status-pending { background: rgba(251,140,0,0.2); color: var(--amber); }
 .status-resolved { background: rgba(67,160,71,0.2); color: var(--green); }
 .status-progress { background: rgba(41,182,246,0.2); color: var(--blue); }
 
-.priority-badge { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 5px; }
-.priority-green { background: var(--green); box-shadow: 0 0 5px var(--green); }
-.priority-yellow { background: var(--amber); box-shadow: 0 0 5px var(--amber); }
-.priority-red { background: var(--red); box-shadow: 0 0 8px var(--red); animation: pulseRed 2s infinite; }
+.priority-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 4px; }
+.priority-green { background: var(--green); box-shadow: 0 0 3px var(--green); }
+.priority-yellow { background: var(--amber); box-shadow: 0 0 3px var(--amber); }
+.priority-red { background: var(--red); box-shadow: 0 0 5px var(--red); animation: pulseRed 2s infinite; }
 
+/* تصميم جدول الدوام السابق (أعيد) */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); margin-bottom: 15px; }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
@@ -159,6 +161,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
 .modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
+/* إعدادات الطباعة الفخمة والمصححة */
 #printArea { display: none; }
 @media print {
   @page { margin: 5mm; size: A4 landscape; }
@@ -166,13 +169,17 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   body * { visibility: hidden; }
   #printArea { visibility: visible !important; display: block !important; position: absolute; left: 0; top: 0; width: 100%; background: #fff !important; color: #000 !important; }
   #printArea * { visibility: visible !important; }
+  
   .print-page { background: white; color: black; padding: 10px; font-family: 'Cairo'; width: 100%; zoom: 0.85; }
+  
+  /* الهيدر الفخم */
   .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; }
-  .print-logo { width: 120px; height: 120px; object-fit: contain; }
+  .print-logo { width: 90px; height: 90px; object-fit: contain; }
   .print-header-text-right { text-align: right; flex: 1; }
-  .print-header-text-right h1 { font-size: 18px; color: #0d4a42; margin: 0; font-weight: 900; }
+  .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; }
   .print-header-text-left { text-align: left; flex: 1; }
-  .print-header-text-left h2 { font-size: 14px; color: #666; margin: 3px 0 0; font-weight: bold; }
+  .print-header-text-left h2 { font-size: 13px; color: #666; margin: 0; font-weight: bold; line-height: 1.4; }
+  
   .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; }
   .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; }
   .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; }
@@ -455,9 +462,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     let currentArchiveFilter = 'active';
     let lastMessagesCount = 0;
 
-    // ==========================================
     // 1. الوضع الليلي والنهاري
-    // ==========================================
     function toggleTheme() {
         const current = document.documentElement.getAttribute("data-theme") || "dark";
         const newTheme = current === "dark" ? "light" : "dark";
@@ -504,9 +509,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 
     function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
 
-    // ==========================================
-    // 2. التحديث اللحظي من Firebase
-    // ==========================================
+    // 2. التحديث اللحظي
     db.collection("issues").onSnapshot(snap => {
         allIssues = [];
         snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
@@ -517,32 +520,26 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     });
     
     db.collection("paramedics").onSnapshot(snap => {
-        allParameds = [];
-        snap.forEach(d => allParameds.push({ id: d.id, ...d.data() }));
+        allParameds = []; snap.forEach(d => allParameds.push({ id: d.id, ...d.data() }));
         document.getElementById("kpiParams").innerText = allParameds.length;
         if (document.querySelector(".page.active").id === "page-paramedics") loadParams();
     });
     
     db.collection("vehicles").onSnapshot(snap => {
-        allVehicles = [];
-        snap.forEach(d => allVehicles.push({ id: d.id, ...d.data() }));
+        allVehicles = []; snap.forEach(d => allVehicles.push({ id: d.id, ...d.data() }));
         document.getElementById("kpiVehs").innerText = allVehicles.length;
         if (document.querySelector(".page.active").id === "page-vehicles") loadVehicles();
     });
     
     db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
-        allSupervisors = [];
-        snap.forEach(d => allSupervisors.push({ id: d.id, ...d.data() }));
+        allSupervisors = []; snap.forEach(d => allSupervisors.push({ id: d.id, ...d.data() }));
         document.getElementById("kpiSups").innerText = allSupervisors.length;
         if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
-        populateMsgSupervisors();
-        populateBcSupervisors();
+        populateMsgSupervisors(); populateBcSupervisors();
     });
     
     db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
-        allMessages = [];
-        snap.forEach(d => allMessages.push({ id: d.id, ...d.data() }));
-        
+        allMessages = []; snap.forEach(d => allMessages.push({ id: d.id, ...d.data() }));
         if (snap.size > lastMessagesCount && lastMessagesCount > 0) {
             const newest = allMessages[allMessages.length - 1];
             if (newest.sender !== "المدير العام" && newest.sender !== user.name) {
@@ -555,9 +552,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (document.querySelector(".page.active").id === "page-messages") loadMessages();
     });
 
-    // ==========================================
     // 3. لوحة القيادة
-    // ==========================================
     function renderDashboardCharts() {
         const praises = allIssues.filter(i => i.isPraise).length;
         const complaints = allIssues.filter(i => !i.isPraise && i.type !== 'visit').length;
@@ -595,16 +590,13 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // ==========================================
-    // 4. البلاغات (مع الأولوية وزر التذكير)
-    // ==========================================
+    // 4. البلاغات
     function updateIssueCenters() {
         const sec = document.getElementById("issueSector").value;
         const sel = document.getElementById("issueCenter");
         sel.innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("") || '<option value="">اختر القطاع</option>';
         loadIssueTargets();
     }
-
     function loadIssueTargets() {
         const center = document.getElementById("issueCenter").value;
         const targetType = document.getElementById("issueTargetType").value;
@@ -619,7 +611,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد</option>';
         }
     }
-
     async function saveIssue() {
         const center = document.getElementById("issueCenter").value;
         const targetType = document.getElementById("issueTargetType").value;
@@ -641,7 +632,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             loadIssues();
         } catch(e) { showToast("خطأ", "danger"); }
     }
-
     function getIssueColorClass(issue) {
         if (issue.status === 'resolved_by_supervisor') return 'issue-ok';
         const now = Date.now();
@@ -652,19 +642,16 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (hoursDiff > 12) return 'issue-warn';
         return 'issue-ok';
     }
-
     function getPriorityBadge(priority) {
-        if (priority === 'red') return '<span class="priority-badge priority-red" title="عاجلة"></span>';
-        if (priority === 'yellow') return '<span class="priority-badge priority-yellow" title="متوسطة"></span>';
-        return '<span class="priority-badge priority-green" title="عادية"></span>';
+        if (priority === 'red') return '<span class="priority-badge priority-red"></span>';
+        if (priority === 'yellow') return '<span class="priority-badge priority-yellow"></span>';
+        return '<span class="priority-badge priority-green"></span>';
     }
-
     function getStatusBadge(issue) {
         if (issue.status === 'resolved_by_supervisor') return '<span class="status-badge status-resolved">✅ محلولة</span>';
         if (issue.status === 'in_progress') return '<span class="status-badge status-progress">🔄 قيد الإجراء</span>';
         return '<span class="status-badge status-pending">⏳ معلقة</span>';
     }
-
     function loadIssues() {
         db.collection("issues").where("status", "in", ["pending_supervisor", "in_progress"]).get().then(s => {
             let html = "";
@@ -675,24 +662,21 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 const created = data.createdAt ? data.createdAt.seconds * 1000 : now;
                 const hoursDiff = (now - created) / (1000 * 60 * 60);
                 const showRemind = hoursDiff > 24;
-                const priorityBadge = getPriorityBadge(data.priority);
-                
                 html += `<div class="item-card ${colorClass}" style="border-right-width:4px;">
                     <div class="item-info">
-                        <h4>${priorityBadge} ${getStatusBadge(data)} ${data.targetName}</h4>
+                        <h4>${getPriorityBadge(data.priority)} ${getStatusBadge(data)} ${data.targetName}</h4>
                         <p>🏥 ${data.centerName} | 📌 ${data.issueType} | 📍 ${data.sector}</p>
                         <p style="font-size:10px; opacity:0.6; margin-top:4px;">${data.description}</p>
                     </div>
                     <div class="item-actions">
-                        ${showRemind ? `<button class="icon-btn-sm remind" onclick="sendReminder('${d.id}')" title="تذكير">🔔</button>` : ''}
-                        <button class="icon-btn-sm edit" onclick="editIssueFromAdmin('${d.id}')" title="تعديل">✏️</button>
+                        ${showRemind ? `<button class="icon-btn-sm remind" onclick="sendReminder('${d.id}')">🔔</button>` : ''}
+                        <button class="icon-btn-sm edit" onclick="editIssueFromAdmin('${d.id}')">✏️</button>
                         <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
                     </div>
                 </div>`;
             });
             document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد بلاغات معلقة";
         });
-        
         db.collection("issues").where("status", "==", "resolved_by_supervisor").get().then(s => {
             let html = "";
             s.forEach(d => {
@@ -713,40 +697,29 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة";
         });
     }
-
     function editIssueFromAdmin(id) {
         const issue = allIssues.find(i => i.id === id);
         if(!issue) return;
         document.getElementById("modalTitle").innerText = "✏️ تعديل البلاغ";
         document.getElementById("modalBody").innerHTML = `
-            <label>الهدف</label>
-            <input type="text" id="adminEditTarget" value="${issue.targetName || ''}">
-            <label>نوع البلاغ</label>
-            <input type="text" id="adminEditType" value="${issue.issueType || ''}">
+            <label>الهدف</label><input type="text" id="adminEditTarget" value="${issue.targetName || ''}">
+            <label>نوع البلاغ</label><input type="text" id="adminEditType" value="${issue.issueType || ''}">
             <label>الأولوية</label>
-            <select id="adminEditPriority">
-                <option value="green" ${issue.priority === 'green' ? 'selected' : ''}>🟢 عادية</option>
-                <option value="yellow" ${issue.priority === 'yellow' ? 'selected' : ''}>🟡 متوسطة</option>
-                <option value="red" ${issue.priority === 'red' ? 'selected' : ''}>🔴 عاجلة</option>
-            </select>
-            <label>الوصف</label>
-            <textarea id="adminEditDesc" rows="4">${issue.description || ''}</textarea>
+            <select id="adminEditPriority"><option value="green" ${issue.priority === 'green' ? 'selected' : ''}>🟢 عادية</option><option value="yellow" ${issue.priority === 'yellow' ? 'selected' : ''}>🟡 متوسطة</option><option value="red" ${issue.priority === 'red' ? 'selected' : ''}>🔴 عاجلة</option></select>
+            <label>الوصف</label><textarea id="adminEditDesc" rows="4">${issue.description || ''}</textarea>
             <button class="btn success block" onclick="saveAdminEditIssue('${id}')">💾 حفظ</button>
             <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
     }
-
     async function saveAdminEditIssue(id) {
         const targetName = document.getElementById("adminEditTarget").value;
         const issueType = document.getElementById("adminEditType").value;
         const priority = document.getElementById("adminEditPriority").value;
         const description = document.getElementById("adminEditDesc").value;
-        
         await db.collection("issues").doc(id).update({ targetName, issueType, priority, description });
         showToast("تم التعديل"); closeModal(); loadIssues();
     }
-
     async function sendReminder(issueId) {
         const issue = allIssues.find(i => i.id === issueId);
         if(!issue) return;
@@ -758,36 +731,28 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         showToast("تم إرسال تنبيه للمشرف");
     }
 
-    // ==========================================
-    // 5. سجلات المشرفين (شاملة كل البلاغات)
-    // ==========================================
+    // 5. سجلات المشرفين (المصححة)
     function filterArchive(type) {
         currentArchiveFilter = type;
         document.getElementById("tab-active").classList.toggle("active", type === 'active');
         document.getElementById("tab-archived").classList.toggle("active", type === 'archived');
         loadSupervisorReports();
     }
-
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
         const grouped = {};
-        
         allIssues.forEach(issue => {
-            // إزالة شرط استبعاد بلاغات الإدارة
             if(sectorFilter && issue.sector !== sectorFilter) return;
-            
             const isArchived = issue.archived === true;
             if (currentArchiveFilter === 'active' && isArchived) return;
             if (currentArchiveFilter === 'archived' && !isArchived) return;
-            
             const sec = issue.sector || "غير محدد";
             const center = issue.centerName || "غير محدد";
             if(!grouped[sec]) grouped[sec] = {};
             if(!grouped[sec][center]) grouped[sec][center] = [];
             grouped[sec][center].push(issue);
         });
-        
         let html = "";
         for (const [sec, centers] of Object.entries(grouped)) {
             html += `<div class="issue-group"><div class="issue-group-header"><span>📍 ${sec}</span> <span>${Object.values(centers).flat().length} سجل</span></div>`;
@@ -798,10 +763,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                     if (issue.isPraise) { typeClass = "issue-item praise"; typeText = "إشادة"; typeIcon = "⭐"; }
                     else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة"; typeIcon = "📝"; }
                     else if (issue.supervisor === "الإدارة (إدخال يدوي)") { typeText = "بلاغ إداري"; typeIcon = "🚨"; }
-                    
                     const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
                     const statusBadge = getStatusBadge(issue);
-                    
                     html += `<div class="${typeClass}">
                         <div class="issue-info" style="cursor:pointer;" onclick="openIssueDetails('${issue.id}')">
                             <h4>${typeIcon} ${typeText} - ${issue.targetName || "المركز"} ${statusBadge}</h4>
@@ -810,7 +773,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                         </div>
                         <div class="item-actions">
                             ${!issue.archived ? `<button class="icon-btn-sm archive" onclick="archiveRecord('${issue.id}')" title="أرشفة">📜</button>` : ''}
-                            <button class="icon-btn-sm edit" onclick="editSupervisorRecord('${issue.id}')" title="تعديل">✏️</button>
+                            <button class="icon-btn-sm edit" onclick="editSupervisorRecord('${issue.id}')">✏️</button>
                             <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${issue.id}')">🗑️</button>
                         </div>
                     </div>`;
@@ -821,29 +784,23 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
         container.innerHTML = html || "لا توجد سجلات في هذا القسم";
     }
-
     async function archiveRecord(id) {
         await db.collection("issues").doc(id).update({ archived: true });
         showToast("تم النقل إلى الأرشيف"); loadSupervisorReports();
     }
-
     function editSupervisorRecord(id) {
         const issue = allIssues.find(i => i.id === id);
         if(!issue) return;
         document.getElementById("modalTitle").innerText = "✏️ تعديل السجل";
         document.getElementById("modalBody").innerHTML = `
-            <label>الهدف</label>
-            <input type="text" id="supEditTarget" value="${issue.targetName || ''}">
-            <label>الوصف</label>
-            <textarea id="supEditDesc" rows="4">${issue.description || ''}</textarea>
-            <label>التوصيات</label>
-            <textarea id="supEditRec" rows="3">${issue.recommendation || ''}</textarea>
+            <label>الهدف</label><input type="text" id="supEditTarget" value="${issue.targetName || ''}">
+            <label>الوصف</label><textarea id="supEditDesc" rows="4">${issue.description || ''}</textarea>
+            <label>التوصيات</label><textarea id="supEditRec" rows="3">${issue.recommendation || ''}</textarea>
             <button class="btn success block" onclick="saveSupervisorRecordEdit('${id}')">💾 حفظ</button>
             <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
     }
-
     async function saveSupervisorRecordEdit(id) {
         const targetName = document.getElementById("supEditTarget").value;
         const description = document.getElementById("supEditDesc").value;
@@ -851,7 +808,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         await db.collection("issues").doc(id).update({ targetName, description, recommendation });
         showToast("تم التعديل"); closeModal(); loadSupervisorReports();
     }
-
     function openIssueDetails(issueId) {
         const issue = allIssues.find(i => i.id === issueId);
         if (!issue) return;
@@ -867,8 +823,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 <p><b>المشرف:</b> ${issue.supervisor || '-'}</p>
                 <p><b>التاريخ:</b> ${date}</p>
             </div>
-            <label>الوصف:</label>
-            <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.description || '-'}</p>
+            <label>الوصف:</label><p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.description || '-'}</p>
             ${issue.recommendation ? `<label>التوصيات:</label><p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px; color:var(--blue);">${issue.recommendation}</p>` : ''}
             ${issue.resolution ? `<label>الإجراء المتخذ:</label><p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px; color:var(--green);">${issue.resolution}</p>` : ''}
             <button class="btn secondary block" onclick="closeModal()">إغلاق</button>
@@ -876,74 +831,48 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         document.getElementById("modalOverlay").classList.add("show");
     }
 
-    // ==========================================
-    // 6. الدوام المرن (مع السنوية)
-    // ==========================================
+    // 6. الدوام
     function loadDutyTable() {
-        const month = document.getElementById("dutyMonth").value;
-        if (!month) return;
-        const [year, m] = month.split("-");
-        const days = new Date(year, m, 0).getDate();
+        const month = document.getElementById("dutyMonth").value; if (!month) return;
+        const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
         db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
-            const data = {};
-            dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
+            const data = {}; dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
             document.getElementById("dutyTableContainer").innerHTML = buildFlexibleDutyHtml(allSupervisors, data, year, m, days, month);
         });
     }
-    
     function buildFlexibleDutyHtml(suprvs, data, year, m, days, month) {
         if (!suprvs.length) return '<div style="text-align:center; opacity:0.5;">لا يوجد مشرفون</div>';
         let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
-        for (let d = 1; d <= days; d++) { 
-            const dow = new Date(year, m-1, d).getDay(); 
-            const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : ''; 
-            html += `<th${wk}>${d}</th>`; 
-        }
+        for (let d = 1; d <= days; d++) { const dow = new Date(year, m-1, d).getDay(); const wk = (dow === 5 || dow === 6) ? ' class="weekend"' : ''; html += `<th${wk}>${d}</th>`; }
         html += '</tr></thead><tbody>';
         suprvs.forEach(s => {
-            const shifts = data[s.code] || {};
-            html += `<tr><td>${s.name}</td>`;
+            const shifts = data[s.code] || {}; html += `<tr><td>${s.name}</td>`;
             for (let d = 1; d <= days; d++) { 
                 const val = shifts[d] || ""; 
                 let sectorClass = "";
-                if (val.startsWith("A-")) sectorClass = "sec-A";
-                else if (val.startsWith("B-")) sectorClass = "sec-B";
-                else if (val === "س") sectorClass = "s-annual";
+                if (val.startsWith("A-")) sectorClass = "sec-A"; else if (val.startsWith("B-")) sectorClass = "sec-B"; else if (val === "س") sectorClass = "s-annual";
                 html += `<td class="${sectorClass}"><select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)"><option value="">—</option><option value="A-ص" ${val === 'A-ص' ? 'selected' : ''}>A - ص</option><option value="A-م" ${val === 'A-م' ? 'selected' : ''}>A - م</option><option value="B-ص" ${val === 'B-ص' ? 'selected' : ''}>B - ص</option><option value="B-م" ${val === 'B-م' ? 'selected' : ''}>B - م</option><option value="أ" ${val === 'أ' ? 'selected' : ''}>إجازة</option><option value="د" ${val === 'د' ? 'selected' : ''}>إداري</option><option value="س" ${val === 'س' ? 'selected' : ''}>سنوية</option></select></td>`; 
             }
             html += `</tr>`;
         });
         return html + '</tbody></table>';
     }
-
     async function updateDuty(month, code, name, day, val) {
         const docId = `${month}_${code}`; const docRef = db.collection("duty_schedule").doc(docId);
-        try { 
-            const doc = await docRef.get(); 
-            let shifts = doc.exists ? (doc.data().shifts || {}) : {}; 
-            shifts[day] = val; 
-            await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); 
-            showToast("تم الحفظ"); loadDutyTable();
-        } catch(e) { showToast("خطأ", "danger"); }
+        try { const doc = await docRef.get(); let shifts = doc.exists ? (doc.data().shifts || {}) : {}; shifts[day] = val; await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); showToast("تم الحفظ"); loadDutyTable(); } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    // ==========================================
-    // 7. KPI (المعادلة العادلة)
-    // ==========================================
+    // 7. KPI
     function loadKPI() {
-        const category = document.getElementById("kpiCategory").value;
-        const el = document.getElementById("kpiList");
-        let items = [];
+        const category = document.getElementById("kpiCategory").value; const el = document.getElementById("kpiList"); let items = [];
         if (category === 'supervisors') {
             items = allSupervisors.map(s => {
                 const resolved = allIssues.filter(i => i.resolvedBy === s.name && i.status === 'resolved_by_supervisor').length;
                 const praises = allIssues.filter(i => i.supervisor === s.name && i.isPraise).length;
                 const visits = allIssues.filter(i => i.supervisor === s.name && i.type === 'visit').length;
                 const registeredComplaints = allIssues.filter(i => i.supervisor === s.name && !i.isPraise && i.type === 'complaint').length;
-                
                 const base = 50;
                 const score = Math.max(0, base + (resolved * 5) + (visits * 2) + (praises * 3) + (registeredComplaints * 1));
-                
                 return { name: s.name, sub: `${resolved} منجز · ${visits} زيارة · ${praises} إشادة · ${registeredComplaints} رصد`, score };
             });
         } else {
@@ -957,60 +886,47 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
         items.sort((a, b) => b.score - a.score);
         el.innerHTML = items.map((item, i) => {
-            const rankCls = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
-            const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i+1);
+            const rankCls = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : ""; const rank = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i+1);
             return `<div class="kpi-row"><div class="kpi-rank ${rankCls}">${rank}</div><div class="kpi-info"><h4>${item.name}</h4><p>${item.sub}</p></div><div class="kpi-score">${item.score}</div></div>`;
         }).join("") || "لا يوجد بيانات";
     }
 
-    // ==========================================
-    // 8. التعاميم (مع خيار الإرسال المحدد)
-    // ==========================================
+    // 8. التعاميم
     function updateBroadcastTarget() {
         const target = document.getElementById("bcTarget").value;
         document.getElementById("specificSupervisorDiv").style.display = target === 'specific' ? 'block' : 'none';
     }
     function populateBcSupervisors() {
-        const sel = document.getElementById("bcSupervisor");
-        if(!sel) return;
+        const sel = document.getElementById("bcSupervisor"); if(!sel) return;
         sel.innerHTML = allSupervisors.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
     }
     function loadBroadcasts() {
         db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(snap => {
             let html = ""; 
             snap.forEach(d => { 
-                const data = d.data(); 
-                let targetText = "الجميع";
-                if(data.target === "sectorA") targetText = "قطاع A";
-                else if(data.target === "sectorB") targetText = "قطاع B";
-                else if(data.target === "specific") targetText = `المشرف: ${data.specificName}`;
+                const data = d.data(); let targetText = "الجميع";
+                if(data.target === "sectorA") targetText = "قطاع A"; else if(data.target === "sectorB") targetText = "قطاع B"; else if(data.target === "specific") targetText = `المشرف: ${data.specificName}`;
                 html += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p><p style="font-size:10px; opacity:0.6; margin-top:5px;">📨 ${targetText}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`; 
             });
             document.getElementById("bcList").innerHTML = html || "لا يوجد";
         });
     }
     function sendBroadcast() {
-        const target = document.getElementById("bcTarget").value;
-        const title = document.getElementById("bcTitle").value.trim();
-        const desc = document.getElementById("bcDesc").value.trim();
+        const target = document.getElementById("bcTarget").value; const title = document.getElementById("bcTitle").value.trim(); const desc = document.getElementById("bcDesc").value.trim();
         if(!title || !desc) return showToast("أكمل البيانات", "danger");
         const data = { title, description: desc, timestamp: new Date(), target };
         if(target === 'specific') data.specificName = document.getElementById("bcSupervisor").value;
         db.collection("broadcasts").add(data).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; });
     }
 
-    // ==========================================
     // 9. المراسلات
-    // ==========================================
     function populateMsgSupervisors() {
         const sel = document.getElementById("msgSupervisorFilter"), cur = sel.value;
         sel.innerHTML = '<option value="">-- اختر --</option>';
-        allSupervisors.forEach(s => { sel.innerHTML += `<option value="${s.name}">${s.name}</option>`; });
-        sel.value = cur;
+        allSupervisors.forEach(s => { sel.innerHTML += `<option value="${s.name}">${s.name}</option>`; }); sel.value = cur;
     }
     function loadMessages() {
-        const sup = document.getElementById("msgSupervisorFilter").value;
-        const badge = document.getElementById("msgBadge"); if(badge) badge.style.display = "none";
+        const sup = document.getElementById("msgSupervisorFilter").value; const badge = document.getElementById("msgBadge"); if(badge) badge.style.display = "none";
         if(!sup) { document.getElementById("messagesBox").innerHTML = "اختر..."; return; }
         let html = "";
         allMessages.forEach(m => {
@@ -1028,12 +944,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         db.collection("messages").add({ sender: "المدير العام", receiver: sup, text, timestamp: new Date() }).then(() => showToast("تم"));
     }
 
-    // ==========================================
     // 10. المشرفين (رقم الهاتف)
-    // ==========================================
     function loadSups() {
-        const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
-        let html = ""; 
+        const search = document.getElementById("supSearch")?.value.toLowerCase() || ""; let html = ""; 
         allSupervisors.forEach(d => { 
             if (search && !d.name.toLowerCase().includes(search)) return; 
             html += `<div class="item-card"><div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>الهاتف: ${d.phone||d.militaryId||'-'}</p></div><div class="item-actions"><button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${d.code}'); showToast('تم نسخ الكود')">${d.code}</button><button class="icon-btn-sm edit" onclick="editSupervisor('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button></div></div>`; 
@@ -1041,27 +954,20 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         document.getElementById("supList").innerHTML = html;
     }
     function editSupervisor(id) {
-        const s = allSupervisors.find(x => x.id === id);
-        if(!s) return;
+        const s = allSupervisors.find(x => x.id === id); if(!s) return;
         document.getElementById("supEditId").value = id; document.getElementById("supName").value = s.name;
         document.getElementById("supPhone").value = s.phone || s.militaryId || ''; document.getElementById("supCodeEdit").value = s.code;
-        document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnSupCancel").style.display = "block";
-        window.scrollTo({top:0,behavior:"smooth"});
+        document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnSupCancel").style.display = "block"; window.scrollTo({top:0,behavior:"smooth"});
     }
     function cancelSupEdit() {
-        document.getElementById("supEditId").value = ""; document.getElementById("supName").value = "";
-        document.getElementById("supPhone").value = ""; document.getElementById("supCodeEdit").value = "";
+        document.getElementById("supEditId").value = ""; document.getElementById("supName").value = ""; document.getElementById("supPhone").value = ""; document.getElementById("supCodeEdit").value = "";
         document.getElementById("btnSupSave").innerText = "💾 حفظ"; document.getElementById("btnSupCancel").style.display = "none";
     }
     function saveSupervisor() {
-        const id = document.getElementById("supEditId").value;
-        const name = document.getElementById("supName").value.trim();
-        const phone = document.getElementById("supPhone").value.trim();
-        const codeInput = document.getElementById("supCodeEdit").value.trim();
+        const id = document.getElementById("supEditId").value; const name = document.getElementById("supName").value.trim(); const phone = document.getElementById("supPhone").value.trim(); const codeInput = document.getElementById("supCodeEdit").value.trim();
         if(!name) return showToast("أدخل الاسم", "danger");
         if (id) {
-            const updateData = { name, phone };
-            if(codeInput) updateData.code = codeInput;
+            const updateData = { name, phone }; if(codeInput) updateData.code = codeInput;
             db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); });
         } else {
             const code = codeInput || "SUP-"+Math.floor(1000+Math.random()*9000);
@@ -1076,102 +982,70 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         printHTMLInIframe(htmlContent, 'A4 portrait');
     }
 
-    // ==========================================
     // 11. المسعفين والمركبات
-    // ==========================================
-    function updateParamCenters() {
-        const sec = document.getElementById("paramSector").value;
-        document.getElementById("paramCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
-    }
+    function updateParamCenters() { const sec = document.getElementById("paramSector").value; document.getElementById("paramCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join(""); }
     function loadParams() {
-        const search = document.getElementById("paramSearch")?.value.toLowerCase() || "";
-        let html = ""; 
-        allParameds.forEach(d => { 
-            if (search && !d.name.toLowerCase().includes(search)) return; 
-            html += `<div class="item-card" style="border-right-color:var(--green);"><div class="item-info"><h4>👨‍🚒 ${d.name}</h4><p>الرقم: ${d.militaryId||'-'} | المركز: ${d.centerName} | الرتبة: ${d.rank||'-'}</p></div><div class="item-actions"><button class="icon-btn-sm edit" onclick="editParamedic('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${d.id}')">🗑️</button></div></div>`; 
-        });
+        const search = document.getElementById("paramSearch")?.value.toLowerCase() || ""; let html = ""; 
+        allParameds.forEach(d => { if (search && !d.name.toLowerCase().includes(search)) return; html += `<div class="item-card" style="border-right-color:var(--green);"><div class="item-info"><h4>👨‍🚒 ${d.name}</h4><p>الرقم: ${d.militaryId||'-'} | المركز: ${d.centerName} | الرتبة: ${d.rank||'-'}</p></div><div class="item-actions"><button class="icon-btn-sm edit" onclick="editParamedic('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('paramedics','${d.id}')">🗑️</button></div></div>`; });
         document.getElementById("paramList").innerHTML = html;
     }
     function editParamedic(id) {
-        const p = allParameds.find(x => x.id === id);
-        if(!p) return;
-        document.getElementById("paramEditId").value = id; document.getElementById("paramName").value = p.name;
-        document.getElementById("paramMilitaryId").value = p.militaryId || ''; document.getElementById("paramRank").value = p.rank || '';
+        const p = allParameds.find(x => x.id === id); if(!p) return;
+        document.getElementById("paramEditId").value = id; document.getElementById("paramName").value = p.name; document.getElementById("paramMilitaryId").value = p.militaryId || ''; document.getElementById("paramRank").value = p.rank || '';
         for (const [sec, centers] of Object.entries(SECTORS)) { if (centers.includes(p.centerName)) { document.getElementById("paramSector").value = sec; updateParamCenters(); document.getElementById("paramCenter").value = p.centerName; break; } }
-        document.getElementById("btnParamSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnParamCancel").style.display = "block";
-        window.scrollTo({top:0,behavior:"smooth"});
+        document.getElementById("btnParamSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnParamCancel").style.display = "block"; window.scrollTo({top:0,behavior:"smooth"});
     }
-    function cancelParamEdit() {
-        document.getElementById("paramEditId").value = ""; document.getElementById("paramName").value = ""; document.getElementById("paramMilitaryId").value = ""; document.getElementById("paramRank").value = "";
-        document.getElementById("btnParamSave").innerText = "💾 حفظ"; document.getElementById("btnParamCancel").style.display = "none";
-    }
+    function cancelParamEdit() { document.getElementById("paramEditId").value = ""; document.getElementById("paramName").value = ""; document.getElementById("paramMilitaryId").value = ""; document.getElementById("paramRank").value = ""; document.getElementById("btnParamSave").innerText = "💾 حفظ"; document.getElementById("btnParamCancel").style.display = "none"; }
     function saveParamedic() {
-        const id = document.getElementById("paramEditId").value; const name = document.getElementById("paramName").value.trim();
-        const militaryId = document.getElementById("paramMilitaryId").value.trim(); const center = document.getElementById("paramCenter").value; const rank = document.getElementById("paramRank").value.trim();
+        const id = document.getElementById("paramEditId").value; const name = document.getElementById("paramName").value.trim(); const militaryId = document.getElementById("paramMilitaryId").value.trim(); const center = document.getElementById("paramCenter").value; const rank = document.getElementById("paramRank").value.trim();
         if(!name || !center) return showToast("أكمل البيانات", "danger");
         if (id) { db.collection("paramedics").doc(id).update({ name, militaryId, centerName: center, rank }).then(() => { showToast("تم التعديل"); cancelParamEdit(); }); } 
         else { db.collection("paramedics").add({ name, militaryId, centerName: center, rank }).then(() => { showToast("تمت الإضافة"); cancelParamEdit(); }); }
     }
 
-    function updateVehCenters() {
-        const sec = document.getElementById("vehSector").value;
-        document.getElementById("vehCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
-    }
+    function updateVehCenters() { const sec = document.getElementById("vehSector").value; document.getElementById("vehCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join(""); }
     function loadVehicles() {
         let html = ""; 
-        allVehicles.forEach(d => { 
-            html += `<div class="item-card" style="border-right-color:var(--amber);"><div class="item-info"><h4>🚑 ${d.plateNumber}</h4><p>النوع: ${d.type||'-'} | المركز: ${d.centerName}</p></div><div class="item-actions"><button class="icon-btn-sm edit" onclick="editVehicle('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${d.id}')">🗑️</button></div></div>`; 
-        });
+        allVehicles.forEach(d => { html += `<div class="item-card" style="border-right-color:var(--amber);"><div class="item-info"><h4>🚑 ${d.plateNumber}</h4><p>النوع: ${d.type||'-'} | المركز: ${d.centerName}</p></div><div class="item-actions"><button class="icon-btn-sm edit" onclick="editVehicle('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('vehicles','${d.id}')">🗑️</button></div></div>`; });
         document.getElementById("vehList").innerHTML = html;
     }
     function editVehicle(id) {
-        const v = allVehicles.find(x => x.id === id);
-        if(!v) return;
+        const v = allVehicles.find(x => x.id === id); if(!v) return;
         document.getElementById("vehEditId").value = id; document.getElementById("vehPlate").value = v.plateNumber; document.getElementById("vehType").value = v.type || '';
         for (const [sec, centers] of Object.entries(SECTORS)) { if (centers.includes(v.centerName)) { document.getElementById("vehSector").value = sec; updateVehCenters(); document.getElementById("vehCenter").value = v.centerName; break; } }
-        document.getElementById("btnVehSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnVehCancel").style.display = "block";
-        window.scrollTo({top:0,behavior:"smooth"});
+        document.getElementById("btnVehSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnVehCancel").style.display = "block"; window.scrollTo({top:0,behavior:"smooth"});
     }
-    function cancelVehEdit() {
-        document.getElementById("vehEditId").value = ""; document.getElementById("vehPlate").value = ""; document.getElementById("vehType").value = "";
-        document.getElementById("btnVehSave").innerText = "💾 حفظ"; document.getElementById("btnVehCancel").style.display = "none";
-    }
+    function cancelVehEdit() { document.getElementById("vehEditId").value = ""; document.getElementById("vehPlate").value = ""; document.getElementById("vehType").value = ""; document.getElementById("btnVehSave").innerText = "💾 حفظ"; document.getElementById("btnVehCancel").style.display = "none"; }
     function saveVehicle() {
-        const id = document.getElementById("vehEditId").value; const plate = document.getElementById("vehPlate").value.trim();
-        const type = document.getElementById("vehType").value.trim(); const center = document.getElementById("vehCenter").value;
+        const id = document.getElementById("vehEditId").value; const plate = document.getElementById("vehPlate").value.trim(); const type = document.getElementById("vehType").value.trim(); const center = document.getElementById("vehCenter").value;
         if(!plate || !center) return showToast("أكمل البيانات", "danger");
         if (id) { db.collection("vehicles").doc(id).update({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تم التعديل"); cancelVehEdit(); }); } 
         else { db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تمت الإضافة"); cancelVehEdit(); }); }
     }
 
-    // ==========================================
-    // 12. الطباعة الخفية (Iframe) - تم إصلاح الهيدر
-    // ==========================================
+    // 12. الطباعة الخفية (Iframe) - جميع الدوال
     function printHTMLInIframe(htmlContent, orientation) {
         const iframe = document.createElement('iframe');
-        iframe.style.position = 'fixed'; iframe.style.right = '0'; iframe.style.bottom = '0';
-        iframe.style.width = '0'; iframe.style.height = '0'; iframe.style.border = '0';
+        iframe.style.position = 'fixed'; iframe.style.right = '0'; iframe.style.bottom = '0'; iframe.style.width = '0'; iframe.style.height = '0'; iframe.style.border = '0';
         document.body.appendChild(iframe);
         const doc = iframe.contentWindow.document;
         doc.open();
-        doc.write(`<!DOCTYPE html><html dir="rtl"><head><style>@page { size: ${orientation}; margin: 5mm; } body, html { margin: 0; padding: 0; background: #fff !important; color: #000 !important; font-family: 'Cairo', sans-serif; } .print-page { padding: 10px; width: 100%; zoom: 0.85; } .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; } .print-logo { width: 120px; height: 120px; object-fit: contain; } .print-header-text-right { text-align: right; flex: 1; } .print-header-text-right h1 { font-size: 18px; color: #0d4a42; margin: 0; font-weight: 900; } .print-header-text-left { text-align: left; flex: 1; } .print-header-text-left h2 { font-size: 14px; color: #666; margin: 3px 0 0; font-weight: bold; } .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; } .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; } .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; } .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }</style></head><body>${htmlContent}</body></html>`);
+        doc.write(`<!DOCTYPE html><html dir="rtl"><head><style>@page { size: ${orientation}; margin: 5mm; } body, html { margin: 0; padding: 0; background: #fff !important; color: #000 !important; font-family: 'Cairo', sans-serif; } .print-page { padding: 10px; width: 100%; zoom: 0.85; } .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; } .print-logo { width: 90px; height: 90px; object-fit: contain; } .print-header-text-right { text-align: right; flex: 1; } .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; } .print-header-text-left { text-align: left; flex: 1; } .print-header-text-left h2 { font-size: 13px; color: #666; margin: 0; font-weight: bold; line-height: 1.4; } .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; } .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; } .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; } .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }</style></head><body>${htmlContent}</body></html>`);
         doc.close();
         setTimeout(() => { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { document.body.removeChild(iframe); }, 2000); }, 200);
     }
 
     function printAllReports() {
-        const sectorFilter = document.getElementById("filterSector").value;
-        let filtered = allIssues;
+        const sectorFilter = document.getElementById("filterSector").value; let filtered = allIssues;
         if(sectorFilter) filtered = filtered.filter(i => i.sector === sectorFilter);
         if (currentArchiveFilter === 'active') filtered = filtered.filter(i => i.archived !== true);
         else if (currentArchiveFilter === 'archived') filtered = filtered.filter(i => i.archived === true);
 
         let tbody = "";
         filtered.forEach((d, i) => {
-            let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : "إشكالية");
+            let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : (d.supervisor === "الإدارة (إدخال يدوي)" ? "بلاغ إداري" : "إشكالية"));
             const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
-            const recommendation = d.recommendation || '-';
-            const resolution = d.resolution || '-';
+            const recommendation = d.recommendation || '-'; const resolution = d.resolution || '-';
             tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor||'-'}</td><td>${typeText}</td><td>${d.targetName}</td><td>${d.description}</td><td>${recommendation}</td><td>${resolution}</td><td>${date}</td></tr>`;
         });
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
@@ -1181,107 +1055,58 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     function exportAllReports() {
-        const sectorFilter = document.getElementById("filterSector").value;
-        let filtered = allIssues;
+        const sectorFilter = document.getElementById("filterSector").value; let filtered = allIssues;
         if(sectorFilter) filtered = filtered.filter(i => i.sector === sectorFilter);
         if (currentArchiveFilter === 'active') filtered = filtered.filter(i => i.archived !== true);
         else if (currentArchiveFilter === 'archived') filtered = filtered.filter(i => i.archived === true);
         
         let csv = "\uFEFF#القطاع,المركز,المشرف,النوع,الهدف,الوصف,التوصيات,الإجراء,التاريخ\n";
         filtered.forEach(d => {
-            let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : "إشكالية");
+            let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : (d.supervisor === "الإدارة (إدخال يدوي)" ? "بلاغ إداري" : "إشكالية"));
             const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
             csv += `"${d.sector}","${d.centerName}","${d.supervisor||'-'}","${typeText}","${d.targetName}","${d.description}","${d.recommendation||'-'}","${d.resolution||'-'}","${date}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob); 
-        link.download = `sijlat_${new Date().toISOString().slice(0,10)}.csv`; 
-        link.click();
-        showToast("تم التصدير");
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `sijlat_${new Date().toISOString().slice(0,10)}.csv`; link.click(); showToast("تم التصدير");
     }
 
     function printDutyTable(orientation) {
-        const month = document.getElementById("dutyMonth").value; 
-        if(!month) return showToast("اختر الشهر", "danger");
-        
-        const [year, m] = month.split("-"); 
-        const days = new Date(year, m, 0).getDate();
-        
+        const month = document.getElementById("dutyMonth").value; if(!month) return showToast("اختر الشهر", "danger");
+        const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
         db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
-            const data = {}; 
-            dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
-            
+            const data = {}; dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
             const buildPrintTable = (suprvs) => {
                 if(suprvs.length === 0) return '<div style="text-align:center;">لا يوجد</div>';
                 let html = '<table class="print-table" style="width:100%; border-collapse:collapse;"><thead><tr><th>المشرف</th>';
                 for (let d = 1; d <= days; d++) html += `<th>${d}</th>`;
                 html += '</tr></thead><tbody>';
-                suprvs.forEach(s => { 
-                    const shifts = data[s.code] || {}; 
-                    html += `<tr><td>${s.name}</td>`; 
-                    for (let d = 1; d <= days; d++) { 
-                        const val = shifts[d] || ""; 
-                        let displayVal = val;
-                        if (val.startsWith("A-")) displayVal = "A/" + val.substring(2);
-                        else if (val.startsWith("B-")) displayVal = "B/" + val.substring(2);
-                        html += `<td>${displayVal || "—"}</td>`; 
-                    } 
-                    html += '</tr>'; 
-                });
+                suprvs.forEach(s => { const shifts = data[s.code] || {}; html += `<tr><td>${s.name}</td>`; for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; let displayVal = val; if (val.startsWith("A-")) displayVal = "A/" + val.substring(2); else if (val.startsWith("B-")) displayVal = "B/" + val.substring(2); html += `<td>${displayVal || "—"}</td>`; } html += '</tr>'; });
                 return html + '</tbody></table>';
             };
-            
             const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
             const htmlContent = `<div class="print-page"><div class="print-header"><div class="print-header-text-right"><h1>هيئة الدفاع المدني والإسعاف</h1></div><img src="${logo}" class="print-logo"><div class="print-header-text-left"><h2>الإدارة العامة للإسعاف<br>جدول الدوام — ${month}</h2></div></div>${buildPrintTable(allSupervisors)}<div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-            
             printHTMLInIframe(htmlContent, orientation === 'landscape' ? 'A4 landscape' : 'A4 portrait');
         });
     }
 
     function exportDutyTable() {
-        const month = document.getElementById("dutyMonth").value;
-        if(!month) return showToast("اختر الشهر", "danger");
-        
-        const [year, m] = month.split("-"); 
-        const days = new Date(year, m, 0).getDate();
-        
+        const month = document.getElementById("dutyMonth").value; if(!month) return showToast("اختر الشهر", "danger");
+        const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
         db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
-            const data = {}; 
-            dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
-            
-            let csv = "\uFEFFالمشرف";
-            for (let d = 1; d <= days; d++) csv += `,${d}`;
-            csv += "\n";
-            
+            const data = {}; dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
+            let csv = "\uFEFFالمشرف"; for (let d = 1; d <= days; d++) csv += `,${d}`; csv += "\n";
             allSupervisors.forEach(s => {
-                const shifts = data[s.code] || {};
-                csv += `"${s.name}"`;
-                for (let d = 1; d <= days; d++) {
-                    const val = shifts[d] || "";
-                    let displayVal = val;
-                    if (val.startsWith("A-")) displayVal = "A/" + val.substring(2);
-                    else if (val.startsWith("B-")) displayVal = "B/" + val.substring(2);
-                    csv += `,"${displayVal || "-"}"`;
-                }
+                const shifts = data[s.code] || {}; csv += `"${s.name}"`;
+                for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; let displayVal = val; if (val.startsWith("A-")) displayVal = "A/" + val.substring(2); else if (val.startsWith("B-")) displayVal = "B/" + val.substring(2); csv += `,"${displayVal || "-"}"`; }
                 csv += "\n";
             });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob); 
-            link.download = `duty_${month}.csv`; 
-            link.click();
-            showToast("تم التصدير");
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `duty_${month}.csv`; link.click(); showToast("تم التصدير");
         });
     }
 
-    // ... باقي دوال التقارير المتقدمة والأنواع والإعدادات
-    // ... (تم الاحتفاظ بها كما هي)
-    
+    // التقارير المتقدمة
     function updateReportOptions() {
-        const type = document.getElementById("reportType").value;
-        const filters = document.getElementById("reportFilters");
+        const type = document.getElementById("reportType").value; const filters = document.getElementById("reportFilters");
         const dateFilters = `<div><label>من تاريخ</label><input type="date" id="filterFrom"></div><div><label>إلى تاريخ</label><input type="date" id="filterTo"></div>`;
         const sectorFilter = `<div><label>القطاع</label><select id="filterSector" onchange="updateReportCenters()"><option value="">الكل</option>${Object.keys(SECTORS).map(s => `<option value="${s}">${s}</option>`).join("")}</select></div>`;
         const centerFilter = `<div><label>المركز</label><select id="filterCenter"><option value="">الكل</option></select></div>`;
@@ -1293,91 +1118,82 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         filters.innerHTML = html; updateReportCenters();
     }
     function updateReportCenters() {
-        const sector = document.getElementById("filterSector")?.value;
-        const centerSel = document.getElementById("filterCenter");
-        if(!centerSel) return;
+        const sector = document.getElementById("filterSector")?.value; const centerSel = document.getElementById("filterCenter"); if(!centerSel) return;
         let centers = sector ? (SECTORS[sector] || []) : Object.values(SECTORS).flat();
         centerSel.innerHTML = `<option value="">الكل</option>` + centers.map(c => `<option value="${c}">${c}</option>`).join("");
     }
     async function generateReport(action) {
-        const type = document.getElementById("reportType").value;
-        const orientation = document.getElementById("printOrientation").value;
-        const from = document.getElementById("filterFrom")?.value;
-        const to = document.getElementById("filterTo")?.value;
-        const selSector = document.getElementById("filterSector")?.value;
-        const selCenter = document.getElementById("filterCenter")?.value;
-        const selSup = document.getElementById("filterSup")?.value;
-        const selParam = document.getElementById("filterParam")?.value;
+        const type = document.getElementById("reportType").value; const orientation = document.getElementById("printOrientation").value;
+        const from = document.getElementById("filterFrom")?.value; const to = document.getElementById("filterTo")?.value;
+        const selSector = document.getElementById("filterSector")?.value; const selCenter = document.getElementById("filterCenter")?.value;
+        const selSup = document.getElementById("filterSup")?.value; const selParam = document.getElementById("filterParam")?.value;
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         let filteredIssues = allIssues;
         if (from) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) >= new Date(from).getTime());
         if (to) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) <= new Date(to).getTime() + 86400000);
         let data = [], title = "", thead = "";
-        // ... (منطق التقارير السابق)
-        // ...
-        // سأستخدم نفس المنطق السابق ولكن مع الطباعة الخفية
-        // ...
-        // ...
-    }
-
-    function loadTypes() {
-        const target = document.getElementById("typeTarget").value;
-        const cat = document.getElementById("typeCategory").value;
-        const col = `${cat}_types_${target}`;
-        db.collection(col).get().then(s => {
-            let html = "";
-            s.forEach(d => { html += `<div class="item-card"><div class="item-info"><h4>${d.data().name}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}')">🗑️</button></div>`; });
-            document.getElementById("typesList").innerHTML = html || "لا يوجد أنواع";
+        if (type === 'activity') {
+            title = "تقرير نشاط المشرفين"; thead = "<th>#</th><th>المشرف</th><th>إشكالات</th><th>إشادات</th><th>ملاحظات</th><th>بلاغات منجزة</th>";
+            let sups = allSupervisors; if (selSector) sups = sups.filter(s => s.sector === selSector); if (selSup) sups = sups.filter(s => s.name === selSup);
+            data = sups.map(s => {
+                let mine = filteredIssues.filter(i => i.supervisor === s.name || i.resolvedBy === s.name);
+                if (selCenter) mine = mine.filter(i => i.centerName === selCenter);
+                return { name: s.name, complaints: mine.filter(i => !i.isPraise && i.type !== 'visit' && i.type === 'complaint').length, praises: mine.filter(i => i.isPraise).length, notes: mine.filter(i => i.type === 'visit').length, resolved: mine.filter(i => i.status === 'resolved_by_supervisor').length };
+            });
+        } else if (type === 'issues' || type === 'visits') {
+            title = type === 'visits' ? "تقرير الزيارات" : "تقرير البلاغات"; thead = "<th>#</th><th>التاريخ</th><th>المركز</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th><th>الملاحظات</th>";
+            let d = filteredIssues; if (type === 'visits') d = d.filter(i => i.type === 'visit'); else d = d.filter(i => i.type !== 'visit');
+            if (selSector) d = d.filter(i => i.sector === selSector); if (selCenter) d = d.filter(i => i.centerName === selCenter); if (selSup) d = d.filter(i => i.supervisor === selSup);
+            data = d;
+        } else if (type === 'paramedics') {
+            title = "قائمة المسعفين"; thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>المركز</th><th>الرتبة</th>";
+            let d = allParameds; if (selCenter) d = d.filter(p => p.centerName === selCenter); if (selSector) d = d.filter(p => (SECTORS[selSector] || []).includes(p.centerName)); if (selParam) d = d.filter(p => p.name === selParam);
+            data = d;
+        } else if (type === 'vehicles') {
+            title = "قائمة المركبات"; thead = "<th>#</th><th>اللوحة</th><th>النوع</th><th>المركز</th>";
+            let d = allVehicles; if (selCenter) d = d.filter(v => v.centerName === selCenter); if (selSector) d = d.filter(v => (SECTORS[selSector] || []).includes(v.centerName));
+            data = d;
+        }
+        let tbody = "";
+        data.forEach((d, i) => {
+            if (type === 'activity') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.complaints}</td><td>${d.praises}</td><td>${d.notes}</td><td>${d.resolved}</td></tr>`;
+            else if (type === 'issues' || type === 'visits') {
+                const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
+                const target = d.targetName || d.centerName || '-'; const issueType = d.issueType || (d.isPraise ? 'إشادة' : (d.type === 'visit' ? 'زيارة' : '-'));
+                let details = d.description || '-'; if (d.resolution) details += ` | الإجراء: ${d.resolution}`;
+                tbody += `<tr><td>${i+1}</td><td>${time}</td><td>${d.centerName || '-'}</td><td>${target}</td><td>${issueType}</td><td>${d.supervisor || '-'}</td><td>${d.status === 'resolved_by_supervisor' ? 'منجزة' : 'مفتوحة'}</td><td style="text-align:right; font-size:8px; max-width:150px;">${details}</td></tr>`;
+            } else if (type === 'paramedics') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.centerName}</td><td>${d.rank||'-'}</td></tr>`;
+            else if (type === 'vehicles') tbody += `<tr><td>${i+1}</td><td>${d.plateNumber}</td><td>${d.type||'-'}</td><td>${d.centerName}</td></tr>`;
         });
-    }
-    function addType() {
-        const target = document.getElementById("typeTarget").value;
-        const cat = document.getElementById("typeCategory").value;
-        const name = document.getElementById("newTypeName").value.trim();
-        if (!name) return showToast("أدخل الاسم", "danger");
-        db.collection(`${cat}_types_${target}`).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); });
+        if (action === 'print') {
+            const htmlContent = `<div class="print-page"><div class="print-header"><div class="print-header-text-right"><h1>هيئة الدفاع المدني والإسعاف</h1></div><img src="${logo}" class="print-logo"><div class="print-header-text-left"><h2>الإدارة العامة للإسعاف<br>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+            printHTMLInIframe(htmlContent, orientation);
+        } else {
+            let csv = "\uFEFF"; const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
+            csv += thead.replace(/<\/?th>/g, m => m === '<th>' ? '' : ',').replace(/,$/, '\n');
+            data.forEach((d, i) => {
+                if (type === 'activity') csv += [i+1, clean(d.name), d.complaints, d.praises, d.notes, d.resolved].join(",") + "\n";
+                else if (type === 'issues' || type === 'visits') { const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-'; csv += [i+1, time, clean(d.centerName), clean(d.targetName), clean(d.issueType), clean(d.supervisor), d.status].join(",") + "\n"; }
+                else if (type === 'paramedics') csv += [i+1, clean(d.name), clean(d.militaryId), clean(d.centerName), clean(d.rank)].join(",") + "\n";
+                else if (type === 'vehicles') csv += [i+1, clean(d.plateNumber), clean(d.type), clean(d.centerName)].join(",") + "\n";
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `report_${new Date().toISOString().slice(0,10)}.csv`; link.click(); showToast("تم التصدير");
+        }
     }
 
+    // 14. الأنواع والإعدادات (مبسطة للحفاظ على المساحة)
+    function loadTypes() { const target = document.getElementById("typeTarget").value; const cat = document.getElementById("typeCategory").value; const col = `${cat}_types_${target}`; db.collection(col).get().then(s => { let html = ""; s.forEach(d => { html += `<div class="item-card"><div class="item-info"><h4>${d.data().name}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}')">🗑️</button></div>`; }); document.getElementById("typesList").innerHTML = html || "لا يوجد أنواع"; }); }
+    function addType() { const target = document.getElementById("typeTarget").value; const cat = document.getElementById("typeCategory").value; const name = document.getElementById("newTypeName").value.trim(); if (!name) return showToast("أدخل الاسم", "danger"); db.collection(`${cat}_types_${target}`).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); }); }
     function loadConfig() { document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || ""; }
     function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === "systemName") document.getElementById("systemName").innerText = val; showToast("تم الحفظ"); }
-    function changeAdminPassword() {
-        const oldPwd = document.getElementById("oldPwd").value, newPwd = document.getElementById("newPwd").value;
-        if(!oldPwd || !newPwd) return showToast("أدخل كلمة المرور", "danger");
-        const currentStored = localStorage.getItem("admin_pwd") || "admin123"; 
-        if(oldPwd !== currentStored) return showToast("كلمة المرور خاطئة!", "danger");
-        localStorage.setItem("admin_pwd", newPwd); showToast("✅ تم التغيير"); document.getElementById("oldPwd").value = ""; document.getElementById("newPwd").value = "";
-    }
+    function changeAdminPassword() { const oldPwd = document.getElementById("oldPwd").value, newPwd = document.getElementById("newPwd").value; if(!oldPwd || !newPwd) return showToast("أدخل كلمة المرور", "danger"); const currentStored = localStorage.getItem("admin_pwd") || "admin123"; if(oldPwd !== currentStored) return showToast("كلمة المرور خاطئة!", "danger"); localStorage.setItem("admin_pwd", newPwd); showToast("✅ تم التغيير"); document.getElementById("oldPwd").value = ""; document.getElementById("newPwd").value = ""; }
     function deleteDoc(col, id) { if(confirm("هل أنت متأكد؟")) db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); }
-    async function populateDeleteItems() {
-        const col = document.getElementById("deleteCol").value, sel = document.getElementById("deleteItemId");
-        if(!col) { sel.innerHTML = '<option value="">-- اختر --</option>'; return; }
-        const snap = await db.collection(col).get();
-        let html = '<option value="">-- اختر --</option>';
-        snap.forEach(d => { const data = d.data(); const label = data.name || data.plateNumber || data.targetName || data.title || data.sender || d.id; html += `<option value="${d.id}">${label}</option>`; });
-        sel.innerHTML = html;
-    }
-    async function deleteItems() {
-        const col = document.getElementById("deleteCol").value, id = document.getElementById("deleteItemId").value;
-        if(!col || !id) return showToast("اختر", "danger");
-        if(!confirm("حذف؟")) return;
-        await db.collection(col).doc(id).delete(); showToast("تم"); populateDeleteItems();
-    }
-    async function deleteIssuesByType(kind) {
-        const names = { praise: 'الإشادات', complaint: 'الإشكالات', visit: 'الزيارات' };
-        if(!confirm(`حذف كل ${names[kind]}؟`)) return;
-        const snap = await db.collection("issues").get(); const batch = db.batch(); let count = 0;
-        snap.forEach(d => { const data = d.data(); let match = false; if (kind === 'praise') match = data.isPraise === true; else if (kind === 'complaint') match = !data.isPraise && data.type === 'complaint'; else if (kind === 'visit') match = data.type === 'visit'; if (match) { batch.delete(d.ref); count++; } });
-        await batch.commit(); showToast(`تم حذف ${count}`);
-    }
-    async function wipeData() {
-        if(!confirm("⚠️ مسح شامل؟")) return;
-        for (const col of ['issues', 'broadcasts', 'messages']) { const snap = await db.collection(col).get(); const batch = db.batch(); snap.forEach(d => batch.delete(d.ref)); await batch.commit(); }
-        showToast("تم المسح الشامل");
-    }
+    async function populateDeleteItems() { const col = document.getElementById("deleteCol").value, sel = document.getElementById("deleteItemId"); if(!col) { sel.innerHTML = '<option value="">-- اختر --</option>'; return; } const snap = await db.collection(col).get(); let html = '<option value="">-- اختر --</option>'; snap.forEach(d => { const data = d.data(); const label = data.name || data.plateNumber || data.targetName || data.title || data.sender || d.id; html += `<option value="${d.id}">${label}</option>`; }); sel.innerHTML = html; }
+    async function deleteItems() { const col = document.getElementById("deleteCol").value, id = document.getElementById("deleteItemId").value; if(!col || !id) return showToast("اختر", "danger"); if(!confirm("حذف؟")) return; await db.collection(col).doc(id).delete(); showToast("تم"); populateDeleteItems(); }
+    async function deleteIssuesByType(kind) { const names = { praise: 'الإشادات', complaint: 'الإشكالات', visit: 'الزيارات' }; if(!confirm(`حذف كل ${names[kind]}؟`)) return; const snap = await db.collection("issues").get(); const batch = db.batch(); let count = 0; snap.forEach(d => { const data = d.data(); let match = false; if (kind === 'praise') match = data.isPraise === true; else if (kind === 'complaint') match = !data.isPraise && data.type === 'complaint'; else if (kind === 'visit') match = data.type === 'visit'; if (match) { batch.delete(d.ref); count++; } }); await batch.commit(); showToast(`تم حذف ${count}`); }
+    async function wipeData() { if(!confirm("⚠️ مسح شامل؟")) return; for (const col of ['issues', 'broadcasts', 'messages']) { const snap = await db.collection(col).get(); const batch = db.batch(); snap.forEach(d => batch.delete(d.ref)); await batch.commit(); } showToast("تم المسح الشامل"); }
 
-    // ==========================================
     // التشغيل
-    // ==========================================
     document.getElementById("loadingOverlay").style.display = "none";
     document.getElementById("mainApp").classList.add("ready");
     document.getElementById("currentUser").innerText = user.name;
