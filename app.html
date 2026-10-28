@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>المشرف الميداني — V48.0</title>
+<title>المشرف الميداني — V49.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -75,13 +75,13 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .action-btn.success { background: linear-gradient(135deg, #43a047, #69f0ae); color: #041814; }
 .action-btn.info { background: linear-gradient(135deg, #29b6f6, #64b5f6); color: #fff; grid-column: span 2; }
 
-.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .item-card.red { border-right-color: var(--red); }
 .item-card.green { border-right-color: var(--green); }
 .item-card.blue { border-right-color: var(--blue); }
 .item-card.purple { border-right-color: #ab47bc; }
 .item-info { flex: 1; min-width: 200px; pointer-events: none; }
-.item-info h4 { font-size: 12px; font-weight: 900; color: var(--gold); margin-bottom: 2px; }
+.item-info h4 { font-size: 12px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
 .item-info p { font-size: 10px; color: var(--text-sub); line-height: 1.4; }
 .item-actions { display: flex; gap: 4px; pointer-events: auto; }
 
@@ -381,16 +381,24 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
                     cachedMaster[cat][target] = snap.docs.map(d => d.data().name);
                 }
             }
+            
             const paramSnap = await db.collection("paramedics").get();
             cachedParamedics = paramSnap.docs.map(d => d.data());
 
+            // التعاميم
             db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(s => {
                 let html = "";
-                s.forEach(d => { const data = d.data(); html += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`; });
+                s.forEach(d => { 
+                    const data = d.data(); 
+                    html += `<div class="item-card blue" style="flex-direction:column; align-items:flex-start;">
+                        <div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div>
+                        <button class="btn info small" style="margin-top:8px;" onclick="openBroadcastReply('${d.id}','${data.title}')">📩 إرسال إفادة بالاطلاع</button>
+                    </div>`; 
+                });
                 document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
             });
             
-            // جلب سجلات المشرف (البلاغات الإدارية + الخاصة به)
+            // سجلات المشرف (البلاغات الإدارية + الخاصة به)
             db.collection("issues").orderBy("timestamp", "desc").onSnapshot(s => {
                 myRecords = [];
                 s.forEach(d => {
@@ -407,9 +415,46 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             });
             
             loadMyDuty(); loadMonthlyDuty(); loadChat();
-        } catch(e) { console.warn(e); }
+        } catch(e) { 
+            console.error(e); 
+            document.getElementById("myDuty").innerText = "حدث خطأ في التحميل"; 
+        }
     }
 
+    // ==========================================
+    // التعاميم - الرد
+    // ==========================================
+    function openBroadcastReply(id, title) {
+        document.getElementById("modalTitle").innerText = "📩 إفادة بالاطلاع";
+        document.getElementById("modalBody").innerHTML = `
+            <div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">
+                <p><b>التعميم:</b> ${title}</p>
+            </div>
+            <label>ردك / إفادتك للمدير:</label>
+            <textarea id="broadcastReplyText" rows="4" placeholder="مثال: تم الاطلاع، سيتم التنفيذ..."></textarea>
+            <button class="btn success block" onclick="submitBroadcastReply('${id}', '${title}')">📤 إرسال الرد للإدارة</button>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    async function submitBroadcastReply(id, title) {
+        const text = document.getElementById("broadcastReplyText").value.trim();
+        if(!text) return showToast("أدخل ردك", "danger");
+        try {
+            await db.collection("messages").add({
+                sender: user.name,
+                receiver: "المدير العام",
+                text: `إفادة بخصوص تعميم "${title}": ${text}`,
+                timestamp: new Date()
+            });
+            showToast("تم إرسال الإفادة للإدارة"); closeModal();
+        } catch(e) { showToast("خطأ", "danger"); }
+    }
+
+    // ==========================================
+    // سجلاتي
+    // ==========================================
     function renderMyRecords() {
         let filtered = myRecords;
         if (currentFilter === 'active') filtered = myRecords.filter(i => i.archived !== true);
@@ -422,7 +467,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             const isResolved = d.status === "resolved_by_supervisor";
             const isAdmin = d.supervisor === "الإدارة (إدخال يدوي)";
             
-            let color = isPraise ? "green" : (isVisit ? "blue" : "red");
+            let color = isPraise ? "green" : (isVisit ? "blue" : (isAdmin ? "purple" : "red"));
             let icon = isPraise ? "⭐" : (isVisit ? "📝" : (isAdmin ? "🚨" : "🚩"));
             let typeText = isPraise ? "إشادة" : (isVisit ? "ملاحظة زيارة" : (isAdmin ? "بلاغ إداري" : "إشكالية"));
             const date = d.timestamp ? new Date(d.timestamp.toDate()).toLocaleString('ar-OM') : '';
@@ -436,7 +481,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             if (d.timestamp) {
                 const created = d.timestamp.toDate();
                 const diffMins = (Date.now() - created.getTime()) / 60000;
-                if (diffMin < 60) canEdit = true;
+                if (diffMins < 60) canEdit = true;
             }
 
             html += `<div class="item-card ${color}">
@@ -456,7 +501,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     function filterMyRecords(type) {
         currentFilter = type;
         document.getElementById("filter-active").style.background = type === 'active' ? 'var(--gold)' : 'var(--bg-glass)';
+        document.getElementById("filter-active").style.color = type === 'active' ? '#fff' : 'var(--text-main)';
         document.getElementById("filter-archived").style.background = type === 'archived' ? 'var(--gold)' : 'var(--bg-glass)';
+        document.getElementById("filter-archived").style.color = type === 'archived' ? '#fff' : 'var(--text-main)';
         renderMyRecords();
     }
 
@@ -523,6 +570,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         showToast("تم التعديل"); closeModal();
     }
 
+    // ==========================================
+    // الدوام والرئيسية
+    // ==========================================
     function loadMyDuty() {
         const today = new Date();
         const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
@@ -625,6 +675,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         } catch(e) { console.error(e); showToast("خطأ: " + e.message, "danger"); }
     }
 
+    // ==========================================
+    // تسجيل بلاغ جديد
+    // ==========================================
     function startEntry(type) {
         const isComplaint = type === 'complaint';
         selectedIssueTypes = [];
@@ -765,6 +818,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         }).then(() => { showToast("تم الحفظ"); closeModal(); });
     }
 
+    // ==========================================
+    // الدردشة
+    // ==========================================
     function loadChat() {
         db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
             let html = "";
