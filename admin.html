@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V47.0</title>
+<title>الإدارة العامة — V51.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -93,12 +93,12 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .btn.small { padding: 8px 14px; font-size: 11px; }
 
 /* تحسين وتصغير سجلات المشرفين */
-.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
 .item-card:hover { background: rgba(255,255,255,0.05); }
 .item-info { flex: 1; min-width: 200px; pointer-events: none; }
-.item-info h4 { font-size: 11px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
-.item-info p { font-size: 9px; color: var(--text-sub); line-height: 1.3; }
-.item-actions { display: flex; gap: 4px; pointer-events: auto; }
+.item-info h4 { font-size: 12px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
+.item-info p { font-size: 10px; color: var(--text-sub); line-height: 1.4; }
+.item-actions { display: flex; gap: 6px; pointer-events: auto; }
 .icon-btn-sm { width: 28px; height: 28px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: 0.2s; }
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red); }
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue); }
@@ -106,15 +106,15 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .icon-btn-sm.remind { background: rgba(251,140,0,0.2); color: var(--amber); }
 .icon-btn-sm.archive { background: rgba(171,71,188,0.2); color: #ce93d8; }
 
-.status-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 900; margin-right: 4px; }
+.status-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; margin-right: 4px; }
 .status-pending { background: rgba(251,140,0,0.2); color: var(--amber); }
 .status-resolved { background: rgba(67,160,71,0.2); color: var(--green); }
 .status-progress { background: rgba(41,182,246,0.2); color: var(--blue); }
 
-.priority-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 4px; }
-.priority-green { background: var(--green); box-shadow: 0 0 3px var(--green); }
-.priority-yellow { background: var(--amber); box-shadow: 0 0 3px var(--amber); }
-.priority-red { background: var(--red); box-shadow: 0 0 5px var(--red); animation: pulseRed 2s infinite; }
+.priority-badge { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 5px; }
+.priority-green { background: var(--green); box-shadow: 0 0 5px var(--green); }
+.priority-yellow { background: var(--amber); box-shadow: 0 0 5px var(--amber); }
+.priority-red { background: var(--red); box-shadow: 0 0 8px var(--red); animation: pulseRed 2s infinite; }
 
 /* تصميم جدول الدوام السابق (أعيد) */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); margin-bottom: 15px; }
@@ -175,10 +175,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   /* الهيدر الفخم */
   .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; }
   .print-logo { width: 90px; height: 90px; object-fit: contain; }
-  .print-header-text-right { text-align: right; flex: 1; }
-  .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; }
-  .print-header-text-left { text-align: left; flex: 1; }
-  .print-header-text-left h2 { font-size: 13px; color: #666; margin: 0; font-weight: bold; line-height: 1.4; }
+  .print-header-text-right { text-align: right; flex: 1; padding-right: 10px; }
+  .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; line-height: 1.3; }
+  .print-header-text-left { text-align: left; flex: 1; padding-left: 10px; }
+  .print-header-text-left h2 { font-size: 13px; color: #0d4a42; margin: 0; font-weight: bold; line-height: 1.4; }
   
   .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; }
   .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; }
@@ -731,7 +731,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         showToast("تم إرسال تنبيه للمشرف");
     }
 
-    // 5. سجلات المشرفين (المصححة)
+    // 5. سجلات المشرفين
     function filterArchive(type) {
         currentArchiveFilter = type;
         document.getElementById("tab-active").classList.toggle("active", type === 'active');
@@ -1023,14 +1023,28 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         else { db.collection("vehicles").add({ plateNumber: plate, type, centerName: center }).then(() => { showToast("تمت الإضافة"); cancelVehEdit(); }); }
     }
 
-    // 12. الطباعة الخفية (Iframe) - جميع الدوال
+    // 12. الطباعة الخفية (Iframe)
     function printHTMLInIframe(htmlContent, orientation) {
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed'; iframe.style.right = '0'; iframe.style.bottom = '0'; iframe.style.width = '0'; iframe.style.height = '0'; iframe.style.border = '0';
         document.body.appendChild(iframe);
         const doc = iframe.contentWindow.document;
         doc.open();
-        doc.write(`<!DOCTYPE html><html dir="rtl"><head><style>@page { size: ${orientation}; margin: 5mm; } body, html { margin: 0; padding: 0; background: #fff !important; color: #000 !important; font-family: 'Cairo', sans-serif; } .print-page { padding: 10px; width: 100%; zoom: 0.85; } .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; } .print-logo { width: 90px; height: 90px; object-fit: contain; } .print-header-text-right { text-align: right; flex: 1; } .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; } .print-header-text-left { text-align: left; flex: 1; } .print-header-text-left h2 { font-size: 13px; color: #666; margin: 0; font-weight: bold; line-height: 1.4; } .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; } .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; } .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; } .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }</style></head><body>${htmlContent}</body></html>`);
+        doc.write(`<!DOCTYPE html><html dir="rtl"><head><style>
+            @page { size: ${orientation}; margin: 5mm; }
+            body, html { margin: 0; padding: 0; background: #fff !important; color: #000 !important; font-family: 'Cairo', sans-serif; }
+            .print-page { padding: 10px; width: 100%; zoom: 0.85; }
+            .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; }
+            .print-logo { width: 90px; height: 90px; object-fit: contain; }
+            .print-header-text-right { text-align: right; flex: 1; padding-right: 10px; }
+            .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; line-height: 1.3; }
+            .print-header-text-left { text-align: left; flex: 1; padding-left: 10px; }
+            .print-header-text-left h2 { font-size: 13px; color: #0d4a42; margin: 0; font-weight: bold; line-height: 1.4; }
+            .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; }
+            .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; }
+            .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; }
+            .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }
+        </style></head><body>${htmlContent}</body></html>`);
         doc.close();
         setTimeout(() => { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { document.body.removeChild(iframe); }, 2000); }, 200);
     }
@@ -1104,7 +1118,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         });
     }
 
-    // التقارير المتقدمة
+    // 13. التقارير المتقدمة
     function updateReportOptions() {
         const type = document.getElementById("reportType").value; const filters = document.getElementById("reportFilters");
         const dateFilters = `<div><label>من تاريخ</label><input type="date" id="filterFrom"></div><div><label>إلى تاريخ</label><input type="date" id="filterTo"></div>`;
@@ -1181,7 +1195,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         }
     }
 
-    // 14. الأنواع والإعدادات (مبسطة للحفاظ على المساحة)
+    // 14. الأنواع والإعدادات
     function loadTypes() { const target = document.getElementById("typeTarget").value; const cat = document.getElementById("typeCategory").value; const col = `${cat}_types_${target}`; db.collection(col).get().then(s => { let html = ""; s.forEach(d => { html += `<div class="item-card"><div class="item-info"><h4>${d.data().name}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}')">🗑️</button></div>`; }); document.getElementById("typesList").innerHTML = html || "لا يوجد أنواع"; }); }
     function addType() { const target = document.getElementById("typeTarget").value; const cat = document.getElementById("typeCategory").value; const name = document.getElementById("newTypeName").value.trim(); if (!name) return showToast("أدخل الاسم", "danger"); db.collection(`${cat}_types_${target}`).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); }); }
     function loadConfig() { document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || ""; }
