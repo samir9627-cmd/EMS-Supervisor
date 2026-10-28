@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V52.0</title>
+<title>الإدارة العامة — V53.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -47,7 +47,6 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .icon-btn.danger { background: rgba(229,57,53,0.3); border-color: var(--red-light); color: #fff; }
 .badge { position: absolute; top: -5px; right: -5px; background: var(--red); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; animation: pulseRed 2s infinite; }
 
-/* شريط البحث الشامل */
 .search-bar { padding: 10px 16px; background: rgba(13,74,66,0.6); border-bottom: 1px solid var(--border); display: none; }
 .search-bar.show { display: block; }
 .search-bar input { width: 100%; padding: 10px 15px; border-radius: 10px; border: 1px solid var(--gold); background: rgba(0,0,0,0.2); color: var(--text-main); font-size: 14px; outline: none; }
@@ -101,17 +100,17 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .btn.secondary { background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-main); }
 .btn.small { padding: 8px 14px; font-size: 11px; }
 
-/* تحسين وتصغير سجلات المشرفين */
-.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
+/* العودة للتصميم القديم الجميل */
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; transition: 0.2s; cursor: pointer; }
 .item-card:hover { background: rgba(255,255,255,0.05); }
 .item-info { flex: 1; min-width: 200px; pointer-events: none; }
-.item-info h4 { font-size: 12px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
-.item-info p { font-size: 10px; color: var(--text-sub); line-height: 1.4; }
+.item-info h4 { font-size: 14px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
+.item-info p { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
 .item-actions { display: flex; gap: 6px; pointer-events: auto; }
-.icon-btn-sm { width: 28px; height: 28px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: 0.2s; }
+.icon-btn-sm { width: 34px; height: 34px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: 0.2s; }
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red); }
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue); }
-.icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold); font-size: 10px; font-family: monospace; font-weight: 900; width: auto; padding: 0 8px; }
+.icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
 .icon-btn-sm.remind { background: rgba(251,140,0,0.2); color: var(--amber); }
 .icon-btn-sm.archive { background: rgba(171,71,188,0.2); color: #ce93d8; }
 .icon-btn-sm.msg { background: rgba(41,182,246,0.2); color: var(--blue); }
@@ -126,7 +125,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .priority-yellow { background: var(--amber); box-shadow: 0 0 5px var(--amber); }
 .priority-red { background: var(--red); box-shadow: 0 0 8px var(--red); animation: pulseRed 2s infinite; }
 
-/* تصميم جدول الدوام السابق (أعيد) */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); margin-bottom: 15px; }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
@@ -171,7 +169,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
 .modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
-/* إعدادات الطباعة الفخمة والمصححة */
 #printArea { display: none; }
 @media print {
   @page { margin: 5mm; size: A4 landscape; }
@@ -181,15 +178,12 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   #printArea * { visibility: visible !important; }
   
   .print-page { background: white; color: black; padding: 10px; font-family: 'Cairo'; width: 100%; zoom: 0.85; }
-  
-  /* الهيدر الفخم */
   .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; }
   .print-logo { width: 90px; height: 90px; object-fit: contain; }
   .print-header-text-right { text-align: right; flex: 1; padding-right: 10px; }
   .print-header-text-right h1 { font-size: 16px; color: #0d4a42; margin: 0; font-weight: 900; line-height: 1.3; }
   .print-header-text-left { text-align: left; flex: 1; padding-left: 10px; }
   .print-header-text-left h2 { font-size: 13px; color: #0d4a42; margin: 0; font-weight: bold; line-height: 1.4; }
-  
   .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; }
   .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; }
   .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; }
@@ -215,7 +209,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     <button class="icon-btn danger" onclick="logout()">🚪</button>
   </div>
 
-  <!-- شريط البحث الشامل -->
   <div class="search-bar" id="searchBar">
     <input type="text" id="globalSearchInput" placeholder="ابحث عن مشرف، مسعف، مركبة، أو بلاغ..." oninput="performGlobalSearch()">
     <div class="search-results" id="searchResults"></div>
@@ -254,7 +247,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     </div>
   </div>
 
-  <!-- صفحة طلبات التعديل -->
   <div class="page" id="page-editRequests">
     <div class="card">
       <div class="card-title">🔓 طلبات فتح التعديل</div>
@@ -623,7 +615,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         // بحث في البلاغات
         allIssues.forEach(i => {
             if((i.targetName||"").toLowerCase().includes(query) || (i.description||"").toLowerCase().includes(query)) {
-                html += `<div class="search-item" onclick="goToIssueFromSearch('${i.id}')"><span>🚩</span><div><b>${i.targetName}</b> (${i.issueType})</div></div>`;
+                html += `<div class="search-item" onclick="goToIssueFromSearch('${i.id}')"><span>🚩</span><div><b>${i.targetName || 'المركز'}</b> (${i.issueType || 'زيارة'})</div></div>`;
             }
         });
         
@@ -698,7 +690,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if(!confirm("هل توافق على فتح التعديل لهذا البلاغ لمدة ساعة؟")) return;
         try {
             await db.collection("issues").doc(issueId).update({ allow_edit_until: new Date(Date.now() + 60*60*1000) });
-            await db.collection("edit_requests").doc(reqId).update({ status: "approved" });
+            await db.collection("edit_requests").doc(reqId).update({ status: "approved", notified: false });
             showToast("تم فتح التعديل للمشرف لمدة ساعة");
         } catch(e) { showToast("خطأ", "danger"); }
     }
@@ -771,6 +763,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         if (issue.status === 'in_progress') return '<span class="status-badge status-progress">🔄 قيد الإجراء</span>';
         return '<span class="status-badge status-pending">⏳ معلقة</span>';
     }
+
     function loadIssues() {
         db.collection("issues").where("status", "in", ["pending_supervisor", "in_progress"]).get().then(s => {
             let html = "";
@@ -781,22 +774,27 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 const created = data.createdAt ? data.createdAt.seconds * 1000 : now;
                 const hoursDiff = (now - created) / (1000 * 60 * 60);
                 const showRemind = hoursDiff > 24;
+                
+                let title = data.targetName || "المركز"; 
+                if (data.type === 'visit') title = "ملاحظة زيارة - " + (data.centerName || "المركز");
+
                 html += `<div class="item-card ${colorClass}" style="border-right-width:4px;">
-                    <div class="item-info">
-                        <h4>${getPriorityBadge(data.priority)} ${getStatusBadge(data)} ${data.targetName}</h4>
-                        <p>🏥 ${data.centerName} | 📌 ${data.issueType} | 📍 ${data.sector}</p>
-                        <p style="font-size:10px; opacity:0.6; margin-top:4px;">${data.description}</p>
+                    <div class="item-info" style="cursor:pointer;" onclick="openIssueDetails('${d.id}')">
+                        <h4>${getPriorityBadge(data.priority)} ${getStatusBadge(data)} ${title}</h4>
+                        <p>🏥 ${data.centerName || '-'} | 📌 ${data.issueType || 'زيارة'} | 📍 ${data.sector || '-'}</p>
+                        <p style="font-size:11px; opacity:0.7; margin-top:4px;">${data.description || '-'}</p>
                     </div>
                     <div class="item-actions">
-                        ${showRemind ? `<button class="icon-btn-sm remind" onclick="sendReminder('${d.id}')" title="تذكير">🔔</button>` : ''}
-                        <button class="icon-btn-sm edit" onclick="editIssueFromAdmin('${d.id}')" title="تعديل">✏️</button>
-                        <button class="icon-btn-sm msg" onclick="quickMessageFromIssue('${data.sector}')" title="رسالة سريعة">💬</button>
-                        <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                        ${showRemind ? `<button class="icon-btn-sm remind" onclick="event.stopPropagation(); sendReminder('${d.id}')" title="تذكير">🔔</button>` : ''}
+                        <button class="icon-btn-sm edit" onclick="event.stopPropagation(); editIssueFromAdmin('${d.id}')" title="تعديل">✏️</button>
+                        <button class="icon-btn-sm msg" onclick="event.stopPropagation(); quickMessageFromIssue('${data.sector}')" title="رسالة سريعة">💬</button>
+                        <button class="icon-btn-sm delete" onclick="event.stopPropagation(); deleteDoc('issues','${d.id}')">🗑️</button>
                     </div>
                 </div>`;
             });
             document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد بلاغات معلقة";
         });
+        
         db.collection("issues").where("status", "==", "resolved_by_supervisor").get().then(s => {
             let html = "";
             s.forEach(d => {
@@ -804,19 +802,24 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                 const time = data.resolvedAt ? new Date(data.resolvedAt.toDate()).toLocaleString('ar-OM') : '—';
                 const resolutionText = data.resolution || '—';
                 const resolvedBy = data.resolvedBy || '—';
+                
+                let title = data.targetName || "المركز"; 
+                if (data.type === 'visit') title = "ملاحظة زيارة - " + (data.centerName || "المركز");
+
                 html += `<div class="item-card issue-ok">
-                    <div class="item-info">
-                        <h4>✅ ${data.targetName}</h4>
-                        <p>🏥 ${data.centerName} | 📌 ${data.issueType}</p>
+                    <div class="item-info" style="cursor:pointer;" onclick="openIssueDetails('${d.id}')">
+                        <h4>✅ ${title}</h4>
+                        <p>🏥 ${data.centerName || '-'} | 📌 ${data.issueType || 'زيارة'}</p>
                         <p style="font-size:11px; margin-top:6px; color:var(--green);">👨‍💼 <b>${resolvedBy}</b> — ${time}</p>
                         <p style="font-size:11px; background:rgba(0,0,0,0.1); padding:6px; border-radius:6px; margin-top:4px;"><b>الإجراء:</b> ${resolutionText}</p>
                     </div>
-                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                    <button class="icon-btn-sm delete" onclick="event.stopPropagation(); deleteDoc('issues','${d.id}')">🗑️</button>
                 </div>`;
             });
             document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة";
         });
     }
+
     function editIssueFromAdmin(id) {
         const issue = allIssues.find(i => i.id === id);
         if(!issue) return;
@@ -852,7 +855,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     function quickMessageFromIssue(sector) {
-        // بحث عن مشرف القطاع
         const sup = allSupervisors.find(s => s.sector === sector) || allSupervisors[0];
         if(!sup) return showToast("لا يوجد مشرف", "danger");
         
@@ -883,6 +885,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
         const grouped = {};
+        
         allIssues.forEach(issue => {
             if(sectorFilter && issue.sector !== sectorFilter) return;
             const isArchived = issue.archived === true;
@@ -894,28 +897,34 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             if(!grouped[sec][center]) grouped[sec][center] = [];
             grouped[sec][center].push(issue);
         });
+        
         let html = "";
         for (const [sec, centers] of Object.entries(grouped)) {
             html += `<div class="issue-group"><div class="issue-group-header"><span>📍 ${sec}</span> <span>${Object.values(centers).flat().length} سجل</span></div>`;
             for (const [center, issues] of Object.entries(centers)) {
-                html += `<div style="margin-bottom:10px;"><div style="font-size:12px; font-weight:bold; color:var(--gold); margin-bottom:5px;">🏥 ${center}</div>`;
+                html += `<div style="margin-bottom:10px;"><div style="font-size:13px; font-weight:bold; color:var(--gold); margin-bottom:8px;">🏥 ${center}</div>`;
                 issues.forEach(issue => {
-                    let typeClass = "issue-item", typeText = "إشكالية", typeIcon = "🚩";
-                    if (issue.isPraise) { typeClass = "issue-item praise"; typeText = "إشادة"; typeIcon = "⭐"; }
-                    else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة"; typeIcon = "📝"; }
+                    let typeText = "إشكالية", typeIcon = "🚩";
+                    if (issue.isPraise) { typeText = "إشادة"; typeIcon = "⭐"; }
+                    else if (issue.type === "visit") { typeText = "ملاحظة زيارة"; typeIcon = "📝"; }
                     else if (issue.supervisor === "الإدارة (إدخال يدوي)") { typeText = "بلاغ إداري"; typeIcon = "🚨"; }
+                    
                     const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
                     const statusBadge = getStatusBadge(issue);
-                    html += `<div class="${typeClass}">
-                        <div class="issue-info" style="cursor:pointer;" onclick="openIssueDetails('${issue.id}')">
-                            <h4>${typeIcon} ${typeText} - ${issue.targetName || "المركز"} ${statusBadge}</h4>
-                            <p>${issue.description || issue.issueType || ''}</p>
-                            <div class="issue-meta">👨‍💼 ${issue.supervisor || '-'} | 📅 ${date}</div>
+                    
+                    let title = issue.targetName || "المركز"; 
+                    if (issue.type === 'visit') title = "ملاحظة زيارة - " + (issue.centerName || "المركز");
+
+                    html += `<div class="item-card" style="margin-bottom:8px; border-right-color:${issue.isPraise ? 'var(--green)' : (issue.type === 'visit' ? 'var(--blue)' : 'var(--red)')}">
+                        <div class="item-info" style="cursor:pointer;" onclick="openIssueDetails('${issue.id}')">
+                            <h4>${typeIcon} ${typeText} - ${title} ${statusBadge}</h4>
+                            <p>${issue.description || '-'}</p>
+                            <div style="font-size:10px; color:var(--text-sub); margin-top:4px;">👨‍💼 ${issue.supervisor || '-'} | 📅 ${date}</div>
                         </div>
                         <div class="item-actions">
-                            ${!issue.archived ? `<button class="icon-btn-sm archive" onclick="archiveRecord('${issue.id}')" title="أرشفة">📜</button>` : ''}
-                            <button class="icon-btn-sm edit" onclick="editSupervisorRecord('${issue.id}')">✏️</button>
-                            <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${issue.id}')">🗑️</button>
+                            ${!issue.archived ? `<button class="icon-btn-sm archive" onclick="event.stopPropagation(); archiveRecord('${issue.id}')" title="أرشفة">📜</button>` : ''}
+                            <button class="icon-btn-sm edit" onclick="event.stopPropagation(); editSupervisorRecord('${issue.id}')">✏️</button>
+                            <button class="icon-btn-sm delete" onclick="event.stopPropagation(); deleteDoc('issues','${issue.id}')">🗑️</button>
                         </div>
                     </div>`;
                 });
@@ -1201,7 +1210,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : (d.supervisor === "الإدارة (إدخال يدوي)" ? "بلاغ إداري" : "إشكالية"));
             const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
             const recommendation = d.recommendation || '-'; const resolution = d.resolution || '-';
-            tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor||'-'}</td><td>${typeText}</td><td>${d.targetName}</td><td>${d.description}</td><td>${recommendation}</td><td>${resolution}</td><td>${date}</td></tr>`;
+            tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor||'-'}</td><td>${typeText}</td><td>${d.targetName || d.centerName}</td><td>${d.description}</td><td>${recommendation}</td><td>${resolution}</td><td>${date}</td></tr>`;
         });
         const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
         const title = currentArchiveFilter === 'archived' ? 'تقرير السجلات المؤرشفة' : 'تقرير السجلات النشطة';
@@ -1219,7 +1228,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         filtered.forEach(d => {
             let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : (d.supervisor === "الإدارة (إدخال يدوي)" ? "بلاغ إداري" : "إشكالية"));
             const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
-            csv += `"${d.sector}","${d.centerName}","${d.supervisor||'-'}","${typeText}","${d.targetName}","${d.description}","${d.recommendation||'-'}","${d.resolution||'-'}","${date}"\n`;
+            csv += `"${d.sector}","${d.centerName}","${d.supervisor||'-'}","${typeText}","${d.targetName || d.centerName}","${d.description}","${d.recommendation||'-'}","${d.resolution||'-'}","${date}"\n`;
         });
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
         const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `sijlat_${new Date().toISOString().slice(0,10)}.csv`; link.click(); showToast("تم التصدير");
