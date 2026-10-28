@@ -4,12 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>المشرف الميداني — V40.0</title>
+<title>المشرف الميداني — V48.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-/* =========================================
-   المتغيرات الأساسية والوضع الليلي
-   ========================================= */
 :root {
   --gold: #978d5b; --gold-light: #d4c896;
   --teal: #0d4a42; --teal-dark: #082b26; --teal-deep: #041814;
@@ -17,14 +14,24 @@
   --red: #e53935; --red-light: #ff5252;
   --amber: #fb8c00; --amber-light: #ffa726;
   --blue: #29b6f6; --blue-light: #64b5f6;
-  --border: rgba(151,141,91,0.3); --text-main: #fff; --text-sub: rgba(255,255,255,0.7); --bg-glass: rgba(13,74,66,0.55);
-  --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --border: rgba(151,141,91,0.3);
+  --text-main: #ffffff;
+  --text-sub: rgba(255,255,255,0.7);
+  --bg-glass: rgba(13,74,66,0.55);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 [data-theme="light"] {
-  --gold: #a3813a; --gold-light: #c29c47; --teal: #ffffff; --teal-dark: #f4f6f5; --teal-deep: #f9fbfa;
-  --green: #2e7d32; --green-light: #4caf50; --red: #c62828; --red-light: #e53935;
-  --amber: #e65100; --amber-light: #ff9800; --blue: #0277bd; --blue-light: #039be5;
-  --border: rgba(163,129,58,0.4); --text-main: #1a1a1a; --text-sub: #555555; --bg-glass: rgba(255,255,255,0.85);
+  --gold: #a3813a; --gold-light: #c29c47;
+  --teal: #ffffff; --teal-dark: #f4f6f5; --teal-deep: #f9fbfa;
+  --green: #2e7d32; --green-light: #4caf50;
+  --red: #c62828; --red-light: #e53935;
+  --amber: #e65100; --amber-light: #ff9800;
+  --blue: #0277bd; --blue-light: #039be5;
+  --border: rgba(163,129,58,0.4);
+  --text-main: #1a1a1a;
+  --text-sub: #555555;
+  --bg-glass: rgba(255,255,255,0.85);
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
 html, body { background: var(--teal-deep); color: var(--text-main); font-weight: 600; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
@@ -36,11 +43,9 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes pulse { 0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(1.1); opacity:0.7;} }
 @keyframes alertPulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(229,57,53,0.7); } 50%{ box-shadow: 0 0 0 10px rgba(229,57,53,0); } }
+
 #mainApp { display: none; } #mainApp.ready { display: block; }
 
-/* =========================================
-   الشريط العلوي
-   ========================================= */
 .topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 16px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; transition: background 0.3s; }
 [data-theme="light"] .topbar { background: rgba(255,255,255,0.95); }
 .topbar-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: contain; background: #fff; padding: 2px; }
@@ -52,9 +57,6 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .icon-btn.danger { background: rgba(198,40,40,0.4); border-color: var(--red-light); color: #fff; }
 .icon-btn .badge { position: absolute; top: -5px; right: -5px; background: var(--red); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; animation: alertPulse 2s infinite; }
 
-/* =========================================
-   الشريط السفلي
-   ========================================= */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; background: linear-gradient(180deg, rgba(13,74,66,0.98), rgba(4,24,20,0.98)); border-top: 2px solid var(--gold); padding: 8px 8px calc(8px + var(--safe-bottom)); display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
 [data-theme="light"] .bottom-nav { background: rgba(255,255,255,0.98); }
 .nav-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 10px 4px; border-radius: 14px; cursor: pointer; background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-sub); font-family: inherit; font-weight: 700; font-size: 11px; transition: 0.25s; min-height: 72px; position: relative; }
@@ -62,9 +64,6 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .nav-btn.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border-color: var(--gold); font-weight: 900; box-shadow: 0 4px 15px rgba(151,141,91,0.4); }
 .nav-btn .nav-badge { position: absolute; top: 2px; right: 15px; background: var(--red); color: #fff; font-size: 9px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
 
-/* =========================================
-   الصفحات والبطاقات
-   ========================================= */
 .page { display: none; padding: 16px; max-width: 720px; margin: 0 auto; }
 .page.active { display: block; animation: slideUp 0.35s; }
 .card { background: var(--bg-glass); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 14px; }
@@ -76,19 +75,16 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .action-btn.success { background: linear-gradient(135deg, #43a047, #69f0ae); color: #041814; }
 .action-btn.info { background: linear-gradient(135deg, #29b6f6, #64b5f6); color: #fff; grid-column: span 2; }
 
-.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
+.item-card { background: var(--bg-glass); border: 1px solid var(--border); border-right: 4px solid var(--gold); border-radius: 14px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
 .item-card.red { border-right-color: var(--red); }
 .item-card.green { border-right-color: var(--green); }
 .item-card.blue { border-right-color: var(--blue); }
 .item-card.purple { border-right-color: #ab47bc; }
 .item-info { flex: 1; min-width: 200px; pointer-events: none; }
-.item-info h4 { font-size: 14px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
-.item-info p { font-size: 11px; color: var(--text-sub); line-height: 1.6; }
-.item-actions { display: flex; gap: 6px; pointer-events: auto; }
+.item-info h4 { font-size: 12px; font-weight: 900; color: var(--gold); margin-bottom: 2px; }
+.item-info p { font-size: 10px; color: var(--text-sub); line-height: 1.4; }
+.item-actions { display: flex; gap: 4px; pointer-events: auto; }
 
-/* =========================================
-   الحقول والأزرار
-   ========================================= */
 input, select, textarea { width: 100%; padding: 12px 14px; background: var(--bg-glass); border: 1px solid var(--border); border-radius: 11px; color: var(--text-main); font-size: 13px; font-family: inherit; font-weight: 600; outline: none; margin-bottom: 12px; }
 input:focus, select:focus, textarea:focus { border-color: var(--gold); }
 select option { background: var(--teal-deep); color: var(--text-main); }
@@ -100,21 +96,18 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 .btn.info { background: linear-gradient(135deg, var(--blue), var(--blue-light)); color: #fff; }
 .btn.block { width: 100%; }
 .btn.secondary { background: var(--bg-glass); border: 1px solid var(--border); color: var(--text-main); }
+.btn.small { padding: 6px 12px; font-size: 11px; }
 
-/* المودال */
 .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.85); display: none; align-items: flex-end; justify-content: center; }
 .modal-overlay.show { display: flex; }
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
 .modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
-/* الإشعارات والبوب أب */
 .toast-container { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; width: calc(100% - 32px); max-width: 420px; }
 .toast { background: var(--bg-glass); color: var(--text-main); padding: 12px 18px; border-radius: 12px; border: 1px solid var(--gold); font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
 .toast.success { border-color: var(--green); }
 .toast.danger { border-color: var(--red); }
-.toast.notification { border-color: var(--amber); background: linear-gradient(135deg, rgba(251,140,0,0.15), var(--bg-glass)); }
 
-/* الدردشة */
 .chat-container { display: flex; flex-direction: column; height: 50vh; background: rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
 .chat-messages { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 .message { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
@@ -125,7 +118,6 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 .chat-input-box input { flex: 1; margin: 0; border-radius: 8px 0 0 8px; border-left: none; }
 .chat-input-box button { padding: 0 20px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border: none; border-radius: 0 8px 8px 0; font-weight: 900; cursor: pointer; }
 
-/* عناصر الإدخال */
 .chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; perspective: 1000px; }
 .chip-3d { padding: 10px 16px; border-radius: 12px; background: var(--bg-glass); border: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: all 0.3s ease; font-weight: 700; color: var(--text-sub); display: flex; align-items: center; gap: 6px; }
 .chip-3d.selected { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border-color: var(--gold); font-weight: 900; }
@@ -138,7 +130,6 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 
 .gps-btn { background: rgba(41,182,246,0.15); border: 1px solid var(--blue); color: var(--blue-light); padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 900; cursor: pointer; width: 100%; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-/* جدول الدوام */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-glass); margin-top: 10px; }
 .duty-table { border-collapse: collapse; font-size: 11px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 8px; text-align: center; min-width: 36px; }
@@ -147,6 +138,11 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 .duty-table td.s-p { background: rgba(67,160,71,0.2); color: var(--green); font-weight: 900; }
 .duty-table td.s-m { background: rgba(251,140,0,0.2); color: var(--amber); font-weight: 900; }
 .duty-table td.s-o { background: rgba(229,57,53,0.2); color: var(--red); font-weight: 900; }
+
+.status-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 8px; font-weight: 900; margin-right: 4px; }
+.status-pending { background: rgba(251,140,0,0.2); color: var(--amber); }
+.status-resolved { background: rgba(67,160,71,0.2); color: var(--green); }
+.status-progress { background: rgba(41,182,246,0.2); color: var(--blue); }
 
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
@@ -208,7 +204,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     </div>
 
     <div class="card">
-      <div class="card-title">✅ بلاغاتي المنجزة (من الإدارة)</div>
+      <div class="card-title">✅ بلاغاتي المنجزة</div>
       <div id="completedIssues">جاري التحميل...</div>
     </div>
 
@@ -218,16 +214,14 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     </div>
   </div>
 
-  <!-- 2. السجلات (مع الأرشيف) -->
+  <!-- 2. السجلات -->
   <div class="page" id="page-issues">
     <div class="card">
       <div class="card-title">📋 سجلاتي</div>
       
-      <!-- فلتر السجلات -->
-      <div style="display:flex; gap:5px; margin-bottom:10px;">
-        <button class="btn small active-filter" id="filter-all" onclick="filterMyRecords('all')" style="flex:1; background:var(--gold);">الكل</button>
-        <button class="btn small" id="filter-active" onclick="filterMyRecords('active')" style="flex:1; background:var(--bg-glass); color:var(--text-main);">قيد المتابعة</button>
-        <button class="btn small" id="filter-archived" onclick="filterMyRecords('archived')" style="flex:1; background:var(--bg-glass); color:var(--text-main);">الأرشيف</button>
+      <div class="archive-tabs" style="display:flex; gap:5px; margin-bottom:10px;">
+        <button id="filter-active" class="btn small" onclick="filterMyRecords('active')" style="flex:1; background:var(--gold); color:#fff;">📌 النشطة</button>
+        <button id="filter-archived" class="btn small" onclick="filterMyRecords('archived')" style="flex:1; background:var(--bg-glass); color:var(--text-main);">📜 الأرشيف</button>
       </div>
       
       <div id="issuesList">جاري التحميل...</div>
@@ -237,11 +231,11 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
   <!-- 3. الدردشة -->
   <div class="page" id="page-chat">
     <div class="card" style="padding:10px;">
-      <div class="card-title" style="margin-bottom:5px;">💬 محادثة مع الإدارة (خاصة)</div>
+      <div class="card-title" style="margin-bottom:5px;">💬 محادثة مع الإدارة</div>
       <div class="chat-container">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-box">
-          <input type="text" id="chatInput" placeholder="اكتب رسالتك للمدير..." onkeypress="if(event.key === 'Enter') sendMessage()">
+          <input type="text" id="chatInput" placeholder="اكتب رسالتك..." onkeypress="if(event.key === 'Enter') sendMessage()">
           <button onclick="sendMessage()">إرسال</button>
         </div>
       </div>
@@ -311,18 +305,15 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     let selectedIssueTypes = [];
     let myCode = user.code;
     let pendingIssuesCount = 0;
-    let myRecords = []; // لحفظ سجلات المشرف للفلترة
+    let myRecords = [];
+    let currentFilter = 'active';
 
-    // متابعة الموقع في الخلفية
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
             currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         }, null, { enableHighAccuracy: true });
     }
 
-    // ==========================================
-    // الوضع الليلي والنهاري
-    // ==========================================
     function toggleTheme() {
         const current = document.documentElement.getAttribute("data-theme") || "dark";
         const newTheme = current === "dark" ? "light" : "dark";
@@ -349,83 +340,38 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         window.scrollTo({top:0,behavior:"smooth"});
     }
 
-    // ==========================================
-    // تحديد الموقع (GPS)
-    // ==========================================
     function getLocation() {
-        const el = document.getElementById("gpsStatus");
-        if (!el) return;
-        el.innerText = "📍 جاري تحديد الموقع...";
-        el.style.color = "var(--gold)";
+        const el = document.getElementById("gpsStatus"); if (!el) return;
+        el.innerText = "📍 جاري تحديد الموقع..."; el.style.color = "var(--gold)";
         if (!navigator.geolocation) { el.innerText = "❌ غير مدعوم"; return; }
-        
         navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                el.innerText = `✅ تم تحديد الموقع (±${Math.round(pos.coords.accuracy)} م)`;
-                el.style.color = "var(--green)";
-            },
-            (err) => {
-                if (err.code === 1) el.innerText = "❌ رفضت السماح بالوصول";
-                else if (err.code === 2) el.innerText = "❌ إشارة GPS غير متاحة";
-                else el.innerText = "❌ انتهت المهلة. حاول مرة أخرى.";
-                el.style.color = "var(--red)";
-            },
+            (pos) => { currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude }; el.innerText = `✅ تم التحديد (±${Math.round(pos.coords.accuracy)} م)`; el.style.color = "var(--green)"; },
+            (err) => { el.innerText = "❌ فشل التحديد"; el.style.color = "var(--red)"; },
             { enableHighAccuracy: true, timeout: 15000 }
         );
     }
 
-    // ==========================================
-    // الإدخال الصوتي (مستمر)
-    // ==========================================
     function toggleVoice(targetId, btn) {
         const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SR) return showToast("متصفحك لا يدعم الإدخال الصوتي", "danger");
-        
         if (btn.classList.contains("recording")) {
             if (window.currentRecognition) window.currentRecognition.stop();
-            btn.classList.remove("recording"); btn.innerText = "🎤";
-            return;
+            btn.classList.remove("recording"); btn.innerText = "🎤"; return;
         }
-
         const recognition = new SR();
         window.currentRecognition = recognition;
-        recognition.lang = 'ar-OM';
-        recognition.continuous = true; // جعل الإدخال مستمراً
-        recognition.interimResults = false;
-
+        recognition.lang = 'ar-OM'; recognition.continuous = true; recognition.interimResults = false;
         recognition.onstart = () => { btn.classList.add("recording"); btn.innerText = "🔴"; };
         recognition.onresult = (event) => {
             let finalTranscript = '';
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                if (event.results[i].isFinal) {
-                    finalTranscript += event.results[i][0].transcript + ' ';
-                }
-            }
-            const el = document.getElementById(targetId);
-            if (el && finalTranscript) el.value += finalTranscript;
+            for (let i = event.resultIndex; i < event.results.length; ++i) { if (event.results[i].isFinal) finalTranscript += event.results[i][0].transcript + ' '; }
+            const el = document.getElementById(targetId); if (el && finalTranscript) el.value += finalTranscript;
         };
-        recognition.onerror = (e) => { 
-            if(e.error === 'no-speech') return; // تجاهل الخطأ إذا لم يتحدث المستخدم
-            showToast("تعذر الاستماع. تأكد من السماح بالميكروفون.", "danger"); 
-            btn.classList.remove("recording"); btn.innerText = "🎤"; 
-        };
-        recognition.onend = () => { 
-            // إعادة التشغيل التلقائي إذا انقطع بدون طلب المستخدم
-            if(btn.classList.contains("recording")) {
-                try { recognition.start(); } catch(e) {}
-            } else {
-                btn.classList.remove("recording"); btn.innerText = "🎤"; 
-            }
-        };
-        
-        try { recognition.start(); } 
-        catch(e) { showToast("المتصفح رفض تشغيل الميكروفون", "danger"); }
+        recognition.onerror = (e) => { if(e.error === 'no-speech') return; showToast("تعذر الاستماع", "danger"); btn.classList.remove("recording"); btn.innerText = "🎤"; };
+        recognition.onend = () => { if(btn.classList.contains("recording")) { try { recognition.start(); } catch(e) {} } else { btn.classList.remove("recording"); btn.innerText = "🎤"; } };
+        try { recognition.start(); } catch(e) { showToast("المتصفح رفض تشغيل الميكروفون", "danger"); }
     }
 
-    // ==========================================
-    // التحميل الرئيسي للبيانات
-    // ==========================================
     async function loadData() {
         try {
             for (const cat of ["issue", "praise"]) {
@@ -435,82 +381,87 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
                     cachedMaster[cat][target] = snap.docs.map(d => d.data().name);
                 }
             }
-            
             const paramSnap = await db.collection("paramedics").get();
             cachedParamedics = paramSnap.docs.map(d => d.data());
 
-            // التعاميم
             db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(s => {
                 let html = "";
                 s.forEach(d => { const data = d.data(); html += `<div class="item-card blue"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div></div>`; });
                 document.getElementById("broadcastsList").innerHTML = html || "لا يوجد تعاميم";
             });
             
-            // سجلاتي
-            db.collection("issues").where("supervisor", "==", user.name).orderBy("timestamp", "desc").onSnapshot(s => {
+            // جلب سجلات المشرف (البلاغات الإدارية + الخاصة به)
+            db.collection("issues").orderBy("timestamp", "desc").onSnapshot(s => {
                 myRecords = [];
-                s.forEach(d => myRecords.push({ id: d.id, ...d.data() }));
+                s.forEach(d => {
+                    const data = d.data();
+                    // فلترة: إما بلاغ إداري في قطاعه أو بلاغ خاص به
+                    if (data.supervisor === "الإدارة (إدخال يدوي)" && data.sector === user.sector) {
+                        myRecords.push({ id: d.id, ...data });
+                    } else if (data.supervisor === user.name) {
+                        myRecords.push({ id: d.id, ...data });
+                    }
+                });
                 renderMyRecords();
+                loadAdminIssues();
             });
             
-            // بلاغات الإدارة
-            loadAdminIssues();
-            // الدوام
-            loadMyDuty();
-            loadMonthlyDuty();
-            // الدردشة
-            loadChat();
+            loadMyDuty(); loadMonthlyDuty(); loadChat();
         } catch(e) { console.warn(e); }
-    }
-
-    // ==========================================
-    // تصفية وعرض سجلاتي (مع الأرشيف وزر المتابعة)
-    // ==========================================
-    let currentFilter = 'all';
-
-    function filterMyRecords(type) {
-        currentFilter = type;
-        document.querySelectorAll('.btn.small').forEach(b => b.style.background = 'var(--bg-glass)');
-        document.querySelectorAll('.btn.small').forEach(b => b.style.color = 'var(--text-main)');
-        
-        const activeBtn = document.getElementById(`filter-${type}`);
-        if(activeBtn) { activeBtn.style.background = 'var(--gold)'; activeBtn.style.color = '#fff'; }
-        
-        renderMyRecords();
     }
 
     function renderMyRecords() {
         let filtered = myRecords;
-        if(currentFilter === 'active') filtered = myRecords.filter(i => i.status !== 'resolved_by_supervisor');
-        else if(currentFilter === 'archived') filtered = myRecords.filter(i => i.status === 'resolved_by_supervisor');
+        if (currentFilter === 'active') filtered = myRecords.filter(i => i.archived !== true);
+        else if (currentFilter === 'archived') filtered = myRecords.filter(i => i.archived === true);
 
         let html = "";
         filtered.forEach(d => {
             const isVisit = d.type === "visit";
             const isPraise = d.isPraise;
             const isResolved = d.status === "resolved_by_supervisor";
+            const isAdmin = d.supervisor === "الإدارة (إدخال يدوي)";
             
             let color = isPraise ? "green" : (isVisit ? "blue" : "red");
-            let icon = isPraise ? "⭐" : (isVisit ? "📝" : "🚩");
-            let typeText = isPraise ? "إشادة" : (isVisit ? "ملاحظة زيارة" : "إشكالية");
+            let icon = isPraise ? "⭐" : (isVisit ? "📝" : (isAdmin ? "🚨" : "🚩"));
+            let typeText = isPraise ? "إشادة" : (isVisit ? "ملاحظة زيارة" : (isAdmin ? "بلاغ إداري" : "إشكالية"));
             const date = d.timestamp ? new Date(d.timestamp.toDate()).toLocaleString('ar-OM') : '';
+            
+            let statusBadge = '<span class="status-badge status-pending">⏳ معلقة</span>';
+            if (isResolved) statusBadge = '<span class="status-badge status-resolved">✅ محلولة</span>';
+            else if (d.status === 'in_progress') statusBadge = '<span class="status-badge status-progress">🔄 قيد الإجراء</span>';
 
-            html += `<div class="item-card ${color}" onclick="openRecordDetails('${d.id}')">
-                <div class="item-info">
-                    <h4>${icon} ${typeText} ${isResolved ? '<span style="color:var(--green); font-size:11px;">(مكتمل)</span>' : '<span style="color:var(--amber); font-size:11px;">(معلق)</span>'}</h4>
-                    <p>🏥 ${d.centerName || d.targetName || '-'}</p>
-                    <p style="font-size:10px; opacity:0.6;">${date}</p>
+            // التحقق من إمكانية التعديل (أقل من 60 دقيقة)
+            let canEdit = false;
+            if (d.timestamp) {
+                const created = d.timestamp.toDate();
+                const diffMins = (Date.now() - created.getTime()) / 60000;
+                if (diffMin < 60) canEdit = true;
+            }
+
+            html += `<div class="item-card ${color}">
+                <div class="item-info" onclick="openRecordDetails('${d.id}')">
+                    <h4>${icon} ${typeText} - ${d.targetName || "المركز"} ${statusBadge}</h4>
+                    <p>🏥 ${d.centerName || '-'} | 📅 ${date}</p>
                 </div>
-                ${!isResolved ? `<div class="item-actions"><button class="btn success small" onclick="event.stopPropagation(); openResolveModal('${d.id}')">✅ تم الحل</button></div>` : ''}
+                <div class="item-actions">
+                    ${!isResolved ? `<button class="btn success small" onclick="event.stopPropagation(); openResolveModal('${d.id}')">✅ تم الحل</button>` : ''}
+                    ${canEdit && !isResolved ? `<button class="btn info small" onclick="event.stopPropagation(); editMyRecord('${d.id}')">✏️</button>` : ''}
+                </div>
             </div>`;
         });
-
         document.getElementById("issuesList").innerHTML = html || "لا يوجد سجلات";
     }
 
+    function filterMyRecords(type) {
+        currentFilter = type;
+        document.getElementById("filter-active").style.background = type === 'active' ? 'var(--gold)' : 'var(--bg-glass)';
+        document.getElementById("filter-archived").style.background = type === 'archived' ? 'var(--gold)' : 'var(--bg-glass)';
+        renderMyRecords();
+    }
+
     function openRecordDetails(id) {
-        const rec = myRecords.find(i => i.id === id);
-        if(!rec) return;
+        const rec = myRecords.find(i => i.id === id); if(!rec) return;
         const date = rec.timestamp ? new Date(rec.timestamp.toDate()).toLocaleString('ar-OM') : '';
         document.getElementById("modalTitle").innerText = "🔍 تفاصيل السجل";
         document.getElementById("modalBody").innerHTML = `
@@ -518,7 +469,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
                 <p><b>المركز:</b> ${rec.centerName || rec.targetName || '-'}</p>
                 <p><b>النوع:</b> ${rec.isPraise ? 'إشادة' : (rec.type === 'visit' ? 'ملاحظة زيارة' : 'إشكالية')}</p>
                 <p><b>التاريخ:</b> ${date}</p>
-                <p><b>الحالة:</b> ${rec.status === 'resolved_by_supervisor' ? '✅ تم الحل' : '⏳ قيد المتابعة'}</p>
+                <p><b>الحالة:</b> ${rec.status === 'resolved_by_supervisor' ? '✅ محلولة' : (rec.status === 'in_progress' ? '🔄 قيد الإجراء' : '⏳ معلقة')}</p>
             </div>
             <label>الوصف:</label>
             <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${rec.description || '-'}</p>
@@ -542,21 +493,36 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     async function submitResolution(id) {
         const text = document.getElementById("resolveDesc").value.trim();
         if(!text) return showToast("يجب كتابة الإجراء المتخذ", "danger");
-        
         try {
             await db.collection("issues").doc(id).update({
                 status: "resolved_by_supervisor",
                 resolution: text,
+                resolvedBy: user.name,
                 resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            showToast("تم إغلاق البلاغ بنجاح");
-            closeModal();
+            showToast("تم إغلاق البلاغ بنجاح"); closeModal();
         } catch(e) { showToast("خطأ", "danger"); }
     }
 
-    // ==========================================
-    // الدوام
-    // ==========================================
+    function editMyRecord(id) {
+        const rec = myRecords.find(i => i.id === id); if(!rec) return;
+        document.getElementById("modalTitle").innerText = "✏️ تعديل السجل";
+        document.getElementById("modalBody").innerHTML = `
+            <label>الوصف</label><textarea id="editDesc" rows="4">${rec.description || ''}</textarea>
+            <label>التوصيات</label><textarea id="editRec" rows="3">${rec.recommendation || ''}</textarea>
+            <button class="btn success block" onclick="saveMyRecordEdit('${id}')">💾 حفظ</button>
+            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
+        `;
+        document.getElementById("modalOverlay").classList.add("show");
+    }
+
+    async function saveMyRecordEdit(id) {
+        const description = document.getElementById("editDesc").value;
+        const recommendation = document.getElementById("editRec").value;
+        await db.collection("issues").doc(id).update({ description, recommendation });
+        showToast("تم التعديل"); closeModal();
+    }
+
     function loadMyDuty() {
         const today = new Date();
         const monthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
@@ -577,20 +543,13 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         const days = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
         db.collection("duty_schedule").doc(`${monthStr}_${myCode}`).get().then(doc => {
             const el = document.getElementById("myMonthlyDuty");
-            let shifts = {};
-            if (doc.exists) shifts = doc.data().shifts || {};
+            let shifts = {}; if (doc.exists) shifts = doc.data().shifts || {};
             let html = '<table class="duty-table"><thead><tr><th>اليوم</th>';
-            for (let d = 1; d <= days; d++) {
-                const isToday = d === today.getDate();
-                html += `<th style="${isToday ? 'background:var(--gold);color:#fff;' : ''}">${d}</th>`;
-            }
+            for (let d = 1; d <= days; d++) { const isToday = d === today.getDate(); html += `<th style="${isToday ? 'background:var(--gold);color:#fff;' : ''}">${d}</th>`; }
             html += '</tr></thead><tbody><tr><td style="color:var(--gold); font-weight:900;">الدوام</td>';
             for (let d = 1; d <= days; d++) {
-                const code = shifts[d] || "";
-                let cls = "";
-                if (code === "ص") cls = "s-p";
-                else if (code === "م") cls = "s-m";
-                else if (code === "أ") cls = "s-o";
+                const code = shifts[d] || ""; let cls = "";
+                if (code === "ص") cls = "s-p"; else if (code === "م") cls = "s-m"; else if (code === "أ") cls = "s-o";
                 html += `<td class="${cls}">${code || '—'}</td>`;
             }
             html += '</tr></tbody></table>';
@@ -598,71 +557,40 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         });
     }
 
-    // ==========================================
-    // بلاغات الإدارة (مع إشعارات)
-    // ==========================================
-    let lastPendingIds = new Set();
-
     function loadAdminIssues() {
-        db.collection("issues").where("sector", "==", user.sector).where("status", "==", "pending_supervisor").onSnapshot(s => {
-            let html = "";
-            pendingIssuesCount = 0;
-            let currentIds = new Set();
-            
-            s.forEach(d => {
-                pendingIssuesCount++;
-                currentIds.add(d.id);
-                const data = d.data();
-                html += `<div class="item-card purple" style="flex-direction:column; align-items:flex-start;">
-                    <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
-                        <b style="color:var(--gold);">🚩 ${data.targetName}</b>
-                        <span style="font-size:10px; opacity:0.6;">${data.issueType}</span>
-                    </div>
-                    <p style="font-size:12px;"><b>المركز:</b> ${data.centerName}</p>
-                    <p style="font-size:12px; background:rgba(0,0,0,0.1); padding:8px; border-radius:8px; width:100%; margin-bottom:8px;">${data.description}</p>
-                    <button class="btn info block" onclick="openReplyToAdmin('${d.id}')">📩 الرد على الإدارة</button>
-                </div>`;
-            });
-            document.getElementById("pendingIssues").innerHTML = html || "لا يوجد بلاغات معلقة من الإدارة";
-            
-            // نظام الإشعارات
-            if (lastPendingIds.size > 0) {
-                currentIds.forEach(id => {
-                    if (!lastPendingIds.has(id)) {
-                        showNotification("🚩 بلاغ جديد من الإدارة", "لديك مهمة جديدة تحتاج إلى رد!");
-                        playNotificationSound();
-                    }
-                });
-            }
-            lastPendingIds = currentIds;
-
-            // تحديث البادج
-            const badge = document.getElementById("navBadge");
-            if(pendingIssuesCount > 0) {
-                badge.style.display = "flex";
-                badge.innerText = pendingIssuesCount;
-            } else {
-                badge.style.display = "none";
-            }
+        const pending = myRecords.filter(i => i.supervisor === "الإدارة (إدخال يدوي)" && i.status !== 'resolved_by_supervisor');
+        let html = "";
+        pendingIssuesCount = pending.length;
+        pending.forEach(d => {
+            html += `<div class="item-card purple" style="flex-direction:column; align-items:flex-start;">
+                <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:8px;">
+                    <b style="color:var(--gold);">🚩 ${d.targetName}</b>
+                    <span style="font-size:10px; opacity:0.6;">${d.issueType}</span>
+                </div>
+                <p style="font-size:12px;"><b>المركز:</b> ${d.centerName}</p>
+                <p style="font-size:12px; background:rgba(0,0,0,0.1); padding:8px; border-radius:8px; width:100%; margin-bottom:8px;">${d.description}</p>
+                <button class="btn info block" onclick="openReplyToAdmin('${d.id}')">📩 الرد على الإدارة</button>
+            </div>`;
         });
+        document.getElementById("pendingIssues").innerHTML = html || "لا يوجد بلاغات معلقة من الإدارة";
         
-        db.collection("issues").where("resolvedBy", "==", user.name).get().then(s => {
-            let html = "";
-            s.forEach(d => {
-                const data = d.data();
-                const time = data.resolvedAt ? new Date(data.resolvedAt.toDate()).toLocaleString('ar-OM') : '—';
-                const responses = data.responses || [];
-                const lastResponse = responses[responses.length - 1] || {};
-                html += `<div class="item-card green">
-                    <div class="item-info">
-                        <h4>✅ ${data.targetName}</h4>
-                        <p>🏥 ${data.centerName} | 🕐 ${time}</p>
-                        <p style="font-size:11px; background:rgba(0,0,0,0.1); padding:6px; border-radius:6px; margin-top:4px;"><b>ما فعلته:</b> ${lastResponse.text || '—'}</p>
-                    </div>
-                </div>`;
-            });
-            document.getElementById("completedIssues").innerHTML = html || "لم تنجز أي بلاغات بعد";
+        const badge = document.getElementById("navBadge");
+        if(pendingIssuesCount > 0) { badge.style.display = "flex"; badge.innerText = pendingIssuesCount; } else { badge.style.display = "none"; }
+        
+        const completed = myRecords.filter(i => i.supervisor === "الإدارة (إدخال يدوي)" && i.status === 'resolved_by_supervisor');
+        let chtml = "";
+        completed.forEach(d => {
+            const time = d.resolvedAt ? new Date(d.resolvedAt.toDate()).toLocaleString('ar-OM') : '—';
+            const lastResponse = d.resolution || '—';
+            chtml += `<div class="item-card green">
+                <div class="item-info">
+                    <h4>✅ ${d.targetName}</h4>
+                    <p>🏥 ${d.centerName} | 🕐 ${time}</p>
+                    <p style="font-size:11px; background:rgba(0,0,0,0.1); padding:6px; border-radius:6px; margin-top:4px;"><b>ما فعلته:</b> ${lastResponse}</p>
+                </div>
+            </div>`;
         });
+        document.getElementById("completedIssues").innerHTML = chtml || "لم تنجز أي بلاغات بعد";
     }
 
     function openReplyToAdmin(issueId) {
@@ -670,7 +598,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         document.getElementById("modalBody").innerHTML = `
             <label>ما الذي تم فعله بشأن هذا البلاغ؟</label>
             <div class="input-with-btn">
-                <textarea id="replyText" rows="4" placeholder="اكتب هنا الإجراءات التي تم اتخاذها..."></textarea>
+                <textarea id="replyText" rows="4" placeholder="اكتب هنا الإجراءات..."></textarea>
                 <button class="mic-btn" onclick="toggleVoice('replyText', this)">🎤</button>
             </div>
             <button class="btn success block" onclick="submitReplyToAdmin('${issueId}')">📤 إرسال الرد للإدارة</button>
@@ -683,36 +611,20 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         const text = document.getElementById("replyText").value.trim();
         if (!text) return showToast("اكتب ما تم فعله", "danger");
         try {
-            const issueRef = db.collection("issues").doc(issueId);
-            const doc = await issueRef.get();
-            const data = doc.data();
-            const responses = data.responses || [];
-            responses.push({ supervisor: user.name, code: myCode, text: text, time: new Date().toISOString() });
-            
-            await issueRef.update({
-                responses: responses,
+            await db.collection("issues").doc(issueId).update({
                 status: "resolved_by_supervisor",
+                resolution: text,
                 resolvedBy: user.name,
                 resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            
             await db.collection("messages").add({
-                sender: user.name,
-                receiver: "المدير العام",
-                text: `رد على بلاغ "${data.targetName}": ${text}`,
-                type: "reply_to_admin",
-                issueId: issueId,
-                timestamp: new Date()
+                sender: user.name, receiver: "المدير العام", text: `رد على بلاغ: ${text}`,
+                type: "reply_to_admin", issueId: issueId, timestamp: new Date()
             });
-            
-            showToast("تم إرسال الرد للإدارة");
-            closeModal();
+            showToast("تم إرسال الرد للإدارة"); closeModal();
         } catch(e) { console.error(e); showToast("خطأ: " + e.message, "danger"); }
     }
 
-    // ==========================================
-    // تسجيل بلاغ جديد
-    // ==========================================
     function startEntry(type) {
         const isComplaint = type === 'complaint';
         selectedIssueTypes = [];
@@ -754,41 +666,19 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         const master = cachedMaster[isComplaint ? 'issue' : 'praise'];
         const chips = document.getElementById("actionTypesChips");
         let targetHtml = "";
-
         const sectorsOptions = Object.keys(SECTORS).map(s => `<option value="${s}" ${s === user.sector ? 'selected' : ''}>${s}</option>`).join("");
 
         if (targetType === "paramedic") {
-            targetHtml = `
-                <label>📍 القطاع</label>
-                <select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select>
-                <label>🏥 المركز</label>
-                <select id="entryCenter" onchange="updateEntryParamedics()"></select>
-                <label>👨‍🚒 اسم المسعف</label>
-                <select id="entryTargetName"></select>
-            `;
+            targetHtml = `<label>📍 القطاع</label><select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select><label>🏥 المركز</label><select id="entryCenter" onchange="updateEntryParamedics()"></select><label>👨‍🚒 اسم المسعف</label><select id="entryTargetName"></select>`;
         } else if (targetType === "center") {
-            targetHtml = `
-                <label>📍 القطاع</label>
-                <select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select>
-                <label>🏥 المركز</label>
-                <select id="entryTargetName"></select>
-            `;
+            targetHtml = `<label>📍 القطاع</label><select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select><label>🏥 المركز</label><select id="entryTargetName"></select>`;
         } else if (targetType === "vehicle") {
-            targetHtml = `
-                <label>📍 القطاع</label>
-                <select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select>
-                <label>🏥 المركز</label>
-                <select id="entryCenter"></select>
-                <label>🚑 رقم المركبة</label>
-                <select id="entryTargetName"></select>
-            `;
+            targetHtml = `<label>📍 القطاع</label><select id="entrySector" onchange="updateEntryCenters()">${sectorsOptions}</select><label>🏥 المركز</label><select id="entryCenter"></select><label>🚑 رقم المركبة</label><select id="entryTargetName"></select>`;
         } else {
             targetHtml = `<label>💊 المخزن</label><select id="entryTargetName"><option>المخزن الطبي الرئيسي</option></select>`;
         }
         area.innerHTML = targetHtml;
-        
         if (document.getElementById("entrySector")) updateEntryCenters();
-
         const types = (master[targetType] || []);
         chips.innerHTML = types.map(t => `<div class="chip-3d" onclick="toggleChip(this, '${t}')">${t}</div>`).join("") || '<span style="opacity:0.5; font-size:11px;">لا يوجد أنواع مسجلة</span>';
     }
@@ -805,12 +695,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 
     function updateEntryParamedics() {
         const center = document.getElementById("entryCenter").value;
-        const sel = document.getElementById("entryTargetName");
-        if(!sel) return;
+        const sel = document.getElementById("entryTargetName"); if(!sel) return;
         const filtered = cachedParamedics.filter(p => p.centerName === center);
-        sel.innerHTML = filtered.length > 0 
-            ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("")
-            : `<option value="">-- لا يوجد مسعفون --</option>`;
+        sel.innerHTML = filtered.length > 0 ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("") : `<option value="">-- لا يوجد مسعفون --</option>`;
     }
 
     function toggleChip(el, val) {
@@ -838,7 +725,7 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
             issueType: isPraise ? null : selectedIssueTypes.join(" • "),
             praiseType: isPraise ? selectedIssueTypes.join(" • ") : null,
             description: desc, recommendation: rec,
-            supervisor: user.name, status: 'new', timestamp: new Date(),
+            supervisor: user.name, status: 'pending_supervisor', archived: false, timestamp: new Date(),
             location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
         }).then(() => { showToast("تم الحفظ بنجاح"); closeModal(); });
     }
@@ -848,13 +735,9 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         document.getElementById("modalBody").innerHTML = `
             <label>📍 القطاع</label>
             <select id="visitSector" onchange="updateVisitCenters()">${Object.keys(SECTORS).map(s => `<option value="${s}" ${s === user.sector ? 'selected' : ''}>${s}</option>`).join("")}</select>
-            <label>🏥 المركز</label>
-            <select id="visitCenter"></select>
+            <label>🏥 المركز</label><select id="visitCenter"></select>
             <label>ملاحظات</label>
-            <div class="input-with-btn">
-                <textarea id="visitNotes" rows="4"></textarea>
-                <button class="mic-btn" onclick="toggleVoice('visitNotes', this)">🎤</button>
-            </div>
+            <div class="input-with-btn"><textarea id="visitNotes" rows="4"></textarea><button class="mic-btn" onclick="toggleVoice('visitNotes', this)">🎤</button></div>
             <button class="gps-btn" onclick="getLocation()">📍 تحديد موقعي</button>
             <div id="gpsStatus" style="font-size:11px; color:var(--gold); margin-bottom:10px; text-align:center;"></div>
             <button class="btn success block" onclick="submitVisit()">💾 حفظ</button>
@@ -877,22 +760,18 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
         if (!notes) return showToast("أدخل الملاحظات", "danger");
         db.collection("issues").add({
             type: 'visit', isPraise: false, centerName: center, description: notes,
-            supervisor: user.name, sector: sector, status: 'new', timestamp: new Date(),
+            supervisor: user.name, sector: sector, status: 'pending_supervisor', archived: false, timestamp: new Date(),
             location: currentLocation.lat ? new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng) : null
         }).then(() => { showToast("تم الحفظ"); closeModal(); });
     }
 
-    // ==========================================
-    // الدردشة
-    // ==========================================
     function loadChat() {
         db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
             let html = "";
             snap.forEach(doc => {
                 const m = doc.data();
                 const isMine = m.sender === user.name;
-                if ((isMine && (m.receiver === "المدير العام" || !m.receiver)) || 
-                    (m.sender === "المدير العام" && m.receiver === user.name)) {
+                if ((isMine && (m.receiver === "المدير العام" || !m.receiver)) || (m.sender === "المدير العام" && m.receiver === user.name)) {
                     const time = m.timestamp ? new Date(m.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
                     html += `<div class="message ${isMine ? 'mine' : 'theirs'}"><div>${m.text}</div><span class="time">${time}</span></div>`;
                 }
@@ -903,51 +782,12 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     }
 
     function sendMessage() {
-        const input = document.getElementById("chatInput");
-        const text = input.value.trim();
-        if (!text) return;
-        input.value = "";
-        db.collection("messages").add({ 
-            sender: user.name, 
-            receiver: "المدير العام",
-            text: text, 
-            timestamp: new Date() 
-        });
+        const input = document.getElementById("chatInput"); const text = input.value.trim();
+        if (!text) return; input.value = "";
+        db.collection("messages").add({ sender: user.name, receiver: "المدير العام", text: text, timestamp: new Date() });
     }
 
-    // ==========================================
-    // نظام الإشعارات (Push Notifications)
-    // ==========================================
-    function showNotification(title, msg) {
-        const c = document.getElementById("toastContainer"); const t = document.createElement("div");
-        t.className = "toast notification"; 
-        t.innerHTML = `<div style="font-size:16px;margin-bottom:4px;">🔔 ${title}</div><div style="font-size:12px;opacity:0.9;">${msg}</div>`;
-        c.appendChild(t); 
-        setTimeout(() => t.remove(), 5000);
-        
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(title, { body: msg, icon: localStorage.getItem("cfg_logoUrl") });
-        }
-    }
-
-    function playNotificationSound() {
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-        } catch(e) {}
-    }
-
-    if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-    }
-
-    function manualRefresh() { showToast("جاري التحديث..."); loadData(); }
+    function manualRefresh() { showToast("تحديث..."); loadData(); }
     function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
     function confirmLogout() { if(confirm("خروج؟")) { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; } }
 
