@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>الإدارة العامة — V41.0</title>
+<title>الإدارة العامة — V43.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -102,8 +102,8 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .icon-btn-sm.delete { background: rgba(229,57,53,0.2); color: var(--red); }
 .icon-btn-sm.edit { background: rgba(41,182,246,0.2); color: var(--blue); }
 .icon-btn-sm.copy { background: rgba(151,141,91,0.2); color: var(--gold); font-size: 11px; font-family: monospace; font-weight: 900; width: auto; padding: 0 10px; }
+.icon-btn-sm.remind { background: rgba(251,140,0,0.2); color: var(--amber); }
 
-/* تصميم جدول الدوام الديناميكي */
 .duty-table-wrapper { overflow-x: auto; width: 100%; border: 1px solid var(--border); border-radius: 10px; background: rgba(4,24,20,0.4); margin-bottom: 15px; }
 .duty-table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; }
 .duty-table th, .duty-table td { border: 1px solid var(--border); padding: 10px; text-align: center; min-width: 55px; }
@@ -117,12 +117,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .duty-table td.s-o { background: rgba(229,57,53,0.2); color: var(--red-light); font-weight: 900; }
 .duty-table td.sec-A { background: rgba(41,182,246,0.15); }
 .duty-table td.sec-B { background: rgba(251,140,0,0.15); }
-
-/* تلوين البلاغات حسب الوقت */
-.issue-ok { border-right-color: var(--green) !important; } /* أقل من 12 ساعة */
-.issue-warn { border-right-color: var(--amber) !important; background: rgba(251,140,0,0.05); } /* 12-24 ساعة */
-.issue-late { border-right-color: var(--red) !important; background: rgba(229,57,53,0.1); } /* أكثر من 24 ساعة */
-.issue-critical { border-right-color: var(--red-light) !important; background: rgba(229,57,53,0.2); animation: pulseRed 2s infinite; } /* أكثر من 48 ساعة */
+.duty-table td.s-annual { background: rgba(171,71,188,0.2); color: #ce93d8; font-weight: 900; }
 
 .chat-box { background: rgba(0,0,0,0.15); border-radius: 12px; border: 1px solid var(--border); padding: 12px; max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
 .chat-bubble { padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; max-width: 85%; position: relative; }
@@ -150,7 +145,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 .modal-sheet { background: linear-gradient(145deg, var(--teal), var(--teal-dark)); border-top-left-radius: 26px; border-top-right-radius: 26px; border-top: 3px solid var(--gold); width: 100%; max-width: 720px; max-height: 92vh; padding: 24px 18px calc(24px + var(--safe-bottom)); overflow-y: auto; }
 .modal-sheet h3 { color: var(--gold); font-size: 17px; font-weight: 900; text-align: center; padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
 
-/* إعدادات الطباعة */
+.archive-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+.archive-tabs button { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-glass); color: var(--text-sub); font-weight: 700; cursor: pointer; transition: 0.3s; }
+.archive-tabs button.active { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #fff; border-color: var(--gold); }
+
 #printArea { display: none; }
 @media print {
   @page { margin: 5mm; size: A4 landscape; }
@@ -222,6 +220,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-reports">
     <div class="card">
       <div class="card-title">📥 سجلات المشرفين <button class="btn small" onclick="printAllReports()">🖨️ طباعة</button></div>
+      <div class="archive-tabs">
+        <button id="tab-active" class="active" onclick="filterArchive('active')">📌 النشطة</button>
+        <button id="tab-archived" onclick="filterArchive('archived')">📜 المؤرشفة</button>
+      </div>
       <select id="filterSector" onchange="loadSupervisorReports()"><option value="">-- كل القطاعات --</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
       <div id="reportsContainer"></div>
     </div>
@@ -232,26 +234,20 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
       <div class="card-title">➕ إرسال بلاغ إلى المشرف</div>
       <label>القطاع</label>
       <select id="issueSector" onchange="updateIssueCenters()"><option value="">اختر القطاع</option><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
-      
       <label>المركز</label>
       <select id="issueCenter" onchange="loadIssueTargets()"><option value="">اختر المركز</option></select>
-      
       <label>نوع الهدف</label>
       <select id="issueTargetType" onchange="loadIssueTargets()">
         <option value="paramedic">مسعف</option>
         <option value="vehicle">مركبة</option>
         <option value="center">المركز نفسه</option>
       </select>
-      
       <label>اسم الهدف</label>
       <select id="issueTargetName"><option value="">-- اختر المركز أولاً --</option></select>
-      
       <label>نوع البلاغ</label>
       <input type="text" id="issueType" placeholder="مثال: تأخر استجابة">
-      
       <label>الوصف</label>
       <textarea id="issueDesc" placeholder="تفاصيل البلاغ..." rows="3"></textarea>
-      
       <button class="btn block success" onclick="saveIssue()">📤 إرسال البلاغ للمشرف</button>
     </div>
     <div class="card">
@@ -267,8 +263,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-supervisors">
     <div class="card">
       <div class="card-title">➕ إضافة / تعديل مشرف</div>
-      <input type="hidden" id="supEditId"><input type="text" id="supName" placeholder="اسم المشرف"><input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
-      <select id="supSector"><option value="قطاع A">قطاع A</option><option value="قطاع B">قطاع B</option></select>
+      <input type="hidden" id="supEditId">
+      <input type="text" id="supName" placeholder="اسم المشرف">
+      <input type="text" id="supMilitaryId" placeholder="الرقم العسكري">
       <input type="text" id="supCodeEdit" placeholder="الكود">
       <button class="btn block" onclick="saveSupervisor()" id="btnSupSave">💾 حفظ</button>
       <button class="btn secondary block" onclick="cancelSupEdit()" id="btnSupCancel" style="display:none;">إلغاء</button>
@@ -309,7 +306,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         <button class="btn small" onclick="printDutyTable('portrait')">🖨️ عمودية</button>
         <button class="btn small" onclick="printDutyTable('landscape')">🖨️ أفقية</button>
       </div>
-      <p style="font-size:11px; color:var(--gold); margin-bottom:10px;">💡 ملاحظة: لون الخلية يشير إلى القطاع الذي يغطيه المشرف (أزرق = A، برتقالي = B).</p>
+      <p style="font-size:11px; color:var(--gold); margin-bottom:10px;">💡 ملاحظة: لون الخلية يشير إلى القطاع الذي يغطيه المشرف (أزرق = A، برتقالي = B، بنفسجي = سنوية).</p>
       <div class="duty-table-wrapper" id="dutyTableContainer"></div>
     </div>
   </div>
@@ -317,7 +314,19 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
   <div class="page" id="page-broadcasts">
     <div class="card">
       <div class="card-title">📢 إرسال تعميم</div>
-      <input type="text" id="bcTitle" placeholder="العنوان"><textarea id="bcDesc" rows="3" placeholder="النص"></textarea>
+      <label>إرسال إلى</label>
+      <select id="bcTarget" onchange="updateBroadcastTarget()">
+        <option value="all">الجميع</option>
+        <option value="sectorA">قطاع A</option>
+        <option value="sectorB">قطاع B</option>
+        <option value="specific">مشرف محدد</option>
+      </select>
+      <div id="specificSupervisorDiv" style="display:none;">
+        <label>اختر المشرف</label>
+        <select id="bcSupervisor"></select>
+      </div>
+      <input type="text" id="bcTitle" placeholder="العنوان">
+      <textarea id="bcDesc" rows="3" placeholder="النص"></textarea>
       <button class="btn success block" onclick="sendBroadcast()">📤 إرسال</button>
     </div>
     <div class="card"><div class="card-title">📜 التعاميم</div><div id="bcList"></div></div>
@@ -429,10 +438,10 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
 
     let allParameds = [], allVehicles = [], allIssues = [], allSupervisors = [], allMessages = [];
     let doughnutChart, lineChart;
-    let editingIssueId = null;
+    let currentArchiveFilter = 'active'; // active أو archived
 
     // ==========================================
-    // 1. التهيئة والوضع الليلي
+    // 1. الوضع الليلي والنهاري
     // ==========================================
     function toggleTheme() {
         const current = document.documentElement.getAttribute("data-theme") || "dark";
@@ -453,13 +462,14 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         c.appendChild(t); setTimeout(() => t.remove(), 3000);
     }
 
-    function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); editingIssueId = null; }
+    function closeModal() { document.getElementById("modalOverlay").classList.remove("show"); }
 
     function switchTab(id) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById("page-" + id).classList.add("active");
-        document.querySelector(`.tab-btn[data-tab="${id}"]`).classList.add("active");
+        const targetPage = document.getElementById("page-" + id);
+        if(targetPage) targetPage.classList.add("active");
+        document.querySelector(`.tab-btn[data-tab="${id}"]`)?.classList.add("active");
         window.scrollTo({top:0,behavior:"smooth"});
         
         if (id === 'supervisors') loadSups();
@@ -511,6 +521,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         document.getElementById("kpiSups").innerText = allSupervisors.length;
         if (document.querySelector(".page.active").id === "page-supervisors") loadSups();
         populateMsgSupervisors();
+        populateBcSupervisors();
     });
     
     db.collection("messages").orderBy("timestamp", "asc").onSnapshot(snap => {
@@ -553,14 +564,14 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             if (lineChart) lineChart.destroy();
             lineChart = new Chart(ctx2, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'عدد البلاغات', data: days, borderColor: '#d4c896', backgroundColor: 'rgba(212,200,150,0.1)', tension: 0.4, fill: true }] },
+                data: { labels, datasets: [{ label: 'البلاغات', data: days, borderColor: '#d4c896', backgroundColor: 'rgba(212,200,150,0.1)', tension: 0.4, fill: true }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: isDark ? '#fff' : '#333' } } }, scales: { x: { ticks: { color: isDark ? '#fff' : '#333' } }, y: { ticks: { color: isDark ? '#fff' : '#333' }, beginAtZero: true } } }
             });
         }
     }
 
     // ==========================================
-    // 4. إدارة البلاغات (مع نظام تلوين التأخير)
+    // 4. البلاغات (مع التلوين وزر التذكير)
     // ==========================================
     function updateIssueCenters() {
         const sec = document.getElementById("issueSector").value;
@@ -573,16 +584,14 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const center = document.getElementById("issueCenter").value;
         const targetType = document.getElementById("issueTargetType").value;
         const sel = document.getElementById("issueTargetName");
-        
         if (!center) { sel.innerHTML = '<option value="">-- اختر المركز أولاً --</option>'; return; }
         if (targetType === 'center') { sel.innerHTML = `<option value="${center}">${center}</option>`; return; }
-        
         if (targetType === 'paramedic') {
             const filtered = allParameds.filter(p => p.centerName === center);
-            sel.innerHTML = filtered.length ? filtered.map(p => `<option value="${p.name}">${p.name} (${p.rank || ''})</option>`).join("") : '<option value="">لا يوجد مسعفون في هذا المركز</option>';
+            sel.innerHTML = filtered.length ? filtered.map(p => `<option value="${p.name}">${p.name}</option>`).join("") : '<option value="">لا يوجد</option>';
         } else if (targetType === 'vehicle') {
             const filtered = allVehicles.filter(v => v.centerName === center);
-            sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد مركبات في هذا المركز</option>';
+            sel.innerHTML = filtered.length ? filtered.map(v => `<option value="${v.plateNumber}">${v.plateNumber}</option>`).join("") : '<option value="">لا يوجد</option>';
         }
     }
 
@@ -592,29 +601,19 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const targetName = document.getElementById("issueTargetName").value;
         const issueType = document.getElementById("issueType").value.trim();
         const desc = document.getElementById("issueDesc").value.trim();
-        
-        if (!center) return showToast("اختر المركز", "danger");
-        if (!targetName) return showToast("اختر الهدف", "danger");
-        if (!issueType) return showToast("أدخل نوع البلاغ", "danger");
-        if (!desc) return showToast("أدخل الوصف", "danger");
-        
+        if (!center || !targetName || !issueType || !desc) return showToast("أكمل البيانات", "danger");
         let sector = "";
-        for (const [s, centers] of Object.entries(SECTORS)) {
-            if (centers.includes(center)) { sector = s; break; }
-        }
-        if (!sector) return showToast("المركز غير مرتبط بقطاع", "danger");
-        
+        for (const [s, centers] of Object.entries(SECTORS)) { if (centers.includes(center)) { sector = s; break; } }
         try {
             await db.collection("issues").add({
                 type: 'complaint', isPraise: false, targetType, targetName, centerName: center, sector,
                 issueType, description: desc, supervisor: "الإدارة (إدخال يدوي)",
                 status: "pending_supervisor", createdAt: firebase.firestore.FieldValue.serverTimestamp(), timestamp: new Date()
             });
-            showToast("تم إرسال البلاغ لمشرفي " + sector);
-            document.getElementById("issueType").value = "";
-            document.getElementById("issueDesc").value = "";
+            showToast("تم إرسال البلاغ");
+            document.getElementById("issueType").value = ""; document.getElementById("issueDesc").value = "";
             loadIssues();
-        } catch(e) { showToast("خطأ: " + e.message, "danger"); }
+        } catch(e) { showToast("خطأ", "danger"); }
     }
 
     function getIssueColorClass(issue) {
@@ -622,7 +621,6 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const now = Date.now();
         const created = issue.createdAt ? issue.createdAt.seconds * 1000 : (issue.timestamp?.seconds * 1000 || now);
         const hoursDiff = (now - created) / (1000 * 60 * 60);
-        
         if (hoursDiff > 48) return 'issue-critical';
         if (hoursDiff > 24) return 'issue-late';
         if (hoursDiff > 12) return 'issue-warn';
@@ -630,39 +628,37 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     function loadIssues() {
-        // المعلقة
         db.collection("issues").where("status", "==", "pending_supervisor").get().then(s => {
             let html = "";
             s.forEach(d => {
-                const data = d.data();
-                data.id = d.id;
+                const data = d.data(); data.id = d.id;
                 const colorClass = getIssueColorClass(data);
-                
+                const now = Date.now();
+                const created = data.createdAt ? data.createdAt.seconds * 1000 : now;
+                const hoursDiff = (now - created) / (1000 * 60 * 60);
+                const showRemind = hoursDiff > 24;
                 html += `<div class="item-card ${colorClass}" style="border-right-width:4px;">
                     <div class="item-info">
                         <h4>⏳ ${data.targetName}</h4>
                         <p>🏥 ${data.centerName} | 📌 ${data.issueType} | 📍 ${data.sector}</p>
                         <p style="font-size:10px; opacity:0.6; margin-top:4px;">${data.description}</p>
                     </div>
-                    <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                    <div class="item-actions">
+                        ${showRemind ? `<button class="icon-btn-sm remind" onclick="sendReminder('${d.id}')" title="تذكير">🔔</button>` : ''}
+                        <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
+                    </div>
                 </div>`;
             });
             document.getElementById("pendingIssuesList").innerHTML = html || "لا يوجد بلاغات معلقة";
         });
         
-        // المنجزة (أرشيف)
         db.collection("issues").where("status", "==", "resolved_by_supervisor").get().then(s => {
             let html = "";
             s.forEach(d => {
                 const data = d.data();
                 const time = data.resolvedAt ? new Date(data.resolvedAt.toDate()).toLocaleString('ar-OM') : '—';
-                const responses = data.responses || [];
-                const lastResponse = responses[responses.length - 1] || {};
-                
-                // استخدام الإجراء من البلاغ الجديد أو الردود القديمة
-                const resolutionText = lastResponse.text || data.resolution || '—';
-                const resolvedBy = lastResponse.supervisor || data.resolvedBy || '—';
-                
+                const resolutionText = data.resolution || (data.responses && data.responses.length > 0 ? data.responses[data.responses.length - 1].text : '—');
+                const resolvedBy = data.resolvedBy || '—';
                 html += `<div class="item-card issue-ok">
                     <div class="item-info">
                         <h4>✅ ${data.targetName}</h4>
@@ -673,13 +669,31 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                     <button class="icon-btn-sm delete" onclick="deleteDoc('issues','${d.id}')">🗑️</button>
                 </div>`;
             });
-            document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة بعد";
+            document.getElementById("completedIssuesList").innerHTML = html || "لا يوجد بلاغات منجزة";
         });
     }
 
+    async function sendReminder(issueId) {
+        const issue = allIssues.find(i => i.id === issueId);
+        if(!issue) return;
+        await db.collection("reminders").add({
+            issueId: issueId, targetName: issue.targetName, sector: issue.sector,
+            sender: "المدير العام", message: `تذكير: لديك بلاغ متأخر بشأن "${issue.targetName}"`,
+            timestamp: new Date()
+        });
+        showToast("تم إرسال تنبيه للمشرف");
+    }
+
     // ==========================================
-    // 5. سجلات المشرفين (التي تأتي من صفحة المشرف)
+    // 5. سجلات المشرفين (مع أرشفة)
     // ==========================================
+    function filterArchive(type) {
+        currentArchiveFilter = type;
+        document.getElementById("tab-active").classList.toggle("active", type === 'active');
+        document.getElementById("tab-archived").classList.toggle("active", type === 'archived');
+        loadSupervisorReports();
+    }
+
     function loadSupervisorReports() {
         const sectorFilter = document.getElementById("filterSector").value;
         const container = document.getElementById("reportsContainer");
@@ -687,6 +701,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         allIssues.forEach(issue => {
             if(issue.supervisor === "الإدارة (إدخال يدوي)") return;
             if(sectorFilter && issue.sector !== sectorFilter) return;
+            const isArchived = issue.status === 'resolved_by_supervisor';
+            if (currentArchiveFilter === 'active' && isArchived) return;
+            if (currentArchiveFilter === 'archived' && !isArchived) return;
             const sec = issue.sector || "غير محدد";
             const center = issue.centerName || "غير محدد";
             if(!grouped[sec]) grouped[sec] = {};
@@ -703,11 +720,9 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
                     if (issue.isPraise) { typeClass = "issue-item praise"; typeText = "إشادة"; typeIcon = "⭐"; }
                     else if (issue.type === "visit") { typeClass = "issue-item note"; typeText = "ملاحظة"; typeIcon = "📝"; }
                     const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
-                    const isResolved = issue.status === 'resolved_by_supervisor';
-                    
                     html += `<div class="${typeClass}" style="cursor:pointer;" onclick="openIssueDetails('${issue.id}')">
                         <div class="issue-info">
-                            <h4>${typeIcon} ${typeText} - ${issue.targetName || "المركز"} ${isResolved ? '✅' : '⏳'}</h4>
+                            <h4>${typeIcon} ${typeText} - ${issue.targetName || "المركز"}</h4>
                             <p>${issue.description || issue.issueType || ''}</p>
                             <div class="issue-meta">👨‍💼 ${issue.supervisor} | 📅 ${date}</div>
                         </div>
@@ -720,90 +735,50 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             }
             html += `</div>`;
         }
-        container.innerHTML = html || "لا توجد سجلات";
+        container.innerHTML = html || "لا توجد سجلات في هذا القسم";
     }
 
     function openIssueDetails(issueId) {
         const issue = allIssues.find(i => i.id === issueId);
         if (!issue) return;
-        editingIssueId = issueId;
         let typeText = issue.isPraise ? "إشادة" : (issue.type === "visit" ? "ملاحظة زيارة" : "إشكالية");
         const date = issue.timestamp ? new Date(issue.timestamp.seconds * 1000).toLocaleString('ar-OM') : '-';
-        
         document.getElementById("modalTitle").innerText = "🔍 تفاصيل";
         document.getElementById("modalBody").innerHTML = `
             <div style="background:rgba(0,0,0,0.2); padding:15px; border-radius:12px; margin-bottom:15px;">
                 <p><b>النوع:</b> ${typeText}</p>
                 <p><b>الهدف:</b> ${issue.targetName || '-'}</p>
                 <p><b>المركز:</b> ${issue.centerName || '-'}</p>
-                <p><b>القطاع:</b> ${issue.sector || '-'}</p>
                 <p><b>المشرف:</b> ${issue.supervisor || '-'}</p>
                 <p><b>التاريخ:</b> ${date}</p>
             </div>
             <label>الوصف:</label>
             <p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px;">${issue.description || '-'}</p>
+            ${issue.recommendation ? `<label>التوصيات:</label><p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px; color:var(--blue);">${issue.recommendation}</p>` : ''}
             ${issue.resolution ? `<label>الإجراء المتخذ:</label><p style="background:rgba(0,0,0,0.2); padding:10px; border-radius:8px; margin-bottom:15px; color:var(--green);">${issue.resolution}</p>` : ''}
-            
-            <button class="btn info block" onclick="editIssue('${issueId}')">✏️ تعديل</button>
             <button class="btn danger block" onclick="deleteDoc('issues','${issueId}'); closeModal();" style="margin-top:8px;">🗑️ حذف</button>
             <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إغلاق</button>
         `;
         document.getElementById("modalOverlay").classList.add("show");
     }
 
-    function editIssue(issueId) {
-        const issue = allIssues.find(i => i.id === issueId);
-        if (!issue) return;
-        
-        document.getElementById("modalTitle").innerText = "✏️ تعديل";
-        document.getElementById("modalBody").innerHTML = `
-            <label>اسم الهدف</label>
-            <input type="text" id="editTarget" value="${issue.targetName || ''}">
-            <label>نوع البلاغ</label>
-            <input type="text" id="editType" value="${issue.issueType || issue.praiseType || ''}">
-            <label>الوصف</label>
-            <textarea id="editDesc" rows="4">${issue.description || ''}</textarea>
-            <button class="btn success block" onclick="saveIssueEdit('${issueId}')">💾 حفظ التعديلات</button>
-            <button class="btn secondary block" onclick="closeModal()" style="margin-top:8px;">إلغاء</button>
-        `;
-    }
-
-    async function saveIssueEdit(issueId) {
-        const target = document.getElementById("editTarget").value;
-        const type = document.getElementById("editType").value;
-        const desc = document.getElementById("editDesc").value;
-        const isPraise = allIssues.find(i => i.id === issueId)?.isPraise;
-        
-        const updateData = { targetName: target, description: desc };
-        if (isPraise) updateData.praiseType = type;
-        else updateData.issueType = type;
-        
-        await db.collection("issues").doc(issueId).update(updateData);
-        showToast("تم التعديل");
-        closeModal();
-        loadSupervisorReports();
-    }
-
     // ==========================================
-    // 6. الدوام المرن (القطاع ديناميكي)
+    // 6. الدوام المرن (مع السنوية)
     // ==========================================
     function loadDutyTable() {
         const month = document.getElementById("dutyMonth").value;
         if (!month) return;
         const [year, m] = month.split("-");
         const days = new Date(year, m, 0).getDate();
-        
         db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
             const data = {};
             dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
-            
             document.getElementById("dutyTableContainer").innerHTML = buildFlexibleDutyHtml(allSupervisors, data, year, m, days, month);
         });
     }
     
     function buildFlexibleDutyHtml(suprvs, data, year, m, days, month) {
         if (!suprvs.length) return '<div style="text-align:center; opacity:0.5;">لا يوجد مشرفون</div>';
-        
         let html = '<table class="duty-table"><thead><tr><th>المشرف</th>';
         for (let d = 1; d <= days; d++) { 
             const dow = new Date(year, m-1, d).getDay(); 
@@ -811,30 +786,16 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             html += `<th${wk}>${d}</th>`; 
         }
         html += '</tr></thead><tbody>';
-        
         suprvs.forEach(s => {
             const shifts = data[s.code] || {};
             html += `<tr><td>${s.name}</td>`;
             for (let d = 1; d <= days; d++) { 
                 const val = shifts[d] || ""; 
-                // استخراج القطاع من القيمة (مثال: "A-ص" يعني قطاع A صباحي)
                 let sectorClass = "";
-                let displayVal = val;
-                
-                if (val.startsWith("A-")) { sectorClass = "sec-A"; displayVal = val.substring(2); }
-                else if (val.startsWith("B-")) { sectorClass = "sec-B"; displayVal = val.substring(2); }
-                
-                html += `<td class="${sectorClass}">
-                    <select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)">
-                        <option value="">—</option>
-                        <option value="A-ص" ${val === 'A-ص' ? 'selected' : ''}>A - ص</option>
-                        <option value="A-م" ${val === 'A-م' ? 'selected' : ''}>A - م</option>
-                        <option value="B-ص" ${val === 'B-ص' ? 'selected' : ''}>B - ص</option>
-                        <option value="B-م" ${val === 'B-م' ? 'selected' : ''}>B - م</option>
-                        <option value="أ" ${val === 'أ' ? 'selected' : ''}>إجازة</option>
-                        <option value="د" ${val === 'د' ? 'selected' : ''}>إداري</option>
-                    </select>
-                </td>`; 
+                if (val.startsWith("A-")) sectorClass = "sec-A";
+                else if (val.startsWith("B-")) sectorClass = "sec-B";
+                else if (val === "س") sectorClass = "s-annual";
+                html += `<td class="${sectorClass}"><select onchange="updateDuty('${month}','${s.code}','${s.name}',${d},this.value)"><option value="">—</option><option value="A-ص" ${val === 'A-ص' ? 'selected' : ''}>A - ص</option><option value="A-م" ${val === 'A-م' ? 'selected' : ''}>A - م</option><option value="B-ص" ${val === 'B-ص' ? 'selected' : ''}>B - ص</option><option value="B-م" ${val === 'B-م' ? 'selected' : ''}>B - م</option><option value="أ" ${val === 'أ' ? 'selected' : ''}>إجازة</option><option value="د" ${val === 'د' ? 'selected' : ''}>إداري</option><option value="س" ${val === 'س' ? 'selected' : ''}>سنوية</option></select></td>`; 
             }
             html += `</tr>`;
         });
@@ -848,8 +809,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
             let shifts = doc.exists ? (doc.data().shifts || {}) : {}; 
             shifts[day] = val; 
             await docRef.set({ month, supervisorCode: code, supervisorName: name, shifts, updatedAt: new Date() }); 
-            showToast("تم الحفظ"); 
-            loadDutyTable();
+            showToast("تم الحفظ"); loadDutyTable();
         } catch(e) { showToast("خطأ", "danger"); }
     }
 
@@ -888,321 +848,44 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     // ==========================================
-    // 8. التقارير المتقدمة
+    // 8. التعاميم (مع خيار الإرسال المحدد)
     // ==========================================
-    function updateReportOptions() {
-        const type = document.getElementById("reportType").value;
-        const filters = document.getElementById("reportFilters");
-        
-        const dateFilters = `<div><label>من تاريخ</label><input type="date" id="filterFrom"></div><div><label>إلى تاريخ</label><input type="date" id="filterTo"></div>`;
-        const sectorFilter = `<div><label>القطاع</label><select id="filterSector" onchange="updateReportCenters()"><option value="">الكل</option>${Object.keys(SECTORS).map(s => `<option value="${s}">${s}</option>`).join("")}</select></div>`;
-        const centerFilter = `<div><label>المركز</label><select id="filterCenter"><option value="">الكل</option></select></div>`;
-        const supFilter = `<div><label>المشرف</label><select id="filterSup"><option value="">الكل</option>${allSupervisors.map(s => `<option value="${s.name}">${s.name}</option>`).join("")}</select></div>`;
-
-        let html = dateFilters;
-
-        if (type === 'activity' || type === 'supervisors' || type === 'issues' || type === 'visits') {
-            html += sectorFilter + centerFilter + supFilter;
-        } else if (type === 'paramedics') {
-            html += sectorFilter + centerFilter + `<div><label>المسعف</label><select id="filterParam"><option value="">الكل</option>${allParameds.map(p => `<option value="${p.name}">${p.name}</option>`).join("")}</select></div>`;
-        } else if (type === 'vehicles') {
-            html += sectorFilter + centerFilter;
-        }
-        
-        filters.innerHTML = html;
-        updateReportCenters();
+    function updateBroadcastTarget() {
+        const target = document.getElementById("bcTarget").value;
+        document.getElementById("specificSupervisorDiv").style.display = target === 'specific' ? 'block' : 'none';
     }
-
-    function updateReportCenters() {
-        const sector = document.getElementById("filterSector")?.value;
-        const centerSel = document.getElementById("filterCenter");
-        if(!centerSel) return;
-        
-        let centers = [];
-        if(sector) {
-            centers = SECTORS[sector] || [];
-        } else {
-            centers = Object.values(SECTORS).flat();
-        }
-        
-        centerSel.innerHTML = `<option value="">الكل</option>` + centers.map(c => `<option value="${c}">${c}</option>`).join("");
+    function populateBcSupervisors() {
+        const sel = document.getElementById("bcSupervisor");
+        if(!sel) return;
+        sel.innerHTML = allSupervisors.map(s => `<option value="${s.name}">${s.name}</option>`).join("");
     }
-
-    // ==========================================
-    // 9. دالة الطباعة الذكية (بدون وميض)
-    // ==========================================
-    function printHTMLInIframe(htmlContent, orientation) {
-        // إنشاء إطار مخفي
-        const iframe = document.createElement('iframe');
-        iframe.style.position = 'fixed';
-        iframe.style.right = '0';
-        iframe.style.bottom = '0';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = '0';
-        document.body.appendChild(iframe);
-
-        const doc = iframe.contentWindow.document;
-        doc.open();
-        doc.write(`
-            <!DOCTYPE html>
-            <html dir="rtl">
-            <head>
-                <style>
-                    @page { size: ${orientation}; margin: 5mm; }
-                    body, html { margin: 0; padding: 0; background: #fff !important; color: #000 !important; font-family: 'Cairo', sans-serif; }
-                    .print-page { padding: 10px; width: 100%; zoom: 0.85; }
-                    .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; }
-                    .print-logo { width: 60px; height: 60px; object-fit: contain; }
-                    .print-header-text h1 { font-size: 16px; color: #0d4a42; margin: 0; text-align:center; }
-                    .print-header-text h2 { font-size: 12px; color: #666; margin: 3px 0 0; font-weight: normal; text-align:center; }
-                    .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; }
-                    .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; }
-                    .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; }
-                    .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }
-                </style>
-            </head>
-            <body>${htmlContent}</body>
-            </html>
-        `);
-        doc.close();
-
-        // انتظر تحميل الشعار ثم اطبع
-        setTimeout(() => {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-            // إزالة الإطار بعد الطباعة
-            setTimeout(() => { document.body.removeChild(iframe); }, 2000);
-        }, 200);
-    }
-
-    function printAllReports() {
-        const sectorFilter = document.getElementById("filterSector").value;
-        let filtered = allIssues.filter(i => i.supervisor !== "الإدارة (إدخال يدوي)");
-        if(sectorFilter) filtered = filtered.filter(i => i.sector === sectorFilter);
-        let tbody = "";
-        filtered.forEach((d, i) => {
-            let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : "إشكالية");
-            const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
-            tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor}</td><td>${typeText}</td><td>${d.targetName}</td><td>${d.description}</td><td>${date}</td></tr>`;
-        });
-        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        
-        const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>تقرير سجلات المشرفين ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>الوصف</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-        
-        printHTMLInIframe(htmlContent, 'A4 landscape');
-    }
-
-    function printDutyTable(orientation) {
-        const month = document.getElementById("dutyMonth").value; 
-        if(!month) return showToast("اختر الشهر", "danger");
-        
-        const [year, m] = month.split("-"); 
-        const days = new Date(year, m, 0).getDate();
-        
-        db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
-            const data = {}; 
-            dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
-            
-            const buildPrintTable = (suprvs) => {
-                if(suprvs.length === 0) return '<div style="text-align:center;">لا يوجد</div>';
-                let html = '<table class="print-table" style="width:100%; border-collapse:collapse;"><thead><tr><th>المشرف</th>';
-                for (let d = 1; d <= days; d++) html += `<th>${d}</th>`;
-                html += '</tr></thead><tbody>';
-                suprvs.forEach(s => { 
-                    const shifts = data[s.code] || {}; 
-                    html += `<tr><td>${s.name}</td>`; 
-                    for (let d = 1; d <= days; d++) { 
-                        const val = shifts[d] || ""; 
-                        // تنظيف القيمة للطباعة
-                        let displayVal = val;
-                        if (val.startsWith("A-")) displayVal = "A/" + val.substring(2);
-                        else if (val.startsWith("B-")) displayVal = "B/" + val.substring(2);
-                        html += `<td>${displayVal || "—"}</td>`; 
-                    } 
-                    html += '</tr>'; 
-                });
-                return html + '</tbody></table>';
-            };
-            
-            const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-            const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام — ${month}</h2></div></div>${buildPrintTable(allSupervisors)}<div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-            
-            printHTMLInIframe(htmlContent, orientation);
-        });
-    }
-
-    async function generateReport(action) {
-        const type = document.getElementById("reportType").value;
-        const orientation = document.getElementById("printOrientation").value;
-        const from = document.getElementById("filterFrom")?.value;
-        const to = document.getElementById("filterTo")?.value;
-        const selSector = document.getElementById("filterSector")?.value;
-        const selCenter = document.getElementById("filterCenter")?.value;
-        const selSup = document.getElementById("filterSup")?.value;
-        const selParam = document.getElementById("filterParam")?.value;
-        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        
-        let filteredIssues = allIssues;
-        if (from) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) >= new Date(from).getTime());
-        if (to) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) <= new Date(to).getTime() + 86400000);
-        
-        let data = [], title = "", thead = "";
-        
-        if (type === 'activity') {
-            title = "تقرير نشاط المشرفين"; 
-            thead = "<th>#</th><th>المشرف</th><th>القطاع</th><th>إشكالات</th><th>إشادات</th><th>ملاحظات</th><th>بلاغات منجزة</th>";
-            
-            let sups = allSupervisors;
-            if (selSector) sups = sups.filter(s => s.sector === selSector);
-            if (selSup) sups = sups.filter(s => s.name === selSup);
-            
-            data = sups.map(s => {
-                let mine = filteredIssues.filter(i => i.supervisor === s.name || i.resolvedBy === s.name);
-                if (selCenter) mine = mine.filter(i => i.centerName === selCenter);
-                
-                return { 
-                    name: s.name, sector: s.sector,
-                    complaints: mine.filter(i => !i.isPraise && i.type !== 'visit' && i.type === 'complaint').length, 
-                    praises: mine.filter(i => i.isPraise).length, 
-                    notes: mine.filter(i => i.type === 'visit').length, 
-                    resolved: mine.filter(i => i.status === 'resolved_by_supervisor').length 
-                };
-            });
-        } 
-        else if (type === 'issues' || type === 'visits') {
-            title = type === 'visits' ? "تقرير الزيارات" : "تقرير البلاغات"; 
-            thead = "<th>#</th><th>التاريخ</th><th>القطاع</th><th>المركز</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th><th>الملاحظات / الإجراء</th>";
-            
-            let d = filteredIssues;
-            if (type === 'visits') d = d.filter(i => i.type === 'visit'); 
-            else d = d.filter(i => i.type !== 'visit');
-            
-            if (selSector) d = d.filter(i => i.sector === selSector);
-            if (selCenter) d = d.filter(i => i.centerName === selCenter);
-            if (selSup) d = d.filter(i => i.supervisor === selSup);
-            
-            data = d;
-        }
-        else if (type === 'paramedics') {
-            title = "قائمة المسعفين"; 
-            thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>القطاع</th><th>المركز</th><th>الرتبة</th>";
-            
-            let d = allParameds;
-            if (selCenter) d = d.filter(p => p.centerName === selCenter);
-            if (selSector) d = d.filter(p => (SECTORS[selSector] || []).includes(p.centerName));
-            if (selParam) d = d.filter(p => p.name === selParam);
-            
-            data = d;
-        }
-        else if (type === 'vehicles') {
-            title = "قائمة المركبات"; 
-            thead = "<th>#</th><th>اللوحة</th><th>النوع</th><th>القطاع</th><th>المركز</th>";
-            
-            let d = allVehicles;
-            if (selCenter) d = d.filter(v => v.centerName === selCenter);
-            if (selSector) d = d.filter(v => (SECTORS[selSector] || []).includes(v.centerName));
-            
-            data = d;
-        }
-        
-        let tbody = "";
-        data.forEach((d, i) => {
-            if (type === 'activity') {
-                tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.sector}</td><td>${d.complaints}</td><td>${d.praises}</td><td>${d.notes}</td><td>${d.resolved}</td></tr>`;
-            } 
-            else if (type === 'issues' || type === 'visits') {
-                const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
-                const target = d.targetName || d.centerName || '-';
-                const issueType = d.issueType || (d.isPraise ? 'إشادة' : (d.type === 'visit' ? 'زيارة' : '-'));
-                
-                let details = d.description || '-';
-                if (d.resolution) details += ` | الإجراء: ${d.resolution}`;
-                else if (d.responses && d.responses.length > 0) details += ` | الإجراء: ${d.responses[d.responses.length - 1].text}`;
-
-                tbody += `<tr>
-                    <td>${i+1}</td>
-                    <td>${time}</td>
-                    <td>${d.sector || '-'}</td>
-                    <td>${d.centerName || '-'}</td>
-                    <td>${target}</td>
-                    <td>${issueType}</td>
-                    <td>${d.supervisor || '-'}</td>
-                    <td>${d.status === 'resolved_by_supervisor' ? 'منجزة' : 'مفتوحة'}</td>
-                    <td style="text-align:right; font-size:8px; max-width:150px;">${details}</td>
-                </tr>`;
-            }
-            else if (type === 'paramedics') {
-                const sector = Object.keys(SECTORS).find(s => SECTORS[s].includes(d.centerName)) || '-';
-                tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${sector}</td><td>${d.centerName}</td><td>${d.rank||'-'}</td></tr>`;
-            }
-            else if (type === 'vehicles') {
-                const sector = Object.keys(SECTORS).find(s => SECTORS[s].includes(d.centerName)) || '-';
-                tbody += `<tr><td>${i+1}</td><td>${d.plateNumber}</td><td>${d.type||'-'}</td><td>${sector}</td><td>${d.centerName}</td></tr>`;
-            }
-        });
-        
-        if (action === 'print') {
-            const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-            printHTMLInIframe(htmlContent, orientation);
-        } else {
-            let csv = "\uFEFF"; 
-            const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
-            csv += thead.replace(/<\/?th>/g, m => m === '<th>' ? '' : ',').replace(/,$/, '\n');
-            
-            data.forEach((d, i) => {
-                if (type === 'activity') {
-                    csv += [i+1, clean(d.name), clean(d.sector), d.complaints, d.praises, d.notes, d.resolved].join(",") + "\n";
-                } else if (type === 'issues' || type === 'visits') {
-                    const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
-                    const target = d.targetName || d.centerName || '-';
-                    const issueType = d.issueType || (d.isPraise ? 'إشادة' : (d.type === 'visit' ? 'زيارة' : '-'));
-                    let details = d.description || '-';
-                    if (d.resolution) details += ` | ${d.resolution}`;
-                    else if (d.responses && d.responses.length > 0) details += ` | ${d.responses[d.responses.length - 1].text}`;
-                    
-                    csv += [i+1, time, clean(d.sector), clean(d.centerName), clean(target), clean(issueType), clean(d.supervisor), d.status === 'resolved_by_supervisor' ? 'منجزة' : 'مفتوحة', clean(details)].join(",") + "\n";
-                } else if (type === 'paramedics') {
-                    const sector = Object.keys(SECTORS).find(s => SECTORS[s].includes(d.centerName)) || '-';
-                    csv += [i+1, clean(d.name), clean(d.militaryId), clean(sector), clean(d.centerName), clean(d.rank)].join(",") + "\n";
-                } else if (type === 'vehicles') {
-                    const sector = Object.keys(SECTORS).find(s => SECTORS[s].includes(d.centerName)) || '-';
-                    csv += [i+1, clean(d.plateNumber), clean(d.type), clean(sector), clean(d.centerName)].join(",") + "\n";
-                }
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); 
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob); 
-            link.download = `report_${new Date().toISOString().slice(0,10)}.csv`; 
-            link.click();
-            showToast("تم التصدير");
-        }
-    }
-
-    function printCodes() {
-        let tbody = "", i = 1;
-        allSupervisors.forEach(d => { tbody += `<tr><td>${i++}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.sector}</td><td style="font-weight:bold; font-family:monospace;">${d.code}</td></tr>`; });
-        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
-        const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>قائمة المشرفين وأكوادهم</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>القطاع</th><th>الكود</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
-        printHTMLInIframe(htmlContent, 'A4 portrait');
-    }
-
-    // ==========================================
-    // 10. التعاميم والمراسلات والمشرفين والمسعفين
-    // ==========================================
     function loadBroadcasts() {
         db.collection("broadcasts").orderBy("timestamp", "desc").onSnapshot(snap => {
-            let html = ""; snap.forEach(d => { const data = d.data(); html += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`; });
+            let html = ""; 
+            snap.forEach(d => { 
+                const data = d.data(); 
+                let targetText = "الجميع";
+                if(data.target === "sectorA") targetText = "قطاع A";
+                else if(data.target === "sectorB") targetText = "قطاع B";
+                else if(data.target === "specific") targetText = `المشرف: ${data.specificName}`;
+                html += `<div class="item-card" style="border-right-color:var(--blue);"><div class="item-info"><h4>📢 ${data.title}</h4><p>${data.description}</p><p style="font-size:10px; opacity:0.6; margin-top:5px;">📨 ${targetText}</p></div><button class="icon-btn-sm delete" onclick="deleteDoc('broadcasts','${d.id}')">🗑️</button></div>`; 
+            });
             document.getElementById("bcList").innerHTML = html || "لا يوجد";
         });
     }
     function sendBroadcast() {
-        const title = document.getElementById("bcTitle").value.trim(), desc = document.getElementById("bcDesc").value.trim();
+        const target = document.getElementById("bcTarget").value;
+        const title = document.getElementById("bcTitle").value.trim();
+        const desc = document.getElementById("bcDesc").value.trim();
         if(!title || !desc) return showToast("أكمل البيانات", "danger");
-        db.collection("broadcasts").add({ title, description: desc, timestamp: new Date() }).then(() => { showToast("تم"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; });
+        const data = { title, description: desc, timestamp: new Date(), target };
+        if(target === 'specific') data.specificName = document.getElementById("bcSupervisor").value;
+        db.collection("broadcasts").add(data).then(() => { showToast("تم الإرسال"); document.getElementById("bcTitle").value = ""; document.getElementById("bcDesc").value = ""; });
     }
 
+    // ==========================================
+    // 9. المراسلات
+    // ==========================================
     function populateMsgSupervisors() {
         const sel = document.getElementById("msgSupervisorFilter"), cur = sel.value;
         sel.innerHTML = '<option value="">-- اختر --</option>';
@@ -1228,12 +911,15 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         db.collection("messages").add({ sender: "المدير العام", receiver: sup, text, timestamp: new Date() }).then(() => showToast("تم"));
     }
 
+    // ==========================================
+    // 10. المشرفين (بدون قطاع)
+    // ==========================================
     function loadSups() {
         const search = document.getElementById("supSearch")?.value.toLowerCase() || "";
         let html = ""; 
         allSupervisors.forEach(d => { 
             if (search && !d.name.toLowerCase().includes(search)) return; 
-            html += `<div class="item-card"><div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>الرقم: ${d.militaryId||'-'} | ${d.sector}</p></div><div class="item-actions"><button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${d.code}'); showToast('تم نسخ الكود')">${d.code}</button><button class="icon-btn-sm edit" onclick="editSupervisor('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button></div></div>`; 
+            html += `<div class="item-card"><div class="item-info"><h4>👨‍💼 ${d.name}</h4><p>الرقم: ${d.militaryId||'-'}</p></div><div class="item-actions"><button class="icon-btn-sm copy" onclick="navigator.clipboard.writeText('${d.code}'); showToast('تم نسخ الكود')">${d.code}</button><button class="icon-btn-sm edit" onclick="editSupervisor('${d.id}')">✏️</button><button class="icon-btn-sm delete" onclick="deleteDoc('access_code','${d.id}')">🗑️</button></div></div>`; 
         });
         document.getElementById("supList").innerHTML = html;
     }
@@ -1241,8 +927,7 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const s = allSupervisors.find(x => x.id === id);
         if(!s) return;
         document.getElementById("supEditId").value = id; document.getElementById("supName").value = s.name;
-        document.getElementById("supMilitaryId").value = s.militaryId || ''; document.getElementById("supSector").value = s.sector;
-        document.getElementById("supCodeEdit").value = s.code;
+        document.getElementById("supMilitaryId").value = s.militaryId || ''; document.getElementById("supCodeEdit").value = s.code;
         document.getElementById("btnSupSave").innerText = "💾 حفظ التعديلات"; document.getElementById("btnSupCancel").style.display = "block";
         window.scrollTo({top:0,behavior:"smooth"});
     }
@@ -1255,20 +940,28 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
         const id = document.getElementById("supEditId").value;
         const name = document.getElementById("supName").value.trim();
         const militaryId = document.getElementById("supMilitaryId").value.trim();
-        const sector = document.getElementById("supSector").value;
         const codeInput = document.getElementById("supCodeEdit").value.trim();
         if(!name) return showToast("أدخل الاسم", "danger");
-        
         if (id) {
-            const updateData = { name, militaryId, sector };
+            const updateData = { name, militaryId };
             if(codeInput) updateData.code = codeInput;
             db.collection("access_code").doc(id).update(updateData).then(() => { showToast("تم التعديل"); cancelSupEdit(); });
         } else {
             const code = codeInput || "SUP-"+Math.floor(1000+Math.random()*9000);
-            db.collection("access_code").add({ name, militaryId, sector, code, type: "supervisor" }).then(() => { showToast("تمت الإضافة"); cancelSupEdit(); });
+            db.collection("access_code").add({ name, militaryId, code, type: "supervisor" }).then(() => { showToast("تمت الإضافة"); cancelSupEdit(); });
         }
     }
+    function printCodes() {
+        let tbody = "", i = 1;
+        allSupervisors.forEach(d => { tbody += `<tr><td>${i++}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td style="font-weight:bold; font-family:monospace;">${d.code}</td></tr>`; });
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>قائمة المشرفين وأكوادهم</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>الاسم</th><th>الرقم العسكري</th><th>الكود</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+        printHTMLInIframe(htmlContent, 'A4 portrait');
+    }
 
+    // ==========================================
+    // 11. المسعفين والمركبات
+    // ==========================================
     function updateParamCenters() {
         const sec = document.getElementById("paramSector").value;
         document.getElementById("paramCenter").innerHTML = (SECTORS[sec]||[]).map(c=>`<option value="${c}">${c}</option>`).join("");
@@ -1335,28 +1028,193 @@ label { display: block; font-size: 13px; color: var(--gold); font-weight: 700; m
     }
 
     // ==========================================
-    // 11. الإعدادات والحذف
+    // 12. الطباعة الخفية (Iframe)
     // ==========================================
-    function loadConfig() { 
-        document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; 
-        document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || "";
-    }
-    function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === "systemName") document.getElementById("systemName").innerText = val; showToast("تم الحفظ"); }
-    
-    function changeAdminPassword() {
-        const oldPwd = document.getElementById("oldPwd").value;
-        const newPwd = document.getElementById("newPwd").value;
-        if(!oldPwd || !newPwd) return showToast("أدخل كلمة المرور الحالية والجديدة", "danger");
-        const currentStored = localStorage.getItem("admin_pwd") || "admin123"; 
-        if(oldPwd !== currentStored) return showToast("كلمة المرور الحالية خاطئة!", "danger");
-        if(newPwd.length < 4) return showToast("كلمة المرور الجديدة قصيرة جداً", "danger");
-        localStorage.setItem("admin_pwd", newPwd);
-        showToast("✅ تم تغيير كلمة المرور بنجاح!");
-        document.getElementById("oldPwd").value = ""; document.getElementById("newPwd").value = "";
+    function printHTMLInIframe(htmlContent, orientation) {
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed'; iframe.style.right = '0'; iframe.style.bottom = '0';
+        iframe.style.width = '0'; iframe.style.height = '0'; iframe.style.border = '0';
+        document.body.appendChild(iframe);
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`<!DOCTYPE html><html dir="rtl"><head><style>@page { size: ${orientation}; margin: 5mm; } body, html { margin: 0; padding: 0; background: #fff !important; color: #000 !important; font-family: 'Cairo', sans-serif; } .print-page { padding: 10px; width: 100%; zoom: 0.85; } .print-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #978d5b; padding-bottom: 10px; margin-bottom: 10px; } .print-logo { width: 60px; height: 60px; object-fit: contain; } .print-header-text h1 { font-size: 16px; color: #0d4a42; margin: 0; text-align:center; } .print-header-text h2 { font-size: 12px; color: #666; margin: 3px 0 0; font-weight: normal; text-align:center; } .print-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9px; } .print-table th { background: #0d4a42 !important; color: white !important; padding: 4px; border: 1px solid #978d5b; text-align: center; } .print-table td { padding: 3px; border: 1px solid #ddd; text-align: center; color: #333; } .print-footer { margin-top: 15px; padding-top: 8px; border-top: 1px dashed #978d5b; text-align: center; font-size: 8px; color: #666; }</style></head><body>${htmlContent}</body></html>`);
+        doc.close();
+        setTimeout(() => { iframe.contentWindow.focus(); iframe.contentWindow.print(); setTimeout(() => { document.body.removeChild(iframe); }, 2000); }, 200);
     }
 
-    function deleteDoc(col, id) { if(confirm("هل أنت متأكد من الحذف؟")) db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); }
-    
+    function printAllReports() {
+        const sectorFilter = document.getElementById("filterSector").value;
+        let filtered = allIssues.filter(i => i.supervisor !== "الإدارة (إدخال يدوي)");
+        if(sectorFilter) filtered = filtered.filter(i => i.sector === sectorFilter);
+        if (currentArchiveFilter === 'active') filtered = filtered.filter(i => i.status !== 'resolved_by_supervisor');
+        else if (currentArchiveFilter === 'archived') filtered = filtered.filter(i => i.status === 'resolved_by_supervisor');
+
+        let tbody = "";
+        filtered.forEach((d, i) => {
+            let typeText = d.isPraise ? "إشادة" : (d.type === "visit" ? "ملاحظة" : "إشكالية");
+            const date = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString('ar-OM') : '-';
+            const recommendation = d.recommendation || '-';
+            const resolution = d.resolution || '-';
+            tbody += `<tr><td>${i+1}</td><td>${d.sector}</td><td>${d.centerName}</td><td>${d.supervisor}</td><td>${typeText}</td><td>${d.targetName}</td><td>${d.description}</td><td style="background:rgba(41,182,246,0.1); font-size:8px;">${recommendation}</td><td style="background:rgba(67,160,71,0.1); font-size:8px;">${resolution}</td><td>${date}</td></tr>`;
+        });
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        const title = currentArchiveFilter === 'archived' ? 'تقرير السجلات المؤرشفة' : 'تقرير السجلات النشطة';
+        const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title} ${sectorFilter ? '- ' + sectorFilter : ''}</h2></div></div><table class="print-table"><thead><tr><th>#</th><th>القطاع</th><th>المركز</th><th>المشرف</th><th>النوع</th><th>الهدف</th><th>الوصف</th><th>التوصيات</th><th>الإجراء المتخذ</th><th>التاريخ</th></tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+        printHTMLInIframe(htmlContent, 'A4 landscape');
+    }
+
+    function printDutyTable(orientation) {
+        const month = document.getElementById("dutyMonth").value; if(!month) return showToast("اختر الشهر", "danger");
+        const [year, m] = month.split("-"); const days = new Date(year, m, 0).getDate();
+        db.collection("duty_schedule").where("month", "==", month).get().then(dutySnap => {
+            const data = {}; dutySnap.forEach(d => data[d.data().supervisorCode] = d.data().shifts || {});
+            const buildPrintTable = (suprvs) => {
+                if(suprvs.length === 0) return '<div style="text-align:center;">لا يوجد</div>';
+                let html = '<table class="print-table" style="width:100%; border-collapse:collapse;"><thead><tr><th>المشرف</th>';
+                for (let d = 1; d <= days; d++) html += `<th>${d}</th>`;
+                html += '</tr></thead><tbody>';
+                suprvs.forEach(s => { const shifts = data[s.code] || {}; html += `<tr><td>${s.name}</td>`; for (let d = 1; d <= days; d++) { const val = shifts[d] || ""; let displayVal = val; if (val.startsWith("A-")) displayVal = "A/" + val.substring(2); else if (val.startsWith("B-")) displayVal = "B/" + val.substring(2); html += `<td>${displayVal || "—"}</td>`; } html += '</tr>'; });
+                return html + '</tbody></table>';
+            };
+            const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+            const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>جدول الدوام — ${month}</h2></div></div>${buildPrintTable(allSupervisors)}<div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+            printHTMLInIframe(htmlContent, orientation);
+        });
+    }
+
+    // ==========================================
+    // 13. التقارير المتقدمة
+    // ==========================================
+    function updateReportOptions() {
+        const type = document.getElementById("reportType").value;
+        const filters = document.getElementById("reportFilters");
+        const dateFilters = `<div><label>من تاريخ</label><input type="date" id="filterFrom"></div><div><label>إلى تاريخ</label><input type="date" id="filterTo"></div>`;
+        const sectorFilter = `<div><label>القطاع</label><select id="filterSector" onchange="updateReportCenters()"><option value="">الكل</option>${Object.keys(SECTORS).map(s => `<option value="${s}">${s}</option>`).join("")}</select></div>`;
+        const centerFilter = `<div><label>المركز</label><select id="filterCenter"><option value="">الكل</option></select></div>`;
+        const supFilter = `<div><label>المشرف</label><select id="filterSup"><option value="">الكل</option>${allSupervisors.map(s => `<option value="${s.name}">${s.name}</option>`).join("")}</select></div>`;
+        let html = dateFilters;
+        if (type === 'activity' || type === 'supervisors' || type === 'issues' || type === 'visits') html += sectorFilter + centerFilter + supFilter;
+        else if (type === 'paramedics') html += sectorFilter + centerFilter + `<div><label>المسعف</label><select id="filterParam"><option value="">الكل</option>${allParameds.map(p => `<option value="${p.name}">${p.name}</option>`).join("")}</select></div>`;
+        else if (type === 'vehicles') html += sectorFilter + centerFilter;
+        filters.innerHTML = html; updateReportCenters();
+    }
+
+    function updateReportCenters() {
+        const sector = document.getElementById("filterSector")?.value;
+        const centerSel = document.getElementById("filterCenter");
+        if(!centerSel) return;
+        let centers = sector ? (SECTORS[sector] || []) : Object.values(SECTORS).flat();
+        centerSel.innerHTML = `<option value="">الكل</option>` + centers.map(c => `<option value="${c}">${c}</option>`).join("");
+    }
+
+    async function generateReport(action) {
+        const type = document.getElementById("reportType").value;
+        const orientation = document.getElementById("printOrientation").value;
+        const from = document.getElementById("filterFrom")?.value;
+        const to = document.getElementById("filterTo")?.value;
+        const selSector = document.getElementById("filterSector")?.value;
+        const selCenter = document.getElementById("filterCenter")?.value;
+        const selSup = document.getElementById("filterSup")?.value;
+        const selParam = document.getElementById("filterParam")?.value;
+        const logo = localStorage.getItem("cfg_logoUrl") || "https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png";
+        let filteredIssues = allIssues;
+        if (from) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) >= new Date(from).getTime());
+        if (to) filteredIssues = filteredIssues.filter(i => (i.timestamp?.seconds * 1000) <= new Date(to).getTime() + 86400000);
+        let data = [], title = "", thead = "";
+        if (type === 'activity') {
+            title = "تقرير نشاط المشرفين"; thead = "<th>#</th><th>المشرف</th><th>إشكالات</th><th>إشادات</th><th>ملاحظات</th><th>بلاغات منجزة</th>";
+            let sups = allSupervisors;
+            if (selSector) sups = sups.filter(s => s.sector === selSector);
+            if (selSup) sups = sups.filter(s => s.name === selSup);
+            data = sups.map(s => {
+                let mine = filteredIssues.filter(i => i.supervisor === s.name || i.resolvedBy === s.name);
+                if (selCenter) mine = mine.filter(i => i.centerName === selCenter);
+                return { name: s.name, complaints: mine.filter(i => !i.isPraise && i.type !== 'visit' && i.type === 'complaint').length, praises: mine.filter(i => i.isPraise).length, notes: mine.filter(i => i.type === 'visit').length, resolved: mine.filter(i => i.status === 'resolved_by_supervisor').length };
+            });
+        } else if (type === 'issues' || type === 'visits') {
+            title = type === 'visits' ? "تقرير الزيارات" : "تقرير البلاغات"; thead = "<th>#</th><th>التاريخ</th><th>المركز</th><th>الهدف</th><th>النوع</th><th>المشرف</th><th>الحالة</th><th>الملاحظات</th>";
+            let d = filteredIssues;
+            if (type === 'visits') d = d.filter(i => i.type === 'visit'); else d = d.filter(i => i.type !== 'visit');
+            if (selSector) d = d.filter(i => i.sector === selSector);
+            if (selCenter) d = d.filter(i => i.centerName === selCenter);
+            if (selSup) d = d.filter(i => i.supervisor === selSup);
+            data = d;
+        } else if (type === 'paramedics') {
+            title = "قائمة المسعفين"; thead = "<th>#</th><th>الاسم</th><th>الرقم</th><th>المركز</th><th>الرتبة</th>";
+            let d = allParameds;
+            if (selCenter) d = d.filter(p => p.centerName === selCenter);
+            if (selSector) d = d.filter(p => (SECTORS[selSector] || []).includes(p.centerName));
+            if (selParam) d = d.filter(p => p.name === selParam);
+            data = d;
+        } else if (type === 'vehicles') {
+            title = "قائمة المركبات"; thead = "<th>#</th><th>اللوحة</th><th>النوع</th><th>المركز</th>";
+            let d = allVehicles;
+            if (selCenter) d = d.filter(v => v.centerName === selCenter);
+            if (selSector) d = d.filter(v => (SECTORS[selSector] || []).includes(v.centerName));
+            data = d;
+        }
+        let tbody = "";
+        data.forEach((d, i) => {
+            if (type === 'activity') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.complaints}</td><td>${d.praises}</td><td>${d.notes}</td><td>${d.resolved}</td></tr>`;
+            else if (type === 'issues' || type === 'visits') {
+                const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-';
+                const target = d.targetName || d.centerName || '-';
+                const issueType = d.issueType || (d.isPraise ? 'إشادة' : (d.type === 'visit' ? 'زيارة' : '-'));
+                let details = d.description || '-';
+                if (d.resolution) details += ` | الإجراء: ${d.resolution}`;
+                tbody += `<tr><td>${i+1}</td><td>${time}</td><td>${d.centerName || '-'}</td><td>${target}</td><td>${issueType}</td><td>${d.supervisor || '-'}</td><td>${d.status === 'resolved_by_supervisor' ? 'منجزة' : 'مفتوحة'}</td><td style="text-align:right; font-size:8px; max-width:150px;">${details}</td></tr>`;
+            } else if (type === 'paramedics') tbody += `<tr><td>${i+1}</td><td>${d.name}</td><td>${d.militaryId||'-'}</td><td>${d.centerName}</td><td>${d.rank||'-'}</td></tr>`;
+            else if (type === 'vehicles') tbody += `<tr><td>${i+1}</td><td>${d.plateNumber}</td><td>${d.type||'-'}</td><td>${d.centerName}</td></tr>`;
+        });
+        if (action === 'print') {
+            const htmlContent = `<div class="print-page"><div class="print-header"><img src="${logo}" class="print-logo"><div class="print-header-text"><h1>هيئة الدفاع المدني والإسعاف</h1><h2>${title}</h2></div></div><table class="print-table"><thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody></table><div class="print-footer">${new Date().toLocaleString('ar-OM')}</div></div>`;
+            printHTMLInIframe(htmlContent, orientation);
+        } else {
+            let csv = "\uFEFF"; const clean = v => `"${String(v||'').replace(/"/g, '""')}"`;
+            csv += thead.replace(/<\/?th>/g, m => m === '<th>' ? '' : ',').replace(/,$/, '\n');
+            data.forEach((d, i) => {
+                if (type === 'activity') csv += [i+1, clean(d.name), d.complaints, d.praises, d.notes, d.resolved].join(",") + "\n";
+                else if (type === 'issues' || type === 'visits') { const time = d.timestamp ? new Date(d.timestamp.toDate?.() || d.timestamp).toLocaleDateString('ar-OM') : '-'; csv += [i+1, time, clean(d.centerName), clean(d.targetName), clean(d.issueType), clean(d.supervisor), d.status].join(",") + "\n"; }
+                else if (type === 'paramedics') csv += [i+1, clean(d.name), clean(d.militaryId), clean(d.centerName), clean(d.rank)].join(",") + "\n";
+                else if (type === 'vehicles') csv += [i+1, clean(d.plateNumber), clean(d.type), clean(d.centerName)].join(",") + "\n";
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob); link.download = `report_${new Date().toISOString().slice(0,10)}.csv`; link.click();
+            showToast("تم التصدير");
+        }
+    }
+
+    // ==========================================
+    // 14. الأنواع والإعدادات
+    // ==========================================
+    function loadTypes() {
+        const target = document.getElementById("typeTarget").value;
+        const cat = document.getElementById("typeCategory").value;
+        const col = `${cat}_types_${target}`;
+        db.collection(col).get().then(s => {
+            let html = "";
+            s.forEach(d => { html += `<div class="item-card"><div class="item-info"><h4>${d.data().name}</h4></div><button class="icon-btn-sm delete" onclick="deleteDoc('${col}','${d.id}')">🗑️</button></div>`; });
+            document.getElementById("typesList").innerHTML = html || "لا يوجد أنواع";
+        });
+    }
+    function addType() {
+        const target = document.getElementById("typeTarget").value;
+        const cat = document.getElementById("typeCategory").value;
+        const name = document.getElementById("newTypeName").value.trim();
+        if (!name) return showToast("أدخل الاسم", "danger");
+        db.collection(`${cat}_types_${target}`).add({ name }).then(() => { showToast("تمت الإضافة"); document.getElementById("newTypeName").value = ""; loadTypes(); });
+    }
+
+    function loadConfig() { document.getElementById("cfgSystemName").value = localStorage.getItem("cfg_systemName") || "الإدارة العامة"; document.getElementById("cfgLogoUrl").value = localStorage.getItem("cfg_logoUrl") || ""; }
+    function saveConfig(key, val) { localStorage.setItem("cfg_" + key, val); if(key === "systemName") document.getElementById("systemName").innerText = val; showToast("تم الحفظ"); }
+    function changeAdminPassword() {
+        const oldPwd = document.getElementById("oldPwd").value, newPwd = document.getElementById("newPwd").value;
+        if(!oldPwd || !newPwd) return showToast("أدخل كلمة المرور", "danger");
+        const currentStored = localStorage.getItem("admin_pwd") || "admin123"; 
+        if(oldPwd !== currentStored) return showToast("كلمة المرور خاطئة!", "danger");
+        localStorage.setItem("admin_pwd", newPwd); showToast("✅ تم التغيير"); document.getElementById("oldPwd").value = ""; document.getElementById("newPwd").value = "";
+    }
+    function deleteDoc(col, id) { if(confirm("هل أنت متأكد؟")) db.collection(col).doc(id).delete().then(() => showToast("تم الحذف")); }
     async function populateDeleteItems() {
         const col = document.getElementById("deleteCol").value, sel = document.getElementById("deleteItemId");
         if(!col) { sel.innerHTML = '<option value="">-- اختر --</option>'; return; }
