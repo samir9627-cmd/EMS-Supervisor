@@ -46,6 +46,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .master-clock .date { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
 .live-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--red-light); font-weight: 900; margin-top: 5px; }
 .live-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: pulseRed 1s infinite; }
+@keyframes pulseRed { 0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } }
 
 /* الشاشة الرئيسية (شبكة) */
 .dashboard { flex: 1; padding: 20px; display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; width: 100%; }
@@ -163,7 +164,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 
 <div class="dashboard">
     
-    <!-- العمود الأول: النبض والإحصائيات -->
     <div style="display:flex; flex-direction:column; gap:20px;">
         <div class="glass-card">
             <div class="top-stats">
@@ -192,7 +192,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         </div>
     </div>
 
-    <!-- العمود الأوسط: التنبيهات الحرجة -->
     <div class="glass-card" style="border-color: rgba(229,57,53,0.4);">
         <div class="card-header">
             <h2 style="color:var(--red-light);">🚨 مركز التنبيهات الحرجة</h2>
@@ -203,7 +202,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         </div>
     </div>
 
-    <!-- العمود الثالث: الزيارات والأحداث -->
     <div style="display:flex; flex-direction:column; gap:20px;">
         <div class="glass-card">
             <div class="card-header">
@@ -242,7 +240,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 
     let allIssues = [], allSupervisors = [], allVisits = [];
     let activeVisitTimers = {};
-    let lastFeedIds = new Set();
     let isFirstLoad = true;
 
     // 1. الساعة المباشرة
@@ -301,36 +298,47 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         setTimeout(() => { isFirstLoad = false; }, 3000);
     }
 
-    // 6. رسم نبض المشرفين
+    // 6. رسم نبض المشرفين (قراءة الحالة الحقيقية)
     function renderPulse() {
-        let html = "";
-        let onlineCount = 0;
-        
-        allSupervisors.forEach(s => {
-            const lastActivity = allIssues.filter(i => i.supervisor === s.name).sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0))[0];
-            const lastTime = lastActivity ? lastActivity.timestamp?.seconds * 1000 : 0;
-            const isOnline = (Date.now() - lastTime) < 12 * 60 * 60 * 1000; // متصل إذا كان نشطاً خلال 12 ساعة
-            if (isOnline) onlineCount++;
+        // جلب الحالات الحقيقية من Firebase
+        db.collection("supervisors_status").onSnapshot(statusSnap => {
+            const statuses = {};
+            statusSnap.forEach(d => statuses[d.id] = d.data());
             
-            const initials = s.name.split(' ').map(n => n[0]).slice(0, 2).join('');
-            const statusClass = isOnline ? "online" : "offline";
-            const statusText = isOnline ? "نشط الآن" : "غير متصل";
-            const statusIcon = isOnline ? "🟢" : "🔴";
+            let html = "";
+            let onlineCount = 0;
+            
+            allSupervisors.forEach(s => {
+                const status = statuses[s.code] || {};
+                let isOnline = false;
+                
+                if (status.lastSeen) {
+                    const lastSeen = status.lastSeen.seconds * 1000;
+                    isOnline = (Date.now() - lastSeen) < 2 * 60 * 1000; // متصل إذا كان نشطاً خلال دقيقتين
+                }
+                
+                if (isOnline) onlineCount++;
+                
+                const initials = s.name.split(' ').map(n => n[0]).slice(0, 2).join('');
+                const statusClass = isOnline ? "online" : "offline";
+                const statusText = isOnline ? "متصل الآن" : "غير متصل";
+                const statusIcon = isOnline ? "🟢" : "🔴";
 
-            html += `<div class="pulse-item ${statusClass}">
-                <div style="display:flex; align-items:center;">
-                    <div class="pulse-avatar">${initials}</div>
-                    <div class="pulse-info">
-                        <h4>${s.name}</h4>
-                        <p>${s.phone || s.militaryId || 'بدون رقم'}</p>
+                html += `<div class="pulse-item ${statusClass}">
+                    <div style="display:flex; align-items:center;">
+                        <div class="pulse-avatar">${initials}</div>
+                        <div class="pulse-info">
+                            <h4>${s.name}</h4>
+                            <p>${s.phone || s.militaryId || 'بدون رقم'}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="pulse-status status-${statusClass}">${statusIcon} ${statusText}</div>
-            </div>`;
+                    <div class="pulse-status status-${statusClass}">${statusIcon} ${statusText}</div>
+                </div>`;
+            });
+            
+            document.getElementById("pulseList").innerHTML = html || '<div style="text-align:center; opacity:0.5;">لا يوجد مشرفون</div>';
+            document.getElementById("pulseCount").innerText = `${onlineCount} متصل`;
         });
-        
-        document.getElementById("pulseList").innerHTML = html || '<div style="text-align:center; opacity:0.5;">لا يوجد مشرفون</div>';
-        document.getElementById("pulseCount").innerText = `${onlineCount} متصل`;
     }
 
     // 7. التنبيهات الحرجة (أكثر من 48 ساعة)
@@ -441,7 +449,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         c.appendChild(t);
         setTimeout(() => t.remove(), 5000);
         
-        // صوت التنبيه
         playAlertSound(type);
     }
 
