@@ -457,36 +457,63 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         mapMarkers.forEach(m => liveMap.removeLayer(m));
         mapMarkers = [];
         
-        allIssues.slice(0, 100).forEach(issue => {
+        // 1. رسم مواقع البلاغات (السابقة)
+        allIssues.slice(0, 50).forEach(issue => {
             if (issue.location && issue.location.latitude && issue.location.longitude) {
                 const lat = issue.location.latitude;
                 const lng = issue.location.longitude;
                 
-                let color = "#ff5252";
-                let icon = "🚩";
+                let color = "#ff5252"; let icon = "🚩";
                 if (issue.isPraise) { color = "#69f0ae"; icon = "⭐"; }
                 else if (issue.type === "visit") { color = "#64b5f6"; icon = "📝"; }
                 else if (issue.supervisor === "الإدارة (إدخال يدوي)") { color = "#fb8c00"; icon = "🚨"; }
                 
                 const customIcon = L.divIcon({
                     className: 'custom-marker',
-                    html: `<div style="background:${color}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 0 10px ${color}; font-size:14px;">${icon}</div>`,
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
+                    html: `<div style="background:${color}; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 0 5px ${color}; font-size:11px; opacity:0.7;">${icon}</div>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
                 });
                 
                 const marker = L.marker([lat, lng], { icon: customIcon }).addTo(liveMap);
                 const popupContent = `
                     <div style="direction:rtl; font-family:Cairo; color:#000; padding:5px;">
-                        <b style="font-size:14px;">👨‍💼 ${issue.supervisor || 'غير محدد'}</b><br>
-                        <span style="font-size:12px;">🏥 ${issue.centerName || '-'}</span><br>
-                        <span style="font-size:11px;">📍 ${issue.sector || '-'}</span><br>
-                        <span style="font-size:11px; color:${color};"><b>${issue.issueType || (issue.type === 'visit' ? 'زيارة' : 'إشكالية')}</b></span>
+                        <b style="font-size:13px;">👨‍💼 ${issue.supervisor || 'غير محدد'}</b><br>
+                        <span style="font-size:11px;">🏥 ${issue.centerName || '-'}</span><br>
+                        <span style="font-size:10px; color:${color};"><b>${issue.issueType || (issue.type === 'visit' ? 'زيارة' : 'إشكالية')}</b></span>
                     </div>
                 `;
                 marker.bindPopup(popupContent);
                 mapMarkers.push(marker);
             }
+        });
+        
+        // 2. رسم مواقع المشرفين المتصلين (العلامات الحية)
+        db.collection("supervisors_status").get().then(snap => {
+            snap.forEach(doc => {
+                const status = doc.data();
+                if (status.location && status.location.latitude && status.location.longitude) {
+                    const lat = status.location.latitude;
+                    const lng = status.location.longitude;
+                    
+                    const customIcon = L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div style="background:#ffffff; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid #69f0ae; box-shadow:0 0 15px #69f0ae; font-size:16px;">👨‍💼</div>`,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18]
+                    });
+                    
+                    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(liveMap);
+                    const popupContent = `
+                        <div style="direction:rtl; font-family:Cairo; color:#000; padding:5px;">
+                            <b style="font-size:14px; color:#43a047;">👨‍💼 ${status.name} (متصل الآن)</b><br>
+                            <span style="font-size:12px;">📍 ${status.sector || '-'}</span>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                    mapMarkers.push(marker);
+                }
+            });
         });
     }
 
