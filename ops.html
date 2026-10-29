@@ -6,7 +6,6 @@
 <meta name="theme-color" content="#041814">
 <title>غرفة العمليات المركزية — OPS</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-<!-- مكتبة Leaflet المجانية (بدون مفتاح) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -115,7 +114,11 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .toast.danger { border-color: var(--red); }
 .toast.success { border-color: var(--green); }
 
+/* تصميم الخريطة - تحويلها للوضع الداكن لتناسب غرفة العمليات */
 .leaflet-container { background: #041814 !important; font-family: 'Cairo', sans-serif !important; z-index: 1; }
+.leaflet-tile-pane { 
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7); 
+}
 .leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
 .leaflet-popup-tip { background: #fff; }
 </style>
@@ -433,13 +436,19 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         } catch(e) {}
     }
 
-    // ✅ خريطة المواقع الحية
+    // ✅ خريطة المواقع الحية (OpenStreetMap مجانية 100%)
     let liveMap;
     let mapMarkers = [];
 
     function initLiveMap() {
         liveMap = L.map('liveMap', { zoomControl: false, attributionControl: false }).setView([23.5880, 58.3829], 10);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(liveMap);
+        
+        // ✅ خريطة مجانية بدون أي مفتاح API
+        L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(liveMap);
+        
         L.control.zoom({ position: 'bottomright' }).addTo(liveMap);
     }
 
