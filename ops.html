@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#041814">
 <title>غرفة العمليات المركزية — OPS</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -20,7 +22,6 @@
   --bg-glass: rgba(13,74,66,0.25); --bg-glass-strong: rgba(8,43,38,0.85);
 }
 
-/* شاشة التحميل */
 #loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .radar-spinner { width:80px; height:80px; border-radius:50%; border:2px solid rgba(151,141,91,0.2); border-top:2px solid var(--gold); position:relative; animation: spin 1.5s linear infinite; margin-bottom:20px; }
 .radar-spinner::after { content:''; position:absolute; top:10px; left:10px; right:10px; bottom:10px; border-radius:50%; border:2px solid transparent; border-top-color:var(--red); animation: spin 1s linear infinite reverse; }
@@ -31,14 +32,12 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 body::before { content: ''; position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 50% 0%, rgba(13,74,66,0.8) 0%, transparent 60%), #041814; }
 body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-image: linear-gradient(rgba(151,141,91,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(151,141,91,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
 
-/* الشريط العلوي */
 .topbar { padding: 15px 20px; background: rgba(4,24,20,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 5px 30px rgba(0,0,0,0.5); }
 .topbar-brand { display: flex; align-items: center; gap: 15px; }
 .topbar-brand img { width: 45px; height: 45px; border-radius: 50%; background: #fff; padding: 3px; box-shadow: 0 0 15px rgba(151,141,91,0.5); }
 .topbar-brand h1 { font-size: 18px; color: var(--gold-light); font-weight: 900; letter-spacing: 1px; }
 .topbar-brand p { font-size: 11px; color: var(--text-sub); }
 
-/* الساعة المركزية */
 .master-clock { text-align: center; padding: 10px 30px; background: rgba(0,0,0,0.4); border: 1px solid var(--gold); border-radius: 15px; position: relative; overflow: hidden; box-shadow: inset 0 0 20px rgba(151,141,91,0.1); }
 .master-clock::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); animation: scanLight 3s infinite; }
 @keyframes scanLight { to { left: 100%; } }
@@ -48,12 +47,10 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .live-indicator .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: pulseRed 1s infinite; }
 @keyframes pulseRed { 0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } }
 
-/* الشاشة الرئيسية (شبكة) */
 .dashboard { flex: 1; padding: 20px; display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1600px; margin: 0 auto; width: 100%; }
 @media (min-width: 1000px) { .dashboard { grid-template-columns: 1.2fr 1fr; } }
 @media (min-width: 1300px) { .dashboard { grid-template-columns: 1fr 1.5fr 1fr; } }
 
-/* بطاقات الزجاج */
 .glass-card { background: var(--bg-glass); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: transform 0.3s; }
 .glass-card:hover { transform: translateY(-2px); border-color: rgba(151,141,91,0.6); }
 .glass-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%); pointer-events: none; }
@@ -62,7 +59,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .card-header h2 { font-size: 15px; color: var(--gold-light); font-weight: 900; display: flex; align-items: center; gap: 8px; }
 .card-header .header-badge { background: rgba(151,141,91,0.2); color: var(--gold-light); padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; }
 
-/* إحصائيات علوية */
 .top-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
 .stat-mini { background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
 .stat-mini .num { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; }
@@ -72,17 +68,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .color-critical { color: var(--red-light); text-shadow: 0 0 10px rgba(255,82,82,0.3); }
 .color-sups { color: var(--green-light); text-shadow: 0 0 10px rgba(105,240,174,0.3); }
 
-/* الرادار */
-.radar-container { position: relative; width: 100%; height: 200px; display: flex; justify-content: center; align-items: center; overflow: hidden; border-radius: 50%; border: 1px solid rgba(151,141,91,0.2); background: radial-gradient(circle, rgba(13,74,66,0.5) 0%, transparent 70%); }
-.radar-circle { position: absolute; border-radius: 50%; border: 1px solid rgba(151,141,91,0.15); }
-.radar-circle.c1 { width: 60%; height: 60%; }
-.radar-circle.c2 { width: 80%; height: 80%; }
-.radar-circle.c3 { width: 100%; height: 100%; }
-.radar-sweep { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(from 0deg, transparent 0%, rgba(151,141,91,0.3) 10%, transparent 20%); animation: radarRotate 4s linear infinite; }
-@keyframes radarRotate { to { transform: rotate(360deg); } }
-.radar-center { position: absolute; font-size: 24px; z-index: 10; }
-
-/* النبض */
 .pulse-list { flex: 1; overflow-y: auto; max-height: 300px; padding-left: 5px; }
 .pulse-list::-webkit-scrollbar { width: 4px; }
 .pulse-list::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
@@ -99,7 +84,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .status-offline { background: rgba(229,57,53,0.15); color: var(--red-light); }
 .status-leave { background: rgba(251,140,0,0.15); color: var(--amber-light); }
 
-/* التنبيهات الحرجة */
 .critical-list { flex: 1; overflow-y: auto; max-height: 400px; }
 .critical-item { background: rgba(229,57,53,0.1); border: 1px solid rgba(229,57,53,0.3); border-radius: 12px; padding: 12px; margin-bottom: 10px; animation: pulseRed 3s infinite; position: relative; overflow: hidden; }
 .critical-item::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: var(--red); }
@@ -107,14 +91,12 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .critical-item p { font-size: 11px; color: var(--text-sub); }
 .critical-item .time { font-size: 10px; color: var(--red); font-weight: 900; margin-top: 6px; display: inline-block; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; }
 
-/* الزيارات النشطة */
 .visit-list { flex: 1; overflow-y: auto; max-height: 250px; }
 .visit-item { background: rgba(41,182,246,0.08); border: 1px solid rgba(41,182,246,0.2); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 .visit-info h4 { font-size: 13px; color: var(--blue-light); font-weight: 900; }
 .visit-info p { font-size: 11px; color: var(--text-sub); }
 .visit-timer { font-family: 'Orbitron', monospace; font-size: 20px; font-weight: 900; color: var(--gold-light); background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid var(--gold); }
 
-/* آخر الأحداث */
 .feed-list { flex: 1; overflow-y: auto; max-height: 300px; padding-left: 5px; }
 .feed-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(151,141,91,0.1); animation: slideIn 0.3s ease-out; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -127,11 +109,15 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .feed-content p { font-size: 12px; color: var(--text-main); }
 .feed-content span { font-size: 10px; color: var(--text-sub); display: block; margin-top: 4px; }
 
-/* التنبيهات المنبثقة */
 .toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 3000; display: flex; flex-direction: column; gap: 10px; }
 .toast { background: var(--bg-glass-strong); backdrop-filter: blur(15px); border: 1px solid var(--gold); padding: 15px 20px; border-radius: 12px; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: slideIn 0.3s; }
 .toast.danger { border-color: var(--red); }
 .toast.success { border-color: var(--green); }
+
+/* تصميم الخريطة الداكنة */
+.leaflet-container { background: #041814 !important; font-family: 'Cairo', sans-serif !important; }
+.leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+.leaflet-popup-tip { background: #fff; }
 </style>
 </head>
 <body>
@@ -164,6 +150,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 
 <div class="dashboard">
     
+    <!-- العمود الأول: الخريطة والنبض -->
     <div style="display:flex; flex-direction:column; gap:20px;">
         <div class="glass-card">
             <div class="top-stats">
@@ -172,13 +159,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
                 <div class="stat-mini"><div class="num color-critical" id="statCritical">0</div><div class="lbl">حرجة</div></div>
                 <div class="stat-mini"><div class="num color-sups" id="statSupervisors">0</div><div class="lbl">مشرفون</div></div>
             </div>
-            <div class="radar-container">
-                <div class="radar-circle c1"></div>
-                <div class="radar-circle c2"></div>
-                <div class="radar-circle c3"></div>
-                <div class="radar-sweep"></div>
-                <div class="radar-center">🛰️</div>
-            </div>
+            <div id="liveMap" style="width: 100%; height: 250px; border-radius: 15px; border: 1px solid var(--gold); z-index: 1;"></div>
         </div>
 
         <div class="glass-card" style="flex:1;">
@@ -192,6 +173,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         </div>
     </div>
 
+    <!-- العمود الأوسط: التنبيهات الحرجة -->
     <div class="glass-card" style="border-color: rgba(229,57,53,0.4);">
         <div class="card-header">
             <h2 style="color:var(--red-light);">🚨 مركز التنبيهات الحرجة</h2>
@@ -202,6 +184,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         </div>
     </div>
 
+    <!-- العمود الثالث: الزيارات والأحداث -->
     <div style="display:flex; flex-direction:column; gap:20px;">
         <div class="glass-card">
             <div class="card-header">
@@ -226,6 +209,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
+
 <script>
     const firebaseConfig = {
       apiKey: "AIzaSyC3m9o6Qx7m6r1b08DZIkyttArIihZL8n8",
@@ -257,16 +241,14 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         updateTopStats();
         updateCriticalAlerts();
         renderActivityFeed();
+        updateLiveMap();
         
-        // إشعارات فورية للبلاغات الجديدة
         if (!isFirstLoad) {
             snap.docChanges().forEach(change => {
                 if (change.type === "added") {
                     const data = change.doc.data();
                     const time = data.timestamp ? new Date(data.timestamp.toDate()).getTime() : Date.now();
-                    if (Date.now() - time < 10000) { // إذا تمت الإضافة قبل 10 ثواني
-                        showOpsNotification(data);
-                    }
+                    if (Date.now() - time < 10000) showOpsNotification(data);
                 }
             });
         }
@@ -280,7 +262,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         renderPulse();
     });
 
-    // 4. جلب الزيارات النشطة (Check-in بدون Check-out)
+    // 4. جلب الزيارات النشطة
     db.collection("active_visits").onSnapshot(snap => {
         allVisits = [];
         snap.forEach(d => allVisits.push({ id: d.id, ...d.data() }));
@@ -289,7 +271,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         renderActiveVisits();
     });
 
-    // 5. تحديث الإحصائيات العلوية
     function updateTopStats() {
         const pending = allIssues.filter(i => i.status === 'pending_supervisor' || i.status === 'new' || i.status === 'in_progress').length;
         document.getElementById("statPending").innerText = pending;
@@ -298,9 +279,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         setTimeout(() => { isFirstLoad = false; }, 3000);
     }
 
-    // 6. رسم نبض المشرفين (قراءة الحالة الحقيقية)
     function renderPulse() {
-        // جلب الحالات الحقيقية من Firebase
         db.collection("supervisors_status").onSnapshot(statusSnap => {
             const statuses = {};
             statusSnap.forEach(d => statuses[d.id] = d.data());
@@ -311,12 +290,10 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
             allSupervisors.forEach(s => {
                 const status = statuses[s.code] || {};
                 let isOnline = false;
-                
                 if (status.lastSeen) {
                     const lastSeen = status.lastSeen.seconds * 1000;
-                    isOnline = (Date.now() - lastSeen) < 2 * 60 * 1000; // متصل إذا كان نشطاً خلال دقيقتين
+                    isOnline = (Date.now() - lastSeen) < 2 * 60 * 1000;
                 }
-                
                 if (isOnline) onlineCount++;
                 
                 const initials = s.name.split(' ').map(n => n[0]).slice(0, 2).join('');
@@ -341,7 +318,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         });
     }
 
-    // 7. التنبيهات الحرجة (أكثر من 48 ساعة)
     function updateCriticalAlerts() {
         const critical = allIssues.filter(i => {
             if (i.status === 'resolved_by_supervisor') return false;
@@ -360,10 +336,8 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         critical.forEach(i => {
             let title = i.targetName || i.centerName || "بلاغ";
             if (i.type === 'visit') title = "زيارة: " + i.centerName;
-            
             const created = i.createdAt ? i.createdAt.seconds * 1000 : (i.timestamp?.seconds * 1000 || 0);
             const hours = Math.floor((Date.now() - created) / (1000 * 60 * 60));
-            
             html += `<div class="critical-item">
                 <h4>⏳ ${title} (${i.sector || 'غير محدد'})</h4>
                 <p>${i.description || i.issueType || 'لا يوجد وصف'}</p>
@@ -373,13 +347,11 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         document.getElementById("criticalList").innerHTML = html;
     }
 
-    // 8. الزيارات النشطة
     function renderActiveVisits() {
         if (allVisits.length === 0) {
             document.getElementById("activeVisitsList").innerHTML = '<div style="text-align:center; opacity:0.5; padding:20px;">📍 لا توجد زيارات نشطة الآن</div>';
             return;
         }
-
         let html = "";
         allVisits.forEach(v => {
             const startTime = v.startTime ? v.startTime.toDate().getTime() : Date.now();
@@ -411,14 +383,12 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         }, 1000);
     }
 
-    // 9. البث المباشر للأحداث
     function renderActivityFeed() {
         const recent = allIssues.slice(0, 10);
         let html = "";
         recent.forEach(i => {
             const time = i.timestamp ? new Date(i.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
             let iconClass = "icon-issue", icon = "🚩", text = `تم تسجيل بلاغ: ${i.targetName || i.centerName}`;
-            
             if (i.isPraise) { iconClass = "icon-praise"; icon = "⭐"; text = `تم تسجيل إشادة: ${i.targetName}`; }
             else if (i.type === "visit") { iconClass = "icon-visit"; icon = "📝"; text = `تم تسجيل زيارة: ${i.centerName}`; }
             else if (i.status === "resolved_by_supervisor") { iconClass = "icon-resolved"; icon = "✅"; text = `تم حل بلاغ: ${i.targetName || i.centerName}`; }
@@ -434,21 +404,17 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         document.getElementById("activityFeed").innerHTML = html || '<div style="text-align:center; opacity:0.5;">لا توجد أحداث</div>';
     }
 
-    // 10. إشعارات غرفة العمليات
     function showOpsNotification(issue) {
         const c = document.getElementById("toastContainer");
         const t = document.createElement("div");
         let text = `بلاغ جديد: ${issue.targetName || issue.centerName}`;
         let type = "danger";
-        
         if (issue.isPraise) { text = `إشادة جديدة: ${issue.targetName}`; type = "success"; }
         else if (issue.type === "visit") { text = `زيارة جديدة: ${issue.centerName}`; }
-
         t.className = "toast " + type;
         t.innerHTML = `<span style="font-size:20px;">🔔</span> <div><b>${text}</b><br><small style="opacity:0.7;">من: ${issue.supervisor}</small></div>`;
         c.appendChild(t);
         setTimeout(() => t.remove(), 5000);
-        
         playAlertSound(type);
     }
 
@@ -466,6 +432,60 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
             osc.start(); osc.stop(audioCtx.currentTime + 0.5);
         } catch(e) {}
     }
+
+    // ✅ خريطة المواقع الحية
+    let liveMap;
+    let mapMarkers = [];
+
+    function initLiveMap() {
+        liveMap = L.map('liveMap', { zoomControl: false, attributionControl: false }).setView([23.5880, 58.3829], 10);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(liveMap);
+        L.control.zoom({ position: 'bottomright' }).addTo(liveMap);
+    }
+
+    function updateLiveMap() {
+        if (!liveMap) return;
+        mapMarkers.forEach(m => liveMap.removeLayer(m));
+        mapMarkers = [];
+        
+        allIssues.slice(0, 100).forEach(issue => {
+            if (issue.location && issue.location.latitude && issue.location.longitude) {
+                const lat = issue.location.latitude;
+                const lng = issue.location.longitude;
+                
+                let color = "#ff5252";
+                let icon = "🚩";
+                if (issue.isPraise) { color = "#69f0ae"; icon = "⭐"; }
+                else if (issue.type === "visit") { color = "#64b5f6"; icon = "📝"; }
+                else if (issue.supervisor === "الإدارة (إدخال يدوي)") { color = "#fb8c00"; icon = "🚨"; }
+                
+                const customIcon = L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="background:${color}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 0 10px ${color}; font-size:14px;">${icon}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                const marker = L.marker([lat, lng], { icon: customIcon }).addTo(liveMap);
+                const popupContent = `
+                    <div style="direction:rtl; font-family:Cairo; color:#000; padding:5px;">
+                        <b style="font-size:14px;">👨‍💼 ${issue.supervisor || 'غير محدد'}</b><br>
+                        <span style="font-size:12px;">🏥 ${issue.centerName || '-'}</span><br>
+                        <span style="font-size:11px;">📍 ${issue.sector || '-'}</span><br>
+                        <span style="font-size:11px; color:${color};"><b>${issue.issueType || (issue.type === 'visit' ? 'زيارة' : 'إشكالية')}</b></span>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                mapMarkers.push(marker);
+            }
+        });
+    }
+
+    // تشغيل الخريطة
+    setTimeout(() => {
+        initLiveMap();
+        updateLiveMap();
+    }, 1500);
 </script>
 </body>
 </html>
