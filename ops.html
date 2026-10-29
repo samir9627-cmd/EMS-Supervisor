@@ -284,8 +284,6 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 
     function renderPulse() {
         db.collection("supervisors_status").onSnapshot(statusSnap => {
-          updateLiveMap();
-      });
             const statuses = {};
             statusSnap.forEach(d => statuses[d.id] = d.data());
             
@@ -320,6 +318,9 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
             
             document.getElementById("pulseList").innerHTML = html || '<div style="text-align:center; opacity:0.5;">لا يوجد مشرفون</div>';
             document.getElementById("pulseCount").innerText = `${onlineCount} متصل`;
+            
+            // ✅ [جديد] تحديث الخريطة كلما تغيرت حالة المشرفين
+            updateLiveMap();
         });
     }
 
@@ -454,35 +455,38 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
         L.control.zoom({ position: 'bottomright' }).addTo(liveMap);
     }
 
+    // ✅ [معدّل] دالة رسم الخريطة - تجمع بين البلاغات ومواقع المشرفين الحية
     function updateLiveMap() {
         if (!liveMap) return;
         mapMarkers.forEach(m => liveMap.removeLayer(m));
         mapMarkers = [];
         
         // 1. رسم مواقع البلاغات (السابقة)
-        allIssues.slice(0, 50).forEach(issue => {
+        allIssues.slice(0, 100).forEach(issue => {
             if (issue.location && issue.location.latitude && issue.location.longitude) {
                 const lat = issue.location.latitude;
                 const lng = issue.location.longitude;
                 
-                let color = "#ff5252"; let icon = "🚩";
+                let color = "#ff5252";
+                let icon = "🚩";
                 if (issue.isPraise) { color = "#69f0ae"; icon = "⭐"; }
                 else if (issue.type === "visit") { color = "#64b5f6"; icon = "📝"; }
                 else if (issue.supervisor === "الإدارة (إدخال يدوي)") { color = "#fb8c00"; icon = "🚨"; }
                 
                 const customIcon = L.divIcon({
                     className: 'custom-marker',
-                    html: `<div style="background:${color}; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 0 5px ${color}; font-size:11px; opacity:0.7;">${icon}</div>`,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
+                    html: `<div style="background:${color}; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 0 10px ${color}; font-size:14px;">${icon}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
                 });
                 
                 const marker = L.marker([lat, lng], { icon: customIcon }).addTo(liveMap);
                 const popupContent = `
                     <div style="direction:rtl; font-family:Cairo; color:#000; padding:5px;">
-                        <b style="font-size:13px;">👨‍💼 ${issue.supervisor || 'غير محدد'}</b><br>
-                        <span style="font-size:11px;">🏥 ${issue.centerName || '-'}</span><br>
-                        <span style="font-size:10px; color:${color};"><b>${issue.issueType || (issue.type === 'visit' ? 'زيارة' : 'إشكالية')}</b></span>
+                        <b style="font-size:14px;">👨‍💼 ${issue.supervisor || 'غير محدد'}</b><br>
+                        <span style="font-size:12px;">🏥 ${issue.centerName || '-'}</span><br>
+                        <span style="font-size:11px;">📍 ${issue.sector || '-'}</span><br>
+                        <span style="font-size:11px; color:${color};"><b>${issue.issueType || (issue.type === 'visit' ? 'زيارة' : 'إشكالية')}</b></span>
                     </div>
                 `;
                 marker.bindPopup(popupContent);
@@ -490,13 +494,21 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
             }
         });
         
-        // 2. رسم مواقع المشرفين المتصلين (العلامات الحية)
+        // ✅ 2. [جديد] رسم مواقع المشرفين المتصلين (العلامات الحية)
         db.collection("supervisors_status").get().then(snap => {
             snap.forEach(doc => {
                 const status = doc.data();
                 if (status.location && status.location.latitude && status.location.longitude) {
                     const lat = status.location.latitude;
                     const lng = status.location.longitude;
+                    
+                    // تجاهل المشرفين غير المتصلين (آخر ظهور أكثر من 3 دقائق)
+                    let isOnline = false;
+                    if (status.lastSeen) {
+                        const lastSeen = status.lastSeen.seconds ? status.lastSeen.seconds * 1000 : 0;
+                        isOnline = (Date.now() - lastSeen) < 3 * 60 * 1000;
+                    }
+                    if (!isOnline) return;
                     
                     const customIcon = L.divIcon({
                         className: 'custom-marker',
@@ -508,7 +520,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
                     const marker = L.marker([lat, lng], { icon: customIcon }).addTo(liveMap);
                     const popupContent = `
                         <div style="direction:rtl; font-family:Cairo; color:#000; padding:5px;">
-                            <b style="font-size:14px; color:#43a047;">👨‍💼 ${status.name} (متصل الآن)</b><br>
+                            <b style="font-size:14px; color:#43a047;">👨‍💼 ${status.name || 'مشرف'} (متصل الآن)</b><br>
                             <span style="font-size:12px;">📍 ${status.sector || '-'}</span>
                         </div>
                     `;
@@ -516,13 +528,14 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
                     mapMarkers.push(marker);
                 }
             });
-        });
+        }).catch(err => console.error("خطأ جلب مواقع المشرفين:", err));
     }
 
     // تشغيل الخريطة
     setTimeout(() => {
         initLiveMap();
-        updateLiveMap();
+        // ✅ [جديد] انتظار قصير قبل الرسم لضمان تحميل البيانات
+        setTimeout(() => updateLiveMap(), 500);
     }, 1500);
 </script>
 </body>
