@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#041814">
 <title>غرفة العمليات المركزية — OPS</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<!-- مكتبة Leaflet المجانية (بدون مفتاح) -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -114,8 +115,7 @@ body::after { content: ''; position: fixed; inset: 0; z-index: -1; background-im
 .toast.danger { border-color: var(--red); }
 .toast.success { border-color: var(--green); }
 
-/* تصميم الخريطة الداكنة */
-.leaflet-container { background: #041814 !important; font-family: 'Cairo', sans-serif !important; }
+.leaflet-container { background: #041814 !important; font-family: 'Cairo', sans-serif !important; z-index: 1; }
 .leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
 .leaflet-popup-tip { background: #fff; }
 </style>
