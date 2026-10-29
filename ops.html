@@ -4,130 +4,132 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#041814">
-<title>غرفة العمليات — الشاشة المباشرة</title>
+<title>غرفة العمليات — OPS</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <style>
-:root {
-  --gold: #978d5b; --gold-light: #d4c896; --gold-bright: #f5e6b3;
-  --teal: #0d4a42; --teal-dark: #082b26; --teal-deep: #041814;
-  --green: #43a047; --green-light: #69f0ae;
-  --red: #e53935; --red-light: #ff5252;
-  --amber: #fb8c00; --amber-light: #ffa726;
-  --blue: #29b6f6; --blue-light: #64b5f6;
-  --purple: #ab47bc;
-  --border: rgba(151,141,91,0.3);
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; font-family:'Cairo','Tajawal',sans-serif; }
-html, body { background: var(--teal-deep); color: #fff; font-weight: 600; overflow-x: hidden; }
+:root {
+  --gold: #978d5b; --gold-light: #d4c896; --teal: #0d4a42; --teal-dark: #082b26; --teal-deep: #041814;
+  --green: #43a047; --green-light: #69f0ae; --red: #e53935; --red-light: #ff5252;
+  --amber: #fb8c00; --amber-light: #ffa726; --blue: #29b6f6; --blue-light: #64b5f6;
+  --border: rgba(151,141,91,0.3); --text-main: #fff; --text-sub: rgba(255,255,255,0.7); --bg-glass: rgba(13,74,66,0.3);
+}
+html, body { background: var(--teal-deep); color: var(--text-main); font-weight: 600; overflow-x: hidden; }
 body { min-height: 100vh; padding-bottom: 20px; }
-body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, #041814 0%, #082b26 50%, #041814 100%); }
+body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 15% 10%, rgba(151,141,91,0.15) 0%, transparent 40%), radial-gradient(circle at 85% 90%, rgba(13,74,66,0.6) 0%, transparent 50%), linear-gradient(180deg, var(--teal-deep) 0%, var(--teal-dark) 50%, var(--teal-deep) 100%); }
 
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-@keyframes glow { 0%,100%{ box-shadow:0 0 20px rgba(151,141,91,0.4); } 50%{ box-shadow:0 0 40px rgba(151,141,91,0.8); } }
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes pulseRed { 0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-.topbar { position: sticky; top: 0; z-index: 100; padding: calc(12px + var(--safe-top)) 20px 12px; background: linear-gradient(135deg, rgba(4,24,20,0.98), rgba(13,74,66,0.95)); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 12px; }
-.topbar-logo { width: 50px; height: 50px; border-radius: 50%; object-fit: contain; background: #fff; padding: 3px; box-shadow: 0 0 20px rgba(151,141,91,0.6); animation: glow 3s infinite; }
-.topbar-info { flex: 1; }
-.topbar-info h1 { font-size: 20px; color: var(--gold-light); font-weight: 900; letter-spacing: 1px; }
-.topbar-info p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 3px; }
-.live-badge { padding: 8px 18px; border-radius: 20px; background: linear-gradient(135deg, var(--red), var(--red-light)); color: #fff; font-size: 12px; font-weight: 900; display: flex; align-items: center; gap: 8px; animation: pulse 2s infinite; }
-.live-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; }
-.icon-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.icon-btn.danger { background: rgba(229,57,53,0.3); border-color: var(--red-light); }
+.topbar { position: sticky; top: 0; z-index: 100; padding: 12px 16px; background: rgba(4,24,20,0.95); backdrop-filter: blur(15px); border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 10px; }
+.topbar-info { flex: 1; display: flex; justify-content: space-between; align-items: center; }
+.topbar-info h1 { font-size: 16px; color: var(--gold); font-weight: 900; }
+.live-clock { font-size: 14px; color: var(--gold-light); font-family: monospace; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.live-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--red); animation: blink 1s infinite; }
 
-.content { padding: 20px; max-width: 1400px; margin: 0 auto; }
+.dashboard { padding: 16px; max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 900px) { .dashboard { grid-template-columns: repeat(3, 1fr); } }
 
-.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
-@media (min-width:768px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
-.stat-box { background: linear-gradient(145deg, rgba(13,74,66,0.4), rgba(4,24,20,0.7)); border: 2px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; position: relative; overflow: hidden; }
-.stat-box::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
-.stat-box .icon { font-size: 36px; margin-bottom: 8px; opacity: 0.7; }
-.stat-box .num { font-size: 42px; font-weight: 900; color: var(--gold-light); line-height: 1; }
-.stat-box .lbl { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 8px; font-weight: 700; }
-.stat-box.red { border-color: rgba(229,57,53,0.4); }
-.stat-box.red .num { color: var(--red-light); }
-.stat-box.green { border-color: rgba(67,160,71,0.4); }
-.stat-box.green .num { color: var(--green-light); }
-.stat-box.blue { border-color: rgba(41,182,246,0.4); }
-.stat-box.blue .num { color: var(--blue-light); }
+.card { background: var(--bg-glass); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+.card-title { font-size: 14px; color: var(--gold); font-weight: 900; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
-.card { background: rgba(13,74,66,0.3); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 20px; padding: 24px; margin-bottom: 20px; }
-.card-title { font-size: 18px; color: var(--gold-light); font-weight: 900; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.card-title .hint { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 600; }
+/* لوحة النبض */
+.pulse-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 8px; }
+.pulse-status { width: 12px; height: 12px; border-radius: 50%; margin-left: 8px; }
+.status-online { background: var(--green); box-shadow: 0 0 10px var(--green); }
+.status-offline { background: var(--red); }
+.status-leave { background: var(--amber); }
+.pulse-name { font-weight: 900; color: var(--text-main); }
 
-.feed-list { display: flex; flex-direction: column; gap: 12px; }
-.feed-item { background: rgba(4,24,20,0.7); border: 1px solid var(--border); border-right: 5px solid var(--gold); border-radius: 16px; padding: 18px; animation: slideUp 0.4s ease-out; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-.feed-item.issue { border-right-color: var(--red-light); background: linear-gradient(90deg, rgba(229,57,53,0.1), transparent); }
-.feed-item.praise { border-right-color: var(--green-light); background: linear-gradient(90deg, rgba(67,160,71,0.1), transparent); }
-.feed-item.visit { border-right-color: var(--blue-light); background: linear-gradient(90deg, rgba(41,182,246,0.1), transparent); }
-.feed-content { flex: 1; }
-.feed-title { font-size: 16px; font-weight: 900; color: var(--gold-light); margin-bottom: 6px; }
-.feed-desc { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 8px; }
-.feed-meta { font-size: 11px; color: rgba(255,255,255,0.5); display: flex; flex-wrap: wrap; gap: 10px; }
-.feed-time { font-size: 11px; color: var(--gold-light); font-weight: 900; text-align: left; min-width: 90px; }
+/* التنبيهات الحرجة */
+.critical-item { padding: 12px; background: rgba(229,57,53,0.15); border: 1px solid var(--red); border-radius: 12px; margin-bottom: 8px; animation: pulseRed 2s infinite; }
+.critical-item h4 { font-size: 13px; color: var(--red-light); margin-bottom: 4px; }
+.critical-item p { font-size: 11px; color: var(--text-sub); }
 
-.empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); font-size: 14px; }
-.empty .icon { font-size: 60px; display: block; margin-bottom: 12px; opacity: 0.5; }
+/* الزيارات النشطة */
+.visit-active { padding: 12px; background: rgba(41,182,246,0.1); border: 1px solid var(--blue); border-radius: 12px; margin-bottom: 8px; }
+.visit-active .center-name { font-weight: 900; color: var(--blue-light); font-size: 13px; }
+.visit-active .timer { font-size: 20px; font-weight: 900; color: var(--gold-light); font-family: monospace; text-align: center; margin-top: 8px; }
 
-#loadingOverlay { position: fixed; inset: 0; z-index: 9999; background: var(--teal-deep); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.spinner { width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+/* آخر الأحداث */
+.feed-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px; animation: slideIn 0.5s; }
+.feed-icon { font-size: 20px; }
+.feed-text { flex: 1; }
+.feed-time { font-size: 9px; color: var(--text-sub); margin-top: 4px; }
+
+/* إحصائيات سريعة */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-box { background: rgba(0,0,0,0.2); padding: 14px; border-radius: 12px; text-align: center; }
+.stat-box .num { font-size: 28px; font-weight: 900; color: var(--gold-light); }
+.stat-box .lbl { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
+
+.empty-state { text-align: center; padding: 20px; opacity: 0.5; font-size: 13px; }
+
+#loadingOverlay { position:fixed; inset:0; z-index:9999; background:var(--teal-deep); display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.spinner { width:40px; height:40px; border:4px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; margin-bottom:16px; }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="color: var(--gold-light); font-weight: 900;">جاري الاتصال بغرفة العمليات...</div>
+    <div style="color:var(--gold-light); font-weight:900;">جاري الاتصال بغرفة العمليات...</div>
 </div>
 
-<div id="mainApp" style="display: none;">
-  <div class="topbar">
-    <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" class="topbar-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/National_emblem_of_Oman.svg/200px-National_emblem_of_Oman.svg.png'">
+<div class="topbar">
+    <img src="https://cdn.imagetourls.com/uploads/tyImg/1bKdWZfuw.png" style="width:40px; height:40px; border-radius:10px; background:#fff; padding:2px;">
     <div class="topbar-info">
-      <h1>غرفة العمليات</h1>
-      <p>الشاشة المباشرة — نظام الإسعاف الذكي</p>
+        <h1>غرفة العمليات — Live OPS</h1>
+        <div class="live-clock"><span class="live-dot"></span><span id="liveClock">--:--:--</span></div>
     </div>
-    <div class="live-badge"><div class="live-dot"></div> مباشر</div>
-    <button class="icon-btn danger" onclick="logout()">🚪</button>
-  </div>
+</div>
 
-  <div class="content">
-    <div class="stats-grid">
-      <div class="stat-box red">
-        <div class="icon">🚩</div>
-        <div class="num" id="statIssues">0</div>
-        <div class="lbl">إشكالية ميدانية</div>
-      </div>
-      <div class="stat-box green">
-        <div class="icon">⭐</div>
-        <div class="num" id="statPraises">0</div>
-        <div class="lbl">إشادة مسجلة</div>
-      </div>
-      <div class="stat-box blue">
-        <div class="icon">📋</div>
-        <div class="num" id="statVisits">0</div>
-        <div class="lbl">تقرير زيارة</div>
-      </div>
-      <div class="stat-box">
-        <div class="icon">🕐</div>
-        <div class="num" id="statToday">0</div>
-        <div class="lbl">نشاط اليوم</div>
-      </div>
+<div class="dashboard">
+    
+    <!-- العمود الأول: النبض والتنبيهات -->
+    <div>
+        <div class="card">
+            <div class="card-title">⚡ إحصائيات فورية</div>
+            <div class="stats-grid">
+                <div class="stat-box"><div class="num" id="statPending">0</div><div class="lbl">بلاغات معلقة</div></div>
+                <div class="stat-box"><div class="num" id="statActiveVisits">0</div><div class="lbl">زيارات نشطة</div></div>
+                <div class="stat-box"><div class="num" id="statCritical">0</div><div class="lbl">بلاغات حرجة</div></div>
+                <div class="stat-box"><div class="num" id="statSupervisors">0</div><div class="lbl">مشرفون</div></div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+            <div class="card-title">💓 نبض المشرفين (Live Pulse)</div>
+            <div id="pulseList"><div class="empty-state">جاري التحميل...</div></div>
+        </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">📡 آخر النشاطات المباشرة <span class="hint" id="lastUpdate">—</span></div>
-      <div class="feed-list" id="liveFeed">
-        <div class="empty"><span class="icon">📡</span>جاري الاتصال...</div>
-      </div>
+    <!-- العمود الثاني: التنبيهات الحرجة -->
+    <div>
+        <div class="card" style="border-color:var(--red);">
+            <div class="card-title" style="color:var(--red-light);">🚨 تنبيهات حرجة (أكثر من 48 ساعة)</div>
+            <div id="criticalList"><div class="empty-state">لا توجد بلاغات حرجة حالياً</div></div>
+        </div>
     </div>
-  </div>
+
+    <!-- العمود الثالث: الزيارات النشطة وآخر الأحداث -->
+    <div>
+        <div class="card" style="border-color:var(--blue);">
+            <div class="card-title" style="color:var(--blue-light);">📍 الزيارات النشطة (Check-in)</div>
+            <div id="activeVisitsList"><div class="empty-state">لا توجد زيارات نشطة</div></div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+            <div class="card-title">📡 آخر الأحداث (Live Feed)</div>
+            <div id="activityFeed" style="max-height:300px; overflow-y:auto;"><div class="empty-state">جاري التحميل...</div></div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -142,78 +144,151 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    const session = localStorage.getItem("ems_session");
-    if (!session) { window.location.href = "./index.html"; }
-    const user = JSON.parse(session);
-    if (user.type !== "ops") { window.location.href = "./index.html"; }
+    const SECTORS = { 
+        "قطاع A": ["مركز إسعاف دارسيت", "مركز إسعاف بوشر", "مركز إسعاف العامرات", "مركز إسعاف قريات"], 
+        "قطاع B": ["مركز إسعاف الخوض 1", "مركز إسعاف الخوض 2", "مركز إسعاف العذيبة", "مركز إسعاف الرسيل"] 
+    };
+    let allIssues = [], allSupervisors = [], allVisits = [], allMessages = [];
+    let activeVisitTimers = {};
 
     document.getElementById("loadingOverlay").style.display = "none";
-    document.getElementById("mainApp").style.display = "block";
 
-    function logout() { localStorage.removeItem("ems_session"); window.location.href = "./index.html"; }
+    // الساعة المباشرة
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById("liveClock").innerText = now.toLocaleTimeString('ar-OM');
+    }, 1000);
 
-    function timeAgo(ts) {
-        try {
-            const d = ts?.toDate?.();
-            if (!d) return "-";
-            const diff = Math.floor((Date.now() - d.getTime()) / 1000);
-            if (diff < 60) return "الآن";
-            if (diff < 3600) return Math.floor(diff/60) + " دقيقة";
-            if (diff < 86400) return Math.floor(diff/3600) + " ساعة";
-            return Math.floor(diff/86400) + " يوم";
-        } catch { return "-"; }
+    // جلب البيانات
+    db.collection("issues").onSnapshot(snap => {
+        allIssues = [];
+        snap.forEach(d => allIssues.push({ id: d.id, ...d.data() }));
+        updateDashboard();
+        updateCriticalAlerts();
+        renderActivityFeed();
+    });
+
+    db.collection("access_code").where("type", "==", "supervisor").onSnapshot(snap => {
+        allSupervisors = [];
+        snap.forEach(d => allSupervisors.push({ id: d.id, ...d.data() }));
+        updateDashboard();
+    });
+
+    db.collection("active_visits").onSnapshot(snap => {
+        allVisits = [];
+        snap.forEach(d => allVisits.push({ id: d.id, ...d.data() }));
+        renderActiveVisits();
+    });
+
+    function updateDashboard() {
+        const pending = allIssues.filter(i => i.status === 'pending_supervisor' || i.status === 'new' || i.status === 'in_progress').length;
+        const critical = allIssues.filter(i => {
+            if (i.status === 'resolved_by_supervisor') return false;
+            const created = i.createdAt ? i.createdAt.seconds * 1000 : (i.timestamp?.seconds * 1000 || 0);
+            return (Date.now() - created) > 48 * 60 * 60 * 1000;
+        }).length;
+
+        document.getElementById("statPending").innerText = pending;
+        document.getElementById("statCritical").innerText = critical;
+        document.getElementById("statActiveVisits").innerText = allVisits.length;
+        document.getElementById("statSupervisors").innerText = allSupervisors.length;
+
+        // نبض المشرفين (محاكاة: نعتبره متصل إذا كان لديه نشاط مؤخراً)
+        let pulseHtml = "";
+        allSupervisors.forEach(s => {
+            const lastActivity = allIssues.filter(i => i.supervisor === s.name).sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0))[0];
+            const lastTime = lastActivity ? lastActivity.timestamp?.seconds * 1000 : 0;
+            const isOnline = (Date.now() - lastTime) < 12 * 60 * 60 * 1000; // متصل إذا كان نشطاً خلال 12 ساعة
+            
+            pulseHtml += `<div class="pulse-row">
+                <div style="display:flex; align-items:center;">
+                    <div class="pulse-status ${isOnline ? 'status-online' : 'status-offline'}"></div>
+                    <span class="pulse-name">${s.name}</span>
+                </div>
+                <span style="font-size:11px; color:var(--text-sub);">${isOnline ? 'متصل' : 'غير متصل'}</span>
+            </div>`;
+        });
+        document.getElementById("pulseList").innerHTML = pulseHtml || '<div class="empty-state">لا يوجد مشرفون</div>';
     }
 
-    function renderFeed(issues) {
-        const today = new Date().toISOString().slice(0,10);
-        const todayCount = issues.filter(i => {
-            try { return i.timestamp?.toDate?.()?.toISOString().slice(0,10) === today; } catch { return false; }
-        }).length;
-        
-        const complaints = issues.filter(i => !i.isPraise && i.type !== "visit").length;
-        const praises = issues.filter(i => i.isPraise).length;
-        const visits = issues.filter(i => i.type === "visit").length;
-        
-        document.getElementById("statIssues").textContent = complaints;
-        document.getElementById("statPraises").textContent = praises;
-        document.getElementById("statVisits").textContent = visits;
-        document.getElementById("statToday").textContent = todayCount;
-        document.getElementById("lastUpdate").textContent = "آخر تحديث: " + new Date().toLocaleTimeString('ar-OM');
-        
-        const feed = document.getElementById("liveFeed");
-        if (issues.length === 0) {
-            feed.innerHTML = '<div class="empty"><span class="icon">📡</span>لا يوجد نشاطات بعد</div>';
+    function updateCriticalAlerts() {
+        const critical = allIssues.filter(i => {
+            if (i.status === 'resolved_by_supervisor') return false;
+            const created = i.createdAt ? i.createdAt.seconds * 1000 : (i.timestamp?.seconds * 1000 || 0);
+            return (Date.now() - created) > 48 * 60 * 60 * 1000;
+        });
+
+        if (critical.length === 0) {
+            document.getElementById("criticalList").innerHTML = '<div class="empty-state">لا توجد بلاغات حرجة حالياً</div>';
             return;
         }
-        
-        feed.innerHTML = issues.slice(0, 30).map(item => {
-            let cls = "issue", icon = "🚩", title = "إشكالية", target = item.targetName || item.centerName || "-";
-            if (item.isPraise) { cls = "praise"; icon = "⭐"; title = "إشادة"; }
-            else if (item.type === "visit") { cls = "visit"; icon = "📋"; title = "زيارة"; target = item.centerName || "-"; }
-            
-            return `<div class="feed-item ${cls}">
-                <div class="feed-content">
-                    <div class="feed-title">${icon} ${title}: ${target}</div>
-                    <div class="feed-desc">${item.description || '-'}</div>
-                    <div class="feed-meta">
-                        <span>👤 ${item.supervisor || '-'}</span>
-                        <span>🏷️ ${item.issueType || item.praiseType || '-'}</span>
-                        <span>🏥 ${item.sector || '-'}</span>
-                    </div>
-                </div>
-                <div class="feed-time">${timeAgo(item.timestamp)}</div>
+
+        let html = "";
+        critical.forEach(i => {
+            let title = i.targetName || i.centerName || "بلاغ";
+            html += `<div class="critical-item">
+                <h4>⏳ ${title} (${i.sector})</h4>
+                <p>${i.description}</p>
             </div>`;
-        }).join("");
+        });
+        document.getElementById("criticalList").innerHTML = html;
     }
 
-    db.collection("issues").orderBy("timestamp", "desc").limit(50).onSnapshot(snap => {
-        const issues = [];
-        snap.forEach(d => issues.push({ id: d.id, ...d.data() }));
-        renderFeed(issues);
-    }, err => {
-        console.error(err);
-        document.getElementById("liveFeed").innerHTML = '<div class="empty"><span class="icon">⚠️</span>خطأ في الاتصال بقاعدة البيانات</div>';
-    });
+    function renderActiveVisits() {
+        if (allVisits.length === 0) {
+            document.getElementById("activeVisitsList").innerHTML = '<div class="empty-state">لا توجد زيارات نشطة</div>';
+            return;
+        }
+
+        let html = "";
+        allVisits.forEach(v => {
+            const startTime = v.startTime ? v.startTime.toDate().getTime() : Date.now();
+            html += `<div class="visit-active">
+                <div class="center-name">🏥 ${v.centerName}</div>
+                <div style="font-size:11px; color:var(--text-sub);">👨‍💼 ${v.supervisorName}</div>
+                <div class="timer" id="timer-${v.id}">00:00:00</div>
+            </div>`;
+            startTimer(v.id, startTime);
+        });
+        document.getElementById("activeVisitsList").innerHTML = html;
+    }
+
+    function startTimer(visitId, startTime) {
+        if (activeVisitTimers[visitId]) clearInterval(activeVisitTimers[visitId]);
+        activeVisitTimers[visitId] = setInterval(() => {
+            const diff = Date.now() - startTime;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            const timerEl = document.getElementById(`timer-${visitId}`);
+            if (timerEl) {
+                timerEl.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else {
+                clearInterval(activeVisitTimers[visitId]);
+            }
+        }, 1000);
+    }
+
+    function renderActivityFeed() {
+        const recent = allIssues.sort((a,b) => (b.timestamp?.seconds||0) - (a.timestamp?.seconds||0)).slice(0, 10);
+        let html = "";
+        recent.forEach(i => {
+            const time = i.timestamp ? new Date(i.timestamp.toDate()).toLocaleTimeString('ar-OM') : '';
+            let icon = "🚩", text = `تم تسجيل بلاغ: ${i.targetName || i.centerName}`;
+            if (i.isPraise) { icon = "⭐"; text = `تم تسجيل إشادة: ${i.targetName}`; }
+            else if (i.type === "visit") { icon = "📝"; text = `تم تسجيل زيارة: ${i.centerName}`; }
+            else if (i.status === "resolved_by_supervisor") { icon = "✅"; text = `تم حل بلاغ: ${i.targetName || i.centerName}`; }
+
+            html += `<div class="feed-item">
+                <div class="feed-icon">${icon}</div>
+                <div class="feed-text">
+                    ${text}
+                    <div class="feed-time">${i.supervisor} • ${time}</div>
+                </div>
+            </div>`;
+        });
+        document.getElementById("activityFeed").innerHTML = html || '<div class="empty-state">لا توجد أحداث</div>';
+    }
 </script>
 </body>
 </html>
