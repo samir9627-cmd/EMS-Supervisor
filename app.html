@@ -305,6 +305,22 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
     let cachedMaster = { issue: {}, praise: {} };
     let cachedParamedics = [];
     let currentLocation = { lat: null, lng: null };
+  // ✅ حفظ الموقع المباشر في Firebase كل دقيقة
+if (navigator.geolocation) {
+    navigator.geolocation.watchPosition((pos) => {
+        currentLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        
+        // حفظ الموقع في Firebase (مجموعة supervisors_status)
+        if (user.code) {
+            db.collection("supervisors_status").doc(user.code).set({
+                name: user.name,
+                sector: user.sector,
+                location: new firebase.firestore.GeoPoint(pos.coords.latitude, pos.coords.longitude),
+                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+        }
+    }, null, { enableHighAccuracy: true });
+}
     let selectedIssueTypes = [];
     let myCode = user.code;
     let pendingIssuesCount = 0;
@@ -323,12 +339,13 @@ label { display: block; font-size: 12px; color: var(--text-main); font-weight: 7
 
     // تحديث الحالة كل دقيقة
     setInterval(() => {
-        if (user.code) {
-            db.collection("supervisors_status").doc(user.code).update({
-                lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        }
-    }, 60000);
+    if (user.code && currentLocation.lat) {
+        db.collection("supervisors_status").doc(user.code).set({
+            location: new firebase.firestore.GeoPoint(currentLocation.lat, currentLocation.lng),
+            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+    }
+}, 60000);
 
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition((pos) => {
